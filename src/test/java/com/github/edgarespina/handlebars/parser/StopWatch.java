@@ -1,4 +1,4 @@
-package com.github.edgarespina.handlebars;
+package com.github.edgarespina.handlebars.parser;
 
 public class StopWatch {
   private long start;

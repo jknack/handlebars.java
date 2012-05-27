@@ -1,4 +1,4 @@
-package com.github.edgarespina.handlerbars;
+package com.github.edgarespina.handlerbars.parser;
 
 import java.util.Collection;
 import java.util.EnumSet;

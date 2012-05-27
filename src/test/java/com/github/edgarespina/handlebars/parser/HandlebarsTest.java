@@ -1,4 +1,4 @@
-package com.github.edgarespina.handlebars;
+package com.github.edgarespina.handlebars.parser;
 
 import static org.junit.Assert.assertEquals;
 
@@ -13,9 +13,9 @@ import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.TokenStream;
 import org.junit.Test;
 
-import com.github.edgarespina.handlerbars.HandlebarsLexer;
-import com.github.edgarespina.handlerbars.HandlebarsParser;
-import com.github.edgarespina.handlerbars.Node;
+import com.github.edgarespina.handlerbars.parser.HandlebarsLexer;
+import com.github.edgarespina.handlerbars.parser.HandlebarsParser;
+import com.github.edgarespina.handlerbars.parser.Node;
 
 public class HandlebarsTest {
 

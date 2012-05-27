@@ -18,11 +18,11 @@
 grammar Handlebars;
 
 @lexer::header {
-package com.github.edgarespina.handlerbars;
+package com.github.edgarespina.handlerbars.parser;
 }
 
 @header {
-package com.github.edgarespina.handlerbars;
+package com.github.edgarespina.handlerbars.parser;
 
 import java.util.Map;
 import java.util.Collections;

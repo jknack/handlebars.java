@@ -1,4 +1,4 @@
-package com.github.edgarespina.handlerbars;
+package com.github.edgarespina.handlerbars.parser;
 
 import static org.apache.commons.lang3.StringEscapeUtils.escapeHtml4;
 
