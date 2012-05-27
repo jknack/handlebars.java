@@ -7,7 +7,7 @@ import java.util.Map;
 public class SimpleListTest extends TemplateTest {
 
   @Override
-  public String template() {
+  public String input() {
     return "{{#list}}{{.}}{{/list}}";
   }
 

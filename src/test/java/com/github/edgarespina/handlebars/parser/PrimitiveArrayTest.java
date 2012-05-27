@@ -3,22 +3,22 @@ package com.github.edgarespina.handlebars.parser;
 import java.util.HashMap;
 import java.util.Map;
 
-public class UnescapeVariableWithAmpTest extends TemplateTest {
+public class PrimitiveArrayTest extends TemplateTest {
 
   @Override
   public String input() {
-    return "Hello {{&name}}!";
+    return "{{#list}}{{.}} {{/list}}";
   }
 
   @Override
   public Map<String, Object> scope() {
     Map<String, Object> scope = new HashMap<String, Object>();
-    scope.put("name", "<b>John</b>");
+    scope.put("list", new int[] {1, 2, 3, 4, 5});
     return scope;
   }
 
   @Override
   public String output() {
-    return "Hello <b>John</b>!";
+    return "1 2 3 4 5 ";
   }
 }

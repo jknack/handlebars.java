@@ -6,7 +6,7 @@ import java.util.Map;
 public class CommentTest extends TemplateTest {
 
   @Override
-  public String template() {
+  public String input() {
     return "<h1>Today{{! ignore me }}.</h1>";
   }
 

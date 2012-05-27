@@ -6,7 +6,7 @@ import java.util.Map;
 public class TrueValueTest extends TemplateTest {
 
   @Override
-  public String template() {
+  public String input() {
     return "{{#none}}There is one{{/none}}";
   }
 

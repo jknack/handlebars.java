@@ -7,7 +7,7 @@ import java.util.Map;
 public class InvertedSectionTest extends TemplateTest {
 
   @Override
-  public String template() {
+  public String input() {
     return
     "{{#repo}}" +
         "<b>{{name}}</b>" +

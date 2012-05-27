@@ -6,7 +6,7 @@ import java.util.Map;
 public class UnescapeVariableTest extends TemplateTest {
 
   @Override
-  public String template() {
+  public String input() {
     return "Hello {{{name}}}!";
   }
 

@@ -10,7 +10,7 @@ import com.github.edgarespina.handlerbars.Template;
 public class LambdaTest extends TemplateTest {
 
   @Override
-  public String template() {
+  public String input() {
     return
     "{{#wrapped}}" +
         "{{name}} is awesome." +

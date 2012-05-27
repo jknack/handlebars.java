@@ -6,7 +6,7 @@ import java.util.Map;
 public class SectionTest extends TemplateTest {
 
   @Override
-  public String template() {
+  public String input() {
     return
     "{{#person}}" +
         "Hi {{firstName}} {{lastName}}!" +

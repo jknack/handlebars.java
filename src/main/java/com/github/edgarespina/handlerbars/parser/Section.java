@@ -2,6 +2,7 @@ package com.github.edgarespina.handlerbars.parser;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumSet;
@@ -53,10 +54,10 @@ class Section extends Template {
       @Override
       public Object transform(final Map<String, Object> scope,
           final Object candidate) {
-        Object[] elements = (Object[]) candidate;
+        int size = Array.getLength(candidate);
         List<Object> list = new ArrayList<Object>();
-        for (Object element : elements) {
-          list.add(element);
+        for (int i = 0; i < size; i ++) {
+          list.add(Array.get(candidate, i));
         }
         return list;
       }
@@ -232,11 +233,13 @@ class Section extends Template {
 
   private Template body;
 
-  private String name;
+  private final String name;
 
-  private boolean inverted;
+  private final boolean inverted;
 
-  public Section() {
+  public Section(final String name, final boolean inverted) {
+    this.name = name;
+    this.inverted = inverted;
   }
 
   @Override
@@ -262,16 +265,8 @@ class Section extends Template {
     return name;
   }
 
-  public void name(final String name) {
-    this.name = name;
-  }
-
   public boolean inverted() {
     return inverted;
-  }
-
-  public void inverted(final boolean inverted) {
-    this.inverted = inverted;
   }
 
   public Section body(final Template body) {

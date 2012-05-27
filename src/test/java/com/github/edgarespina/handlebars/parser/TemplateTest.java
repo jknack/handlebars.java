@@ -3,6 +3,8 @@ package com.github.edgarespina.handlebars.parser;
 import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
+import java.io.Reader;
+import java.io.StringReader;
 import java.util.Map;
 
 import org.antlr.runtime.RecognitionException;
@@ -13,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.github.edgarespina.handlerbars.Handlebars;
+import com.github.edgarespina.handlerbars.ResourceLocator;
 import com.github.edgarespina.handlerbars.Template;
 import com.github.edgarespina.handlerbars.parser.HandlebarsLexer;
 import com.github.edgarespina.handlerbars.parser.HandlebarsParser;
@@ -34,11 +37,11 @@ public abstract class TemplateTest {
     logger.info("*************************************************");
     logger.info("* {}:", getClass().getSimpleName().replace("Test", ""));
     logger.info("*************************************************");
-    String input = template();
+    final String input = input();
     logger.info("INPUT:");
     logger.info(input);
     long startCompile = System.currentTimeMillis();
-    Template template = new Handlebars().compile(input);
+    Template template = new Handlebars(resourceLocator()).compile("template.html");
     long endCompile = System.currentTimeMillis();
     long startMerge = System.currentTimeMillis();
     String output = template.merge(scope());
@@ -64,9 +67,19 @@ public abstract class TemplateTest {
     }
   }
 
+  public ResourceLocator resourceLocator() {
+    return new ResourceLocator() {
+
+      @Override
+      protected Reader read(final String uri) throws IOException {
+        return new StringReader(input());
+      }
+    };
+  }
+
   public abstract Map<String, Object> scope();
 
-  public abstract String template();
+  public abstract String input();
 
   public abstract String output();
 }

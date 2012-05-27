@@ -5,7 +5,6 @@ import static org.apache.commons.lang3.Validate.notNull;
 
 import java.io.IOException;
 import java.io.Reader;
-import java.io.StringReader;
 
 import org.antlr.runtime.ANTLRReaderStream;
 import org.antlr.runtime.CommonTokenStream;
@@ -34,20 +33,21 @@ public class Handlebars {
     this(new ClasspathResourceLocator());
   }
 
-  public Template compile(final String input) throws IOException,
-      RecognitionException {
-    return compile(new StringReader(input));
+  public Template compile(final String uri) throws IOException,
+      ParsingException {
+    return compile(resourceLocator.locate(uri));
   }
 
-  public Template compile(final Reader reader) throws IOException,
-      RecognitionException {
+  private Template compile(final Reader reader) throws IOException {
     long start = System.currentTimeMillis();
     try {
       HandlebarsLexer lexer =
           new HandlebarsLexer(new ANTLRReaderStream(reader));
       TokenStream tokens = new CommonTokenStream(lexer);
       HandlebarsParser parser = new HandlebarsParser(tokens);
-      return parser.compile();
+      return parser.compile(this);
+    } catch (RecognitionException ex) {
+      throw new ParsingException(ex);
     } finally {
       long end = System.currentTimeMillis();
       if (reader != null) {

@@ -1,17 +1,15 @@
 package com.github.edgarespina.handlebars.parser;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ListTest extends TemplateTest {
+public class ArrayTest extends TemplateTest {
 
   @Override
   public String input() {
     return "{{#list}}{{firstName}} {{lastName}}, {{/list}}";
   }
 
-  @SuppressWarnings("unchecked")
   @Override
   public Map<String, Object> scope() {
     Map<String, Object> scope = new HashMap<String, Object>();
@@ -23,7 +21,7 @@ public class ListTest extends TemplateTest {
     peter.put("firstName", "Peter");
     peter.put("lastName", "Doe");
 
-    scope.put("list", Arrays.asList(john, peter));
+    scope.put("list", new Object[] {john, peter});
     return scope;
   }
 

@@ -24,7 +24,6 @@ package com.github.edgarespina.handlerbars.parser;
 @header {
 package com.github.edgarespina.handlerbars.parser;
 
-import java.io.IOException;
 import java.util.Map;
 import java.util.Collections;
 import com.github.edgarespina.handlerbars.Template;
@@ -50,7 +49,7 @@ import com.github.edgarespina.handlerbars.Handlebars;
   }
 }
 
-compile[Handlebars handlebars] returns[Template node] throws IOException
+compile[Handlebars handlebars] returns[Template node]
 @init {
   this.handlebars = handlebars;
 }
@@ -63,11 +62,11 @@ compile[Handlebars handlebars] returns[Template node] throws IOException
   )
   ;
 
-body returns[Sequence node = new Sequence()] throws IOException
+body returns[Sequence node = new Sequence()]
   :
   (
      s = section           {node.add(s);}
-  |  p = partial           {node.add(p);}
+  |  partial
   |  uv = unescapeVariable {node.add(uv);}
   |  v = variable          {node.add(v);}
   |  comment
@@ -94,7 +93,7 @@ unescapeVariable returns[Variable node]
   }
   ;
 
-section returns[Section node] throws IOException
+section returns[Section node]
   :
   (
      ss=sectionStart
@@ -124,7 +123,7 @@ sectionEnd
      END_SECTION freeText END_MUSTACHE
   ;
 
-partial returns[Partial node] throws IOException
+partial returns[Partial node] throws [java.io.IOException]
   :
   (
      BEGIN_PARTIAL uri=freeText END_MUSTACHE
