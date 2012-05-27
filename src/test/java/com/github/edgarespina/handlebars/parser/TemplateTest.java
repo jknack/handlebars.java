@@ -23,7 +23,7 @@ public abstract class TemplateTest {
 
   @Before
   public void initJUnit() throws IOException, RecognitionException {
-    // Init junit classloader. This reduce the time spent reported.
+    // Init junit classloader. This reduce the time reported during execution.
     new Handlebars();
     new HandlebarsLexer();
     new HandlebarsParser(null);
