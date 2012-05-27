@@ -1,6 +1,7 @@
 package com.github.edgarespina.handlerbars;
 
 import static org.apache.commons.lang3.StringEscapeUtils.escapeHtml4;
+import static org.apache.commons.lang3.Validate.notNull;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -13,6 +14,7 @@ import org.antlr.runtime.TokenStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.github.edgarespina.handlerbars.io.ClasspathResourceLocator;
 import com.github.edgarespina.handlerbars.parser.HandlebarsLexer;
 import com.github.edgarespina.handlerbars.parser.HandlebarsParser;
 
@@ -21,7 +23,15 @@ public class Handlebars {
   private static final Logger logger = LoggerFactory
       .getLogger(Handlebars.class);
 
+  private ResourceLocator resourceLocator;
+
+  public Handlebars(final ResourceLocator resourceLocator) {
+    this.resourceLocator =
+        notNull(resourceLocator, "The resource locator is required.");
+  }
+
   public Handlebars() {
+    this(new ClasspathResourceLocator());
   }
 
   public Template compile(final String input) throws IOException,
@@ -49,6 +59,10 @@ public class Handlebars {
       }
       logger.trace("Compilation took: {}ms", end - start);
     }
+  }
+
+  public ResourceLocator getResourceLocator() {
+    return resourceLocator;
   }
 
   public static String safeString(final String value) {
