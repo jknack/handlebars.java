@@ -1,10 +1,14 @@
 package com.github.edgarespina.handlerbars.parser;
 
-import static org.apache.commons.lang3.StringEscapeUtils.escapeHtml4;
+import static com.github.edgarespina.handlerbars.Handlebars.safeString;
 
+import java.io.IOException;
+import java.io.Writer;
 import java.util.Map;
 
-public class Variable extends Node {
+import com.github.edgarespina.handlerbars.Template;
+
+class Variable extends Template {
 
   private String name;
 
@@ -20,16 +24,24 @@ public class Variable extends Node {
   }
 
   @Override
-  public void toString(final StringBuilder output,
-      final Map<String, Object> scope) {
+  public void merge(final Map<String, Object> scope,
+      final Writer writer) throws IOException {
     Object value = scope.get(name);
     if (value == null) {
       value = "";
     }
+    // TODO: Add formatter hook
+    String valueAsString =
+        value instanceof String ? (String) value : value.toString();
     if (escape) {
-      output.append(escapeHtml4(value.toString()));
+      writer.append(safeString(valueAsString));
     } else {
-      output.append(value);
+      writer.append(valueAsString);
     }
+  }
+
+  @Override
+  public String toString() {
+    return "{{" + name + "}}";
   }
 }

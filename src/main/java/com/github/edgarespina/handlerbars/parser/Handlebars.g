@@ -26,6 +26,7 @@ package com.github.edgarespina.handlerbars.parser;
 
 import java.util.Map;
 import java.util.Collections;
+import com.github.edgarespina.handlerbars.Template;
 }
 
 @members {
@@ -45,7 +46,7 @@ import java.util.Collections;
   }
 }
 
-compile returns[Node node]
+compile returns[Template node]
   :
   (
      child=body {node = child;} EOF

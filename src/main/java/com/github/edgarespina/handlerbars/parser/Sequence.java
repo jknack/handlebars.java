@@ -1,36 +1,49 @@
 package com.github.edgarespina.handlerbars.parser;
 
+import java.io.IOException;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-public class Sequence extends Node implements Iterable<Node> {
+import com.github.edgarespina.handlerbars.Template;
 
-  private final List<Node> nodes = new ArrayList<Node>();
+class Sequence extends Template implements Iterable<Template> {
+
+  private final List<Template> nodes = new ArrayList<Template>();
 
   public Sequence() {
   }
 
-  public Sequence add(final Node node) {
+  public Sequence add(final Template node) {
     nodes.add(node);
     return this;
   }
 
-  public Sequence remove(final Node node) {
+  public Sequence remove(final Template node) {
     nodes.remove(node);
     return this;
   }
 
   @Override
-  public void toString(final StringBuilder output, final Map<String, Object> scope) {
-    for(Node node: nodes) {
-      node.toString(output, scope);
+  public void merge(final Map<String, Object> scope, final Writer writer) throws IOException {
+    for(Template node: nodes) {
+      node.merge(scope, writer);
     }
   }
 
   @Override
-  public Iterator<Node> iterator() {
+  public String toString() {
+    StringBuilder buffer = new StringBuilder();
+    for(Template node: nodes) {
+      buffer.append(node);
+    }
+    return buffer.toString();
+  }
+
+  @Override
+  public Iterator<Template> iterator() {
     return nodes.iterator();
   }
 }

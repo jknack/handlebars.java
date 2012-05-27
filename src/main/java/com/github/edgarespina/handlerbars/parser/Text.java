@@ -1,8 +1,12 @@
 package com.github.edgarespina.handlerbars.parser;
 
+import java.io.IOException;
+import java.io.Writer;
 import java.util.Map;
 
-public class Text extends Node {
+import com.github.edgarespina.handlerbars.Template;
+
+class Text extends Template {
 
   private String text;
 
@@ -15,7 +19,12 @@ public class Text extends Node {
   }
 
   @Override
-  public void toString(final StringBuilder output, final Map<String, Object> scope) {
-    output.append(text);
+  public void merge(final Map<String, Object> scope, final Writer writer) throws IOException {
+    writer.append(text);
+  }
+
+  @Override
+  public String toString() {
+    return text;
   }
 }

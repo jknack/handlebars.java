@@ -1,11 +1,87 @@
 package com.github.edgarespina.handlerbars.parser;
 
+import java.io.IOException;
+import java.io.Writer;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumSet;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-public class Section extends Node {
+import com.github.edgarespina.handlerbars.Lambda;
+import com.github.edgarespina.handlerbars.Template;
+
+class Section extends Template {
+
+  private static class LambdaScope {
+
+    public final Lambda lambda;
+
+    public final Map<String, Object> scope;
+
+    public LambdaScope(final Lambda lambda,
+        final Map<String, Object> parent) {
+      this.lambda = lambda;
+      this.scope = parent;
+    }
+
+  }
+
+  private enum Transformer {
+    NONE,
+
+    LAMBDA {
+      @Override
+      protected boolean apply(final Object candidate) {
+        return candidate instanceof Lambda;
+      }
+
+      @Override
+      public Object transform(final Map<String, Object> scope,
+          final Object candidate) {
+        return new LambdaScope((Lambda) candidate, scope);
+      }
+    },
+
+    ARRAY {
+      @Override
+      protected boolean apply(final Object candidate) {
+        return candidate != null && candidate.getClass().isArray();
+      }
+
+      @Override
+      public Object transform(final Map<String, Object> scope,
+          final Object candidate) {
+        Object[] elements = (Object[]) candidate;
+        List<Object> list = new ArrayList<Object>();
+        for (Object element : elements) {
+          list.add(element);
+        }
+        return list;
+      }
+    };
+
+    protected boolean apply(final Object candidate) {
+      return false;
+    }
+
+    public Object transform(final Map<String, Object> scope,
+        final Object candidate) {
+      return candidate;
+    }
+
+    public static Transformer get(final Object candidate) {
+      EnumSet<Transformer> transoformers = EnumSet.allOf(Transformer.class);
+      transoformers.remove(NONE);
+      for (Transformer transformer : transoformers) {
+        if (transformer.apply(candidate)) {
+          return transformer;
+        }
+      }
+      return NONE;
+    }
+  }
 
   private enum Type {
     UNKNOWN {
@@ -21,8 +97,8 @@ public class Section extends Node {
       }
 
       @Override
-      public void toString(final StringBuilder output, final Node body,
-          final Object candidate) {
+      public void merge(final Writer writer, final Template body,
+          final Object candidate) throws IOException {
       }
     },
 
@@ -38,9 +114,9 @@ public class Section extends Node {
       }
 
       @Override
-      public void toString(final StringBuilder output, final Node body,
-          final Object candidate) {
-        body.toString(output, wrap(candidate));
+      public void merge(final Writer writer, final Template body,
+          final Object candidate) throws IOException {
+        body.merge(wrap(candidate), writer);
       }
     },
 
@@ -57,9 +133,9 @@ public class Section extends Node {
       }
 
       @Override
-      public void toString(final StringBuilder output, final Node body,
-          final Object candidate) {
-        body.toString(output, wrap(candidate));
+      public void merge(final Writer writer, final Template body,
+          final Object candidate) throws IOException {
+        body.merge(wrap(candidate), writer);
       }
     },
 
@@ -77,11 +153,11 @@ public class Section extends Node {
 
       @SuppressWarnings("unchecked")
       @Override
-      public void toString(final StringBuilder output, final Node body,
-          final Object candidate) {
+      public void merge(final Writer writer, final Template body,
+          final Object candidate) throws IOException {
         Collection<Object> elements = (Collection<Object>) candidate;
         for (Object object : elements) {
-          body.toString(output, wrap(object));
+          body.merge(wrap(object), writer);
         }
       }
     },
@@ -98,9 +174,29 @@ public class Section extends Node {
       }
 
       @Override
-      public void toString(final StringBuilder output, final Node body,
-          final Object candidate) {
-        body.toString(output, wrap(candidate));
+      public void merge(final Writer writer, final Template body,
+          final Object candidate) throws IOException {
+        body.merge(wrap(candidate), writer);
+      }
+    },
+
+    LAMBDA {
+      @Override
+      public boolean apply(final Object candidate) {
+        return candidate instanceof LambdaScope;
+      }
+
+      @Override
+      public boolean traverse(final Object candidate) {
+        return true;
+      }
+
+      @Override
+      public void merge(final Writer writer, final Template body,
+          final Object candidate) throws IOException {
+        LambdaScope lambdaScope = (LambdaScope) candidate;
+        String result = lambdaScope.lambda.apply(body, lambdaScope.scope);
+        writer.append(result);
       }
     };
 
@@ -118,8 +214,8 @@ public class Section extends Node {
 
     public abstract boolean traverse(Object candidate);
 
-    public abstract void toString(StringBuilder output, Node body,
-        Object candidate);
+    public abstract void merge(Writer writer, Template body,
+        Object candidate) throws IOException;
 
     public static Type get(final Object candidate) {
       EnumSet<Type> types = EnumSet.allOf(Type.class);
@@ -134,7 +230,7 @@ public class Section extends Node {
     }
   }
 
-  private Node body;
+  private Template body;
 
   private String name;
 
@@ -144,17 +240,22 @@ public class Section extends Node {
   }
 
   @Override
-  public void toString(final StringBuilder output,
-      final Map<String, Object> scope) {
+  public void merge(final Map<String, Object> scope,
+      final Writer writer) throws IOException {
     Object candidate = scope.get(name);
+    candidate = Transformer.get(candidate).transform(scope, candidate);
     Type type = Type.get(candidate);
     boolean traverse = type.traverse(candidate);
     if (traverse) {
-      type.toString(output, body, candidate);
+      type.merge(writer, body, candidate);
     } else if (inverted) {
-      Type.INVERTED.toString(output, body, candidate);
+      Type.INVERTED.merge(writer, body, candidate);
     }
+  }
 
+  @Override
+  public String toString() {
+    return body.toString();
   }
 
   public String name() {
@@ -173,12 +274,12 @@ public class Section extends Node {
     this.inverted = inverted;
   }
 
-  public Section body(final Node body) {
+  public Section body(final Template body) {
     this.body = body;
     return this;
   }
 
-  public Node body() {
+  public Template body() {
     return body;
   }
 }
