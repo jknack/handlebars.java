@@ -2,7 +2,6 @@ package com.github.edgarespina.handlerbars;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.util.Map;
 
 public abstract class Template {
 
@@ -57,10 +56,10 @@ public abstract class Template {
 
   }
 
-  public abstract void merge(Map<String, Object> scope, Writer writer)
+  public abstract void merge(Scope scope, Writer writer)
       throws IOException;
 
-  public String merge(final Map<String, Object> scope) throws IOException {
+  public final String merge(final Scope scope) throws IOException {
     FastStringWriter writer = new FastStringWriter();
     merge(scope, writer);
     return writer.toString();

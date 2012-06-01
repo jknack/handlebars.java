@@ -2,8 +2,8 @@ package com.github.edgarespina.handlerbars.parser;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.util.Map;
 
+import com.github.edgarespina.handlerbars.Scope;
 import com.github.edgarespina.handlerbars.Template;
 
 class Text extends Template {
@@ -19,7 +19,7 @@ class Text extends Template {
   }
 
   @Override
-  public void merge(final Map<String, Object> scope, final Writer writer) throws IOException {
+  public void merge(final Scope scope, final Writer writer) throws IOException {
     writer.append(text);
   }
 

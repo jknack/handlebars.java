@@ -2,10 +2,10 @@ package com.github.edgarespina.handlerbars.parser;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.util.Map;
 
 import com.github.edgarespina.handlerbars.Handlebars;
 import com.github.edgarespina.handlerbars.ParsingException;
+import com.github.edgarespina.handlerbars.Scope;
 import com.github.edgarespina.handlerbars.Template;
 
 class Partial extends Template {
@@ -18,7 +18,7 @@ class Partial extends Template {
   }
 
   @Override
-  public void merge(final Map<String, Object> scope, final Writer writer)
+  public void merge(final Scope scope, final Writer writer)
       throws IOException {
     template.merge(scope, writer);
   }

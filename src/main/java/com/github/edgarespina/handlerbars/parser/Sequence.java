@@ -5,8 +5,8 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
+import com.github.edgarespina.handlerbars.Scope;
 import com.github.edgarespina.handlerbars.Template;
 
 class Sequence extends Template implements Iterable<Template> {
@@ -27,7 +27,7 @@ class Sequence extends Template implements Iterable<Template> {
   }
 
   @Override
-  public void merge(final Map<String, Object> scope, final Writer writer) throws IOException {
+  public void merge(final Scope scope, final Writer writer) throws IOException {
     for(Template node: nodes) {
       node.merge(scope, writer);
     }

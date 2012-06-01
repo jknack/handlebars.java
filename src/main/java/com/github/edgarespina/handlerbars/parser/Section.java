@@ -6,11 +6,11 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumSet;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import com.github.edgarespina.handlerbars.Lambda;
+import com.github.edgarespina.handlerbars.Scope;
 import com.github.edgarespina.handlerbars.Template;
 
 class Section extends Template {
@@ -19,10 +19,9 @@ class Section extends Template {
 
     public final Lambda lambda;
 
-    public final Map<String, Object> scope;
+    public final Scope scope;
 
-    public LambdaScope(final Lambda lambda,
-        final Map<String, Object> parent) {
+    public LambdaScope(final Lambda lambda, final Scope parent) {
       this.lambda = lambda;
       this.scope = parent;
     }
@@ -39,7 +38,7 @@ class Section extends Template {
       }
 
       @Override
-      public Object transform(final Map<String, Object> scope,
+      public Object transform(final Scope scope,
           final Object candidate) {
         return new LambdaScope((Lambda) candidate, scope);
       }
@@ -52,11 +51,11 @@ class Section extends Template {
       }
 
       @Override
-      public Object transform(final Map<String, Object> scope,
+      public Object transform(final Scope scope,
           final Object candidate) {
         int size = Array.getLength(candidate);
         List<Object> list = new ArrayList<Object>();
-        for (int i = 0; i < size; i ++) {
+        for (int i = 0; i < size; i++) {
           list.add(Array.get(candidate, i));
         }
         return list;
@@ -67,7 +66,7 @@ class Section extends Template {
       return false;
     }
 
-    public Object transform(final Map<String, Object> scope,
+    public Object transform(final Scope scope,
         final Object candidate) {
       return candidate;
     }
@@ -93,13 +92,13 @@ class Section extends Template {
 
       @Override
       public boolean traverse(final Object candidate) {
-        throw new IllegalArgumentException("Value: " + candidate
-            + " cannot be used in a section.");
+        throw new IllegalArgumentException("Value: '" + candidate
+            + "' cannot be used in a section.");
       }
 
       @Override
       public void merge(final Writer writer, final Template body,
-          final Object candidate) throws IOException {
+          final Scope scope, final Object candidate) throws IOException {
       }
     },
 
@@ -116,8 +115,25 @@ class Section extends Template {
 
       @Override
       public void merge(final Writer writer, final Template body,
-          final Object candidate) throws IOException {
-        body.merge(wrap(candidate), writer);
+          final Scope scope, final Object candidate) throws IOException {
+        body.merge(scope, writer);
+      }
+    },
+
+    NULL {
+      @Override
+      public boolean apply(final Object candidate) {
+        return candidate == null;
+      }
+
+      @Override
+      public boolean traverse(final Object candidate) {
+        return false;
+      }
+
+      @Override
+      public void merge(final Writer writer, final Template body,
+          final Scope scope, final Object candidate) throws IOException {
       }
     },
 
@@ -135,8 +151,8 @@ class Section extends Template {
 
       @Override
       public void merge(final Writer writer, final Template body,
-          final Object candidate) throws IOException {
-        body.merge(wrap(candidate), writer);
+          final Scope scope, final Object candidate) throws IOException {
+        body.merge(scope, writer);
       }
     },
 
@@ -155,10 +171,10 @@ class Section extends Template {
       @SuppressWarnings("unchecked")
       @Override
       public void merge(final Writer writer, final Template body,
-          final Object candidate) throws IOException {
-        Collection<Object> elements = (Collection<Object>) candidate;
-        for (Object object : elements) {
-          body.merge(wrap(object), writer);
+          final Scope scope, final Object candidate) throws IOException {
+        Iterable<Object> elements = (Iterable<Object>) candidate;
+        for (Object element : elements) {
+          body.merge(scope, writer);
         }
       }
     },
@@ -176,8 +192,8 @@ class Section extends Template {
 
       @Override
       public void merge(final Writer writer, final Template body,
-          final Object candidate) throws IOException {
-        body.merge(wrap(candidate), writer);
+          final Scope scope, final Object candidate) throws IOException {
+        body.merge(scope, writer);
       }
     },
 
@@ -194,29 +210,17 @@ class Section extends Template {
 
       @Override
       public void merge(final Writer writer, final Template body,
-          final Object candidate) throws IOException {
-        LambdaScope lambdaScope = (LambdaScope) candidate;
-        String result = lambdaScope.lambda.apply(body, lambdaScope.scope);
-        writer.append(result);
+          final Scope scope, final Object candidate) throws IOException {
+        throw new UnsupportedOperationException();
       }
     };
-
-    @SuppressWarnings({"unchecked", "rawtypes" })
-    protected Map<String, Object> wrap(final Object candidate) {
-      Map<String, Object> scope = new HashMap<String, Object>();
-      if (candidate instanceof Map) {
-        scope.putAll((Map) candidate);
-      }
-      scope.put(".", candidate);
-      return scope;
-    }
 
     public abstract boolean apply(Object candidate);
 
     public abstract boolean traverse(Object candidate);
 
     public abstract void merge(Writer writer, Template body,
-        Object candidate) throws IOException;
+        Scope scope, Object candidate) throws IOException;
 
     public static Type get(final Object candidate) {
       EnumSet<Type> types = EnumSet.allOf(Type.class);
@@ -243,22 +247,27 @@ class Section extends Template {
   }
 
   @Override
-  public void merge(final Map<String, Object> scope,
+  public void merge(final Scope scope,
       final Writer writer) throws IOException {
     Object candidate = scope.get(name);
     candidate = Transformer.get(candidate).transform(scope, candidate);
-    Type type = Type.get(candidate);
-    boolean traverse = type.traverse(candidate);
-    if (traverse) {
-      type.merge(writer, body, candidate);
-    } else if (inverted) {
-      Type.INVERTED.merge(writer, body, candidate);
+    try {
+      scope.push(name);
+      Type type = Type.get(candidate);
+      boolean traverse = type.traverse(candidate);
+      if (traverse) {
+        type.merge(writer, body, scope, candidate);
+      } else if (inverted) {
+        Type.INVERTED.merge(writer, body, scope, candidate);
+      }
+    } finally {
+      scope.pop();
     }
   }
 
   @Override
   public String toString() {
-    return body.toString();
+    return "{{#" + name + "}}" + body.toString() + "{{/" + name + "}}";
   }
 
   public String name() {
