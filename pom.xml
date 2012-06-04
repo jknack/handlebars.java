@@ -114,8 +114,9 @@
         </executions>
         <configuration>
           <outputDirectory>target/generated-sources</outputDirectory>
-          <sourceDirectory>src/main/java</sourceDirectory>
+          <sourceDirectory>src/main/resources</sourceDirectory>
           <verbose>true</verbose>
+          <Xmaxinlinedfastates>10</Xmaxinlinedfastates>
         </configuration>
       </plugin>
 

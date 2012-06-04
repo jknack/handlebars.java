@@ -1,5 +1,8 @@
 package com.github.edgarespina.handlebars;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
@@ -15,26 +18,53 @@ public class SyntaxisTest {
 
   @Test
   public void comment() throws IOException, RecognitionException {
-    Template template = compile("  {{!Comment}}  {{name}}");
-    System.out.println(template);
+    Template template = compile("{{!Comment}}");
+    assertEquals("", template.toString());
   }
 
+  @Test
+  public void setDelimiters() throws IOException, RecognitionException {
+    Template template = compile("{{=<% %>=}}<%name%>");
+    assertEquals("{{name}}", template.toString());
+  }
+
+  @Test
+  public void setDelimitersSingle() throws IOException, RecognitionException {
+    Template template = compile("{{=| |=}}|name|");
+    assertEquals("{{name}}", template.toString());
+  }
+
+  @Test
+  public void trailingSpacesInComment() throws IOException,
+      RecognitionException {
+    Template template = compile("  {{!Comment}} \n");
+    assertEquals("", template.toString());
+  }
 
   @Test
   public void plainText() throws IOException, RecognitionException {
-    Template template = compile("  {{string}}");
-    System.out.println(template);
+    Template template = compile("Some free text");
+    assertEquals("Some free text", template.toString());
   }
-
 
   @Test
-  public void singleMustache() throws IOException, RecognitionException {
-    Template template = compile("{{#a}}{{b.c}}{{/a}}");
-    System.out.println(template);
+  public void variable() throws IOException, RecognitionException {
+    Template template = compile("{{name}}");
+    assertEquals("{{name}}", template.toString());
   }
 
-  public Template compile(final String input) throws IOException, RecognitionException {
-    return new Handlebars(resourceLocator(input)).compile("template.html");
+  @Test
+  public void section() throws IOException, RecognitionException {
+    Template template = compile("{{#person}}{{name}}{{/person}}");
+    assertEquals("{{#person}}{{name}}{{/person}}", template.toString());
+  }
+
+  public Template compile(final String input) throws IOException,
+      RecognitionException {
+    Template template =
+        new Handlebars(resourceLocator(input)).compile("template.html");
+    assertNotNull(template);
+    return template;
   }
 
   public ResourceLocator resourceLocator(final String input) {

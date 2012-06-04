@@ -12,12 +12,10 @@ import org.antlr.runtime.RecognitionException;
 import org.junit.Before;
 import org.junit.ComparisonFailure;
 import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.yaml.snakeyaml.Yaml;
 
 import com.github.edgarespina.handlerbars.Handlebars;
-import com.github.edgarespina.handlerbars.ParsingException;
+import com.github.edgarespina.handlerbars.HandlebarsException;
 import com.github.edgarespina.handlerbars.ResourceLocator;
 import com.github.edgarespina.handlerbars.Scopes;
 import com.github.edgarespina.handlerbars.Template;
@@ -26,11 +24,30 @@ import com.github.edgarespina.handlerbars.parser.HandlebarsParser;
 
 public abstract class SpecTest {
 
-  private final Logger logger = LoggerFactory.getLogger(getClass());
+  private static class Report {
+
+    public void header(final int size) {
+      StringBuilder buffer = new StringBuilder();
+      for (int i = 0; i < size; i++) {
+        buffer.append("*");
+      }
+      buffer.append("\n");
+      System.out.println(buffer);
+    }
+
+    public void append(final String message) {
+      System.out.println(message);
+    }
+
+    public void append(final String message, final Object... arguments) {
+      System.out.println(String.format(message, arguments));
+    }
+
+  }
 
   @SuppressWarnings("unchecked")
   @Test
-  public void runAll() throws ParsingException, IOException {
+  public void runAll() throws HandlebarsException, IOException {
     Yaml yaml = new Yaml();
 
     Map<String, Object> data =
@@ -53,18 +70,22 @@ public abstract class SpecTest {
   }
 
   @SuppressWarnings("unchecked")
-  private void runOne(final Map<String, Object> test) throws ParsingException,
+  private void runOne(final Map<String, Object> test)
+      throws HandlebarsException,
       IOException {
-    logger.info("*************************************************");
-    logger.info("* {}. {}: {}",
-        new Object[] {test.get("number"), test.get("name"), test.get("desc") });
+    Report report = new Report();
+    report.header(80);
+    report.append("* %s. %s: %s", test.get("number"), test.get("name"),
+        test.get("desc"));
     final String input = (String) test.get("template");
     final String expected = (String) test.get("expected");
     Map<String, Object> data = (Map<String, Object>) test.get("data");
-    logger.info("INPUT:");
-    logger.info(input);
-    logger.info("DATA:");
-    logger.info(data.toString());
+    report.append("DATA:");
+    report.append(data.toString());
+    report.append("INPUT:");
+    report.append(input);
+    report.append("EXPECTED:");
+    report.append(expected);
     long startCompile = System.currentTimeMillis();
     Template template =
         new Handlebars(resourceLocator(test)).compile("template.html");
@@ -78,19 +99,20 @@ public abstract class SpecTest {
     long merge = endMerge - startMerge;
     try {
       assertEquals(expected, output);
-      logger.info("OUTPUT:");
-      logger.info(output);
+      report.append("OUTPUT:");
+      report.append(output);
     } catch (ComparisonFailure ex) {
-      logger.error("   Found: '{}'", ex.getActual());
-      logger.error("Expected: '{}'", ex.getExpected());
+      report.append("FOUND:");
+      report.append(ex.getActual());
       throw ex;
     } finally {
-      logger.info("TOTAL    : {}ms", total);
+      report.append("TOTAL    : %sms", total);
       if (total > 0) {
-        logger.info("  ({}%)compile: {}ms", compile * 100 / total, compile);
-        logger.info("  ({}%)merge  : {}ms", merge * 100 / total, merge);
+        report.append("  (%s%%)compile: %sms", compile * 100 / total,
+            compile);
+        report.append("  (%s%%)merge  : %sms", merge * 100 / total, merge);
       }
-      logger.info("*************************************************");
+      report.header(80);
     }
   }
 

@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.io.Writer;
 
 import com.github.edgarespina.handlerbars.Handlebars;
-import com.github.edgarespina.handlerbars.ParsingException;
+import com.github.edgarespina.handlerbars.HandlebarsException;
 import com.github.edgarespina.handlerbars.Scope;
 import com.github.edgarespina.handlerbars.Template;
 
@@ -13,7 +13,7 @@ class Partial extends Template {
   private Template template;
 
   public Partial(final Handlebars handlebars, final String uri)
-      throws ParsingException, IOException {
+      throws HandlebarsException, IOException {
     template = handlebars.compile(uri.trim());
   }
 

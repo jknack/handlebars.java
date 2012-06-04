@@ -11,6 +11,7 @@ import java.util.Map;
 
 import com.github.edgarespina.handlerbars.Lambda;
 import com.github.edgarespina.handlerbars.Scope;
+import com.github.edgarespina.handlerbars.Scopes;
 import com.github.edgarespina.handlerbars.Template;
 
 class Section extends Template {
@@ -98,7 +99,8 @@ class Section extends Template {
 
       @Override
       public void merge(final Writer writer, final Template body,
-          final Scope scope, final Object candidate) throws IOException {
+          final Scope scope, final String name, final Object candidate)
+          throws IOException {
       }
     },
 
@@ -115,7 +117,8 @@ class Section extends Template {
 
       @Override
       public void merge(final Writer writer, final Template body,
-          final Scope scope, final Object candidate) throws IOException {
+          final Scope scope, final String name, final Object candidate)
+          throws IOException {
         body.merge(scope, writer);
       }
     },
@@ -133,7 +136,8 @@ class Section extends Template {
 
       @Override
       public void merge(final Writer writer, final Template body,
-          final Scope scope, final Object candidate) throws IOException {
+          final Scope scope, final String name, final Object candidate)
+          throws IOException {
       }
     },
 
@@ -151,8 +155,9 @@ class Section extends Template {
 
       @Override
       public void merge(final Writer writer, final Template body,
-          final Scope scope, final Object candidate) throws IOException {
-        body.merge(scope, writer);
+          final Scope scope, final String name, final Object candidate)
+          throws IOException {
+        body.merge(Scopes.scope(scope, candidate), writer);
       }
     },
 
@@ -171,10 +176,11 @@ class Section extends Template {
       @SuppressWarnings("unchecked")
       @Override
       public void merge(final Writer writer, final Template body,
-          final Scope scope, final Object candidate) throws IOException {
+          final Scope scope, final String name, final Object candidate)
+          throws IOException {
         Iterable<Object> elements = (Iterable<Object>) candidate;
         for (Object element : elements) {
-          body.merge(scope, writer);
+          body.merge(Scopes.scope(scope, element), writer);
         }
       }
     },
@@ -192,7 +198,8 @@ class Section extends Template {
 
       @Override
       public void merge(final Writer writer, final Template body,
-          final Scope scope, final Object candidate) throws IOException {
+          final Scope scope, final String name, final Object candidate)
+          throws IOException {
         body.merge(scope, writer);
       }
     },
@@ -210,7 +217,8 @@ class Section extends Template {
 
       @Override
       public void merge(final Writer writer, final Template body,
-          final Scope scope, final Object candidate) throws IOException {
+          final Scope scope, final String name, final Object candidate)
+          throws IOException {
         throw new UnsupportedOperationException();
       }
     };
@@ -220,7 +228,7 @@ class Section extends Template {
     public abstract boolean traverse(Object candidate);
 
     public abstract void merge(Writer writer, Template body,
-        Scope scope, Object candidate) throws IOException;
+        Scope scope, String name, Object candidate) throws IOException;
 
     public static Type get(final Object candidate) {
       EnumSet<Type> types = EnumSet.allOf(Type.class);
@@ -251,17 +259,12 @@ class Section extends Template {
       final Writer writer) throws IOException {
     Object candidate = scope.get(name);
     candidate = Transformer.get(candidate).transform(scope, candidate);
-    try {
-      scope.push(name);
-      Type type = Type.get(candidate);
-      boolean traverse = type.traverse(candidate);
-      if (traverse) {
-        type.merge(writer, body, scope, candidate);
-      } else if (inverted) {
-        Type.INVERTED.merge(writer, body, scope, candidate);
-      }
-    } finally {
-      scope.pop();
+    Type type = Type.get(candidate);
+    boolean traverse = type.traverse(candidate);
+    if (traverse) {
+      type.merge(writer, body, scope, name, candidate);
+    } else if (inverted) {
+      Type.INVERTED.merge(writer, body, scope, name, candidate);
     }
   }
 

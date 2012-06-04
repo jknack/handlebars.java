@@ -14,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.github.edgarespina.handlerbars.io.ClasspathResourceLocator;
+import com.github.edgarespina.handlerbars.parser.ExtendedHandlebarsLexer;
 import com.github.edgarespina.handlerbars.parser.HandlebarsLexer;
 import com.github.edgarespina.handlerbars.parser.HandlebarsParser;
 
@@ -34,7 +35,7 @@ public class Handlebars {
   }
 
   public Template compile(final String uri) throws IOException,
-      ParsingException {
+      HandlebarsException {
     return compile(resourceLocator.locate(uri));
   }
 
@@ -42,12 +43,12 @@ public class Handlebars {
     long start = System.currentTimeMillis();
     try {
       HandlebarsLexer lexer =
-          new HandlebarsLexer(new ANTLRReaderStream(reader));
+          new ExtendedHandlebarsLexer(new ANTLRReaderStream(reader));
       TokenStream tokens = new CommonTokenStream(lexer);
       HandlebarsParser parser = new HandlebarsParser(tokens);
       return parser.compile(this);
     } catch (RecognitionException ex) {
-      throw new ParsingException(ex);
+      throw new HandlebarsException(ex);
     } finally {
       long end = System.currentTimeMillis();
       if (reader != null) {
