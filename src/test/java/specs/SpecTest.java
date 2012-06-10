@@ -5,6 +5,8 @@ import static org.junit.Assert.assertEquals;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,6 +14,8 @@ import java.util.Map;
 import org.junit.Before;
 import org.junit.ComparisonFailure;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import org.yaml.snakeyaml.Yaml;
 
 import com.github.edgarespina.handlerbars.Handlebars;
@@ -20,6 +24,7 @@ import com.github.edgarespina.handlerbars.ResourceLocator;
 import com.github.edgarespina.handlerbars.Scopes;
 import com.github.edgarespina.handlerbars.Template;
 
+@RunWith(Parameterized.class)
 public abstract class SpecTest {
 
   private static class Report {
@@ -43,24 +48,36 @@ public abstract class SpecTest {
 
   }
 
-  @SuppressWarnings("unchecked")
+  private Map<String, Object> data;
+
+  public SpecTest(final Map<String, Object> data) {
+    this.data = data;
+  }
+
   @Test
-  public void runAll() throws HandlebarsException, IOException {
+  public void run() throws HandlebarsException, IOException {
+    Integer number = (Integer) data.get("number");
+    if (enabled(number, (String) data.get("name"))) {
+      run(data);
+    }
+  }
+
+  @SuppressWarnings("unchecked")
+  public static Collection<Object[]> data(final String filename) {
     Yaml yaml = new Yaml();
 
     Map<String, Object> data =
-        (Map<String, Object>) yaml.load(getClass().getResourceAsStream(
-            "/specs/" + specName() + ".yml"));
+        (Map<String, Object>) yaml.load(SpecTest.class.getResourceAsStream(
+            "/specs/" + filename));
     List<Map<String, Object>> tests =
         (List<Map<String, Object>>) data.get("tests");
-    int number = 1;
+    int number = 0;
+    Collection<Object[]> dataset = new ArrayList<Object[]>();
     for (Map<String, Object> test : tests) {
-      if (enabled(number, (String) test.get("name"))) {
-        test.put("number", number);
-        runOne(test);
-      }
-      number++;
+      test.put("number", number++);
+      dataset.add(new Object[] {test });
     }
+    return dataset;
   }
 
   protected boolean enabled(final int number, final String name) {
@@ -68,7 +85,7 @@ public abstract class SpecTest {
   }
 
   @SuppressWarnings("unchecked")
-  private void runOne(final Map<String, Object> test)
+  private void run(final Map<String, Object> test)
       throws HandlebarsException,
       IOException {
     Report report = new Report();
@@ -129,8 +146,6 @@ public abstract class SpecTest {
       }
     };
   }
-
-  public abstract String specName();
 
   @Before
   public void initJUnit() throws IOException {
