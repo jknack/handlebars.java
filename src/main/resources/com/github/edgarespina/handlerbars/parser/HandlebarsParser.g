@@ -89,8 +89,8 @@ body returns[Sequence node = new Sequence()] throws IOException
     s = section    {node.add(s);}
   | p = partial    {node.add(p);}
   | v = variable   {node.add(v);}
-  | TEXT           {node.add(new Text($TEXT.text));}
   | SET_DELIMITERS
+  | TEXT           {node.add(new Text($TEXT.text));}
   )*
   ;
 

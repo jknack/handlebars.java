@@ -6,17 +6,16 @@ import static org.apache.commons.lang3.Validate.notNull;
 import java.io.IOException;
 import java.io.Reader;
 
-import org.antlr.runtime.ANTLRReaderStream;
-import org.antlr.runtime.CommonTokenStream;
-import org.antlr.runtime.RecognitionException;
-import org.antlr.runtime.TokenStream;
+import org.parboiled.Parboiled;
+import org.parboiled.errors.ErrorUtils;
+import org.parboiled.parserunners.ParseRunner;
+import org.parboiled.parserunners.ReportingParseRunner;
+import org.parboiled.support.ParsingResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.github.edgarespina.handlerbars.io.ClasspathResourceLocator;
-import com.github.edgarespina.handlerbars.parser.ExtendedHandlebarsLexer;
-import com.github.edgarespina.handlerbars.parser.HandlebarsLexer;
-import com.github.edgarespina.handlerbars.parser.HandlebarsParser;
+import com.github.edgarespina.handlerbars.parser.Parser;
 
 public class Handlebars {
 
@@ -28,6 +27,7 @@ public class Handlebars {
   public Handlebars(final ResourceLocator resourceLocator) {
     this.resourceLocator =
         notNull(resourceLocator, "The resource locator is required.");
+    initialize();
   }
 
   public Handlebars() {
@@ -42,13 +42,14 @@ public class Handlebars {
   private Template compile(final Reader reader) throws IOException {
     long start = System.currentTimeMillis();
     try {
-      HandlebarsLexer lexer =
-          new ExtendedHandlebarsLexer(new ANTLRReaderStream(reader));
-      TokenStream tokens = new CommonTokenStream(lexer);
-      HandlebarsParser parser = new HandlebarsParser(tokens);
-      return parser.compile(this);
-    } catch (RecognitionException ex) {
-      throw new HandlebarsException(ex);
+      Parser parser = newParser();
+      ParseRunner<Template> runner =
+          new ReportingParseRunner<Template>(parser.template());
+      ParsingResult<Template> result = runner.run(toString(reader));
+      if (result.hasErrors()) {
+        throw new HandlebarsException(ErrorUtils.printParseErrors(result));
+      }
+      return result.resultValue;
     } finally {
       long end = System.currentTimeMillis();
       if (reader != null) {
@@ -62,11 +63,30 @@ public class Handlebars {
     }
   }
 
+  private void initialize() {
+    newParser();
+  }
+
+  private Parser newParser() {
+    return Parboiled.createParser(Parser.class);
+  }
+
   public ResourceLocator getResourceLocator() {
     return resourceLocator;
   }
 
   public static String safeString(final String value) {
     return escapeHtml4(value);
+  }
+
+  public static String toString(final Reader reader)
+      throws IOException {
+    StringBuilder buffer = new StringBuilder(1024 * 4);
+    int ch;
+    while ((ch = reader.read()) != -1) {
+      buffer.append((char) ch);
+    }
+    buffer.trimToSize();
+    return buffer.toString();
   }
 }

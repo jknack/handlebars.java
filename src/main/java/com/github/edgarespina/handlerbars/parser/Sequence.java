@@ -9,26 +9,32 @@ import java.util.List;
 import com.github.edgarespina.handlerbars.Scope;
 import com.github.edgarespina.handlerbars.Template;
 
-class Sequence extends Template implements Iterable<Template> {
+class Sequence extends BaseTemplate implements Iterable<BaseTemplate> {
 
-  private final List<Template> nodes = new ArrayList<Template>();
+  private final List<BaseTemplate> nodes = new ArrayList<BaseTemplate>();
 
   public Sequence() {
   }
 
-  public Sequence add(final Template node) {
-    nodes.add(node);
-    return this;
+  public boolean add(final BaseTemplate node) {
+    boolean add = true;
+    if (node instanceof Sequence) {
+      add = ((Sequence) node).size() > 0;
+    }
+    if (add) {
+      nodes.add(node);
+    }
+    return add;
   }
 
-  public Sequence remove(final Template node) {
+  public Sequence remove(final BaseTemplate node) {
     nodes.remove(node);
     return this;
   }
 
   @Override
   public void merge(final Scope scope, final Writer writer) throws IOException {
-    for(Template node: nodes) {
+    for (Template node : nodes) {
       node.merge(scope, writer);
     }
   }
@@ -36,14 +42,31 @@ class Sequence extends Template implements Iterable<Template> {
   @Override
   public String toString() {
     StringBuilder buffer = new StringBuilder();
-    for(Template node: nodes) {
+    for (Template node : nodes) {
       buffer.append(node);
     }
     return buffer.toString();
   }
 
   @Override
-  public Iterator<Template> iterator() {
+  public Iterator<BaseTemplate> iterator() {
     return nodes.iterator();
   }
+
+  public int size() {
+    return nodes.size();
+  }
+
+  @Override
+  public boolean remove(final Template child) {
+    boolean removed = nodes.remove(child);
+    if (!removed) {
+      Iterator<BaseTemplate> iterator = nodes.iterator();
+      while (!removed && iterator.hasNext()) {
+        removed = iterator.next().remove(child);
+      }
+    }
+    return removed;
+  }
+
 }

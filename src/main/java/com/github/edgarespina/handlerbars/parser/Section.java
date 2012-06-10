@@ -14,7 +14,7 @@ import com.github.edgarespina.handlerbars.Scope;
 import com.github.edgarespina.handlerbars.Scopes;
 import com.github.edgarespina.handlerbars.Template;
 
-class Section extends Template {
+class Section extends BaseTemplate {
 
   private static class LambdaScope {
 
@@ -249,9 +249,12 @@ class Section extends Template {
 
   private final boolean inverted;
 
+  private String type;
+
   public Section(final String name, final boolean inverted) {
     this.name = name;
     this.inverted = inverted;
+    this.type = inverted ? "^" : "#";
   }
 
   @Override
@@ -270,7 +273,7 @@ class Section extends Template {
 
   @Override
   public String toString() {
-    return "{{#" + name + "}}" + body.toString() + "{{/" + name + "}}";
+    return "{{" + type + name + "}}" + body.toString() + "{{/" + name + "}}";
   }
 
   public String name() {
@@ -279,6 +282,11 @@ class Section extends Template {
 
   public boolean inverted() {
     return inverted;
+  }
+
+  @Override
+  public boolean remove(final Template child) {
+    return ((BaseTemplate) body).remove(child);
   }
 
   public Section body(final Template body) {

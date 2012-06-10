@@ -6,7 +6,7 @@ import java.io.Writer;
 import com.github.edgarespina.handlerbars.Scope;
 import com.github.edgarespina.handlerbars.Template;
 
-class Text extends Template {
+class Text extends BaseTemplate {
 
   private String text;
 
@@ -26,5 +26,10 @@ class Text extends Template {
   @Override
   public String toString() {
     return text;
+  }
+
+  @Override
+  public boolean remove(final Template child) {
+    return false;
   }
 }

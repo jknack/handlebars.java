@@ -9,11 +9,11 @@
   <name>A Handlebars Template Engine in Java</name>
 
   <dependencies>
-    <!-- ANLTR -->
+    <!-- Parboiled -->
     <dependency>
-      <groupId>org.antlr</groupId>
-      <artifactId>antlr-runtime</artifactId>
-      <version>3.4</version>
+      <groupId>org.parboiled</groupId>
+      <artifactId>parboiled-java</artifactId>
+      <version>1.0.2</version>
     </dependency>
 
     <!-- commons-lang3 -->
@@ -78,46 +78,6 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-source-plugin</artifactId>
         <version>2.1.2</version>
-      </plugin>
-
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>build-helper-maven-plugin</artifactId>
-        <version>1.7</version>
-        <executions>
-          <execution>
-            <id>add-antlr-source</id>
-            <phase>generate-sources</phase>
-            <goals>
-              <goal>add-source</goal>
-            </goals>
-            <configuration>
-              <sources>
-                <source>target/generated-sources</source>
-              </sources>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-
-      <!-- ANTLR -->
-      <plugin>
-        <groupId>org.antlr</groupId>
-        <artifactId>antlr3-maven-plugin</artifactId>
-        <version>3.4</version>
-        <executions>
-          <execution>
-            <goals>
-              <goal>antlr</goal>
-            </goals>
-          </execution>
-        </executions>
-        <configuration>
-          <outputDirectory>target/generated-sources</outputDirectory>
-          <sourceDirectory>src/main/resources</sourceDirectory>
-          <verbose>true</verbose>
-          <Xmaxinlinedfastates>10</Xmaxinlinedfastates>
-        </configuration>
       </plugin>
 
       <!-- Eclipse setup -->

@@ -8,7 +8,6 @@ import java.io.StringReader;
 import java.util.List;
 import java.util.Map;
 
-import org.antlr.runtime.RecognitionException;
 import org.junit.Before;
 import org.junit.ComparisonFailure;
 import org.junit.Test;
@@ -19,8 +18,6 @@ import com.github.edgarespina.handlerbars.HandlebarsException;
 import com.github.edgarespina.handlerbars.ResourceLocator;
 import com.github.edgarespina.handlerbars.Scopes;
 import com.github.edgarespina.handlerbars.Template;
-import com.github.edgarespina.handlerbars.parser.HandlebarsLexer;
-import com.github.edgarespina.handlerbars.parser.HandlebarsParser;
 
 public abstract class SpecTest {
 
@@ -129,10 +126,8 @@ public abstract class SpecTest {
   public abstract String specName();
 
   @Before
-  public void initJUnit() throws IOException, RecognitionException {
+  public void initJUnit() throws IOException {
     // Init junit classloader. This reduce the time reported during execution.
     new Handlebars();
-    new HandlebarsLexer();
-    new HandlebarsParser(null);
   }
 }

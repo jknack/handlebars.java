@@ -1,15 +1,15 @@
 package specs;
 
-public class InterpolationTest extends SpecTest {
+
+public class CommentsTest extends SpecTest {
 
   @Override
   public String specName() {
-    return "interpolation";
+    return "comments";
   }
 
   @Override
   protected boolean enabled(final int number, final String name) {
-    // 100% supported
     return true;
   }
 }

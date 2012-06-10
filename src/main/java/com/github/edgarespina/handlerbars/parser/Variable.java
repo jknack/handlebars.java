@@ -8,7 +8,7 @@ import java.io.Writer;
 import com.github.edgarespina.handlerbars.Scope;
 import com.github.edgarespina.handlerbars.Template;
 
-class Variable extends Template {
+class Variable extends BaseTemplate {
 
   private final String name;
 
@@ -42,6 +42,11 @@ class Variable extends Template {
         writer.append(valueAsString);
       }
     }
+  }
+
+  @Override
+  public boolean remove(final Template child) {
+    return false;
   }
 
   @Override

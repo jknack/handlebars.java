@@ -8,13 +8,13 @@ import com.github.edgarespina.handlerbars.HandlebarsException;
 import com.github.edgarespina.handlerbars.Scope;
 import com.github.edgarespina.handlerbars.Template;
 
-class Partial extends Template {
+class Partial extends BaseTemplate {
 
   private Template template;
 
   public Partial(final Handlebars handlebars, final String uri)
       throws HandlebarsException, IOException {
-    template = handlebars.compile(uri.trim());
+    template = new Variable(uri, false);// handlebars.compile(uri.trim());
   }
 
   @Override
@@ -28,4 +28,8 @@ class Partial extends Template {
     return template.toString();
   }
 
+  @Override
+  public boolean remove(final Template child) {
+    return ((BaseTemplate) template).remove(child);
+  }
 }
