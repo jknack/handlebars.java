@@ -138,6 +138,7 @@ class Section extends BaseTemplate {
       public void merge(final Writer writer, final Template body,
           final Scope scope, final String name, final Object candidate)
           throws IOException {
+        body.merge(scope, writer);
       }
     },
 
@@ -161,7 +162,7 @@ class Section extends BaseTemplate {
       }
     },
 
-    COLLECTION {
+    ITERABLE {
       @Override
       public boolean apply(final Object candidate) {
         return candidate instanceof Collection;
@@ -179,8 +180,13 @@ class Section extends BaseTemplate {
           final Scope scope, final String name, final Object candidate)
           throws IOException {
         Iterable<Object> elements = (Iterable<Object>) candidate;
+        boolean empty = true;
         for (Object element : elements) {
           body.merge(Scopes.scope(scope, element), writer);
+          empty = false;
+        }
+        if (empty) {
+          body.merge(scope, writer);
         }
       }
     },
@@ -264,16 +270,18 @@ class Section extends BaseTemplate {
     candidate = Transformer.get(candidate).transform(scope, candidate);
     Type type = Type.get(candidate);
     boolean traverse = type.traverse(candidate);
+    if (inverted) {
+      traverse = !traverse;
+    }
     if (traverse) {
       type.merge(writer, body, scope, name, candidate);
-    } else if (inverted) {
-      Type.INVERTED.merge(writer, body, scope, name, candidate);
     }
   }
 
   @Override
   public String toString() {
-    return "{{" + type + name + "}}" + body.toString() + "{{/" + name + "}}";
+    String content = body == null ? "" : body.toString();
+    return "{{" + type + name + "}}" + content + "{{/" + name + "}}";
   }
 
   public String name() {

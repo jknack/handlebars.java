@@ -16,32 +16,24 @@ import org.parboiled.support.StringVar;
 import org.parboiled.support.ValueStack;
 import org.parboiled.support.Var;
 
+import com.github.edgarespina.handlerbars.Handlebars;
+
 public class Parser extends BaseParser<BaseTemplate> {
 
-  private class DelimAction implements Action<BaseTemplate> {
+  protected String delimStart = "{{";
 
-    private String delim;
+  protected String delimEnd = "}}";
 
-    public DelimAction(final String delim) {
-      this.delim = delim;
-    }
+  protected final List<BaseTemplate> line = new LinkedList<BaseTemplate>();
 
-    @Override
-    public boolean run(final Context<BaseTemplate> context) {
-      Matcher matcher = (Matcher) String(delim);
-      return matcher.match((MatcherContext<BaseTemplate>) context);
-    }
-  }
+  protected final List<BaseTemplate> blanks = new LinkedList<BaseTemplate>();
 
-  private String delimStart = "{{";
+  protected boolean onlyWhites = true;
 
-  private String delimEnd = "}}";
+  protected final Handlebars handlebars;
 
-  protected List<BaseTemplate> line = new LinkedList<BaseTemplate>();
-
-  protected List<BaseTemplate> blanks = new LinkedList<BaseTemplate>();
-
-  public Parser() {
+  public Parser(final Handlebars handlebars) {
+    this.handlebars = handlebars;
   }
 
   public Rule template() throws IOException {
@@ -66,15 +58,21 @@ public class Parser extends BaseParser<BaseTemplate> {
   public Rule setDelimiters() {
     final StringVar newDelimStart = new StringVar();
     final StringVar newDelimEnd = new StringVar();
-    return Sequence(delimStart(), '=', newDelimiter(),
-        newDelimStart.set(match()),
+    return Sequence(delimStart(),
+        '=',
         spacing(),
-        newDelimiter(), newDelimEnd.set(match()), '=', delimEnd(),
+        newDelimiter(), newDelimStart.set(match()),
+        OneOrMore(spaceNoAction()),
+        newDelimiter(), newDelimEnd.set(match()),
+        spacing(),
+        '=',
+        delimEnd(),
         new Action<Object>() {
           @Override
           public boolean run(final Context<Object> context) {
             delimEnd = newDelimEnd.get();
             delimStart = newDelimStart.get();
+            onlyWhites = false;
             return true;
           }
         });
@@ -85,7 +83,7 @@ public class Parser extends BaseParser<BaseTemplate> {
   }
 
   public Rule delim() {
-    return Sequence(TestNot(' ', '\t', '\r', '\n', '='), ANY);
+    return Sequence(TestNot(AnyOf(" \t\r\n=")), ANY);
   }
 
   public Rule text() {
@@ -105,7 +103,13 @@ public class Parser extends BaseParser<BaseTemplate> {
   protected boolean add(final BaseTemplate template) {
     Sequence sequence = (Sequence) peek();
     sequence.add(template);
+    addToline(template);
+    return true;
+  }
+
+  protected boolean addToline(final BaseTemplate template) {
     line.add(template);
+    onlyWhites = onlyWhites && template instanceof Blank;
     return true;
   }
 
@@ -143,16 +147,28 @@ public class Parser extends BaseParser<BaseTemplate> {
   }
 
   public Action<BaseTemplate> delimStart() {
-    return new DelimAction(delimStart);
+    return new Action<BaseTemplate>() {
+      @Override
+      public boolean run(final Context<BaseTemplate> context) {
+        Matcher matcher = (Matcher) String(delimStart);
+        return matcher.match((MatcherContext<BaseTemplate>) context);
+      }
+    };
   }
 
   public Action<BaseTemplate> delimEnd() {
-    return new DelimAction(delimEnd);
+    return new Action<BaseTemplate>() {
+      @Override
+      public boolean run(final Context<BaseTemplate> context) {
+        Matcher matcher = (Matcher) String(delimEnd);
+        return matcher.match((MatcherContext<BaseTemplate>) context);
+      }
+    };
   }
 
   public Rule partial() throws IOException {
     return Sequence(delimStart(), '>', spacing(), path(),
-        add(new Partial(null, match())),
+        add(new Partial(handlebars, match())),
         spacing(), delimEnd());
   }
 
@@ -165,6 +181,7 @@ public class Parser extends BaseParser<BaseTemplate> {
             sectionStart('#', name, inverted),
             sectionStart('^', name, inverted)),
         section.set(new Section(name.get(), inverted.get())),
+        add(section.get()),
         body(),
         sectionEnd(),
         new Action<BaseTemplate>() {
@@ -173,8 +190,9 @@ public class Parser extends BaseParser<BaseTemplate> {
             ValueStack<BaseTemplate> stack = context.getValueStack();
             if (stack.size() > 1) {
               BaseTemplate body = pop();
-              add(section.get().body(body));
+              section.get().body(body);
             }
+            addToline(section.get());
             return true;
           }
         });
@@ -237,38 +255,49 @@ public class Parser extends BaseParser<BaseTemplate> {
   }
 
   protected boolean sync() {
-    boolean ignore = true;
     List<BaseTemplate> currentLine = this.line;
-    for (BaseTemplate template : currentLine) {
-      Class<? extends BaseTemplate> type = template.getClass();
-      if (type == Text.class || type == Variable.class) {
-        ignore = false;
-        break;
+    if (!onlyWhites) {
+      boolean ignore = true;
+      for (BaseTemplate template : currentLine) {
+        Class<? extends BaseTemplate> type = template.getClass();
+        if (type == Text.class || type == Variable.class) {
+          ignore = false;
+          break;
+        }
       }
-    }
 
-    if (ignore) {
-      for (BaseTemplate child : currentLine) {
-        if (child instanceof Blank) {
-          blanks.add(child);
+      if (ignore) {
+        for (BaseTemplate child : currentLine) {
+          if (child instanceof Blank) {
+            blanks.add(child);
+          }
         }
       }
     }
+    onlyWhites = true;
     currentLine.clear();
     return true;
   }
 
   protected boolean removeBlanks() {
     BaseTemplate head = peek();
-    for(BaseTemplate blank: blanks) {
+    for (BaseTemplate blank : blanks) {
       head.remove(blank);
     }
+    line.clear();
+    blanks.clear();
     return true;
   }
 
   public Rule comment() {
     return Sequence(delimStart(), '!', ZeroOrMore(TestNot(delimEnd()), ANY),
-        delimEnd());
+        delimEnd(), new Action<BaseTemplate>() {
+          @Override
+          public boolean run(final Context<BaseTemplate> context) {
+            onlyWhites = false;
+            return true;
+          }
+        });
   }
 
   // JLS defines letters and digits as Unicode characters recognized

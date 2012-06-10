@@ -5,6 +5,7 @@ import static org.junit.Assert.assertEquals;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -85,7 +86,7 @@ public abstract class SpecTest {
     report.append(expected);
     long startCompile = System.currentTimeMillis();
     Template template =
-        new Handlebars(resourceLocator(test)).compile("template.html");
+        new Handlebars(resourceLocator(test)).compile("template");
     long endCompile = System.currentTimeMillis();
     long startMerge = System.currentTimeMillis();
     String output =
@@ -115,10 +116,16 @@ public abstract class SpecTest {
 
   protected ResourceLocator resourceLocator(final Map<String, Object> test) {
     return new ResourceLocator() {
-
       @Override
       protected Reader read(final String uri) throws IOException {
-        return new StringReader((String) test.get("template"));
+        @SuppressWarnings("unchecked")
+        Map<String, String> templates =
+            (Map<String, String>) test.get("partials");
+        if (templates == null) {
+          templates = new HashMap<String, String>();
+        }
+        templates.put("template", (String) test.get("template"));
+        return new StringReader(templates.get(uri));
       }
     };
   }

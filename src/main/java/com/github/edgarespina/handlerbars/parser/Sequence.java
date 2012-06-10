@@ -19,17 +19,12 @@ class Sequence extends BaseTemplate implements Iterable<BaseTemplate> {
   public boolean add(final BaseTemplate node) {
     boolean add = true;
     if (node instanceof Sequence) {
-      add = ((Sequence) node).size() > 0;
+      add = ((Sequence) node).nodes.size() > 0;
     }
     if (add) {
       nodes.add(node);
     }
     return add;
-  }
-
-  public Sequence remove(final BaseTemplate node) {
-    nodes.remove(node);
-    return this;
   }
 
   @Override
@@ -51,10 +46,6 @@ class Sequence extends BaseTemplate implements Iterable<BaseTemplate> {
   @Override
   public Iterator<BaseTemplate> iterator() {
     return nodes.iterator();
-  }
-
-  public int size() {
-    return nodes.size();
   }
 
   @Override

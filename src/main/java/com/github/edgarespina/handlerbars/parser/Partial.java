@@ -14,7 +14,7 @@ class Partial extends BaseTemplate {
 
   public Partial(final Handlebars handlebars, final String uri)
       throws HandlebarsException, IOException {
-    template = new Variable(uri, false);// handlebars.compile(uri.trim());
+    template = handlebars.compile(uri.trim());
   }
 
   @Override

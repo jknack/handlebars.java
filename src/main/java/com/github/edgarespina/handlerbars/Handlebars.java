@@ -47,7 +47,8 @@ public class Handlebars {
           new ReportingParseRunner<Template>(parser.template());
       ParsingResult<Template> result = runner.run(toString(reader));
       if (result.hasErrors()) {
-        throw new HandlebarsException(ErrorUtils.printParseErrors(result));
+        throw new HandlebarsException(ErrorUtils.printParseErrors(result)
+            .trim());
       }
       return result.resultValue;
     } finally {
@@ -68,7 +69,7 @@ public class Handlebars {
   }
 
   private Parser newParser() {
-    return Parboiled.createParser(Parser.class);
+    return Parboiled.createParser(Parser.class, this);
   }
 
   public ResourceLocator getResourceLocator() {
