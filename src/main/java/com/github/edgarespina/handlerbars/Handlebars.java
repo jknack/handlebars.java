@@ -7,8 +7,8 @@ import java.io.IOException;
 import java.io.Reader;
 import java.net.URI;
 
+import com.github.edgarespina.handlerbars.internal.Parser;
 import com.github.edgarespina.handlerbars.io.ClasspathResourceLocator;
-import com.github.edgarespina.handlerbars.parser.Parser;
 
 public class Handlebars {
 

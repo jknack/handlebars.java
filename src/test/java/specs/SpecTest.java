@@ -18,7 +18,7 @@ import org.yaml.snakeyaml.Yaml;
 import com.github.edgarespina.handlerbars.Handlebars;
 import com.github.edgarespina.handlerbars.HandlebarsException;
 import com.github.edgarespina.handlerbars.Template;
-import com.github.edgarespina.handlerbars.parser.Scopes;
+import com.github.edgarespina.handlerbars.internal.Scopes;
 
 @RunWith(SpecRunner.class)
 public abstract class SpecTest {

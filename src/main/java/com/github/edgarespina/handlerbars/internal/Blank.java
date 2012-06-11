@@ -1,4 +1,4 @@
-package com.github.edgarespina.handlerbars.parser;
+package com.github.edgarespina.handlerbars.internal;
 
 public class Blank extends Text {
 
