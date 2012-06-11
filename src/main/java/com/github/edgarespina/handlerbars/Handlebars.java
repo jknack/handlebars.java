@@ -7,20 +7,11 @@ import java.io.IOException;
 import java.io.Reader;
 
 import org.parboiled.Parboiled;
-import org.parboiled.errors.ErrorUtils;
-import org.parboiled.parserunners.ParseRunner;
-import org.parboiled.parserunners.ReportingParseRunner;
-import org.parboiled.support.ParsingResult;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.github.edgarespina.handlerbars.io.ClasspathResourceLocator;
 import com.github.edgarespina.handlerbars.parser.Parser;
 
 public class Handlebars {
-
-  private static final Logger logger = LoggerFactory
-      .getLogger(Handlebars.class);
 
   private ResourceLocator resourceLocator;
 
@@ -36,32 +27,8 @@ public class Handlebars {
 
   public Template compile(final String uri) throws IOException,
       HandlebarsException {
-    return compile(resourceLocator.locate(uri));
-  }
-
-  private Template compile(final Reader reader) throws IOException {
-    long start = System.currentTimeMillis();
-    try {
-      Parser parser = newParser();
-      ParseRunner<Template> runner =
-          new ReportingParseRunner<Template>(parser.template());
-      ParsingResult<Template> result = runner.run(toString(reader));
-      if (result.hasErrors()) {
-        throw new HandlebarsException(ErrorUtils.printParseErrors(result)
-            .trim());
-      }
-      return result.resultValue;
-    } finally {
-      long end = System.currentTimeMillis();
-      if (reader != null) {
-        try {
-          reader.close();
-        } catch (IOException ex) {
-          logger.trace("Cannot close the input reader", ex);
-        }
-      }
-      logger.trace("Compilation took: {}ms", end - start);
-    }
+    Reader reader = resourceLocator.locate(uri);
+    return newParser().parse(reader);
   }
 
   private void initialize() {
@@ -69,7 +36,7 @@ public class Handlebars {
   }
 
   private Parser newParser() {
-    return Parboiled.createParser(Parser.class, this);
+    return Parboiled.createParser(Parser.class, this, null);
   }
 
   public ResourceLocator getResourceLocator() {
@@ -80,14 +47,4 @@ public class Handlebars {
     return escapeHtml4(value);
   }
 
-  public static String toString(final Reader reader)
-      throws IOException {
-    StringBuilder buffer = new StringBuilder(1024 * 4);
-    int ch;
-    while ((ch = reader.read()) != -1) {
-      buffer.append((char) ch);
-    }
-    buffer.trimToSize();
-    return buffer.toString();
-  }
 }

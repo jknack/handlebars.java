@@ -1,22 +1,32 @@
 package com.github.edgarespina.handlerbars.parser;
 
 import java.io.IOException;
+import java.io.Reader;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import org.parboiled.Action;
 import org.parboiled.BaseParser;
 import org.parboiled.Context;
 import org.parboiled.MatcherContext;
+import org.parboiled.Parboiled;
 import org.parboiled.Rule;
 import org.parboiled.annotations.MemoMismatches;
-import org.parboiled.annotations.SuppressSubnodes;
+import org.parboiled.errors.ErrorUtils;
 import org.parboiled.matchers.Matcher;
+import org.parboiled.parserunners.ParseRunner;
+import org.parboiled.parserunners.ReportingParseRunner;
+import org.parboiled.support.ParsingResult;
 import org.parboiled.support.StringVar;
 import org.parboiled.support.ValueStack;
 import org.parboiled.support.Var;
 
 import com.github.edgarespina.handlerbars.Handlebars;
+import com.github.edgarespina.handlerbars.HandlebarsException;
+import com.github.edgarespina.handlerbars.ResourceLocator;
+import com.github.edgarespina.handlerbars.Template;
 
 public class Parser extends BaseParser<BaseTemplate> {
 
@@ -32,15 +42,41 @@ public class Parser extends BaseParser<BaseTemplate> {
 
   protected final Handlebars handlebars;
 
-  public Parser(final Handlebars handlebars) {
+  protected final Map<String, Partial> partials;
+
+  public Parser(final Handlebars handlebars,
+      final Map<String, Partial> partials) {
     this.handlebars = handlebars;
+    this.partials =
+        partials == null ? new HashMap<String, Partial>() : partials;
   }
 
-  public Rule template() throws IOException {
+  public Template parse(final Reader reader) throws IOException {
+    try {
+      ParseRunner<Template> runner =
+          new ReportingParseRunner<Template>(template());
+      ParsingResult<Template> result = runner.run(toString(reader));
+      if (result.hasErrors()) {
+        throw new HandlebarsException(ErrorUtils.printParseErrors(result)
+            .trim());
+      }
+      return result.resultValue;
+    } finally {
+      if (reader != null) {
+        try {
+          reader.close();
+        } catch (IOException ex) {
+          throw new IllegalStateException("Cannot close the input reader", ex);
+        }
+      }
+    }
+  }
+
+  Rule template() throws IOException {
     return Sequence(body(), sync(), removeBlanks(), EOI);
   }
 
-  public Rule body() throws IOException {
+  Rule body() throws IOException {
     return Sequence(
         push(new Sequence()),
         ZeroOrMore(
@@ -55,7 +91,7 @@ public class Parser extends BaseParser<BaseTemplate> {
             text())));
   }
 
-  public Rule setDelimiters() {
+  Rule setDelimiters() {
     final StringVar newDelimStart = new StringVar();
     final StringVar newDelimEnd = new StringVar();
     return Sequence(delimStart(),
@@ -78,15 +114,15 @@ public class Parser extends BaseParser<BaseTemplate> {
         });
   }
 
-  public Rule newDelimiter() {
+  Rule newDelimiter() {
     return Sequence(delim(), Optional(delim()));
   }
 
-  public Rule delim() {
+  Rule delim() {
     return Sequence(TestNot(AnyOf(" \t\r\n=")), ANY);
   }
 
-  public Rule text() {
+  Rule text() {
     return Sequence(
         OneOrMore(
             TestNot(delimStart()),
@@ -96,24 +132,24 @@ public class Parser extends BaseParser<BaseTemplate> {
         add(new Text(match())));
   }
 
-  public Rule variable() {
+  Rule variable() {
     return FirstOf(ampersandVar(), tripleVar(), var());
   }
 
-  protected boolean add(final BaseTemplate template) {
+  boolean add(final BaseTemplate template) {
     Sequence sequence = (Sequence) peek();
     sequence.add(template);
     addToline(template);
     return true;
   }
 
-  protected boolean addToline(final BaseTemplate template) {
+  boolean addToline(final BaseTemplate template) {
     line.add(template);
     onlyWhites = onlyWhites && template instanceof Blank;
     return true;
   }
 
-  public Rule ampersandVar() {
+  Rule ampersandVar() {
     return Sequence(
         delimStart(),
         "&",
@@ -124,7 +160,7 @@ public class Parser extends BaseParser<BaseTemplate> {
         delimEnd());
   }
 
-  public Rule tripleVar() {
+  Rule tripleVar() {
     return Sequence(
         delimStart(),
         '{',
@@ -136,7 +172,7 @@ public class Parser extends BaseParser<BaseTemplate> {
         delimEnd());
   }
 
-  public Rule var() {
+  Rule var() {
     return Sequence(
         delimStart(),
         spacing(),
@@ -146,7 +182,7 @@ public class Parser extends BaseParser<BaseTemplate> {
         delimEnd());
   }
 
-  public Action<BaseTemplate> delimStart() {
+  Action<BaseTemplate> delimStart() {
     return new Action<BaseTemplate>() {
       @Override
       public boolean run(final Context<BaseTemplate> context) {
@@ -156,7 +192,7 @@ public class Parser extends BaseParser<BaseTemplate> {
     };
   }
 
-  public Action<BaseTemplate> delimEnd() {
+  Action<BaseTemplate> delimEnd() {
     return new Action<BaseTemplate>() {
       @Override
       public boolean run(final Context<BaseTemplate> context) {
@@ -166,13 +202,37 @@ public class Parser extends BaseParser<BaseTemplate> {
     };
   }
 
-  public Rule partial() throws IOException {
+  Rule partial() throws IOException {
+    final StringVar uriVar = new StringVar();
     return Sequence(delimStart(), '>', spacing(), path(),
-        add(new Partial(handlebars, match())),
+        uriVar.set(match()),
+        new Action<BaseTemplate>() {
+          @Override
+          public boolean run(final Context<BaseTemplate> context) {
+            String uri = uriVar.get();
+            Partial partial = partials.get(uri);
+            if (partial == null) {
+              try {
+                ResourceLocator locator = handlebars.getResourceLocator();
+                Reader reader = locator.locate(uri);
+                Parser parser =
+                    Parboiled.createParser(Parser.class, handlebars, partials);
+                // Avoid stack overflow exceptions
+                partial = new Partial();
+                partials.put(uri, partial);
+                Template template = parser.parse(reader);
+                partial.template(template);
+              } catch (IOException ex) {
+                throw new HandlebarsException("Unable to read: " + uri, ex);
+              }
+            }
+            return add(partial);
+          }
+        },
         spacing(), delimEnd());
   }
 
-  public Rule section() throws IOException {
+  Rule section() throws IOException {
     final StringVar name = new StringVar();
     final Var<Boolean> inverted = new Var<Boolean>();
     final Var<Section> section = new Var<Section>();
@@ -192,13 +252,12 @@ public class Parser extends BaseParser<BaseTemplate> {
               BaseTemplate body = pop();
               section.get().body(body);
             }
-            addToline(section.get());
-            return true;
+            return addToline(section.get());
           }
         });
   }
 
-  public Rule sectionStart(final char type, final StringVar name,
+  Rule sectionStart(final char type, final StringVar name,
       final Var<Boolean> inverted) {
     return Sequence(
         delimStart(), type, inverted.set(matchedChar() == '^'),
@@ -208,27 +267,25 @@ public class Parser extends BaseParser<BaseTemplate> {
         delimEnd());
   }
 
-  public Rule sectionEnd() {
+  Rule sectionEnd() {
     return Sequence(delimStart(), '/', spacing(), identifier(), spacing(),
         delimEnd());
   }
 
-  @SuppressSubnodes
   @MemoMismatches
-  public Rule identifier() {
+  Rule identifier() {
     return Sequence(TestNot(delimStart()), letter(),
         ZeroOrMore(letterOrDigit()));
   }
 
-  @SuppressSubnodes
   @MemoMismatches
-  public Rule path() {
+  Rule path() {
     return Sequence(
         TestNot(delimStart(), delimEnd()),
         OneOrMore(pathSegment()));
   }
 
-  public Rule spacing() {
+  Rule spacing() {
     return ZeroOrMore(FirstOf(
         // whitespace
         spaceNoAction(),
@@ -238,29 +295,30 @@ public class Parser extends BaseParser<BaseTemplate> {
         comment()));
   }
 
-  public Rule spaceNoAction() {
+  Rule spaceNoAction() {
     return AnyOf(" \t\f");
   }
 
-  public Rule space() {
+  Rule space() {
     return Sequence(spaceNoAction(), add(new Blank(match())));
   }
 
-  public Rule nlNoAction() {
+  Rule nlNoAction() {
     return FirstOf(String("\r\n"), String("\n"));
   }
 
-  public Rule nl() {
+  Rule nl() {
     return Sequence(nlNoAction(), add(new Blank(match())), sync());
   }
 
-  protected boolean sync() {
+  boolean sync() {
     List<BaseTemplate> currentLine = this.line;
     if (!onlyWhites) {
       boolean ignore = true;
       for (BaseTemplate template : currentLine) {
         Class<? extends BaseTemplate> type = template.getClass();
-        if (type == Text.class || type == Variable.class) {
+        if (type == Text.class || type == Variable.class
+            || type == Partial.class) {
           ignore = false;
           break;
         }
@@ -279,7 +337,7 @@ public class Parser extends BaseParser<BaseTemplate> {
     return true;
   }
 
-  protected boolean removeBlanks() {
+  boolean removeBlanks() {
     BaseTemplate head = peek();
     for (BaseTemplate blank : blanks) {
       head.remove(blank);
@@ -289,7 +347,7 @@ public class Parser extends BaseParser<BaseTemplate> {
     return true;
   }
 
-  public Rule comment() {
+  Rule comment() {
     return Sequence(delimStart(), '!', ZeroOrMore(TestNot(delimEnd()), ANY),
         delimEnd(), new Action<BaseTemplate>() {
           @Override
@@ -302,18 +360,29 @@ public class Parser extends BaseParser<BaseTemplate> {
 
   // JLS defines letters and digits as Unicode characters recognized
   // as such by special Java procedures.
-  public Rule letter() {
+  Rule letter() {
     return FirstOf(CharRange('a', 'z'), CharRange('A', 'Z'), '.', '_', '$');
   }
 
   @MemoMismatches
-  public Rule letterOrDigit() {
+  Rule letterOrDigit() {
     return FirstOf(CharRange('a', 'z'), CharRange('A', 'Z'), CharRange('0',
         '9'), '_', '$', '.');
   }
 
-  public Rule pathSegment() {
+  Rule pathSegment() {
     return FirstOf(CharRange('0', '9'), CharRange('a', 'z'),
         CharRange('A', 'Z'), '_', '$', '/', '.', '-');
+  }
+
+  static String toString(final Reader reader)
+      throws IOException {
+    StringBuilder buffer = new StringBuilder(1024 * 4);
+    int ch;
+    while ((ch = reader.read()) != -1) {
+      buffer.append((char) ch);
+    }
+    buffer.trimToSize();
+    return buffer.toString();
   }
 }

@@ -3,11 +3,8 @@ package specs;
 import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
-import java.io.Reader;
-import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -15,16 +12,14 @@ import org.junit.Before;
 import org.junit.ComparisonFailure;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
 import org.yaml.snakeyaml.Yaml;
 
 import com.github.edgarespina.handlerbars.Handlebars;
 import com.github.edgarespina.handlerbars.HandlebarsException;
-import com.github.edgarespina.handlerbars.ResourceLocator;
 import com.github.edgarespina.handlerbars.Scopes;
 import com.github.edgarespina.handlerbars.Template;
 
-@RunWith(Parameterized.class)
+@RunWith(SpecRunner.class)
 public abstract class SpecTest {
 
   private static class Report {
@@ -34,16 +29,16 @@ public abstract class SpecTest {
       for (int i = 0; i < size; i++) {
         buffer.append("*");
       }
-      buffer.append("\n");
       System.out.println(buffer);
     }
 
-    public void append(final String message) {
-      System.out.println(message);
+    public void append(final Object message) {
+      System.out.println(message == null ? "" : message.toString());
     }
 
-    public void append(final String message, final Object... arguments) {
-      System.out.println(String.format(message, arguments));
+    public void append(final Object message, final Object... arguments) {
+      System.out.println(String.format(
+          message == null ? "" : message.toString(), arguments));
     }
 
   }
@@ -59,6 +54,12 @@ public abstract class SpecTest {
     Integer number = (Integer) data.get("number");
     if (enabled(number, (String) data.get("name"))) {
       run(data);
+    } else {
+      Report report = new Report();
+      report.header(80);
+      report.append("Skipping Test: * %s. %s", number, data.get("name"));
+      report.header(80);
+      throw new SkipTestException((String) data.get("name"));
     }
   }
 
@@ -97,13 +98,15 @@ public abstract class SpecTest {
     Map<String, Object> data = (Map<String, Object>) test.get("data");
     report.append("DATA:");
     report.append(data.toString());
+    report.append("PARTIALS:");
+    report.append(test.get("partials"));
     report.append("INPUT:");
     report.append(input);
     report.append("EXPECTED:");
     report.append(expected);
     long startCompile = System.currentTimeMillis();
     Template template =
-        new Handlebars(resourceLocator(test)).compile("template");
+        new Handlebars(new SpecResourceLocator(test)).compile("template");
     long endCompile = System.currentTimeMillis();
     long startMerge = System.currentTimeMillis();
     String output =
@@ -129,22 +132,6 @@ public abstract class SpecTest {
       }
       report.header(80);
     }
-  }
-
-  protected ResourceLocator resourceLocator(final Map<String, Object> test) {
-    return new ResourceLocator() {
-      @Override
-      protected Reader read(final String uri) throws IOException {
-        @SuppressWarnings("unchecked")
-        Map<String, String> templates =
-            (Map<String, String>) test.get("partials");
-        if (templates == null) {
-          templates = new HashMap<String, String>();
-        }
-        templates.put("template", (String) test.get("template"));
-        return new StringReader(templates.get(uri));
-      }
-    };
   }
 
   @Before
