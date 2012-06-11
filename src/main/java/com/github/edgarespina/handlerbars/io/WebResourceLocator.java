@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.net.URI;
 
 import javax.servlet.ServletContext;
 
@@ -24,7 +25,7 @@ public class WebResourceLocator extends ResourceLocator {
   }
 
   @Override
-  protected Reader read(final String uri) throws IOException {
+  protected Reader read(final URI uri) throws IOException {
     String path = basepath + uri;
     InputStream input = servletContext.getResourceAsStream(path);
     if (input == null) {

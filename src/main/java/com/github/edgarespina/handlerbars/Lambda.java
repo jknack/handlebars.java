@@ -2,7 +2,7 @@ package com.github.edgarespina.handlerbars;
 
 import java.io.IOException;
 
-public interface Lambda {
+public interface Lambda<Out> {
 
-  String apply(Template template, Scope scope) throws IOException;
+  Out apply(Scope scope, Template template) throws IOException;
 }

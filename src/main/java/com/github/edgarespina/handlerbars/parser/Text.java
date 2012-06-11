@@ -14,6 +14,7 @@ class Text extends BaseTemplate {
     this.text = text;
   }
 
+  @Override
   public String text() {
     return text;
   }
@@ -21,11 +22,6 @@ class Text extends BaseTemplate {
   @Override
   public void merge(final Scope scope, final Writer writer) throws IOException {
     writer.append(text);
-  }
-
-  @Override
-  public String toString() {
-    return text;
   }
 
   @Override

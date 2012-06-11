@@ -3,28 +3,28 @@ package specs;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
+import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
 import com.github.edgarespina.handlerbars.ResourceLocator;
 
 public class SpecResourceLocator extends ResourceLocator {
-  private Map<String, Object> spec;
+  private Spec spec;
 
-  public SpecResourceLocator(final Map<String, Object> spec) {
+  public SpecResourceLocator(final Spec spec) {
     this.spec = spec;
   }
 
   @Override
-  protected Reader read(final String uri) throws IOException {
-    @SuppressWarnings("unchecked")
+  protected Reader read(final URI uri) throws IOException {
     Map<String, String> templates =
-        (Map<String, String>) spec.get("partials");
+        spec.partials();
     if (templates == null) {
       templates = new HashMap<String, String>();
     }
-    templates.put("template", (String) spec.get("template"));
-    String template = templates.get(uri);
+    templates.put("template", spec.template());
+    String template = templates.get(uri.toString());
     return template == null ? null : new StringReader(template);
   }
 

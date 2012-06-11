@@ -5,38 +5,49 @@ import static org.apache.commons.lang3.Validate.notNull;
 
 import java.io.IOException;
 import java.io.Reader;
-
-import org.parboiled.Parboiled;
+import java.net.URI;
 
 import com.github.edgarespina.handlerbars.io.ClasspathResourceLocator;
 import com.github.edgarespina.handlerbars.parser.Parser;
 
 public class Handlebars {
 
+  public static final String DELIM_START = "{{";
+
+  public static final String DELIM_END = "}}";
+
   private ResourceLocator resourceLocator;
+
+  static {
+    Parser.initialize();
+  }
 
   public Handlebars(final ResourceLocator resourceLocator) {
     this.resourceLocator =
         notNull(resourceLocator, "The resource locator is required.");
-    initialize();
   }
 
   public Handlebars() {
     this(new ClasspathResourceLocator());
   }
 
-  public Template compile(final String uri) throws IOException,
-      HandlebarsException {
+  public Template compile(final URI uri) throws IOException {
+    return compile(uri, DELIM_START, DELIM_END);
+  }
+
+  public Template compile(final URI uri, final String delimStart,
+      final String delimEnd) throws IOException {
     Reader reader = resourceLocator.locate(uri);
-    return newParser().parse(reader);
+    return Parser.create(this, null, delimStart, delimEnd).parse(reader);
   }
 
-  private void initialize() {
-    newParser();
+  public Template compile(final String input) throws IOException {
+    return compile(input, DELIM_START, DELIM_END);
   }
 
-  private Parser newParser() {
-    return Parboiled.createParser(Parser.class, this, null);
+  public Template compile(final String input, final String delimStart,
+      final String delimEnd) throws IOException {
+    return Parser.create(this, null, delimStart, delimEnd).parse(input);
   }
 
   public ResourceLocator getResourceLocator() {

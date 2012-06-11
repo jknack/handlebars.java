@@ -25,7 +25,7 @@ class Partial extends BaseTemplate {
   }
 
   @Override
-  public String toString() {
+  public String text() {
     return template.toString();
   }
 

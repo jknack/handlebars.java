@@ -3,6 +3,7 @@ package specs;
 import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -16,8 +17,8 @@ import org.yaml.snakeyaml.Yaml;
 
 import com.github.edgarespina.handlerbars.Handlebars;
 import com.github.edgarespina.handlerbars.HandlebarsException;
-import com.github.edgarespina.handlerbars.Scopes;
 import com.github.edgarespina.handlerbars.Template;
+import com.github.edgarespina.handlerbars.parser.Scopes;
 
 @RunWith(SpecRunner.class)
 public abstract class SpecTest {
@@ -43,23 +44,22 @@ public abstract class SpecTest {
 
   }
 
-  private Map<String, Object> data;
+  private Spec spec;
 
-  public SpecTest(final Map<String, Object> data) {
-    this.data = data;
+  public SpecTest(final Spec spec) {
+    this.spec = spec;
   }
 
   @Test
   public void run() throws HandlebarsException, IOException {
-    Integer number = (Integer) data.get("number");
-    if (enabled(number, (String) data.get("name"))) {
-      run(data);
+    if (!skip(spec)) {
+      run(alter(spec));
     } else {
       Report report = new Report();
       report.header(80);
-      report.append("Skipping Test: * %s. %s", number, data.get("name"));
+      report.append("Skipping Test: %s", spec.id());
       report.header(80);
-      throw new SkipTestException((String) data.get("name"));
+      throw new SkipTestException(spec.name());
     }
   }
 
@@ -76,37 +76,38 @@ public abstract class SpecTest {
     Collection<Object[]> dataset = new ArrayList<Object[]>();
     for (Map<String, Object> test : tests) {
       test.put("number", number++);
-      dataset.add(new Object[] {test });
+      dataset.add(new Object[] {new Spec(test) });
     }
     return dataset;
   }
 
-  protected boolean enabled(final int number, final String name) {
-    return true;
+  protected boolean skip(final Spec spec) {
+    return false;
   }
 
-  @SuppressWarnings("unchecked")
-  private void run(final Map<String, Object> test)
-      throws HandlebarsException,
-      IOException {
+  protected Spec alter(final Spec spec) {
+    return spec;
+  }
+
+  private void run(final Spec spec) throws IOException {
     Report report = new Report();
     report.header(80);
-    report.append("* %s. %s: %s", test.get("number"), test.get("name"),
-        test.get("desc"));
-    final String input = (String) test.get("template");
-    final String expected = (String) test.get("expected");
-    Map<String, Object> data = (Map<String, Object>) test.get("data");
+    report.append("* %s", spec.description());
+    final String input = spec.template();
+    final String expected = spec.expected();
+    Map<String, Object> data = spec.data();
     report.append("DATA:");
     report.append(data.toString());
     report.append("PARTIALS:");
-    report.append(test.get("partials"));
+    report.append(spec.partials());
     report.append("INPUT:");
     report.append(input);
     report.append("EXPECTED:");
     report.append(expected);
     long startCompile = System.currentTimeMillis();
     Template template =
-        new Handlebars(new SpecResourceLocator(test)).compile("template");
+        new Handlebars(new SpecResourceLocator(spec)).compile(URI
+            .create("template"));
     long endCompile = System.currentTimeMillis();
     long startMerge = System.currentTimeMillis();
     String output =

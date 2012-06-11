@@ -4,7 +4,6 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
 import org.junit.runner.Description;
 import org.junit.runners.Parameterized;
@@ -25,10 +24,8 @@ public class SpecRunner extends Parameterized {
     Collection<Object[]> parameterArrays = getParameterArrays();
     labels = new ArrayList<String>();
     for (Object[] parameterArray : parameterArrays) {
-      @SuppressWarnings("unchecked")
-      Map<String, Object> spec = (Map<String, Object>) parameterArray[0];
-      String label = spec.get("name").toString();
-      labels.add(label);
+      Spec spec = (Spec) parameterArray[0];
+      labels.add(spec.name());
     }
 
   }

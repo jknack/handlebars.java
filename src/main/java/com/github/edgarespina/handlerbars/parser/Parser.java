@@ -2,6 +2,7 @@ package com.github.edgarespina.handlerbars.parser;
 
 import java.io.IOException;
 import java.io.Reader;
+import java.net.URI;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -30,9 +31,9 @@ import com.github.edgarespina.handlerbars.Template;
 
 public class Parser extends BaseParser<BaseTemplate> {
 
-  protected String delimStart = "{{";
+  protected String delimStart;
 
-  protected String delimEnd = "}}";
+  protected String delimEnd;
 
   protected final List<BaseTemplate> line = new LinkedList<BaseTemplate>();
 
@@ -44,23 +45,30 @@ public class Parser extends BaseParser<BaseTemplate> {
 
   protected final Map<String, Partial> partials;
 
-  public Parser(final Handlebars handlebars,
-      final Map<String, Partial> partials) {
+  Parser(final Handlebars handlebars,
+      final Map<String, Partial> partials, final String delimStart,
+      final String delimEnd) {
     this.handlebars = handlebars;
     this.partials =
         partials == null ? new HashMap<String, Partial>() : partials;
+    this.delimStart = delimStart;
+    this.delimEnd = delimEnd;
+  }
+
+  public static Parser create(final Handlebars handlebars,
+      final Map<String, Partial> partials, final String delimStart,
+      final String delimEnd) {
+    return Parboiled.createParser(Parser.class, handlebars, partials,
+        delimStart, delimEnd);
+  }
+
+  public static void initialize() {
+    create(null, null, null, null);
   }
 
   public Template parse(final Reader reader) throws IOException {
     try {
-      ParseRunner<Template> runner =
-          new ReportingParseRunner<Template>(template());
-      ParsingResult<Template> result = runner.run(toString(reader));
-      if (result.hasErrors()) {
-        throw new HandlebarsException(ErrorUtils.printParseErrors(result)
-            .trim());
-      }
-      return result.resultValue;
+      return parse(toString(reader));
     } finally {
       if (reader != null) {
         try {
@@ -70,6 +78,21 @@ public class Parser extends BaseParser<BaseTemplate> {
         }
       }
     }
+  }
+
+  public Template parse(final String input) throws IOException {
+    ParseRunner<Template> runner =
+        new ReportingParseRunner<Template>(template());
+    ParsingResult<Template> result = runner.run(input);
+    if (result.hasErrors()) {
+      throw new HandlebarsException(ErrorUtils.printParseErrors(result)
+          .trim());
+    }
+    Sequence sequence = (Sequence) result.resultValue;
+    if (sequence.size() == 1) {
+      return sequence.iterator().next();
+    }
+    return sequence;
   }
 
   Rule template() throws IOException {
@@ -155,7 +178,7 @@ public class Parser extends BaseParser<BaseTemplate> {
         "&",
         spacing(),
         identifier(),
-        add(new Variable(match(), false)),
+        add(new Variable(handlebars, match(), false)),
         spacing(),
         delimEnd());
   }
@@ -166,7 +189,7 @@ public class Parser extends BaseParser<BaseTemplate> {
         '{',
         spacing(),
         identifier(),
-        add(new Variable(match(), false)),
+        add(new Variable(handlebars, match(), false)),
         spacing(),
         '}',
         delimEnd());
@@ -177,7 +200,7 @@ public class Parser extends BaseParser<BaseTemplate> {
         delimStart(),
         spacing(),
         identifier(),
-        add(new Variable(match(), true)),
+        add(new Variable(handlebars, match(), true)),
         spacing(),
         delimEnd());
   }
@@ -214,9 +237,9 @@ public class Parser extends BaseParser<BaseTemplate> {
             if (partial == null) {
               try {
                 ResourceLocator locator = handlebars.getResourceLocator();
-                Reader reader = locator.locate(uri);
+                Reader reader = locator.locate(URI.create(uri));
                 Parser parser =
-                    Parboiled.createParser(Parser.class, handlebars, partials);
+                    create(handlebars, partials, delimStart, delimEnd);
                 // Avoid stack overflow exceptions
                 partial = new Partial();
                 partials.put(uri, partial);
@@ -240,7 +263,8 @@ public class Parser extends BaseParser<BaseTemplate> {
         FirstOf(
             sectionStart('#', name, inverted),
             sectionStart('^', name, inverted)),
-        section.set(new Section(name.get(), inverted.get())),
+        section.set(new Section(handlebars, name.get(), inverted.get())
+            .delimStart(delimStart).delimEnd(delimEnd)),
         add(section.get()),
         body(),
         sectionEnd(),

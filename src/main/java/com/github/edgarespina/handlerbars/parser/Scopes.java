@@ -1,4 +1,4 @@
-package com.github.edgarespina.handlerbars;
+package com.github.edgarespina.handlerbars.parser;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -6,6 +6,8 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
+
+import com.github.edgarespina.handlerbars.Scope;
 
 public class Scopes {
 

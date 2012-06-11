@@ -9,22 +9,42 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 
+import com.github.edgarespina.handlerbars.Handlebars;
 import com.github.edgarespina.handlerbars.Lambda;
 import com.github.edgarespina.handlerbars.Scope;
-import com.github.edgarespina.handlerbars.Scopes;
 import com.github.edgarespina.handlerbars.Template;
 
 class Section extends BaseTemplate {
 
-  private static class LambdaScope {
+  private interface DelimAware {
+    void setDelimiters(String delimStart, String delimEnd);
+  }
+
+  private static class SectionLambda implements DelimAware {
 
     public final Lambda lambda;
 
-    public final Scope scope;
+    private Handlebars handlebars;
 
-    public LambdaScope(final Lambda lambda, final Scope parent) {
+    private String delimStart;
+
+    private String delimEnd;
+
+    public SectionLambda(final Handlebars handlebars, final Lambda lambda) {
       this.lambda = lambda;
-      this.scope = parent;
+      this.handlebars = handlebars;
+    }
+
+    public BaseTemplate apply(final Scope scope, final Template template)
+        throws IOException {
+      return Lambdas.compile(handlebars, lambda, scope, template, delimStart,
+          delimEnd);
+    }
+
+    @Override
+    public void setDelimiters(final String delimStart, final String delimEnd) {
+      this.delimStart = delimStart;
+      this.delimEnd = delimEnd;
     }
 
   }
@@ -39,9 +59,9 @@ class Section extends BaseTemplate {
       }
 
       @Override
-      public Object transform(final Scope scope,
+      public Object transform(final Handlebars handlebars, final Scope scope,
           final Object candidate) {
-        return new LambdaScope((Lambda) candidate, scope);
+        return new SectionLambda(handlebars, (Lambda) candidate);
       }
     },
 
@@ -52,10 +72,10 @@ class Section extends BaseTemplate {
       }
 
       @Override
-      public Object transform(final Scope scope,
+      public Object transform(final Handlebars handlebars, final Scope scope,
           final Object candidate) {
         int size = Array.getLength(candidate);
-        List<Object> list = new ArrayList<Object>();
+        List<Object> list = new ArrayList<Object>(size);
         for (int i = 0; i < size; i++) {
           list.add(Array.get(candidate, i));
         }
@@ -67,7 +87,7 @@ class Section extends BaseTemplate {
       return false;
     }
 
-    public Object transform(final Scope scope,
+    public Object transform(final Handlebars handlebars, final Scope scope,
         final Object candidate) {
       return candidate;
     }
@@ -213,7 +233,7 @@ class Section extends BaseTemplate {
     LAMBDA {
       @Override
       public boolean apply(final Object candidate) {
-        return candidate instanceof LambdaScope;
+        return candidate instanceof SectionLambda;
       }
 
       @Override
@@ -225,7 +245,8 @@ class Section extends BaseTemplate {
       public void merge(final Writer writer, final Template body,
           final Scope scope, final String name, final Object candidate)
           throws IOException {
-        throw new UnsupportedOperationException();
+        BaseTemplate template = ((SectionLambda) candidate).apply(scope, body);
+        template.merge(scope, writer);
       }
     };
 
@@ -257,7 +278,15 @@ class Section extends BaseTemplate {
 
   private String type;
 
-  public Section(final String name, final boolean inverted) {
+  private Handlebars handlebars;
+
+  private String delimStart;
+
+  private String delimEnd;
+
+  public Section(final Handlebars handlebars, final String name,
+      final boolean inverted) {
+    this.handlebars = handlebars;
     this.name = name;
     this.inverted = inverted;
     this.type = inverted ? "^" : "#";
@@ -267,7 +296,11 @@ class Section extends BaseTemplate {
   public void merge(final Scope scope,
       final Writer writer) throws IOException {
     Object candidate = scope.get(name);
-    candidate = Transformer.get(candidate).transform(scope, candidate);
+    candidate =
+        Transformer.get(candidate).transform(handlebars, scope, candidate);
+    if (candidate instanceof DelimAware) {
+      ((DelimAware) candidate).setDelimiters(delimStart, delimEnd);
+    }
     Type type = Type.get(candidate);
     boolean traverse = type.traverse(candidate);
     if (inverted) {
@@ -276,12 +309,6 @@ class Section extends BaseTemplate {
     if (traverse) {
       type.merge(writer, body, scope, name, candidate);
     }
-  }
-
-  @Override
-  public String toString() {
-    String content = body == null ? "" : body.toString();
-    return "{{" + type + name + "}}" + content + "{{/" + name + "}}";
   }
 
   public String name() {
@@ -302,7 +329,31 @@ class Section extends BaseTemplate {
     return this;
   }
 
+  public Section delimEnd(final String delimEnd) {
+    this.delimEnd = delimEnd;
+    return this;
+  }
+
+  public Section delimStart(final String delimStart) {
+    this.delimStart = delimStart;
+    return this;
+  }
+
   public Template body() {
     return body;
+  }
+
+  @Override
+  public String text() {
+    String content = body == null ? "" : body.toString();
+    return "{{" + type + name + "}}" + content + "{{/" + name + "}}";
+  }
+
+  public String delimStart() {
+    return delimStart;
+  }
+
+  public String delimEnd() {
+    return delimEnd;
   }
 }
