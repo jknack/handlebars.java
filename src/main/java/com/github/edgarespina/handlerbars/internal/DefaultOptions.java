@@ -7,23 +7,21 @@ import java.util.Set;
 
 import com.github.edgarespina.handlerbars.Handlebars;
 import com.github.edgarespina.handlerbars.Options;
-import com.github.edgarespina.handlerbars.Scope;
-import com.github.edgarespina.handlerbars.Template;
 
 public class DefaultOptions implements Options {
 
   private Scope context;
 
-  private Template template;
+  private BaseTemplate template;
 
-  private Template inverse;
+  private BaseTemplate inverse;
 
   private Object[] params;
 
   private Map<String, Object> hash;
 
-  public DefaultOptions(final Template template, final Template inverse,
-      final Scope context, final Object[] params,
+  public DefaultOptions(final BaseTemplate template,
+      final BaseTemplate inverse, final Scope context, final Object[] params,
       final Map<String, Object> hash) {
     this.template = template;
     this.inverse = inverse;
@@ -56,7 +54,7 @@ public class DefaultOptions implements Options {
     return apply(inverse, context);
   }
 
-  private String apply(final Template template, final Object context)
+  private String apply(final BaseTemplate template, final Object context)
       throws IOException {
     if (context == null) {
       return "";

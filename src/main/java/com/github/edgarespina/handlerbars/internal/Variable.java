@@ -9,7 +9,6 @@ import java.util.Map;
 import com.github.edgarespina.handlerbars.Handlebars;
 import com.github.edgarespina.handlerbars.Helper;
 import com.github.edgarespina.handlerbars.Lambda;
-import com.github.edgarespina.handlerbars.Scope;
 import com.github.edgarespina.handlerbars.Template;
 
 class Variable extends HelperResolver {
@@ -85,7 +84,7 @@ class Variable extends HelperResolver {
     boolean isString =
         value instanceof CharSequence || value instanceof Character;
     if (isString) {
-      return this.escape;
+      return this.escape && !(value instanceof Handlebars.SafeString);
     } else {
       return false;
     }

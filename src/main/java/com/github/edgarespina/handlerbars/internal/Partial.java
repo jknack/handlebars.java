@@ -3,7 +3,6 @@ package com.github.edgarespina.handlerbars.internal;
 import java.io.IOException;
 import java.io.Writer;
 
-import com.github.edgarespina.handlerbars.Scope;
 import com.github.edgarespina.handlerbars.Template;
 
 class Partial extends BaseTemplate {

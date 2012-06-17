@@ -13,12 +13,15 @@ import org.junit.Before;
 import org.junit.ComparisonFailure;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.yaml.snakeyaml.TypeDescription;
 import org.yaml.snakeyaml.Yaml;
+import org.yaml.snakeyaml.constructor.Constructor;
 
 import com.github.edgarespina.handlerbars.Handlebars;
 import com.github.edgarespina.handlerbars.HandlebarsException;
 import com.github.edgarespina.handlerbars.Template;
-import com.github.edgarespina.handlerbars.internal.Scopes;
+import com.github.edgarespina.handlerbars.custom.Blog;
+import com.github.edgarespina.handlerbars.custom.Comment;
 
 @RunWith(SpecRunner.class)
 public abstract class SpecTest {
@@ -74,7 +77,12 @@ public abstract class SpecTest {
   @SuppressWarnings("unchecked")
   public static Collection<Object[]> data(final Class<?> loader,
       final String filename) {
-    Yaml yaml = new Yaml();
+    Constructor constructor = new Constructor();
+    constructor.addTypeDescription(new TypeDescription(Blog.class, "!blog"));
+    constructor.addTypeDescription(new TypeDescription(Comment.class,
+        "!comment"));
+
+    Yaml yaml = new Yaml(constructor);
 
     String location = path(loader) + filename;
     Map<String, Object> data =
@@ -105,7 +113,7 @@ public abstract class SpecTest {
     report.append("* %s", spec.description());
     final String input = spec.template();
     final String expected = spec.expected();
-    Map<String, Object> data = spec.data();
+    Object data = spec.data();
     report.append("DATA:");
     report.append(data.toString());
     report.append("PARTIALS:");
@@ -120,8 +128,7 @@ public abstract class SpecTest {
             .create("template"));
     long endCompile = System.currentTimeMillis();
     long startMerge = System.currentTimeMillis();
-    String output =
-        template.apply(data == null ? Scopes.newScope() : Scopes.scope(data));
+    String output = template.apply(data);
     long endMerge = System.currentTimeMillis();
     long total = endMerge - startCompile;
     long compile = endCompile - startCompile;

@@ -9,41 +9,10 @@ import com.github.edgarespina.handlerbars.BuiltInHelpers;
 import com.github.edgarespina.handlerbars.Handlebars;
 import com.github.edgarespina.handlerbars.Helper;
 import com.github.edgarespina.handlerbars.Lambda;
-import com.github.edgarespina.handlerbars.Scope;
 import com.github.edgarespina.handlerbars.Template;
 
 class Section extends HelperResolver {
-
-  enum Type {
-    LAMBDA {
-      @Override
-      public boolean apply(final Object candidate) {
-        return candidate instanceof LambdaWrapper;
-      }
-
-      @Override
-      public void merge(final Writer writer, final Template body,
-          final Scope scope, final String name, final Object candidate)
-          throws IOException {
-        BaseTemplate template = ((LambdaWrapper) candidate).apply(scope, body);
-        template.apply(scope, writer);
-      }
-
-      @Override
-      public Helper<Object> helper(final Object candidate) {
-        return BuiltInHelpers.WITH;
-      }
-    };
-
-    public abstract boolean apply(Object candidate);
-
-    public abstract Helper<Object> helper(final Object candidate);
-
-    public abstract void merge(Writer writer, Template body,
-        Scope scope, String name, Object candidate) throws IOException;
-  }
-
-  private Template body;
+  private BaseTemplate body;
 
   private final String name;
 
@@ -55,7 +24,7 @@ class Section extends HelperResolver {
 
   private String delimEnd;
 
-  private Template inverse;
+  private BaseTemplate inverse;
 
   public Section(final Handlebars handlebars, final String name,
       final boolean inverted, final List<Object> params,
@@ -73,7 +42,7 @@ class Section extends HelperResolver {
   public void apply(final Scope scope,
       final Writer writer) throws IOException {
     Helper<Object> helper = helper(name);
-    Template template = body;
+    BaseTemplate template = body;
     Object context;
     Scope currentScope = scope;
     if (helper == null) {
@@ -121,15 +90,15 @@ class Section extends HelperResolver {
 
   @Override
   public boolean remove(final Template child) {
-    return ((BaseTemplate) body).remove(child);
+    return body.remove(child);
   }
 
-  public Section body(final Template body) {
+  public Section body(final BaseTemplate body) {
     this.body = body;
     return this;
   }
 
-  public Template inverse(final Template inverse) {
+  public Template inverse(final BaseTemplate inverse) {
     this.inverse = inverse;
     return this;
   }

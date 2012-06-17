@@ -2,9 +2,19 @@ package com.github.edgarespina.handlerbars.internal;
 
 import java.util.EnumSet;
 
-import com.github.edgarespina.handlerbars.Scope;
 
 public enum ParamType {
+  SCOPE {
+    @Override
+    public boolean apply(final Object param) {
+      return param instanceof Scope;
+    }
+
+    @Override
+    public Object parse(final Scope scope, final Object param) {
+      return ((Scope)param).context();
+    }
+  },
   STRING {
     @Override
     public boolean apply(final Object param) {

@@ -4,7 +4,6 @@ import java.io.IOException;
 
 import com.github.edgarespina.handlerbars.Handlebars;
 import com.github.edgarespina.handlerbars.Lambda;
-import com.github.edgarespina.handlerbars.Scope;
 import com.github.edgarespina.handlerbars.Template;
 
 class LambdaWrapper implements DelimAware {

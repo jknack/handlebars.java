@@ -13,7 +13,7 @@ public class Spec {
 
   private int number;
 
-  private Map<String, Object> data;
+  private Object data;
 
   private Map<String, String> partials;
 
@@ -29,7 +29,7 @@ public class Spec {
 
     expected = (String) spec.get("expected");
 
-    data = (Map<String, Object>) spec.get("data");
+    data = spec.get("data");
 
     partials = (Map<String, String>) spec.get("partials");
   }
@@ -79,7 +79,7 @@ public class Spec {
   /**
    * @return the data
    */
-  public Map<String, Object> data() {
+  public Object data() {
     return data;
   }
 
@@ -90,8 +90,9 @@ public class Spec {
     return partials;
   }
 
+  @SuppressWarnings({"unchecked", "rawtypes" })
   public Spec store(final String name, final Object lambda) {
-    data.put(name, lambda);
+    ((Map)data).put(name, lambda);
     return this;
   }
 

@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import com.github.edgarespina.handlerbars.Scope;
 import com.github.edgarespina.handlerbars.Template;
 
 class Sequence extends BaseTemplate implements Iterable<BaseTemplate> {
@@ -35,7 +34,7 @@ class Sequence extends BaseTemplate implements Iterable<BaseTemplate> {
 
   @Override
   public void apply(final Scope scope, final Writer writer) throws IOException {
-    for (Template node : nodes) {
+    for (BaseTemplate node : nodes) {
       node.apply(scope, writer);
     }
   }
@@ -43,7 +42,7 @@ class Sequence extends BaseTemplate implements Iterable<BaseTemplate> {
   @Override
   public String text() {
     StringBuilder buffer = new StringBuilder();
-    for (Template node : nodes) {
+    for (BaseTemplate node : nodes) {
       buffer.append(node);
     }
     return buffer.toString();

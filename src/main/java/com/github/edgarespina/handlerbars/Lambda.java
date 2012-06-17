@@ -2,6 +2,8 @@ package com.github.edgarespina.handlerbars;
 
 import java.io.IOException;
 
+import com.github.edgarespina.handlerbars.internal.Scope;
+
 /**
  * <p>
  * When the value is a callable object, such as a lambda, the object will be

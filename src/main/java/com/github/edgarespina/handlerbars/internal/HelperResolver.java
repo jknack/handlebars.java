@@ -10,7 +10,6 @@ import java.util.Map.Entry;
 import com.github.edgarespina.handlerbars.Handlebars;
 import com.github.edgarespina.handlerbars.HandlebarsException;
 import com.github.edgarespina.handlerbars.Helper;
-import com.github.edgarespina.handlerbars.Scope;
 
 public abstract class HelperResolver extends BaseTemplate {
 
@@ -51,7 +50,7 @@ public abstract class HelperResolver extends BaseTemplate {
 
   protected Object param(final Scope scope, final int index) {
     if (params.size() == 0) {
-      return scope;
+      return scope.context();
     }
     Object value = params.get(index);
     value = ParamType.get(value).parse(scope, value);
