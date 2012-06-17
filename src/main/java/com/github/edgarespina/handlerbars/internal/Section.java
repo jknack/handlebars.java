@@ -2,272 +2,45 @@ package com.github.edgarespina.handlerbars.internal;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 
+import com.github.edgarespina.handlerbars.BuiltInHelpers;
 import com.github.edgarespina.handlerbars.Handlebars;
+import com.github.edgarespina.handlerbars.Helper;
 import com.github.edgarespina.handlerbars.Lambda;
 import com.github.edgarespina.handlerbars.Scope;
 import com.github.edgarespina.handlerbars.Template;
 
-class Section extends BaseTemplate {
+class Section extends HelperResolver {
 
-  private interface DelimAware {
-    void setDelimiters(String delimStart, String delimEnd);
-  }
-
-  private static class SectionLambda implements DelimAware {
-
-    public final Lambda lambda;
-
-    private Handlebars handlebars;
-
-    private String delimStart;
-
-    private String delimEnd;
-
-    public SectionLambda(final Handlebars handlebars, final Lambda lambda) {
-      this.lambda = lambda;
-      this.handlebars = handlebars;
-    }
-
-    public BaseTemplate apply(final Scope scope, final Template template)
-        throws IOException {
-      return Lambdas.compile(handlebars, lambda, scope, template, delimStart,
-          delimEnd);
-    }
-
-    @Override
-    public void setDelimiters(final String delimStart, final String delimEnd) {
-      this.delimStart = delimStart;
-      this.delimEnd = delimEnd;
-    }
-
-  }
-
-  private enum Transformer {
-    NONE,
-
-    LAMBDA {
-      @Override
-      protected boolean apply(final Object candidate) {
-        return candidate instanceof Lambda;
-      }
-
-      @Override
-      public Object transform(final Handlebars handlebars, final Scope scope,
-          final Object candidate) {
-        return new SectionLambda(handlebars, (Lambda) candidate);
-      }
-    },
-
-    ARRAY {
-      @Override
-      protected boolean apply(final Object candidate) {
-        return candidate != null && candidate.getClass().isArray();
-      }
-
-      @Override
-      public Object transform(final Handlebars handlebars, final Scope scope,
-          final Object candidate) {
-        int size = Array.getLength(candidate);
-        List<Object> list = new ArrayList<Object>(size);
-        for (int i = 0; i < size; i++) {
-          list.add(Array.get(candidate, i));
-        }
-        return list;
-      }
-    };
-
-    protected boolean apply(final Object candidate) {
-      return false;
-    }
-
-    public Object transform(final Handlebars handlebars, final Scope scope,
-        final Object candidate) {
-      return candidate;
-    }
-
-    public static Transformer get(final Object candidate) {
-      EnumSet<Transformer> transoformers = EnumSet.allOf(Transformer.class);
-      transoformers.remove(NONE);
-      for (Transformer transformer : transoformers) {
-        if (transformer.apply(candidate)) {
-          return transformer;
-        }
-      }
-      return NONE;
-    }
-  }
-
-  private enum Type {
-    UNKNOWN {
-      @Override
-      public boolean apply(final Object candidate) {
-        return true;
-      }
-
-      @Override
-      public boolean traverse(final Object candidate) {
-        throw new IllegalArgumentException("Value: '" + candidate
-            + "' cannot be used in a section.");
-      }
-
-      @Override
-      public void merge(final Writer writer, final Template body,
-          final Scope scope, final String name, final Object candidate)
-          throws IOException {
-      }
-    },
-
-    INVERTED {
-      @Override
-      public boolean apply(final Object candidate) {
-        return true;
-      }
-
-      @Override
-      public boolean traverse(final Object candidate) {
-        return true;
-      }
-
-      @Override
-      public void merge(final Writer writer, final Template body,
-          final Scope scope, final String name, final Object candidate)
-          throws IOException {
-        body.merge(scope, writer);
-      }
-    },
-
-    NULL {
-      @Override
-      public boolean apply(final Object candidate) {
-        return candidate == null;
-      }
-
-      @Override
-      public boolean traverse(final Object candidate) {
-        return false;
-      }
-
-      @Override
-      public void merge(final Writer writer, final Template body,
-          final Scope scope, final String name, final Object candidate)
-          throws IOException {
-        body.merge(scope, writer);
-      }
-    },
-
-    MAP {
-      @Override
-      public boolean apply(final Object candidate) {
-        return candidate instanceof Map;
-      }
-
-      @SuppressWarnings("rawtypes")
-      @Override
-      public boolean traverse(final Object candidate) {
-        return !((Map) candidate).isEmpty();
-      }
-
-      @Override
-      public void merge(final Writer writer, final Template body,
-          final Scope scope, final String name, final Object candidate)
-          throws IOException {
-        body.merge(Scopes.scope(scope, candidate), writer);
-      }
-    },
-
-    ITERABLE {
-      @Override
-      public boolean apply(final Object candidate) {
-        return candidate instanceof Collection;
-      }
-
-      @SuppressWarnings("rawtypes")
-      @Override
-      public boolean traverse(final Object candidate) {
-        return !((Collection) candidate).isEmpty();
-      }
-
-      @SuppressWarnings("unchecked")
-      @Override
-      public void merge(final Writer writer, final Template body,
-          final Scope scope, final String name, final Object candidate)
-          throws IOException {
-        Iterable<Object> elements = (Iterable<Object>) candidate;
-        boolean empty = true;
-        for (Object element : elements) {
-          body.merge(Scopes.scope(scope, element), writer);
-          empty = false;
-        }
-        if (empty) {
-          body.merge(scope, writer);
-        }
-      }
-    },
-
-    BOOLEAN {
-      @Override
-      public boolean apply(final Object candidate) {
-        return candidate instanceof Boolean;
-      }
-
-      @Override
-      public boolean traverse(final Object candidate) {
-        return ((Boolean) candidate).booleanValue();
-      }
-
-      @Override
-      public void merge(final Writer writer, final Template body,
-          final Scope scope, final String name, final Object candidate)
-          throws IOException {
-        body.merge(scope, writer);
-      }
-    },
-
+  enum Type {
     LAMBDA {
       @Override
       public boolean apply(final Object candidate) {
-        return candidate instanceof SectionLambda;
-      }
-
-      @Override
-      public boolean traverse(final Object candidate) {
-        return true;
+        return candidate instanceof LambdaWrapper;
       }
 
       @Override
       public void merge(final Writer writer, final Template body,
           final Scope scope, final String name, final Object candidate)
           throws IOException {
-        BaseTemplate template = ((SectionLambda) candidate).apply(scope, body);
-        template.merge(scope, writer);
+        BaseTemplate template = ((LambdaWrapper) candidate).apply(scope, body);
+        template.apply(scope, writer);
+      }
+
+      @Override
+      public Helper<Object> helper(final Object candidate) {
+        return BuiltInHelpers.WITH;
       }
     };
 
     public abstract boolean apply(Object candidate);
 
-    public abstract boolean traverse(Object candidate);
+    public abstract Helper<Object> helper(final Object candidate);
 
     public abstract void merge(Writer writer, Template body,
         Scope scope, String name, Object candidate) throws IOException;
-
-    public static Type get(final Object candidate) {
-      EnumSet<Type> types = EnumSet.allOf(Type.class);
-      types.remove(UNKNOWN);
-      types.remove(INVERTED);
-      for (Type type : types) {
-        if (type.apply(candidate)) {
-          return type;
-        }
-      }
-      return UNKNOWN;
-    }
   }
 
   private Template body;
@@ -278,37 +51,64 @@ class Section extends BaseTemplate {
 
   private String type;
 
-  private Handlebars handlebars;
-
   private String delimStart;
 
   private String delimEnd;
 
+  private Template inverse;
+
   public Section(final Handlebars handlebars, final String name,
-      final boolean inverted) {
-    this.handlebars = handlebars;
+      final boolean inverted, final List<Object> params,
+      final Map<String, Object> hash) {
+    super(handlebars);
     this.name = name;
     this.inverted = inverted;
     this.type = inverted ? "^" : "#";
+    params(params);
+    hash(hash);
   }
 
+  @SuppressWarnings("unchecked")
   @Override
-  public void merge(final Scope scope,
+  public void apply(final Scope scope,
       final Writer writer) throws IOException {
-    Object candidate = scope.get(name);
-    candidate =
-        Transformer.get(candidate).transform(handlebars, scope, candidate);
-    if (candidate instanceof DelimAware) {
-      ((DelimAware) candidate).setDelimiters(delimStart, delimEnd);
+    Helper<Object> helper = helper(name);
+    Template template = body;
+    Object context;
+    Scope currentScope = scope;
+    if (helper == null) {
+      context = transform(scope.get(name));
+      if (context instanceof DelimAware) {
+        ((DelimAware) context).setDelimiters(delimStart, delimEnd);
+      }
+      if (inverted) {
+        helper = BuiltInHelpers.UNLESS;
+      } else if (context instanceof Iterable) {
+        helper = BuiltInHelpers.EACH;
+      } else if (context instanceof Boolean) {
+        helper = BuiltInHelpers.IF;
+      } else if (context instanceof Lambda) {
+        helper = BuiltInHelpers.WITH;
+        template = Lambdas
+            .compile(handlebars,
+                (Lambda<Object>) context,
+                scope,
+                template,
+                delimStart,
+                delimEnd);
+      } else {
+        helper = BuiltInHelpers.WITH;
+        currentScope = Scopes.scope(scope, context);
+      }
+    } else {
+      context = param(scope, 0);
     }
-    Type type = Type.get(candidate);
-    boolean traverse = type.traverse(candidate);
-    if (inverted) {
-      traverse = !traverse;
-    }
-    if (traverse) {
-      type.merge(writer, body, scope, name, candidate);
-    }
+    DefaultOptions options =
+        new DefaultOptions(template, inverse, currentScope,
+            params(currentScope), hash(scope));
+    CharSequence result = helper.apply(context, options);
+    writer.append(result);
+    options.destroy();
   }
 
   public String name() {
@@ -327,6 +127,15 @@ class Section extends BaseTemplate {
   public Section body(final Template body) {
     this.body = body;
     return this;
+  }
+
+  public Template inverse(final Template inverse) {
+    this.inverse = inverse;
+    return this;
+  }
+
+  public Template inverse() {
+    return inverse;
   }
 
   public Section delimEnd(final String delimEnd) {
@@ -356,4 +165,5 @@ class Section extends BaseTemplate {
   public String delimEnd() {
     return delimEnd;
   }
+
 }

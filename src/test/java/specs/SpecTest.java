@@ -63,13 +63,23 @@ public abstract class SpecTest {
     }
   }
 
-  @SuppressWarnings("unchecked")
   public static Collection<Object[]> data(final String filename) {
+    return data(SpecTest.class, filename);
+  }
+
+  public static String path(final Class<?> loader) {
+    return "/" + loader.getPackage().getName().replace(".", "/") + "/";
+  }
+
+  @SuppressWarnings("unchecked")
+  public static Collection<Object[]> data(final Class<?> loader,
+      final String filename) {
     Yaml yaml = new Yaml();
 
+    String location = path(loader) + filename;
     Map<String, Object> data =
-        (Map<String, Object>) yaml.load(SpecTest.class.getResourceAsStream(
-            "/specs/" + filename));
+        (Map<String, Object>) yaml.load(
+            SpecTest.class.getResourceAsStream(location));
     List<Map<String, Object>> tests =
         (List<Map<String, Object>>) data.get("tests");
     int number = 0;
@@ -106,12 +116,12 @@ public abstract class SpecTest {
     report.append(expected);
     long startCompile = System.currentTimeMillis();
     Template template =
-        new Handlebars(new SpecResourceLocator(spec)).compile(URI
+        configure(new Handlebars(new SpecResourceLocator(spec))).compile(URI
             .create("template"));
     long endCompile = System.currentTimeMillis();
     long startMerge = System.currentTimeMillis();
     String output =
-        template.merge(data == null ? Scopes.newScope() : Scopes.scope(data));
+        template.apply(data == null ? Scopes.newScope() : Scopes.scope(data));
     long endMerge = System.currentTimeMillis();
     long total = endMerge - startCompile;
     long compile = endCompile - startCompile;
@@ -133,6 +143,10 @@ public abstract class SpecTest {
       }
       report.header(80);
     }
+  }
+
+  protected Handlebars configure(final Handlebars handlebars) {
+    return handlebars;
   }
 
   @Before

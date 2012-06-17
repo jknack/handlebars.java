@@ -19,9 +19,9 @@ class Partial extends BaseTemplate {
   }
 
   @Override
-  public void merge(final Scope scope, final Writer writer)
+  public void apply(final Scope scope, final Writer writer)
       throws IOException {
-    template.merge(scope, writer);
+    template.apply(scope, writer);
   }
 
   @Override

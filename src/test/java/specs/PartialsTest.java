@@ -2,6 +2,7 @@ package specs;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 
 import org.junit.runners.Parameterized.Parameters;
 
@@ -13,7 +14,7 @@ public class PartialsTest extends SpecTest {
 
   @Override
   protected boolean skip(final Spec spec) {
-    Collection<Integer> skip = Arrays.asList(6, 7, 8, 9);
+    List<Integer> skip = Arrays.asList(6, 7, 8, 9);
     return skip.contains(spec.number());
   }
 

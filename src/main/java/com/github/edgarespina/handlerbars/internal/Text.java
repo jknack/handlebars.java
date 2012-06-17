@@ -20,7 +20,7 @@ class Text extends BaseTemplate {
   }
 
   @Override
-  public void merge(final Scope scope, final Writer writer) throws IOException {
+  public void apply(final Scope scope, final Writer writer) throws IOException {
     writer.append(text);
   }
 

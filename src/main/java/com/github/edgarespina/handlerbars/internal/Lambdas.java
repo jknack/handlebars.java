@@ -13,7 +13,7 @@ public final class Lambdas {
       final Lambda<Object> lambda,
       final Scope scope, final Template template) throws IOException {
     BaseTemplate result = compile(handlebars, lambda, scope, template);
-    return result.merge(scope);
+    return result.apply(scope);
   }
 
   public static BaseTemplate compile(final Handlebars handlebars,

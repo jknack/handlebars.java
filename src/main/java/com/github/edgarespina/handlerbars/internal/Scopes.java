@@ -1,6 +1,7 @@
 package com.github.edgarespina.handlerbars.internal;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
@@ -36,7 +37,7 @@ public class Scopes {
       // against former resolutions.
       LinkedList<String> path = path(key);
       Object value = get(path);
-      while (value == null && parent != null) {
+      if (value == null && parent != null) {
         value = parent.get(key);
       }
       return value == NULL ? null : value;
@@ -146,7 +147,7 @@ public class Scopes {
       scope = (Map<String, Object>) data;
     } else {
       scope = new HashMap<String, Object>();
-      scope.put(".", data);
+      scope.put(".", data == null ? Collections.emptyMap() : data);
     }
     return new ForwardingMap(parent, scope);
   }
