@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import com.github.edgarespina.handlerbars.Handlebars;
 import com.github.edgarespina.handlerbars.Options;
 import com.github.edgarespina.handlerbars.Scope;
 import com.github.edgarespina.handlerbars.Template;
@@ -89,13 +90,8 @@ public class DefaultOptions implements Options {
   }
 
   @Override
-  public boolean empty(final Object value) {
-    return Empty.empty(value);
-  }
-
-  @Override
-  public Template template() {
-    return template;
+  public boolean isEmpty(final Object value) {
+    return Handlebars.Utils.isEmpty(value);
   }
 
   public void destroy() {

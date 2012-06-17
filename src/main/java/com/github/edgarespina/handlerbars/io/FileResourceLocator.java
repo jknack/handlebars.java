@@ -1,6 +1,7 @@
 package com.github.edgarespina.handlerbars.io;
 
-import static org.apache.commons.lang3.Validate.notNull;
+
+import static org.parboiled.common.Preconditions.checkNotNull;
 
 import java.io.File;
 import java.io.FileReader;
@@ -15,7 +16,7 @@ public class FileResourceLocator extends ResourceLocator {
   private final File basedir;
 
   public FileResourceLocator(final File basedir) {
-    this.basedir = notNull(basedir, "The base dir is required.");
+    this.basedir = checkNotNull(basedir, "The base dir is required.");
   }
 
   @Override

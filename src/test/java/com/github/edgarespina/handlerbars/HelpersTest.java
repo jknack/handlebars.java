@@ -24,7 +24,7 @@ public class HelpersTest extends SpecTest {
       public CharSequence apply(final List<Object> list, final Options options)
           throws IOException {
         StringBuilder buffer = new StringBuilder();
-        if (!options.empty(list)) {
+        if (!options.isEmpty(list)) {
           buffer.append("<ul>\n");
           for (Object element : list) {
             buffer.append("  <li>\n    ").append(options.fn(element))
@@ -50,7 +50,7 @@ public class HelpersTest extends SpecTest {
               throws IOException {
             String text = "<button>I agree. I " + context.get("emotion") + " "
                 + context.get("name") + "</button>";
-            return Handlebars.safeString(text);
+            return new Handlebars.SafeString(text);
           }
         });
     handlebars.registerHelper("link",
@@ -76,7 +76,7 @@ public class HelpersTest extends SpecTest {
                   .append(entry.getValue()).append("\"").append(sep);
             }
             classes.setLength(classes.length() - sep.length());
-            return new SafeString("<a " + classes + ">" + text + "</a>");
+            return new Handlebars.SafeString("<a " + classes + ">" + text + "</a>");
           }
         });
     return super.configure(handlebars);

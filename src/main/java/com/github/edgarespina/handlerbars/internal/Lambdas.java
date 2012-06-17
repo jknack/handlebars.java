@@ -19,8 +19,7 @@ public final class Lambdas {
   public static BaseTemplate compile(final Handlebars handlebars,
       final Lambda<Object> lambda, final Scope scope, final Template template)
       throws IOException {
-    return compile(handlebars, lambda, scope, template, Handlebars.DELIM_START,
-        Handlebars.DELIM_END);
+    return compile(handlebars, lambda, scope, template, "{{", "}}");
   }
 
   public static BaseTemplate compile(final Handlebars handlebars,

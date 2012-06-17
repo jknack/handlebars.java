@@ -1,6 +1,6 @@
 package com.github.edgarespina.handlerbars.io;
 
-import static org.apache.commons.lang3.Validate.notNull;
+import static org.parboiled.common.Preconditions.checkNotNull;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -20,7 +20,7 @@ public class WebResourceLocator extends ResourceLocator {
 
   public WebResourceLocator(final ServletContext servletContext) {
     this.servletContext =
-        notNull(servletContext, "The servlet context is required.");
+        checkNotNull(servletContext, "The servlet context is required.");
     this.basepath = "/";
   }
 

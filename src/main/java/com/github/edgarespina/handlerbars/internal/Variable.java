@@ -1,7 +1,5 @@
 package com.github.edgarespina.handlerbars.internal;
 
-import static com.github.edgarespina.handlerbars.Handlebars.html;
-
 import java.io.IOException;
 import java.io.Writer;
 import java.util.Collections;
@@ -11,7 +9,6 @@ import java.util.Map;
 import com.github.edgarespina.handlerbars.Handlebars;
 import com.github.edgarespina.handlerbars.Helper;
 import com.github.edgarespina.handlerbars.Lambda;
-import com.github.edgarespina.handlerbars.SafeString;
 import com.github.edgarespina.handlerbars.Scope;
 import com.github.edgarespina.handlerbars.Template;
 
@@ -61,7 +58,7 @@ class Variable extends HelperResolver {
           new DefaultOptions(this, null, scope, params(scope), hash(scope));
       CharSequence result = helper.apply(context, options);
       if (escape(result)) {
-        writer.append(html(result.toString()));
+        writer.append(Handlebars.Utils.escapeExpression(result));
       } else {
         writer.append(result);
       }
@@ -75,7 +72,7 @@ class Variable extends HelperResolver {
         String stringValue = value.toString();
         // TODO: Add formatter hook
         if (escape(value)) {
-            writer.append(html(stringValue));
+            writer.append(Handlebars.Utils.escapeExpression(stringValue));
         } else {
           // DON'T escape none String values.
           writer.append(stringValue);
@@ -88,7 +85,7 @@ class Variable extends HelperResolver {
     boolean isString =
         value instanceof CharSequence || value instanceof Character;
     if (isString) {
-      return this.escape && !(value instanceof SafeString);
+      return this.escape;
     } else {
       return false;
     }

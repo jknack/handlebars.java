@@ -1,6 +1,7 @@
 package com.github.edgarespina.handlerbars.io;
 
-import static org.apache.commons.lang3.Validate.notEmpty;
+import static org.parboiled.common.Preconditions.checkArgument;
+import static org.parboiled.common.Preconditions.checkNotNull;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -15,7 +16,9 @@ public class ClasspathResourceLocator extends ResourceLocator {
   private String basepath;
 
   public ClasspathResourceLocator(final String basepath) {
-    this.basepath = notEmpty(basepath, "The base path is required.");
+    checkNotNull(basepath, "A base path is required.");
+    checkArgument(basepath.length() > 0, "A base path is required.");
+    this.basepath = basepath;
     if (!this.basepath.endsWith("/")) {
       this.basepath += "/";
     }

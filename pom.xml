@@ -16,13 +16,6 @@
       <version>1.0.2</version>
     </dependency>
 
-    <!-- commons-lang3 -->
-    <dependency>
-      <groupId>org.apache.commons</groupId>
-      <artifactId>commons-lang3</artifactId>
-      <version>3.1</version>
-    </dependency>
-
     <!-- Logging System -->
     <dependency>
       <groupId>org.slf4j</groupId>
@@ -89,10 +82,35 @@
           <downloadSources>true</downloadSources>
         </configuration>
       </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+        <version>${maven-checkstyle-plugin-version}</version>
+        <configuration>
+          <consoleOutput>true</consoleOutput>
+          <configLocation>checkstyle.xml</configLocation>
+          <failsOnError>true</failsOnError>
+        </configuration>
+        <executions>
+          <execution>
+            <id>checkstyle</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>checkstyle</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
   </build>
 
   <prerequisites>
     <maven>3.0</maven>
   </prerequisites>
+
+  <properties>
+    <maven-checkstyle-plugin-version>2.9.1</maven-checkstyle-plugin-version>
+    <!-- Encoding UTF-8 -->
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
 </project>
