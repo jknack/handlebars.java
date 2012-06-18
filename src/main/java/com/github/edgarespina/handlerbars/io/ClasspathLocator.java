@@ -19,7 +19,7 @@ import com.github.edgarespina.handlerbars.ResourceLocator;
  * @author edgar.espina
  * @since 0.1.0
  */
-public class ClasspathResourceLocator extends ResourceLocator {
+public class ClasspathLocator extends ResourceLocator {
 
   /**
    * The base path. Required.
@@ -27,11 +27,11 @@ public class ClasspathResourceLocator extends ResourceLocator {
   private String basepath;
 
   /**
-   * Creates a new {@link ClasspathResourceLocator}.
+   * Creates a new {@link ClasspathLocator}.
    *
    * @param basepath The base path. Required.
    */
-  public ClasspathResourceLocator(final String basepath) {
+  public ClasspathLocator(final String basepath) {
     checkNotNull(basepath, "A base path is required.");
     checkArgument(basepath.length() > 0, "A base path is required.");
     this.basepath = basepath;
@@ -41,10 +41,10 @@ public class ClasspathResourceLocator extends ResourceLocator {
   }
 
   /**
-   * Creates a new {@link ClasspathResourceLocator}. It looks for templates
+   * Creates a new {@link ClasspathLocator}. It looks for templates
    * stored in the root of the classpath.
    */
-  public ClasspathResourceLocator() {
+  public ClasspathLocator() {
     this("/");
   }
 

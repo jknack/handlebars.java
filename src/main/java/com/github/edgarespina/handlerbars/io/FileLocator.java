@@ -19,7 +19,7 @@ import com.github.edgarespina.handlerbars.ResourceLocator;
  * @author edgar.espina
  * @since 0.1.0
  */
-public class FileResourceLocator extends ResourceLocator {
+public class FileLocator extends ResourceLocator {
 
   /**
    * The base directory.
@@ -27,11 +27,11 @@ public class FileResourceLocator extends ResourceLocator {
   private final File basedir;
 
   /**
-   * Creates a new {@link FileResourceLocator}.
+   * Creates a new {@link FileLocator}.
    *
    * @param basedir The base directory. Required.
    */
-  public FileResourceLocator(final File basedir) {
+  public FileLocator(final File basedir) {
     this.basedir = checkNotNull(basedir, "The base dir is required.");
     checkArgument(basedir.exists(), "File not found: %s", basedir);
     checkArgument(basedir.isDirectory(), "A directory is required: %s",

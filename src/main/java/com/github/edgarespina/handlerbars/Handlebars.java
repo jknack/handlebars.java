@@ -14,7 +14,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 
 import com.github.edgarespina.handlerbars.internal.Parser;
-import com.github.edgarespina.handlerbars.io.ClasspathResourceLocator;
+import com.github.edgarespina.handlerbars.io.ClasspathLocator;
 
 /**
  * <p>
@@ -226,7 +226,7 @@ public final class Handlebars {
    * Creates a new {@link Handlebars} with a classpath resource locator.
    */
   public Handlebars() {
-    this(new ClasspathResourceLocator());
+    this(new ClasspathLocator());
   }
 
   /**
