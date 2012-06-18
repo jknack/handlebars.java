@@ -110,8 +110,7 @@ abstract class HelperResolver extends BaseTemplate {
    * @return The value transformed (if applies).
    */
   protected Object transform(final Object value) {
-    Object newValue = Transformer.get(value).transform(value);
-    return newValue;
+    return Transformer.transform(value);
   }
 
   /**
@@ -119,7 +118,6 @@ abstract class HelperResolver extends BaseTemplate {
    *
    * @param name The helper's name.
    * @return The matching helper.
-   * @throws HandlebarsException If the helper cannot be found.
    */
   protected Helper<Object> helper(final String name) {
     Helper<Object> helper = handlebars.helper(name);

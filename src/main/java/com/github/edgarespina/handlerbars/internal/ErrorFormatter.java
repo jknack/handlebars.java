@@ -90,8 +90,8 @@ class ErrorFormatter implements Formatter<InvalidInputError> {
 
   /**
    * Gets the labels corresponding to the given matcher, AnyOfMatchers are
-   * treated specially in that their
-   * label is constructed as a list of their contents
+   * treated specially in that their label is constructed as a list of their
+   * contents.
    *
    * @param matcher the matcher
    * @return the labels
@@ -160,8 +160,8 @@ class ErrorFormatter implements Formatter<InvalidInputError> {
    * Pretty prints the given parse error showing its location in the given input
    * buffer.
    *
-   * @param error the parse error
-   * @return the pretty print text
+   * @param result the parse result.
+   * @return the pretty print text.
    */
   public static String printResult(final ParsingResult<?> result) {
     List<ParseError> errors = result.parseErrors;
@@ -182,9 +182,11 @@ class ErrorFormatter implements Formatter<InvalidInputError> {
   public static String printParseError(final ParseError error) {
     checkArgNotNull(error, "error");
     String message =
-        error.getErrorMessage() != null ? error.getErrorMessage() :
-            error instanceof InvalidInputError ?
-                new ErrorFormatter().format((InvalidInputError) error) : "";
+        error.getErrorMessage() != null
+            ? error.getErrorMessage()
+            : error instanceof InvalidInputError
+                ? new ErrorFormatter().format((InvalidInputError) error)
+                : "";
     return printErrorMessage("line %2$s:%3$s: %1$s", message,
         error.getStartIndex(), error.getEndIndex(), error.getInputBuffer())
         .trim();

@@ -11,10 +11,26 @@ import java.net.URI;
 
 import com.github.edgarespina.handlerbars.ResourceLocator;
 
+/**
+ * A resource locator that let you load files from a classpath. A base path can
+ * be specified at creation time. By default all the templates are loaded from
+ * '/' (a.k.a. root classpath).
+ *
+ * @author edgar.espina
+ * @since 0.1.0
+ */
 public class ClasspathResourceLocator extends ResourceLocator {
 
+  /**
+   * The base path. Required.
+   */
   private String basepath;
 
+  /**
+   * Creates a new {@link ClasspathResourceLocator}.
+   *
+   * @param basepath The base path. Required.
+   */
   public ClasspathResourceLocator(final String basepath) {
     checkNotNull(basepath, "A base path is required.");
     checkArgument(basepath.length() > 0, "A base path is required.");
@@ -24,6 +40,10 @@ public class ClasspathResourceLocator extends ResourceLocator {
     }
   }
 
+  /**
+   * Creates a new {@link ClasspathResourceLocator}. It looks for templates
+   * stored in the root of the classpath.
+   */
   public ClasspathResourceLocator() {
     this("/");
   }
@@ -33,7 +53,7 @@ public class ClasspathResourceLocator extends ResourceLocator {
     String path = basepath + uri;
     InputStream input = getClass().getResourceAsStream(path);
     if (input == null) {
-      throw new IOException("Not found: " + path);
+      return null;
     }
     return new InputStreamReader(input);
   }

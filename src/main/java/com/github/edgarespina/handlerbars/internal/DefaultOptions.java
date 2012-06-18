@@ -118,10 +118,9 @@ class DefaultOptions implements Options {
       return "";
     }
     String result =
-        template.apply(context == this.context ?
-            this.context :
-            Context.scope(this.context, context)
-            );
+        template.apply(context == this.context
+            ? this.context
+            : DefaultContext.scope(this.context, context));
     return result;
   }
 

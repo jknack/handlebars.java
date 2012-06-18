@@ -41,6 +41,7 @@ import com.github.edgarespina.handlerbars.Handlebars;
 import com.github.edgarespina.handlerbars.HandlebarsException;
 import com.github.edgarespina.handlerbars.ResourceLocator;
 import com.github.edgarespina.handlerbars.Template;
+import com.github.edgarespina.handlerbars.internal.Variable.Type;
 
 /**
  * The template parser.
@@ -156,9 +157,9 @@ public class Parser extends BaseParser<BaseTemplate> {
     }
   }
 
-  protected String delimStart;
+  protected String startDelimiter;
 
-  protected String delimEnd;
+  protected String endDelimiter;
 
   protected final List<BaseTemplate> line = new LinkedList<BaseTemplate>();
 
@@ -171,26 +172,26 @@ public class Parser extends BaseParser<BaseTemplate> {
   protected final Map<String, Partial> partials;
 
   Parser(final Handlebars handlebars,
-      final Map<String, Partial> partials, final String delimStart,
-      final String delimEnd) {
+      final Map<String, Partial> partials, final String startDelimiter,
+      final String endDelimiter) {
     this.handlebars = handlebars;
     this.partials =
         partials == null ? new HashMap<String, Partial>() : partials;
-    this.delimStart = delimStart;
-    this.delimEnd = delimEnd;
+    this.startDelimiter = startDelimiter;
+    this.endDelimiter = endDelimiter;
   }
 
   private static Parser create(final Handlebars handlebars,
-      final Map<String, Partial> partials, final String delimStart,
-      final String delimEnd) {
+      final Map<String, Partial> partials, final String startDelimiter,
+      final String endDelimiter) {
     return Parboiled.createParser(Parser.class, handlebars, partials,
-        delimStart, delimEnd);
+        startDelimiter, endDelimiter);
   }
 
   public static Parser create(final Handlebars handlebars,
-      final String delimStart,
-      final String delimEnd) {
-    return create(handlebars, null, delimStart, delimEnd);
+      final String startDelimiter,
+      final String endDelimiter) {
+    return create(handlebars, null, startDelimiter, endDelimiter);
   }
 
   public static void initialize() {
@@ -222,7 +223,7 @@ public class Parser extends BaseParser<BaseTemplate> {
         throw new HandlebarsException(ErrorFormatter.printParseError(
             result.parseErrors.get(0)));
       }
-      Sequence sequence = (Sequence) result.resultValue;
+      TemplateList sequence = (TemplateList) result.resultValue;
       removeBlanks(sequence);
       if (sequence.size() == 1) {
         return sequence.iterator().next();
@@ -241,7 +242,7 @@ public class Parser extends BaseParser<BaseTemplate> {
 
   Rule body() throws IOException {
     return Sequence(
-        push(new Sequence()),
+        push(new TemplateList()),
         ZeroOrMore(
         FirstOf(
             section(),
@@ -255,22 +256,22 @@ public class Parser extends BaseParser<BaseTemplate> {
   }
 
   Rule setDelimiters() {
-    final StringVar newDelimStart = new StringVar();
-    final StringVar newDelimEnd = new StringVar();
-    return Sequence(delimStart(),
+    final StringVar newstartDelimiter = new StringVar();
+    final StringVar newendDelimiter = new StringVar();
+    return Sequence(startDelimiter(),
         '=',
         spacing(),
-        newDelimiter(), newDelimStart.set(match()),
+        newDelimiter(), newstartDelimiter.set(match()),
         OneOrMore(spaceNoAction()),
-        newDelimiter(), newDelimEnd.set(match()),
+        newDelimiter(), newendDelimiter.set(match()),
         spacing(),
         '=',
-        delimEnd(),
+        endDelimiter(),
         new Action<Object>() {
           @Override
           public boolean run(final Context<Object> context) {
-            delimEnd = newDelimEnd.get();
-            delimStart = newDelimStart.get();
+            endDelimiter = newendDelimiter.get();
+            startDelimiter = newstartDelimiter.get();
             onlyWhites = false;
             return true;
           }
@@ -289,7 +290,7 @@ public class Parser extends BaseParser<BaseTemplate> {
   Rule text() {
     return Sequence(
         OneOrMore(
-            TestNot(delimStart()),
+            TestNot(startDelimiter()),
             TestNot(spaceNoAction()),
             TestNot(nlNoAction()),
             ANY),
@@ -302,35 +303,35 @@ public class Parser extends BaseParser<BaseTemplate> {
 
   Rule ampersandVar() {
     return Sequence(
-        delimStart(),
+        startDelimiter(),
         "&",
         spacing(),
-        varName(false),
+        varName(Type.AMPERSAND_VAR),
         spacing(),
-        delimEnd());
+        endDelimiter());
   }
 
   Rule tripleVar() {
     return Sequence(
-        delimStart(),
+        startDelimiter(),
         '{',
         spacing(),
-        varName(false),
+        varName(Type.TRIPLE_VAR),
         spacing(),
         '}',
-        delimEnd());
+        endDelimiter());
   }
 
   Rule var() {
     return Sequence(
-        delimStart(),
+        startDelimiter(),
         spacing(),
-        varName(true),
+        varName(Type.VAR),
         spacing(),
-        delimEnd());
+        endDelimiter());
   }
 
-  Rule varName(final boolean escape) {
+  Rule varName(final Type type) {
     final List<Object> params = new ArrayList<Object>();
     final Map<String, Object> hash = new LinkedHashMap<String, Object>();
     final StringVar var = new StringVar();
@@ -340,7 +341,7 @@ public class Parser extends BaseParser<BaseTemplate> {
         reset(params),
         reset(hash),
         paramOrHash(params, hash),
-        add(new Variable(handlebars, var.get(), escape, params, hash)));
+        add(new Variable(handlebars, var.get(), type, params, hash)));
   }
 
   boolean reset(final List<Object> list) {
@@ -354,7 +355,7 @@ public class Parser extends BaseParser<BaseTemplate> {
   }
 
   boolean add(final BaseTemplate template) {
-    Sequence sequence = (Sequence) peek();
+    TemplateList sequence = (TemplateList) peek();
     sequence.add(template);
     addToline(template);
     return true;
@@ -366,21 +367,21 @@ public class Parser extends BaseParser<BaseTemplate> {
     return true;
   }
 
-  Action<BaseTemplate> delimStart() {
+  Action<BaseTemplate> startDelimiter() {
     return new Action<BaseTemplate>() {
       @Override
       public boolean run(final Context<BaseTemplate> context) {
-        Matcher matcher = (Matcher) String(delimStart);
+        Matcher matcher = (Matcher) String(startDelimiter);
         return matcher.match((MatcherContext<BaseTemplate>) context);
       }
     };
   }
 
-  Action<BaseTemplate> delimEnd() {
+  Action<BaseTemplate> endDelimiter() {
     return new Action<BaseTemplate>() {
       @Override
       public boolean run(final Context<BaseTemplate> context) {
-        Matcher matcher = (Matcher) String(delimEnd);
+        Matcher matcher = (Matcher) String(endDelimiter);
         return matcher.match((MatcherContext<BaseTemplate>) context);
       }
     };
@@ -388,7 +389,7 @@ public class Parser extends BaseParser<BaseTemplate> {
 
   Rule partial() throws IOException {
     final StringVar uriVar = new StringVar();
-    return Sequence(delimStart(), '>', spacing(), path(),
+    return Sequence(startDelimiter(), '>', spacing(), path(),
         uriVar.set(match()),
         new Action<BaseTemplate>() {
           @Override
@@ -400,7 +401,7 @@ public class Parser extends BaseParser<BaseTemplate> {
                 ResourceLocator locator = handlebars.getResourceLocator();
                 Reader reader = locator.locate(URI.create(uri));
                 Parser parser =
-                    create(handlebars, partials, delimStart, delimEnd);
+                    create(handlebars, partials, startDelimiter, endDelimiter);
                 // Avoid stack overflow exceptions
                 partial = new Partial();
                 partials.put(uri, partial);
@@ -413,7 +414,7 @@ public class Parser extends BaseParser<BaseTemplate> {
             return add(partial);
           }
         },
-        spacing(), delimEnd());
+        spacing(), endDelimiter());
   }
 
   Rule section() throws IOException {
@@ -431,12 +432,12 @@ public class Parser extends BaseParser<BaseTemplate> {
         ),
         section.set(
             new Section(handlebars, name.get(), inverted.get(), params, hash)
-                .delimStart(delimStart).delimEnd(delimEnd)),
+                .startDelimiter(startDelimiter).endDelimiter(endDelimiter)),
         add(section.get()),
         body(),
         Optional(
             Sequence(
-                delimStart(), spacing(), elseSection(), spacing(), delimEnd()),
+                startDelimiter(), spacing(), elseSection(), spacing(), endDelimiter()),
             body(),
             new Action<BaseTemplate>() {
               @Override
@@ -472,20 +473,20 @@ public class Parser extends BaseParser<BaseTemplate> {
       final Var<Boolean> inverted, final List<Object> params,
       final Map<String, Object> hash) {
     return Sequence(
-        delimStart(), type, inverted.set(matchedChar() == '^'),
+        startDelimiter(), type, inverted.set(matchedChar() == '^'),
         spacing(),
         identifier(), name.set(match()),
         spacing(),
         reset(params),
         reset(hash),
         paramOrHash(params, hash),
-        delimEnd());
+        endDelimiter());
   }
 
   @DontLabel
   Rule sectionEnd(final StringVar name) {
     return Sequence(
-        delimStart(), '/', spacing(),
+        startDelimiter(), '/', spacing(),
         identifier(), new Action<BaseTemplate>() {
           @Override
           public boolean run(final Context<BaseTemplate> context) {
@@ -499,7 +500,7 @@ public class Parser extends BaseParser<BaseTemplate> {
           }
         },
         spacing(),
-        delimEnd());
+        endDelimiter());
   }
 
   @DontLabel
@@ -565,7 +566,7 @@ public class Parser extends BaseParser<BaseTemplate> {
 
   @MemoMismatches
   Rule identifier() {
-    return Sequence(TestNot(delimStart()), TestNot(elseSection()),
+    return Sequence(TestNot(startDelimiter()), TestNot(elseSection()),
         idStart(), ZeroOrMore(idEnd()));
   }
 
@@ -582,7 +583,7 @@ public class Parser extends BaseParser<BaseTemplate> {
   @MemoMismatches
   Rule path() {
     return Sequence(
-        TestNot(delimStart(), delimEnd()),
+        TestNot(startDelimiter(), endDelimiter()),
         OneOrMore(pathSegment()));
   }
 
@@ -662,8 +663,8 @@ public class Parser extends BaseParser<BaseTemplate> {
   }
 
   Rule comment() {
-    return Sequence(delimStart(), '!', ZeroOrMore(TestNot(delimEnd()), ANY),
-        delimEnd(), new Action<BaseTemplate>() {
+    return Sequence(startDelimiter(), '!', ZeroOrMore(TestNot(endDelimiter()), ANY),
+        endDelimiter(), new Action<BaseTemplate>() {
           @Override
           public boolean run(final Context<BaseTemplate> context) {
             onlyWhites = false;

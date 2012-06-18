@@ -39,8 +39,8 @@ class FastStringWriter extends Writer {
   @Override
   public void write(final char[] buffer, final int off, final int len)
       throws IOException {
-    if (off < 0 || off > buffer.length || len < 0 ||
-        off + len > buffer.length || off + len < 0) {
+    if (off < 0 || off > buffer.length || len < 0
+        || off + len > buffer.length || off + len < 0) {
       throw new IndexOutOfBoundsException();
     } else if (len == 0) {
       return;

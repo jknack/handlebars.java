@@ -1,16 +1,32 @@
 package com.github.edgarespina.handlerbars.internal;
 
+import static org.parboiled.common.Preconditions.checkNotNull;
+
 import java.io.IOException;
 import java.io.Writer;
 
 import com.github.edgarespina.handlerbars.Template;
 
+/**
+ * Plain text template.
+ *
+ * @author edgar.espina
+ * @since 0.1.0
+ */
 class Text extends BaseTemplate {
 
-  private String text;
+  /**
+   * The plain text. Required.
+   */
+  private final String text;
 
+  /**
+   * Creates a new {@link Text}.
+   *
+   * @param text The text content. Required.
+   */
   public Text(final String text) {
-    this.text = text;
+    this.text = checkNotNull(text, "The text content is required.");
   }
 
   @Override
@@ -19,7 +35,8 @@ class Text extends BaseTemplate {
   }
 
   @Override
-  public void doApply(final Context scope, final Writer writer) throws IOException {
+  public void doApply(final Context scope, final Writer writer)
+      throws IOException {
     writer.append(text);
   }
 

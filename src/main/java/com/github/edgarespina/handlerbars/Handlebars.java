@@ -115,7 +115,7 @@ public final class Handlebars {
         return ((Collection) value).size() == 0;
       }
       if (value instanceof Boolean) {
-        return ((Boolean) value).booleanValue() == false;
+        return !((Boolean) value).booleanValue();
       }
       return false;
     }
@@ -137,7 +137,8 @@ public final class Handlebars {
      * </pre>
      *
      * @param input the {@code String} to escape, may be null.
-     * @return
+     * @return The escaped version of the input or the same input if it's a
+     *         SafeString.
      */
     public static String escapeExpression(final CharSequence input) {
       if (input == null || input.length() == 0) {
@@ -243,15 +244,15 @@ public final class Handlebars {
    * Compile the resource located at the given uri.
    *
    * @param uri The resource's location. Required.
-   * @param delimStart The start delimiter. Required.
-   * @param delimEnd The end delimiter. Required.
+   * @param startDelimiter The start delimiter. Required.
+   * @param endDelimiter The end delimiter. Required.
    * @return A compiled template.
    * @throws IOException If the resource cannot be loaded.
    */
-  public Template compile(final URI uri, final String delimStart,
-      final String delimEnd) throws IOException {
+  public Template compile(final URI uri, final String startDelimiter,
+      final String endDelimiter) throws IOException {
     Reader reader = resourceLocator.locate(uri);
-    return Parser.create(this, delimStart, delimEnd).parse(reader);
+    return Parser.create(this, startDelimiter, endDelimiter).parse(reader);
   }
 
   /**
@@ -269,38 +270,40 @@ public final class Handlebars {
    * Compile the given input.
    *
    * @param input The resource's input. Required.
-   * @param delimStart The start delimiter. Required.
-   * @param delimEnd The end delimiter. Required.
+   * @param startDelimiter The start delimiter. Required.
+   * @param endDelimiter The end delimiter. Required.
    * @return A compiled template.
    * @throws IOException If the resource cannot be loaded.
    */
-  public Template compile(final String input, final String delimStart,
-      final String delimEnd) throws IOException {
-    return Parser.create(this, delimStart, delimEnd).parse(input);
+  public Template compile(final String input, final String startDelimiter,
+      final String endDelimiter) throws IOException {
+    return Parser.create(this, startDelimiter, endDelimiter).parse(input);
   }
 
   /**
    * Find a helper by it's name.
    *
+   * @param <H> The helper runtime type.
    * @param name The helper's name. Required.
    * @return A helper or null if it's not found.
    */
   @SuppressWarnings("unchecked")
-  public <T> Helper<T> helper(final String name) {
+  public <H> Helper<H> helper(final String name) {
     checkNotNull(name, "A helper's name is required.");
-    return (Helper<T>) helpers.get(name);
+    return (Helper<H>) helpers.get(name);
   }
 
   /**
    * Register a helper in the helper registry.
    *
+   * @param <H> The helper runtime type.
    * @param name The helper's name. Required.
    * @param helper The helper object. Required.
    * @return This handlebars.
    */
   @SuppressWarnings("unchecked")
-  public <T> Handlebars registerHelper(final String name,
-      final Helper<T> helper) {
+  public <H> Handlebars registerHelper(final String name,
+      final Helper<H> helper) {
     checkNotNull(name, "A helper's name is required.");
     checkNotNull(helper, "A helper is required.");
     helpers.put(name, (Helper<Object>) helper);

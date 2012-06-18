@@ -8,18 +8,31 @@ import java.util.List;
 
 import com.github.edgarespina.handlerbars.Template;
 
-class Sequence extends BaseTemplate implements Iterable<BaseTemplate> {
+/**
+ * A list of templates.
+ *
+ * @author edgar.espina
+ * @since 0.1.0
+ */
+class TemplateList extends BaseTemplate
+    implements Iterable<BaseTemplate> {
 
+  /**
+   * The list of child templates.
+   */
   private final List<BaseTemplate> nodes = new ArrayList<BaseTemplate>();
 
-  public Sequence() {
-  }
-
-  public boolean add(final BaseTemplate node) {
+  /**
+   * Add a child template. Empty templates aren't added.
+   *
+   * @param child The childe template.
+   * @return True, if the template was added.
+   */
+  public boolean add(final BaseTemplate child) {
     boolean add = true;
-    BaseTemplate candidate = node;
-    if (candidate instanceof Sequence) {
-      Sequence sequence = (Sequence) candidate;
+    BaseTemplate candidate = child;
+    if (candidate instanceof TemplateList) {
+      TemplateList sequence = (TemplateList) candidate;
       if (sequence.size() == 0) {
         add = false;
       } else if (sequence.size() == 1) {
@@ -33,7 +46,8 @@ class Sequence extends BaseTemplate implements Iterable<BaseTemplate> {
   }
 
   @Override
-  public void doApply(final Context scope, final Writer writer) throws IOException {
+  public void doApply(final Context scope, final Writer writer)
+      throws IOException {
     for (BaseTemplate node : nodes) {
       node.doApply(scope, writer);
     }
@@ -65,6 +79,11 @@ class Sequence extends BaseTemplate implements Iterable<BaseTemplate> {
     return removed;
   }
 
+  /**
+   * The number of children.
+   *
+   * @return The number of children.
+   */
   public int size() {
     return nodes.size();
   }

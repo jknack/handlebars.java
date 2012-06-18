@@ -7,7 +7,7 @@ import java.io.Writer;
  * A compiled template created by {@link Handlebars#compile(String)}.
  *
  * @author edgar.espina
- * @sine 0.1.0
+ * @since 0.1.0
  */
 public interface Template {
 

@@ -29,7 +29,7 @@ abstract class BaseTemplate implements Template {
   @Override
   public final String apply(final Object context) throws IOException {
     FastStringWriter writer = new FastStringWriter();
-    doApply(Context.scope(context), writer);
+    doApply(DefaultContext.context(context), writer);
     return writer.toString();
   }
 
@@ -40,7 +40,7 @@ abstract class BaseTemplate implements Template {
   public void apply(final Object scope, final Writer writer)
       throws IOException {
     checkNotNull(writer, "A writer is required");
-    doApply(Context.scope(scope), writer);
+    doApply(DefaultContext.context(scope), writer);
   }
 
   /**

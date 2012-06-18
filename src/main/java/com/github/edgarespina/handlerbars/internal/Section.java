@@ -1,5 +1,7 @@
 package com.github.edgarespina.handlerbars.internal;
 
+import static org.parboiled.common.Preconditions.checkNotNull;
+
 import java.io.IOException;
 import java.io.Writer;
 import java.util.List;
@@ -11,26 +13,67 @@ import com.github.edgarespina.handlerbars.Helper;
 import com.github.edgarespina.handlerbars.Lambda;
 import com.github.edgarespina.handlerbars.Template;
 
+/**
+ * Sections render blocks of text one or more times, depending on the value of
+ * the key in the current context.
+ * A section begins with a pound and ends with a slash. That is, {{#person}}
+ * begins a "person" section while {{/person}} ends it.
+ * The behavior of the section is determined by the value of the key.
+ *
+ * @author edgar.espina
+ * @since 0.1.0
+ */
 class Section extends HelperResolver {
+
+  /**
+   * The body template.
+   */
   private BaseTemplate body;
 
+  /**
+   * The section's name.
+   */
   private final String name;
 
+  /**
+   * True if it's inverted.
+   */
   private final boolean inverted;
 
-  private String type;
+  /**
+   * Section's description '#' or '^'.
+   */
+  private final String type;
 
-  private String delimStart;
+  /**
+   * The start delimiter.
+   */
+  private String startDelimiter;
 
-  private String delimEnd;
+  /**
+   * The end delimiter.
+   */
+  private String endDelimiter;
 
+  /**
+   * Inverse section for if/else clauses.
+   */
   private BaseTemplate inverse;
 
+  /**
+   * Creates a new {@link Section}.
+   *
+   * @param handlebars The handlebars object.
+   * @param name The section's name.
+   * @param inverted True if it's inverted.
+   * @param params The parameter list.
+   * @param hash The hash.
+   */
   public Section(final Handlebars handlebars, final String name,
       final boolean inverted, final List<Object> params,
       final Map<String, Object> hash) {
     super(handlebars);
-    this.name = name;
+    this.name = checkNotNull(name, "Section's name is required.");
     this.inverted = inverted;
     this.type = inverted ? "^" : "#";
     params(params);
@@ -47,9 +90,6 @@ class Section extends HelperResolver {
     Context currentScope = scope;
     if (helper == null) {
       context = transform(scope.get(name));
-      if (context instanceof DelimAware) {
-        ((DelimAware) context).setDelimiters(delimStart, delimEnd);
-      }
       if (inverted) {
         helper = BuiltInHelpers.UNLESS;
       } else if (context instanceof Iterable) {
@@ -61,13 +101,11 @@ class Section extends HelperResolver {
         template = Lambdas
             .compile(handlebars,
                 (Lambda<Object, Object>) context,
-                scope,
-                template,
-                delimStart,
-                delimEnd);
+                scope, template,
+                startDelimiter, endDelimiter);
       } else {
         helper = BuiltInHelpers.WITH;
-        currentScope = Context.scope(scope, context);
+        currentScope = DefaultContext.scope(scope, context);
       }
     } else {
       context = determineContext(scope);
@@ -80,10 +118,20 @@ class Section extends HelperResolver {
     options.destroy();
   }
 
+  /**
+   * The section's name.
+   *
+   * @return The section's name.
+   */
   public String name() {
     return name;
   }
 
+  /**
+   * True if it's an inverted section.
+   *
+   * @return True if it's an inverted section.
+   */
   public boolean inverted() {
     return inverted;
   }
@@ -93,30 +141,65 @@ class Section extends HelperResolver {
     return body.remove(child);
   }
 
+  /**
+   * Set the template body.
+   *
+   * @param body The template body. Required.
+   * @return This section.
+   */
   public Section body(final BaseTemplate body) {
-    this.body = body;
+    this.body = checkNotNull(body, "The template's body is required.");
     return this;
   }
 
+  /**
+   * Set the inverse template.
+   *
+   * @param inverse The inverse template. Required.
+   * @return This section.
+   */
   public Template inverse(final BaseTemplate inverse) {
-    this.inverse = inverse;
+    this.inverse =
+        checkNotNull(inverse, "The inverse template's body is required.");
     return this;
   }
 
+  /**
+   * The inverse template for else clauses.
+   *
+   * @return The inverse template for else clauses.
+   */
   public Template inverse() {
     return inverse;
   }
 
-  public Section delimEnd(final String delimEnd) {
-    this.delimEnd = delimEnd;
+  /**
+   * Set the end delimiter.
+   *
+   * @param endDelimiter The end delimiter.
+   * @return This section.
+   */
+  public Section endDelimiter(final String endDelimiter) {
+    this.endDelimiter = endDelimiter;
     return this;
   }
 
-  public Section delimStart(final String delimStart) {
-    this.delimStart = delimStart;
+  /**
+   * Set the start delimiter.
+   *
+   * @param startDelimiter The start delimiter.
+   * @return This section.
+   */
+  public Section startDelimiter(final String startDelimiter) {
+    this.startDelimiter = startDelimiter;
     return this;
   }
 
+  /**
+   * The template's body.
+   *
+   * @return The template's body.
+   */
   public Template body() {
     return body;
   }
@@ -127,12 +210,22 @@ class Section extends HelperResolver {
     return "{{" + type + name + "}}" + content + "{{/" + name + "}}";
   }
 
-  public String delimStart() {
-    return delimStart;
+  /**
+   * The start delimiter.
+   *
+   * @return The start delimiter.
+   */
+  public String startDelimiter() {
+    return startDelimiter;
   }
 
-  public String delimEnd() {
-    return delimEnd;
+  /**
+   * The end delimiter.
+   *
+   * @return The end delimiter.
+   */
+  public String endDelimiter() {
+    return endDelimiter;
   }
 
 }
