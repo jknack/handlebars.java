@@ -49,10 +49,10 @@ class Variable extends HelperResolver {
 
   @SuppressWarnings("unchecked")
   @Override
-  public void apply(final Scope scope, final Writer writer) throws IOException {
+  public void doApply(final Context scope, final Writer writer) throws IOException {
     Helper<Object> helper = helper(name);
     if (helper != null) {
-      Object context = param(scope, 0);
+      Object context = determineContext(scope);
       DefaultOptions options =
           new DefaultOptions(this, null, scope, params(scope), hash(scope));
       CharSequence result = helper.apply(context, options);
@@ -66,12 +66,13 @@ class Variable extends HelperResolver {
       if (value != null) {
         if (value instanceof Lambda) {
           value =
-              Lambdas.merge(handlebars, (Lambda<Object>) value, scope, this);
+              Lambdas.merge(handlebars, (Lambda<Object, Object>) value, scope,
+                  this);
         }
         String stringValue = value.toString();
         // TODO: Add formatter hook
         if (escape(value)) {
-            writer.append(Handlebars.Utils.escapeExpression(stringValue));
+          writer.append(Handlebars.Utils.escapeExpression(stringValue));
         } else {
           // DON'T escape none String values.
           writer.append(stringValue);
@@ -96,7 +97,7 @@ class Variable extends HelperResolver {
   }
 
   @Override
-  public String text() {
+  public String rawText() {
     return "{{" + name + "}}";
   }
 }

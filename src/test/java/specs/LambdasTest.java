@@ -7,7 +7,6 @@ import org.junit.runners.Parameterized.Parameters;
 
 import com.github.edgarespina.handlerbars.Lambda;
 import com.github.edgarespina.handlerbars.Template;
-import com.github.edgarespina.handlerbars.internal.Scope;
 
 public class LambdasTest extends SpecTest {
 
@@ -22,99 +21,99 @@ public class LambdasTest extends SpecTest {
 
   @Override
   protected Spec alter(final Spec spec) {
-    final Lambda<Object> lambda;
+    final Lambda<Object, Object> lambda;
     switch (spec.number()) {
       case 0:
-        lambda = new Lambda<Object>() {
+        lambda = new Lambda<Object, Object>() {
           @Override
-          public Object apply(final Scope scope, final Template template)
+          public Object apply(final Object scope, final Template template)
               throws IOException {
             return "world";
           }
         };
         break;
       case 1:
-        lambda = new Lambda<Object>() {
+        lambda = new Lambda<Object, Object>() {
           @Override
-          public Object apply(final Scope scope, final Template template)
+          public Object apply(final Object scope, final Template template)
               throws IOException {
             return "{{planet}}";
           }
         };
         break;
       case 2:
-        lambda = new Lambda<Object>() {
+        lambda = new Lambda<Object, Object>() {
           @Override
-          public Object apply(final Scope scope, final Template template)
+          public Object apply(final Object scope, final Template template)
               throws IOException {
             return "|planet| => {{planet}}";
           }
         };
         break;
       case 3:
-        lambda = new Lambda<Object>() {
+        lambda = new Lambda<Object, Object>() {
           int calls = 1;
 
           @Override
-          public Object apply(final Scope scope, final Template template)
+          public Object apply(final Object scope, final Template template)
               throws IOException {
             return Integer.toString(calls++);
           }
         };
         break;
       case 4:
-        lambda = new Lambda<Object>() {
+        lambda = new Lambda<Object, Object>() {
           @Override
-          public Object apply(final Scope scope, final Template template)
+          public Object apply(final Object scope, final Template template)
               throws IOException {
             return ">";
           }
         };
         break;
       case 5:
-        lambda = new Lambda<Object>() {
+        lambda = new Lambda<Object, Object>() {
           @Override
-          public Object apply(final Scope scope, final Template template)
+          public Object apply(final Object scope, final Template template)
               throws IOException {
-            String txt = template.text();
+            String txt = template.rawText();
             return txt.equals("{{x}}") ? "yes" : "no";
           }
         };
         break;
       case 6:
-        lambda = new Lambda<Object>() {
+        lambda = new Lambda<Object, Object>() {
           @Override
-          public Object apply(final Scope scope, final Template template)
+          public Object apply(final Object scope, final Template template)
               throws IOException {
-            String txt = template.text();
+            String txt = template.rawText();
             return txt + "{{planet}}" + txt;
           }
         };
         break;
       case 7:
-        lambda = new Lambda<Object>() {
+        lambda = new Lambda<Object, Object>() {
           @Override
-          public Object apply(final Scope scope, final Template template)
+          public Object apply(final Object scope, final Template template)
               throws IOException {
-            String txt = template.text();
+            String txt = template.rawText();
             return txt + "{{planet}} => |planet|" + txt;
           }
         };
         break;
       case 8:
-        lambda = new Lambda<Object>() {
+        lambda = new Lambda<Object, Object>() {
           @Override
-          public Object apply(final Scope scope, final Template template)
+          public Object apply(final Object scope, final Template template)
               throws IOException {
-            String txt = template.text();
+            String txt = template.rawText();
             return "__" + txt + "__";
           }
         };
         break;
       case 9:
-        lambda = new Lambda<Object>() {
+        lambda = new Lambda<Object, Object>() {
           @Override
-          public Object apply(final Scope scope, final Template template)
+          public Object apply(final Object scope, final Template template)
               throws IOException {
             return false;
           }

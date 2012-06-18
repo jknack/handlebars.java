@@ -14,12 +14,12 @@ class Text extends BaseTemplate {
   }
 
   @Override
-  public String text() {
+  public String rawText() {
     return text;
   }
 
   @Override
-  public void apply(final Scope scope, final Writer writer) throws IOException {
+  public void doApply(final Context scope, final Writer writer) throws IOException {
     writer.append(text);
   }
 

@@ -3,10 +3,10 @@ package com.github.edgarespina.handlerbars.internal;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.LinkedList;
+import java.util.Map;
+import java.util.StringTokenizer;
 
-
-class ObjectScope extends BaseScope<Object> {
-
+class Context {
   private static interface MethodCallback {
     Object doWith(Method method) throws Exception;
   }
@@ -15,25 +15,82 @@ class ObjectScope extends BaseScope<Object> {
     boolean matches(Method method);
   }
 
-  public ObjectScope(final Scope parent, final Object self) {
-    super(parent, self);
+  static final Object NULL = new Object();
+
+  private static final Context NONE = new Context(null, null) {
+    @Override
+    public Object get(final Object key) {
+      return null;
+    }
+  };
+
+  private Context parent;
+
+  protected final Object target;
+
+  public Context(final Context parent, final Object target) {
+    this.parent = parent;
+    this.target = target;
   }
 
-  @Override
-  protected Object get(final LinkedList<String> path) {
-    Object current = context;
+  public Object target() {
+    return target;
+  }
+
+  public Object get(final Object key) {
+    if (".".equals(key) || "this".equals(key)) {
+      return target;
+    }
+    // 1. Objects and hashes should be pushed onto the context stack.
+    // 2. All elements on the context stack should be accessible.
+    // 3. Multiple sections per template should be permitted.
+    // 4. Failed context lookups should be considered falsey.
+    // 5. Dotted names should be valid for Section tags.
+    // 6. Dotted names that cannot be resolved should be considered falsey.
+    // 7. Dotted Names - Context Precedence: Dotted names should be resolved
+    // against former resolutions.
+    LinkedList<String> path = path(key);
+    Object value = get(path);
+    if (value == null && parent != null) {
+      value = parent.get(key);
+    }
+    return value == NULL ? null : value;
+  }
+
+  private LinkedList<String> path(final Object key) {
+    LinkedList<String> path = new LinkedList<String>();
+    StringTokenizer tokenizer = new StringTokenizer(key.toString(), ".");
+    while (tokenizer.hasMoreTokens()) {
+      path.add(tokenizer.nextToken());
+    }
+    return path;
+  }
+
+  private Object get(final LinkedList<String> path) {
+    Object current = target;
     for (int i = 0; i < path.size() - 1; i++) {
-      current = invoke(current, path.get(i));
+      current = get(current, path.get(i));
       if (current == null) {
         return null;
       }
     }
     String name = path.getLast();
-    Object value = invoke(current, name);
-    if (value == null && current != context) {
+    Object value = get(current, name);
+    if (value == null && current != target) {
       // We're looking in the right scope, but the value isn't there
       // returns a custom mark to stop looking
       value = NULL;
+    }
+    return value;
+  }
+
+  @SuppressWarnings("rawtypes")
+  protected Object get(final Object current, final String name) {
+    final Object value;
+    if (current instanceof Map) {
+      value = ((Map) current).get(name);
+    } else {
+      value = invoke(current, name);
     }
     return value;
   }
@@ -106,4 +163,22 @@ class ObjectScope extends BaseScope<Object> {
     return null;
   }
 
+  @Override
+  public String toString() {
+    return target.toString();
+  }
+
+  public static Context scope(final Object candidate) {
+    return scope(null, candidate);
+  }
+
+  public static Context scope(final Context parent, final Object candidate) {
+    if (candidate == null) {
+      return Context.NONE;
+    }
+    if (candidate instanceof Context) {
+      return (Context) candidate;
+    }
+    return new Context(parent, candidate);
+  }
 }

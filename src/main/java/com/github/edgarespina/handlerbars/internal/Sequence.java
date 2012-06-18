@@ -33,14 +33,14 @@ class Sequence extends BaseTemplate implements Iterable<BaseTemplate> {
   }
 
   @Override
-  public void apply(final Scope scope, final Writer writer) throws IOException {
+  public void doApply(final Context scope, final Writer writer) throws IOException {
     for (BaseTemplate node : nodes) {
-      node.apply(scope, writer);
+      node.doApply(scope, writer);
     }
   }
 
   @Override
-  public String text() {
+  public String rawText() {
     StringBuilder buffer = new StringBuilder();
     for (BaseTemplate node : nodes) {
       buffer.append(node);

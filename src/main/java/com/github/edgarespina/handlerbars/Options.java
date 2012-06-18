@@ -48,9 +48,9 @@ public interface Options {
   /**
    * Find the parameter at the given position.
    *
+   * @param <T> The runtime type.
    * @param index The parameter position.
    * @return The paramater's value.
-   * @throws ArrayIndexOutOfBoundsException If the parameter index is invalid.
    */
   <T> T param(int index);
 
@@ -64,6 +64,7 @@ public interface Options {
   /**
    * Find a value inside the hash attributes.
    *
+   * @param <T> The runtime type.
    * @param name The hash's name.
    * @return The hash value or null.
    */

@@ -9,6 +9,7 @@ import java.util.List;
 import org.parboiled.buffers.InputBuffer;
 import org.parboiled.common.Formatter;
 import org.parboiled.common.StringUtils;
+import org.parboiled.errors.ErrorUtils;
 import org.parboiled.errors.InvalidInputError;
 import org.parboiled.errors.ParseError;
 import org.parboiled.matchers.AnyOfMatcher;
@@ -21,8 +22,9 @@ import org.parboiled.support.Position;
  * A {@link Formatter} for {@link InvalidInputError}s that automatically creates
  * the correct "expected" text
  * for the error.
+ * Similar to {@link ErrorUtils}.
  */
-public class ErrorFormatter implements Formatter<InvalidInputError> {
+class ErrorFormatter implements Formatter<InvalidInputError> {
 
   @Override
   public String format(final InvalidInputError error) {
@@ -49,6 +51,12 @@ public class ErrorFormatter implements Formatter<InvalidInputError> {
     return sb.toString();
   }
 
+  /**
+   * Find out the expected value for the given error.
+   *
+   * @param error The current error.
+   * @return The expected value for the given error.
+   */
   public String getExpectedString(final InvalidInputError error) {
     // In non recovery-mode there is no complexity in the error and start
     // indices since they are all stable.
@@ -105,6 +113,12 @@ public class ErrorFormatter implements Formatter<InvalidInputError> {
     return new String[] {matcher.getLabel() };
   }
 
+  /**
+   * Join the labels.
+   *
+   * @param labelList The label list.
+   * @return A string version of the labels.
+   */
   public String join(final List<String> labelList) {
     StringBuilder sb = new StringBuilder();
     for (int i = 0; i < labelList.size(); i++) {

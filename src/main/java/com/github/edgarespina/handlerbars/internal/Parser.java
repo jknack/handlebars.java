@@ -42,8 +42,20 @@ import com.github.edgarespina.handlerbars.HandlebarsException;
 import com.github.edgarespina.handlerbars.ResourceLocator;
 import com.github.edgarespina.handlerbars.Template;
 
+/**
+ * The template parser.
+ *
+ * @author edgar.espina
+ * @since 0.1.0
+ */
 public class Parser extends BaseParser<BaseTemplate> {
 
+  /**
+   * Fix a NPE when asking for a matcher.
+   *
+   * @author edgar.espina
+   * @since 0.1.0
+   */
   private static class SafeReportingParseRunner extends
       ReportingParseRunner<BaseTemplate> {
     public SafeReportingParseRunner(final Rule rule) {

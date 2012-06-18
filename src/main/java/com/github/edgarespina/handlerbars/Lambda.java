@@ -2,8 +2,6 @@ package com.github.edgarespina.handlerbars;
 
 import java.io.IOException;
 
-import com.github.edgarespina.handlerbars.internal.Scope;
-
 /**
  * <p>
  * When the value is a callable object, such as a lambda, the object will be
@@ -20,7 +18,9 @@ import com.github.edgarespina.handlerbars.internal.Scope;
  * {{name}} is awesome.
  * {{/wrapped}}
  * </pre>
+ *
  * Hash:
+ *
  * <pre>
  * Map hash = ...
  * hash.put("name", "Willy");
@@ -39,9 +39,18 @@ import com.github.edgarespina.handlerbars.internal.Scope;
  * </pre>
  *
  * @author edgar.espina
+ * @param <Context> The lambda context.
  * @param <Out> The lambda output.
  */
-public interface Lambda<Out> {
+public interface Lambda<Context, Out> {
 
-  Out apply(Scope scope, Template template) throws IOException;
+  /**
+   * Apply the lambda.
+   *
+   * @param context The current context.
+   * @param template The current template.
+   * @return The resulting text.
+   * @throws IOException If the resource cannot be loaded.
+   */
+  Out apply(Context context, Template template) throws IOException;
 }

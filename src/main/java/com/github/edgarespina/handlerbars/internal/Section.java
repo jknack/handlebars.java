@@ -39,12 +39,12 @@ class Section extends HelperResolver {
 
   @SuppressWarnings("unchecked")
   @Override
-  public void apply(final Scope scope,
+  public void doApply(final Context scope,
       final Writer writer) throws IOException {
     Helper<Object> helper = helper(name);
     BaseTemplate template = body;
     Object context;
-    Scope currentScope = scope;
+    Context currentScope = scope;
     if (helper == null) {
       context = transform(scope.get(name));
       if (context instanceof DelimAware) {
@@ -60,17 +60,17 @@ class Section extends HelperResolver {
         helper = BuiltInHelpers.WITH;
         template = Lambdas
             .compile(handlebars,
-                (Lambda<Object>) context,
+                (Lambda<Object, Object>) context,
                 scope,
                 template,
                 delimStart,
                 delimEnd);
       } else {
         helper = BuiltInHelpers.WITH;
-        currentScope = Scopes.scope(scope, context);
+        currentScope = Context.scope(scope, context);
       }
     } else {
-      context = param(scope, 0);
+      context = determineContext(scope);
     }
     DefaultOptions options =
         new DefaultOptions(template, inverse, currentScope,
@@ -122,7 +122,7 @@ class Section extends HelperResolver {
   }
 
   @Override
-  public String text() {
+  public String rawText() {
     String content = body == null ? "" : body.toString();
     return "{{" + type + name + "}}" + content + "{{/" + name + "}}";
   }

@@ -3,7 +3,16 @@ package com.github.edgarespina.handlerbars.internal;
 import java.io.IOException;
 import java.io.Writer;
 
+/**
+ * A string writer without locking.
+ *
+ * @author edgar.espina
+ * @since 0.1.0
+ */
 class FastStringWriter extends Writer {
+  /**
+   * The internal buffer.
+   */
   private final StringBuilder buffer = new StringBuilder();
 
   @Override

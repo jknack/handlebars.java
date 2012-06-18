@@ -90,6 +90,7 @@
           <consoleOutput>true</consoleOutput>
           <configLocation>checkstyle.xml</configLocation>
           <failsOnError>true</failsOnError>
+          <excludes>**/Parser*</excludes>
         </configuration>
         <executions>
           <execution>
