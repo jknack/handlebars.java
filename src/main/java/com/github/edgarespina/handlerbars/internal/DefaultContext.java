@@ -116,9 +116,6 @@ final class DefaultContext implements Context {
    */
   @Override
   public Object get(final Object key) {
-    if (target == null) {
-      return null;
-    }
     if (".".equals(key) || "this".equals(key)) {
       return target;
     }

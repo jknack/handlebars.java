@@ -33,16 +33,15 @@ public abstract class SpecTest {
       for (int i = 0; i < size; i++) {
         buffer.append("*");
       }
-      System.out.println(buffer);
+      Handlebars.log(buffer.toString());
     }
 
     public void append(final Object message) {
-      System.out.println(message == null ? "" : message.toString());
+      Handlebars.log(message == null ? "" : message.toString());
     }
 
     public void append(final Object message, final Object... arguments) {
-      System.out.println(String.format(
-          message == null ? "" : message.toString(), arguments));
+      Handlebars.log(message == null ? "" : message.toString(), arguments);
     }
 
   }

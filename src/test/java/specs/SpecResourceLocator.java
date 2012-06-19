@@ -21,7 +21,7 @@ public class SpecResourceLocator extends ResourceLocator<String> {
 
   @Override
   protected String resolve(final String uri) {
-    return uri.toString();
+    return uri;
   }
 
   @Override

@@ -331,6 +331,16 @@ public final class Handlebars {
   }
 
   /**
+   * Log the given message and format the message within the args.
+   *
+   * @param message The log's message.
+   * @see String#format(String, Object...)
+   */
+  public static void log(final String message) {
+    logger.info(message);
+  }
+
+  /**
    * Log the given message as warn and format the message within the args.
    *
    * @param message The log's message.
@@ -339,6 +349,16 @@ public final class Handlebars {
    */
   public static void warn(final String message, final Object... args) {
     logger.warn(String.format(message, args));
+  }
+
+  /**
+   * Log the given message as warn and format the message within the args.
+   *
+   * @param message The log's message.
+   * @see String#format(String, Object...)
+   */
+  public static void warn(final String message) {
+    logger.warn(message);
   }
 
   /**
@@ -353,6 +373,16 @@ public final class Handlebars {
   }
 
   /**
+   * Log the given message as debug and format the message within the args.
+   *
+   * @param message The log's message.
+   * @see String#format(String, Object...)
+   */
+  public static void debug(final String message) {
+    logger.debug(message);
+  }
+
+  /**
    * Log the given message as error and format the message within the args.
    *
    * @param message The log's message.
@@ -362,5 +392,15 @@ public final class Handlebars {
 
   public static void error(final String message, final Object... args) {
     logger.error(String.format(message, args));
+  }
+
+  /**
+   * Log the given message as error and format the message within the args.
+   *
+   * @param message The log's message.
+   * @see String#format(String, Object...)
+   */
+  public static void error(final String message) {
+    logger.error(message);
   }
 }

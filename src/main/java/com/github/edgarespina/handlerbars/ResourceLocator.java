@@ -37,10 +37,11 @@ public abstract class ResourceLocator<Location> {
     Location location = resolve(normalize(uri.toString()));
     Reader reader = read(location);
     if (reader == null) {
-      Handlebars.warn("Resource not found: {} using an empty resource.",
+      Handlebars.warn("Resource not found: %s. Returning an empty resource.",
           location);
       return EMPTY;
     }
+    Handlebars.debug("Resource found: %s", location);
     return reader;
   }
 
