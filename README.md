@@ -2,7 +2,7 @@ handlebars.java - Logic-less and semantic templates with Java
 ===============
 
 ### Status
- * Passes 123 of 127 tests from the [Mustache Spec](https://github.com/mustache/spec). The four missing test are related to partials, specially the whitespace indentation is not stricted follow.
+ * Passes 123 of 127 tests from the [Mustache Spec](https://github.com/mustache/spec).
  * There isn't a public release in yet (Maven Central). 
 
 ## Design
