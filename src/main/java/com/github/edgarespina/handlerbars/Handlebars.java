@@ -196,7 +196,7 @@ public final class Handlebars {
   /**
    * The resource locator. Required.
    */
-  private final ResourceLocator resourceLocator;
+  private final ResourceLocator<?> resourceLocator;
 
   /**
    * The helper registry.
@@ -216,7 +216,7 @@ public final class Handlebars {
    *
    * @param resourceLocator The resource locator. Required.
    */
-  public Handlebars(final ResourceLocator resourceLocator) {
+  public Handlebars(final ResourceLocator<?> resourceLocator) {
     this.resourceLocator =
         checkNotNull(resourceLocator, "The resource locator is required.");
     BuiltInHelpers.register(this);
@@ -315,7 +315,7 @@ public final class Handlebars {
    *
    * @return The resource locator.
    */
-  public ResourceLocator getResourceLocator() {
+  public ResourceLocator<?> getResourceLocator() {
     return resourceLocator;
   }
 

@@ -398,7 +398,7 @@ public class Parser extends BaseParser<BaseTemplate> {
             Partial partial = partials.get(uri);
             if (partial == null) {
               try {
-                ResourceLocator locator = handlebars.getResourceLocator();
+                ResourceLocator<?> locator = handlebars.getResourceLocator();
                 Reader reader = locator.locate(URI.create(uri));
                 Parser parser =
                     create(handlebars, partials, startDelimiter, endDelimiter);

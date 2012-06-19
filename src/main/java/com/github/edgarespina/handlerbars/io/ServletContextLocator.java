@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.net.URI;
 
 import javax.servlet.ServletContext;
 
@@ -19,7 +18,7 @@ import com.github.edgarespina.handlerbars.ResourceLocator;
  * @author edgar.espina
  * @since 0.1.0
  */
-public class ServletContextLocator extends ResourceLocator {
+public class ServletContextLocator extends ResourceLocator<String> {
 
   /**
    * The base path. Required.
@@ -56,11 +55,15 @@ public class ServletContextLocator extends ResourceLocator {
   }
 
   @Override
-  protected Reader read(final URI uri) throws IOException {
-    String path = basepath + uri;
+  protected String resolve(final String uri) {
+    return basepath + uri;
+  }
+
+  @Override
+  protected Reader read(final String path) throws IOException {
     InputStream input = servletContext.getResourceAsStream(path);
     if (input == null) {
-      throw new IOException("Not found: " + path);
+      return null;
     }
     return new InputStreamReader(input);
   }

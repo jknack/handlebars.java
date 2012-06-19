@@ -95,6 +95,18 @@ public enum BuiltInHelpers implements Helper<Object> {
         return options.inverse();
       }
     }
+  },
+
+  /**
+   * The log helper.
+   */
+  LOG {
+    @Override
+    public CharSequence apply(final Object context, final Options options)
+        throws IOException {
+      Handlebars.log("Context %s", context);
+      return null;
+    }
   };
 
   /**

@@ -162,4 +162,5 @@ class DefaultOptions implements Options {
     this.template = null;
     this.inverse = null;
   }
+
 }

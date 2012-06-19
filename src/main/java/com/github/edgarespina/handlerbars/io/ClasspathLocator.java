@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.net.URI;
 
 import com.github.edgarespina.handlerbars.ResourceLocator;
 
@@ -19,7 +18,7 @@ import com.github.edgarespina.handlerbars.ResourceLocator;
  * @author edgar.espina
  * @since 0.1.0
  */
-public class ClasspathLocator extends ResourceLocator {
+public class ClasspathLocator extends ResourceLocator<String> {
 
   /**
    * The base path. Required.
@@ -49,9 +48,13 @@ public class ClasspathLocator extends ResourceLocator {
   }
 
   @Override
-  protected Reader read(final URI uri) throws IOException {
-    String path = basepath + uri;
-    InputStream input = getClass().getResourceAsStream(path);
+  protected String resolve(final String uri) {
+    return basepath + uri;
+  }
+
+  @Override
+  protected Reader read(final String location) throws IOException {
+    InputStream input = getClass().getResourceAsStream(location);
     if (input == null) {
       return null;
     }

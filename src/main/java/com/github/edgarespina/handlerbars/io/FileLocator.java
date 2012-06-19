@@ -7,7 +7,6 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
-import java.net.URI;
 
 import com.github.edgarespina.handlerbars.ResourceLocator;
 
@@ -19,7 +18,7 @@ import com.github.edgarespina.handlerbars.ResourceLocator;
  * @author edgar.espina
  * @since 0.1.0
  */
-public class FileLocator extends ResourceLocator {
+public class FileLocator extends ResourceLocator<File> {
 
   /**
    * The base directory.
@@ -39,8 +38,12 @@ public class FileLocator extends ResourceLocator {
   }
 
   @Override
-  protected Reader read(final URI uri) throws IOException {
-    File file = new File(basedir, uri.toString());
+  protected File resolve(final String uri) {
+    return new File(basedir, uri);
+  }
+
+  @Override
+  protected Reader read(final File file) throws IOException {
     if (!file.exists()) {
       return null;
     }
