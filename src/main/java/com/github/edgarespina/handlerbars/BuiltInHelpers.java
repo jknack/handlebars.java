@@ -4,6 +4,11 @@ import static org.parboiled.common.Preconditions.checkNotNull;
 
 import java.io.IOException;
 import java.net.URI;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Handlebars built-in helpers are present here.
@@ -134,6 +139,69 @@ public enum BuiltInHelpers implements Helper<Object> {
   },
 
   /**
+   * <p>
+   * Usage:
+   * </p>
+   *
+   * <pre>
+   *    {{dateFormat date ["format"]}}
+   * </pre>
+   *
+   * Format parameters is one of:
+   * <ul>
+   * <li>"full": full date format. For example: Tuesday, June 19, 2012</li>
+   * <li>"long": long date format. For example: June 19, 2012</li>
+   * <li>"medium": medium date format. For example: Jun 19, 2012</li>
+   * <li>"short": short date format. For example: 6/19/12</li>
+   * <li>"pattern": a date pattern.</li>
+   * </ul>
+   * Otherwise, the default formatter will be used.
+   */
+  DATE_FORMAT {
+    /**
+     * The default date styles.
+     */
+    @SuppressWarnings("serial")
+    private Map<String, Integer> styles = new HashMap<String, Integer>()
+    {
+      {
+        put("full", DateFormat.FULL);
+        put("long", DateFormat.LONG);
+        put("medium", DateFormat.MEDIUM);
+        put("short", DateFormat.SHORT);
+      }
+    };
+
+    @Override
+    public CharSequence apply(final Object context, final Options options)
+        throws IOException {
+      if (context == null) {
+        return null;
+      }
+      Date date = (Date) context;
+      final DateFormat dateFormat;
+      String pattern = null;
+      if (options.params.length > 0) {
+        pattern = options.param(0);
+        Integer style = styles.get(pattern);
+        if (style == null) {
+          dateFormat = new SimpleDateFormat(pattern);
+        } else {
+          dateFormat = DateFormat.getDateInstance(style);
+        }
+      } else {
+        dateFormat = DateFormat.getDateInstance();
+      }
+      return dateFormat.format(date);
+    }
+
+    @Override
+    protected void add(final Handlebars handlebars) {
+      add("dateFormat", handlebars);
+    }
+  },
+
+  /**
    * The log helper.
    */
   LOG {
@@ -146,6 +214,25 @@ public enum BuiltInHelpers implements Helper<Object> {
   };
 
   /**
+   * Add this helper to the handle bar instance.
+   *
+   * @param handlebars The handlebars instance.
+   */
+  protected void add(final Handlebars handlebars) {
+    add(name().toLowerCase(), handlebars);
+  }
+
+  /**
+   * Add this helper to the handle bar instance.
+   *
+   * @param name The helper's name.
+   * @param handlebars The handlebars instance.
+   */
+  protected void add(final String name, final Handlebars handlebars) {
+    handlebars.registerHelper(name, this);
+  }
+
+  /**
    * Regiter all the built-in helpers.
    *
    * @param handlebars The helper's owner.
@@ -154,7 +241,7 @@ public enum BuiltInHelpers implements Helper<Object> {
     checkNotNull(handlebars, "A handlebars object is required.");
     BuiltInHelpers[] helpers = values();
     for (BuiltInHelpers helper : helpers) {
-      handlebars.registerHelper(helper.name().toLowerCase(), helper);
+      helper.add(handlebars);
     }
   }
 }
