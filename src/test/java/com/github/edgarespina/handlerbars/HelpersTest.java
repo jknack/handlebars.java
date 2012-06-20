@@ -23,16 +23,19 @@ public class HelpersTest extends SpecTest {
       @Override
       public CharSequence apply(final List<Object> list, final Options options)
           throws IOException {
-        StringBuilder buffer = new StringBuilder();
-        if (!options.isEmpty(list)) {
-          buffer.append("<ul>\n");
-          for (Object element : list) {
-            buffer.append("  <li>\n    ").append(options.fn(element))
-                .append("  </li>\n");
-          }
-          buffer.append("</ul>\n");
+        String text = "";
+        if (options.isEmpty(list)) {
+          return text;
         }
-        return buffer.toString();
+
+        text += "<ul>\n";
+        for (Object element : list) {
+          text += "  <li>\n    ";
+          text += options.fn(element);
+          text += "  </li>\n";
+        }
+        text += "</ul>\n";
+        return text;
       }
     });
     handlebars.registerHelper("fullName", new Helper<Map<String, Object>>() {
@@ -71,12 +74,13 @@ public class HelpersTest extends SpecTest {
               throws IOException {
             StringBuilder classes = new StringBuilder();
             String sep = " ";
-            for (Entry<String, Object> entry : options.hash()) {
+            for (Entry<String, Object> entry : options.hash.entrySet()) {
               classes.append(entry.getKey()).append("=\"")
                   .append(entry.getValue()).append("\"").append(sep);
             }
             classes.setLength(classes.length() - sep.length());
-            return new Handlebars.SafeString("<a " + classes + ">" + text + "</a>");
+            return new Handlebars.SafeString("<a " + classes + ">" + text
+                + "</a>");
           }
         });
     return super.configure(handlebars);

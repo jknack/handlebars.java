@@ -27,12 +27,12 @@ public interface Template {
    * @return The resulting template.
    * @throws IOException If a resource cannot be loaded.
    */
-  String apply(Object context) throws IOException;
+  CharSequence apply(Object context) throws IOException;
 
   /**
    * Provide the raw text.
    *
    * @return The raw text.
    */
-  String rawText();
+  String text();
 }

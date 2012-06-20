@@ -8,6 +8,7 @@ import java.util.Map;
 
 import org.junit.Test;
 
+
 /**
  * Unit test for {@link DefaultContext}.
  *
@@ -35,21 +36,21 @@ public class DefaultContextTest {
 
   @Test
   public void newContext() {
-    Context context = DefaultContext.context("String");
+    Context context = DefaultContext.wrap("String");
     assertNotNull(context);
     assertEquals("String", context.target());
   }
 
   @Test
   public void dotLookup() {
-    Context context = DefaultContext.context("String");
+    Context context = DefaultContext.wrap("String");
     assertNotNull(context);
     assertEquals("String", context.get("."));
   }
 
   @Test
   public void thisLookup() {
-    Context context = DefaultContext.context("String");
+    Context context = DefaultContext.wrap("String");
     assertNotNull(context);
     assertEquals("String", context.get("this"));
   }
@@ -58,7 +59,7 @@ public class DefaultContextTest {
   public void singleMapLookup() {
     Map<String, Object> model = new HashMap<String, Object>();
     model.put("simple", "value");
-    Context context = DefaultContext.context(model);
+    Context context = DefaultContext.wrap(model);
     assertNotNull(context);
     assertEquals("value", context.get("simple"));
   }
@@ -69,7 +70,7 @@ public class DefaultContextTest {
     Map<String, Object> nested = new HashMap<String, Object>();
     model.put("nested", nested);
     nested.put("simple", "value");
-    Context context = DefaultContext.context(model);
+    Context context = DefaultContext.wrap(model);
     assertNotNull(context);
     assertEquals("value", context.get("nested.simple"));
   }
@@ -82,7 +83,7 @@ public class DefaultContextTest {
         return "value";
       }
     };
-    Context context = DefaultContext.context(model);
+    Context context = DefaultContext.wrap(model);
     assertNotNull(context);
     assertEquals("value", context.get("simple"));
   }
@@ -99,14 +100,14 @@ public class DefaultContextTest {
         };
       }
     };
-    Context context = DefaultContext.context(model);
+    Context context = DefaultContext.wrap(model);
     assertNotNull(context);
     assertEquals("value", context.get("nested.simple"));
   }
 
   @Test
   public void customLookup() {
-    Context context = DefaultContext.context(new Base());
+    Context context = DefaultContext.wrap(new Base());
     assertNotNull(context);
     assertEquals("baseProperty", context.get("baseProperty"));
     assertEquals("baseProperty", context.get("childProperty"));
@@ -114,7 +115,7 @@ public class DefaultContextTest {
 
   @Test
   public void customLookupOnChildClass() {
-    Context context = DefaultContext.context(new Child());
+    Context context = DefaultContext.wrap(new Child());
     assertNotNull(context);
     assertEquals("baseProperty", context.get("baseProperty"));
     assertEquals("childProperty", context.get("childProperty"));

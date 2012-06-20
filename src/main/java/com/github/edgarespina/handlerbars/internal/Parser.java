@@ -24,6 +24,7 @@ import org.parboiled.annotations.MemoMismatches;
 import org.parboiled.buffers.InputBuffer;
 import org.parboiled.errors.ActionException;
 import org.parboiled.errors.InvalidInputError;
+import org.parboiled.errors.ParseError;
 import org.parboiled.errors.ParserRuntimeException;
 import org.parboiled.matchers.Matcher;
 import org.parboiled.matchervisitors.IsSingleCharMatcherVisitor;
@@ -218,10 +219,9 @@ public class Parser extends BaseParser<BaseTemplate> {
           new SafeReportingParseRunner(template());
       ParsingResult<BaseTemplate> result = runner.run(input);
       if (result.hasErrors()) {
-        System.out.println(ErrorFormatter.printParseError(
-            result.parseErrors.get(0)));
-        throw new HandlebarsException(ErrorFormatter.printParseError(
-            result.parseErrors.get(0)));
+        ParseError error = result.parseErrors.get(0);
+        Handlebars.error(ErrorFormatter.printParseError(error));
+        throw new HandlebarsException(ErrorFormatter.printParseError(error));
       }
       TemplateList sequence = (TemplateList) result.resultValue;
       removeBlanks(sequence);

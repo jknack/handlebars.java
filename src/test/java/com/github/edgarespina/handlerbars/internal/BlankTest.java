@@ -16,12 +16,12 @@ public class BlankTest {
 
   @Test
   public void newBlank() {
-    assertEquals(" ", new Blank(" ").rawText());
+    assertEquals(" ", new Blank(" ").text());
   }
 
   @Test
   public void newBlankSequence() {
-    assertEquals(" \t", new Blank(" \t").rawText());
+    assertEquals(" \t", new Blank(" \t").text());
   }
 
   @Test(expected = NullPointerException.class)

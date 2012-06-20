@@ -44,7 +44,9 @@ public class ClasspathLocatorTest {
   public void failLocate() throws IOException {
     ResourceLocator<String> locator = new ClasspathLocator();
     Reader reader = locator.locate(URI.create("notExist.html"));
-    assertEquals(ResourceLocator.EMPTY, reader);
+    assertNotNull(reader);
+    assertNotNull(reader);
+    assertEquals("", reader.toString());
   }
 
   @Test

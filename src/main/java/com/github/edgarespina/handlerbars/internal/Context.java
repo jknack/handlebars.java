@@ -1,6 +1,5 @@
 package com.github.edgarespina.handlerbars.internal;
 
-
 /**
  * Mustache/Handlabars are contextual template engines. This class represent the
  * 'context stack' of a template.
@@ -18,23 +17,7 @@ package com.github.edgarespina.handlerbars.internal;
  * @author edgar.espina
  * @since 0.1.0
  */
-interface Context {
-
-  /**
-   * EMPTY context for null values.
-   */
-  Context NONE = new Context() {
-    @Override
-    public Object get(final Object key) {
-      return null;
-    }
-
-    @Override
-    public Object target() {
-      return null;
-    }
-  };
-
+public interface Context {
   /**
    * Resolved as '.' or 'this' inside templates. Required.
    *

@@ -82,7 +82,7 @@ class Section extends HelperResolver {
 
   @SuppressWarnings("unchecked")
   @Override
-  public void doApply(final Context scope,
+  public void merge(final Context scope,
       final Writer writer) throws IOException {
     Helper<Object> helper = helper(name);
     BaseTemplate template = body;
@@ -105,16 +105,18 @@ class Section extends HelperResolver {
                 startDelimiter, endDelimiter);
       } else {
         helper = BuiltInHelpers.WITH;
-        currentScope = DefaultContext.scope(scope, context);
+        currentScope = DefaultContext.wrap(scope, context);
       }
     } else {
       context = determineContext(scope);
     }
     DefaultOptions options =
-        new DefaultOptions(template, inverse, currentScope,
+        new DefaultOptions(handlebars, template, inverse, currentScope,
             params(currentScope), hash(scope));
     CharSequence result = helper.apply(context, options);
-    writer.append(result);
+    if (result != null) {
+      writer.append(result);
+    }
     options.destroy();
   }
 
@@ -205,7 +207,7 @@ class Section extends HelperResolver {
   }
 
   @Override
-  public String rawText() {
+  public String text() {
     String content = body == null ? "" : body.toString();
     return "{{" + type + name + "}}" + content + "{{/" + name + "}}";
   }

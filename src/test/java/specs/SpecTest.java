@@ -127,7 +127,7 @@ public abstract class SpecTest {
             .create("template"));
     long endCompile = System.currentTimeMillis();
     long startMerge = System.currentTimeMillis();
-    String output = template.apply(data);
+    CharSequence output = template.apply(data);
     long endMerge = System.currentTimeMillis();
     long total = endMerge - startCompile;
     long compile = endCompile - startCompile;

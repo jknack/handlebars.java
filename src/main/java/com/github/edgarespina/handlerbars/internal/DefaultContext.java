@@ -1,11 +1,12 @@
 package com.github.edgarespina.handlerbars.internal;
 
-import static org.parboiled.common.Preconditions.checkNotNull;
-
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.StringTokenizer;
+
+import com.github.edgarespina.handlerbars.Template;
 
 /**
  * Mustache/Handlabars are contextual template engines. This class represent the
@@ -76,6 +77,11 @@ final class DefaultContext implements Context {
   protected final Object target;
 
   /**
+   * A thread safe storage.
+   */
+  protected final Map<String, Object> storage;
+
+  /**
    * Creates a new context.
    *
    * @param parent The parent context. Optional.
@@ -84,7 +90,13 @@ final class DefaultContext implements Context {
    */
   private DefaultContext(final Context parent, final Object target) {
     this.parent = parent;
-    this.target = checkNotNull(target, "The target value is required");
+    this.target = target;
+    if (parent != null) {
+      this.storage = ((DefaultContext) parent).storage;
+    } else {
+      this.storage = new HashMap<String, Object>();
+      this.storage.put("partials", new HashMap<String, Template>());
+    }
   }
 
   /**
@@ -182,7 +194,9 @@ final class DefaultContext implements Context {
   @SuppressWarnings("rawtypes")
   protected Object get(final Object current, final String name) {
     final Object value;
-    if (current instanceof Map) {
+    if (current == null) {
+      value = null;
+    } else if (current instanceof Map) {
       value = ((Map) current).get(name);
     } else {
       value = invoke(current, name);
@@ -281,8 +295,8 @@ final class DefaultContext implements Context {
    * @param candidate The candidate value. May be null.
    * @return A new context.
    */
-  public static Context context(final Object candidate) {
-    return scope(null, candidate);
+  public static Context wrap(final Object candidate) {
+    return wrap(null, candidate);
   }
 
   /**
@@ -292,10 +306,7 @@ final class DefaultContext implements Context {
    * @param candidate The candidate value. May be null.
    * @return A new context.
    */
-  public static Context scope(final Context parent, final Object candidate) {
-    if (candidate == null) {
-      return Context.NONE;
-    }
+  public static Context wrap(final Context parent, final Object candidate) {
     if (candidate instanceof Context) {
       return (Context) candidate;
     }

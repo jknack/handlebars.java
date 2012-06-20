@@ -54,6 +54,7 @@ class FastStringWriter extends Writer {
 
   @Override
   public void close() throws IOException {
+    buffer.delete(0, buffer.length());
   }
 
   @Override

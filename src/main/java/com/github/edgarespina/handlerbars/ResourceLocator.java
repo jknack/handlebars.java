@@ -21,7 +21,16 @@ public abstract class ResourceLocator<Location> {
   /**
    * Default resource if cannot be found.
    */
-  public static final StringReader EMPTY = new StringReader("");
+  private static final StringReader EMPTY = new StringReader("") {
+    @Override
+    public void close() {
+    }
+
+    @Override
+    public String toString() {
+      return "";
+    };
+  };
 
   /**
    * Locate the resource from a resource repository.
@@ -37,7 +46,8 @@ public abstract class ResourceLocator<Location> {
     Location location = resolve(normalize(uri.toString()));
     Reader reader = read(location);
     if (reader == null) {
-      Handlebars.warn("Resource not found: %s. Returning an empty resource.",
+      Handlebars.warn(
+          "Resource not found: '%s'. defaulting to an empty string.",
           location);
       return EMPTY;
     }

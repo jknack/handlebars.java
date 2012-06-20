@@ -191,17 +191,18 @@ class Variable extends HelperResolver {
 
   @SuppressWarnings("unchecked")
   @Override
-  public void doApply(final Context scope, final Writer writer)
+  public void merge(final Context scope, final Writer writer)
       throws IOException {
     Helper<Object> helper = helper(name);
     if (helper != null) {
       Object context = determineContext(scope);
       DefaultOptions options =
-          new DefaultOptions(this, null, scope, params(scope), hash(scope));
+          new DefaultOptions(handlebars, this, null, scope, params(scope),
+              hash(scope));
       CharSequence result = helper.apply(context, options);
       if (escape(result)) {
         writer.append(Handlebars.Utils.escapeExpression(result));
-      } else {
+      } else if (result != null) {
         writer.append(result);
       }
     } else {
@@ -249,7 +250,7 @@ class Variable extends HelperResolver {
   }
 
   @Override
-  public String rawText() {
+  public String text() {
     return type.format(name);
   }
 }

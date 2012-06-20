@@ -3,6 +3,7 @@ package com.github.edgarespina.handlerbars;
 import static org.parboiled.common.Preconditions.checkNotNull;
 
 import java.io.IOException;
+import java.net.URI;
 
 /**
  * Handlebars built-in helpers are present here.
@@ -94,6 +95,41 @@ public enum BuiltInHelpers implements Helper<Object> {
       } else {
         return options.inverse();
       }
+    }
+  },
+
+  /**
+   * The block helper will replace its section with the partial of the
+   * same name if it exists.
+   */
+  BLOCK {
+    @Override
+    public CharSequence apply(final Object context, final Options options)
+        throws IOException {
+      checkNotNull(context, "A template path is required.");
+
+      String path = (String) context;
+      Template template = options.partial(path);
+      if (template == null) {
+        template = options.handlebars.compile(URI.create(path));
+        options.partial(path, template);
+      }
+      CharSequence result = options.apply(template);
+      return result == null || result.length() == 0 ? options.fn() : result;
+    }
+  },
+
+  /**
+   * The partial registry helper. It stores templates in the current execution
+   * context. Later the {@link #BLOCK} helper read the registry and apply the
+   * template.
+   */
+  PARTIAL {
+    @Override
+    public CharSequence apply(final Object context, final Options options)
+        throws IOException {
+      options.partial((String) context, options.fn);
+      return null;
     }
   },
 

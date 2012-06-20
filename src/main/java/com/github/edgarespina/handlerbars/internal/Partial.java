@@ -35,13 +35,13 @@ class Partial extends BaseTemplate {
   }
 
   @Override
-  public void doApply(final Context scope, final Writer writer)
+  public void merge(final Context scope, final Writer writer)
       throws IOException {
     template.apply(scope, writer);
   }
 
   @Override
-  public String rawText() {
+  public String text() {
     return template.toString();
   }
 

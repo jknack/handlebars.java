@@ -46,15 +46,15 @@ class TemplateList extends BaseTemplate
   }
 
   @Override
-  public void doApply(final Context scope, final Writer writer)
+  public void merge(final Context scope, final Writer writer)
       throws IOException {
     for (BaseTemplate node : nodes) {
-      node.doApply(scope, writer);
+      node.merge(scope, writer);
     }
   }
 
   @Override
-  public String rawText() {
+  public String text() {
     StringBuilder buffer = new StringBuilder();
     for (BaseTemplate node : nodes) {
       buffer.append(node);

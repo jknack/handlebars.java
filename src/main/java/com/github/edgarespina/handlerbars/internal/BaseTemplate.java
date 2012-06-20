@@ -27,9 +27,9 @@ abstract class BaseTemplate implements Template {
    * {@inheritDoc}
    */
   @Override
-  public final String apply(final Object context) throws IOException {
+  public final CharSequence apply(final Object context) throws IOException {
     FastStringWriter writer = new FastStringWriter();
-    doApply(DefaultContext.context(context), writer);
+    apply(context, writer);
     return writer.toString();
   }
 
@@ -37,24 +37,24 @@ abstract class BaseTemplate implements Template {
    * {@inheritDoc}
    */
   @Override
-  public void apply(final Object scope, final Writer writer)
+  public void apply(final Object context, final Writer writer)
       throws IOException {
-    checkNotNull(writer, "A writer is required");
-    doApply(DefaultContext.context(scope), writer);
+    checkNotNull(writer, "A writer is required.");
+    merge(DefaultContext.wrap(context), writer);
   }
 
   /**
    * Merge a child template into the writer.
    *
-   * @param scope The scope object.
+   * @param context The scope object.
    * @param writer The writer.
    * @throws IOException If a resource cannot be loaded.
    */
-  protected abstract void doApply(final Context scope, Writer writer)
+  protected abstract void merge(final Context context, Writer writer)
       throws IOException;
 
   @Override
   public final String toString() {
-    return rawText();
+    return text();
   }
 }

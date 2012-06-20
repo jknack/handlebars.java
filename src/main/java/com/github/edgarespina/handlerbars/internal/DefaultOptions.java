@@ -5,8 +5,6 @@ import static org.parboiled.common.Preconditions.checkNotNull;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
 
 import com.github.edgarespina.handlerbars.Handlebars;
 import com.github.edgarespina.handlerbars.Options;
@@ -18,14 +16,14 @@ import com.github.edgarespina.handlerbars.Template;
  * @author edgar.espina
  * @since 0.1.0
  */
-class DefaultOptions implements Options {
+class DefaultOptions extends Options {
 
   /**
    * An empty template implementation.
    */
   private static Template EMPTY = new Template() {
     @Override
-    public String rawText() {
+    public String text() {
       return "";
     }
 
@@ -46,109 +44,108 @@ class DefaultOptions implements Options {
   private Context context;
 
   /**
-   * The current template. Required.
+   * A thread safe storage.
    */
-  private Template template;
-
-  /**
-   * The current inverse template. Required.
-   */
-  private Template inverse;
-
-  /**
-   * The parameters.
-   */
-  private Object[] params;
-
-  /**
-   * The hash options.
-   */
-  private Map<String, Object> hash;
+  private Map<String, Object> storage;
 
   /**
    * Creates a new {@link DefaultOptions}.
    *
-   * @param template The current template. Required.
+   * @param handlebars The {@link Handlebars} object. Required.
+   * @param fn The current template. Required.
    * @param inverse The current inverse template. Optional.
    * @param context The current context. Required.
    * @param params The parameters. Required.
    * @param hash The hash. Required.
    */
-  public DefaultOptions(final Template template,
+  public DefaultOptions(final Handlebars handlebars, final Template fn,
       final Template inverse, final Context context, final Object[] params,
       final Map<String, Object> hash) {
-    this.template = checkNotNull(template, "The template is required");
-    this.inverse = inverse == null ? EMPTY : inverse;
+    super(handlebars, fn, inverse == null ? EMPTY : inverse, params, hash);
     this.context = checkNotNull(context, "The context is required");
-    this.params = checkNotNull(params, "The parameters are required");
-    this.hash = checkNotNull(hash, "The hash are required");
+    this.storage = ((DefaultContext) context).storage;
   }
 
   @Override
-  public String fn() throws IOException {
+  public CharSequence fn() throws IOException {
     return fn(context);
   }
 
   @Override
-  public String fn(final Object context) throws IOException {
-    return apply(template, context);
+  public CharSequence fn(final Object context) throws IOException {
+    return applyIfPossible(fn, context);
   }
 
   @Override
-  public String inverse() throws IOException {
+  public CharSequence inverse() throws IOException {
     return inverse(context);
   }
 
   @Override
-  public String inverse(final Object context) throws IOException {
-    return apply(inverse, context);
+  public CharSequence inverse(final Object context) throws IOException {
+    return applyIfPossible(inverse, context);
+  }
+
+  @SuppressWarnings("unchecked")
+  @Override
+  public <T> T get(final String name) {
+    T value = (T) context.get(name);
+    if (value == null) {
+      value = (T) storage.get(name);
+    }
+    return value;
+  }
+
+  @Override
+  public Template partial(final String path) {
+    return partials().get(path);
+  }
+
+  @Override
+  public void partial(final String path, final Template partial) {
+    partials().put(path, partial);
   }
 
   /**
-   * Apply the given template (if possible) to the given context.
+   * Apply the given template if the context object isn't null.
    *
    * @param template The template.
-   * @param context The context.
+   * @param context The context object.
    * @return The resulting text.
    * @throws IOException If a resource cannot be loaded.
    */
-  private String apply(final Template template, final Object context)
+  private CharSequence applyIfPossible(final Template template,
+      final Object context)
       throws IOException {
     if (context == null) {
       return "";
     }
-    String result =
+    return apply(template, context);
+  }
+
+  @Override
+  public CharSequence apply(final Template template) throws IOException {
+    return apply(template, this.context);
+  }
+
+  @Override
+  public CharSequence apply(final Template template, final Object context)
+      throws IOException {
+    CharSequence result =
         template.apply(context == this.context
-            ? this.context
-            : DefaultContext.scope(this.context, context));
+            ? context
+            : DefaultContext.wrap(this.context, context));
     return result;
   }
 
+  /**
+   * Return the partials storage.
+   *
+   * @return The partials storage.
+   */
   @SuppressWarnings("unchecked")
-  @Override
-  public <T> T param(final int index) {
-    return (T) params[index];
-  }
-
-  @Override
-  public int paramSize() {
-    return params.length;
-  }
-
-  @SuppressWarnings("unchecked")
-  @Override
-  public <T> T hash(final String name) {
-    return (T) hash.get(name);
-  }
-
-  @Override
-  public Set<Entry<String, Object>> hash() {
-    return hash.entrySet();
-  }
-
-  @Override
-  public boolean isEmpty(final Object value) {
-    return Handlebars.Utils.isEmpty(value);
+  private Map<String, Template> partials() {
+    return (Map<String, Template>) storage.get("partials");
   }
 
   /**
@@ -156,11 +153,8 @@ class DefaultOptions implements Options {
    */
   public void destroy() {
     this.hash.clear();
-    this.hash = null;
-    this.params = null;
     this.context = null;
-    this.template = null;
-    this.inverse = null;
+    this.storage = null;
   }
 
 }

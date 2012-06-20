@@ -31,7 +31,7 @@ final class Lambdas {
    * @return The resulting text.
    * @throws IOException If the resource cannot be loaded.
    */
-  public static String merge(final Handlebars handlebars,
+  public static CharSequence merge(final Handlebars handlebars,
       final Lambda<Object, Object> lambda, final Context scope,
       final Template template) throws IOException {
     BaseTemplate result = compile(handlebars, lambda, scope, template);

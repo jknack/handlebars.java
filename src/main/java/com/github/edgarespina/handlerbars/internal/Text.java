@@ -30,12 +30,12 @@ class Text extends BaseTemplate {
   }
 
   @Override
-  public String rawText() {
+  public String text() {
     return text;
   }
 
   @Override
-  public void doApply(final Context scope, final Writer writer)
+  public void merge(final Context scope, final Writer writer)
       throws IOException {
     writer.append(text);
   }

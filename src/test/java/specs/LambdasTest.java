@@ -75,7 +75,7 @@ public class LambdasTest extends SpecTest {
           @Override
           public Object apply(final Object scope, final Template template)
               throws IOException {
-            String txt = template.rawText();
+            String txt = template.text();
             return txt.equals("{{x}}") ? "yes" : "no";
           }
         };
@@ -85,7 +85,7 @@ public class LambdasTest extends SpecTest {
           @Override
           public Object apply(final Object scope, final Template template)
               throws IOException {
-            String txt = template.rawText();
+            String txt = template.text();
             return txt + "{{planet}}" + txt;
           }
         };
@@ -95,7 +95,7 @@ public class LambdasTest extends SpecTest {
           @Override
           public Object apply(final Object scope, final Template template)
               throws IOException {
-            String txt = template.rawText();
+            String txt = template.text();
             return txt + "{{planet}} => |planet|" + txt;
           }
         };
@@ -105,7 +105,7 @@ public class LambdasTest extends SpecTest {
           @Override
           public Object apply(final Object scope, final Template template)
               throws IOException {
-            String txt = template.rawText();
+            String txt = template.text();
             return "__" + txt + "__";
           }
         };

@@ -16,12 +16,12 @@ public class TextTest {
 
   @Test
   public void newText() {
-    assertEquals("a", new Text("a").rawText());
+    assertEquals("a", new Text("a").text());
   }
 
   @Test
   public void newTextSequence() {
-    assertEquals("abc", new Text("abc").rawText());
+    assertEquals("abc", new Text("abc").text());
   }
 
   @Test(expected = NullPointerException.class)

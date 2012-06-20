@@ -49,7 +49,8 @@ public class FileLocatorTest {
     ResourceLocator<File> locator =
         new FileLocator(new File("src/test/resources"));
     Reader reader = locator.locate(URI.create("notExist.html"));
-    assertEquals(ResourceLocator.EMPTY, reader);
+    assertNotNull(reader);
+    assertEquals("", reader.toString());
   }
 
   @Test
