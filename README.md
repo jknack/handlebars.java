@@ -99,6 +99,26 @@ System.out.println(template.apply(navs));
  * Handlebars.java includes the built-in helpers: 'if', 'unless', 'with', 'each', 'noop' and 'log'.
  * Handlebars.java also includes two built-in helpers: 'block' and 'partial' for doing [Template Inheritance](http://thejohnfreeman.com/blog/2012/03/23/template-inheritance-for-handlebars.html)
 
+## Dependencies
+ Handlebars.java depends on:
+ 
+ ```text
+  +- org.parboiled:parboiled-java:jar:1.0.2:compile
+  |  +- asm:asm:jar:3.3.1:compile
+  |  +- asm:asm-util:jar:3.3.1:compile
+  |  +- asm:asm-tree:jar:3.3.1:compile
+  |  +- asm:asm-analysis:jar:3.3.1:compile
+  |  \- org.parboiled:parboiled-core:jar:1.0.2:compile
+  \- org.slf4j:slf4j-api:jar:1.6.4:compile
+ ```
+
+### Optional dependencies:
+#### Jackson
+
+ ```text 
+  org.codehaus.jackson:jackson-mapper-asl:1.9.7
+ ```
+
 ## FAQ
 
 ## License
