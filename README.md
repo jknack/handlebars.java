@@ -1,5 +1,12 @@
-handlebars.java - Logic-less and semantic templates with Java
+Handlebars.java - Logic-less and semantic templates with Java
 ===============
+Handlebars.java is a Java port of [handlebars](http://handlebarsjs.com/).
+
+Handlebars provides the power necessary to let you build semantic templates effectively with no frustration.
+
+[Mustache](http://mustache.github.com/mustache.5.html) templates are compatible with Handlebars, so you can take a [Mustache](http://mustache.github.com/mustache.5.html) template, import it into Handlebars, and start taking advantage of the extra Handlebars features.
+
+# Getting Started
 
 ## Basic Usage
 ```java
@@ -7,8 +14,11 @@ Handlebars handlebars = new Handlebars();
 
 Template template = handlebars.compile("Hello {{.}}!");
 
-// will print: Hello Handlebars.java!
 System.out.println(template.apply("Handlebars.java"));
+```
+Output:
+```
+Hello Handlebars.java!
 ```
 
 ## JavaBean Usage
@@ -20,10 +30,12 @@ Handlebars handlebars = new Handlebars();
 
 Template template = handlebars.compile("{{title}} by {{author}}\n{{body}}");
 
-// will print:
-//My First Post by edgar
-//...
 System.out.println(template.apply(blog));
+```
+Output:
+```
+My First Post by edgar
+...
 ```
 
 ## Map Usage
@@ -37,10 +49,12 @@ Handlebars handlebars = new Handlebars();
 
 Template template = handlebars.compile("{{title}} by {{author}}\n{{body}}");
 
-// will print:
-//My First Post by edgar
-//...
 System.out.println(template.apply(blog));
+```
+Output:
+```
+My First Post by edgar
+...
 ```
 
 ## Helper Usage
@@ -72,12 +86,14 @@ handlebars.registerHelper("list", new Helper<List<Map<String, String>>>() {
 
 Template template = handlebars.compile("{{#list nav}}<a href="{{url}}">{{title}}</a>{{/list}}");
 
-// will print:
-//<ul>
-//<li><a href="http://www.yehudakatz.com">Katz Got Your Tongue</a></li>
-//<li><a href="http://www.sproutcore.com/block">SproutCore Blog</a></li>
-//</ul>
 System.out.println(template.apply(navs));
+```
+Output:
+```
+<ul>
+<li><a href="http://www.yehudakatz.com">Katz Got Your Tongue</a></li>
+<li><a href="http://www.sproutcore.com/block">SproutCore Blog</a></li>
+</ul>
 ```
 
 ## Status
