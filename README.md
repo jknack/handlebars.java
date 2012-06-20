@@ -122,8 +122,12 @@ System.out.println(template.apply(navs));
 ## FAQ
 
 ## Help and Support
- [Help, discussion](https://groups.google.com/forum/#!forum/handlebarsjava)
- [Bugs, Issues, New Features](https://github.com/edgarespina/handlebars.java/issues)
+ [Help and discussion](https://groups.google.com/forum/#!forum/handlebarsjava)
+
+ [Bugs, Issues and Features](https://github.com/edgarespina/handlebars.java/issues)
+
+## Credits
+ * [Mathias](https://github.com/sirthias): For the [parboiled](https://github.com/sirthias/parboiled) PEG library
 
 ## License
 [Apache License 2](http://www.apache.org/licenses/LICENSE-2.0.html)
