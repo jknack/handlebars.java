@@ -2,8 +2,6 @@ package com.github.edgarespina.handlerbars.internal;
 
 import static org.junit.Assert.assertEquals;
 
-import java.io.IOException;
-
 import org.junit.Test;
 
 /**
@@ -29,9 +27,4 @@ public class TextTest {
     new Text(null);
   }
 
-  @Test
-  public void apply() throws IOException {
-    Blank blank = new Blank("   ");
-    assertEquals("   ", blank.apply(null));
-  }
 }

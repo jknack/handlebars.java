@@ -437,7 +437,8 @@ public class Parser extends BaseParser<BaseTemplate> {
         body(),
         Optional(
             Sequence(
-                startDelimiter(), spacing(), elseSection(), spacing(), endDelimiter()),
+                startDelimiter(), spacing(), elseSection(), spacing(),
+                endDelimiter()),
             body(),
             new Action<BaseTemplate>() {
               @Override
@@ -663,7 +664,8 @@ public class Parser extends BaseParser<BaseTemplate> {
   }
 
   Rule comment() {
-    return Sequence(startDelimiter(), '!', ZeroOrMore(TestNot(endDelimiter()), ANY),
+    return Sequence(startDelimiter(), '!',
+        ZeroOrMore(TestNot(endDelimiter()), ANY),
         endDelimiter(), new Action<BaseTemplate>() {
           @Override
           public boolean run(final Context<BaseTemplate> context) {
@@ -675,14 +677,14 @@ public class Parser extends BaseParser<BaseTemplate> {
 
   @DontLabel
   Rule idStart() {
-    return FirstOf(CharRange('a', 'z'), CharRange('A', 'Z'), '.', '_', '$');
+    return FirstOf(CharRange('a', 'z'), CharRange('A', 'Z'), '.', '_', '$', '@');
   }
 
   @DontLabel
   @MemoMismatches
   Rule idEnd() {
     return FirstOf(CharRange('a', 'z'), CharRange('A', 'Z'), digit(), '_', '$',
-        '.', '-');
+        '.', '-', '@');
   }
 
   @DontLabel
