@@ -121,5 +121,9 @@ System.out.println(template.apply(navs));
 
 ## FAQ
 
+## Help and Support
+ [Help, discussion](https://groups.google.com/forum/#!forum/handlebarsjava)
+ [Bugs, Issues, New Features](https://github.com/edgarespina/handlebars.java/issues)
+
 ## License
 [Apache License 2](http://www.apache.org/licenses/LICENSE-2.0.html)
