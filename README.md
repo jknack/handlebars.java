@@ -99,7 +99,7 @@ Output:
 ## Status
 ### Mustache Spec
  * Passes 123 of 127 tests from the [Mustache Spec](https://github.com/mustache/spec).
- * The 4 tests are: "Standalone Line Endings", "Standalone Without Previous Line", "Standalone Without Newline", "Standalone Indentation" all them from partials.yml.
+ * The 4 missing tests are: "Standalone Line Endings", "Standalone Without Previous Line", "Standalone Without Newline", "Standalone Indentation" all them from partials.yml.
  * In short, partials works 100% if you ignore white spaces indentation.
 
 ### Maven Central
