@@ -8,17 +8,17 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 
-import com.github.edgarespina.handlerbars.ResourceLocator;
+import com.github.edgarespina.handlerbars.TemplateLoader;
 
 /**
- * A resource locator that let you load files from a classpath. A base path can
- * be specified at creation time. By default all the templates are loaded from
- * '/' (a.k.a. root classpath).
+ * Load templates from the class-path. A base path can be specified at creation
+ * time. By default all the templates are loaded from '/' (a.k.a. root
+ * classpath).
  *
  * @author edgar.espina
  * @since 0.1.0
  */
-public class ClasspathLocator extends ResourceLocator<String> {
+public class ClassTemplateLoader extends TemplateLoader<String> {
 
   /**
    * The base path. Required.
@@ -26,11 +26,11 @@ public class ClasspathLocator extends ResourceLocator<String> {
   private String basepath;
 
   /**
-   * Creates a new {@link ClasspathLocator}.
+   * Creates a new {@link ClassTemplateLoader}.
    *
    * @param basepath The base path. Required.
    */
-  public ClasspathLocator(final String basepath) {
+  public ClassTemplateLoader(final String basepath) {
     checkNotNull(basepath, "A base path is required.");
     checkArgument(basepath.length() > 0, "A base path is required.");
     this.basepath = basepath;
@@ -40,10 +40,10 @@ public class ClasspathLocator extends ResourceLocator<String> {
   }
 
   /**
-   * Creates a new {@link ClasspathLocator}. It looks for templates
+   * Creates a new {@link ClassTemplateLoader}. It looks for templates
    * stored in the root of the classpath.
    */
-  public ClasspathLocator() {
+  public ClassTemplateLoader() {
     this("/");
   }
 

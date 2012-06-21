@@ -1,5 +1,6 @@
 package com.github.edgarespina.handlerbars;
 
+import static org.parboiled.common.Preconditions.checkArgument;
 import static org.parboiled.common.Preconditions.checkNotNull;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -14,7 +15,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 
 import com.github.edgarespina.handlerbars.internal.Parser;
-import com.github.edgarespina.handlerbars.io.ClasspathLocator;
+import com.github.edgarespina.handlerbars.io.ClassTemplateLoader;
 
 /**
  * <p>
@@ -189,14 +190,40 @@ public final class Handlebars {
   private static final String DELIM_END = "}}";
 
   /**
+   * NO CACHE.
+   */
+  private static final TemplateCache NO_CACHE = new TemplateCache() {
+    @Override
+    public void put(final Object key, final Template template) {
+    }
+
+    @Override
+    public Template get(final Object key) {
+      return null;
+    }
+
+    @Override
+    public void evict(final Object key) {
+    }
+
+    @Override
+    public void clear() {
+    }
+  };
+  /**
    * The logging system.
    */
   private static final Logger logger = getLogger(Handlebars.class);
 
   /**
-   * The resource locator. Required.
+   * The template loader. Required.
    */
-  private final ResourceLocator<?> resourceLocator;
+  private final TemplateLoader<?> loader;
+
+  /**
+   * The template cache. Required.
+   */
+  private final TemplateCache cache;
 
   /**
    * The helper registry.
@@ -214,19 +241,32 @@ public final class Handlebars {
   /**
    * Creates a new {@link Handlebars}.
    *
-   * @param resourceLocator The resource locator. Required.
+   * @param loader The template loader. Required.
+   * @param cache The template cache. Required.
    */
-  public Handlebars(final ResourceLocator<?> resourceLocator) {
-    this.resourceLocator =
-        checkNotNull(resourceLocator, "The resource locator is required.");
+  public Handlebars(final TemplateLoader<?> loader, final TemplateCache cache) {
+    this.loader =
+        checkNotNull(loader, "The template loader is required.");
+    this.cache =
+        checkNotNull(cache, "The template cache is required.");
     BuiltInHelpers.register(this);
   }
 
   /**
-   * Creates a new {@link Handlebars} with a classpath resource locator.
+   * Creates a new {@link Handlebars} with no cache.
+   *
+   * @param loader The template loader. Required.
+   */
+  public Handlebars(final TemplateLoader<?> loader) {
+    this(loader, NO_CACHE);
+  }
+
+  /**
+   * Creates a new {@link Handlebars} with a {@link ClassTemplateLoader} and no
+   * cache.
    */
   public Handlebars() {
-    this(new ClasspathLocator());
+    this(new ClassTemplateLoader(), NO_CACHE);
   }
 
   /**
@@ -251,8 +291,21 @@ public final class Handlebars {
    */
   public Template compile(final URI uri, final String startDelimiter,
       final String endDelimiter) throws IOException {
-    Reader reader = resourceLocator.locate(uri);
-    return Parser.create(this, startDelimiter, endDelimiter).parse(reader);
+    checkNotNull(uri, "The uri is required.");
+    checkArgument(uri.toString().length() > 0, "The uri is required.");
+    checkDelimiters(startDelimiter, endDelimiter);
+    String key = uri + "_" + startDelimiter + ":" + endDelimiter;
+    debug("Looking for: %s", key);
+    Template template = cache.get(key);
+    if (template == null) {
+      debug("Key not found: %s", key);
+      Reader reader = loader.load(uri);
+      template =
+          Parser.create(this, startDelimiter, endDelimiter).parse(reader);
+      cache.put(key, template);
+      debug("Key saved: %s", key);
+    }
+    return template;
   }
 
   /**
@@ -269,7 +322,7 @@ public final class Handlebars {
   /**
    * Compile the given input.
    *
-   * @param input The resource's input. Required.
+   * @param input The input text. Required.
    * @param startDelimiter The start delimiter. Required.
    * @param endDelimiter The end delimiter. Required.
    * @return A compiled template.
@@ -277,7 +330,18 @@ public final class Handlebars {
    */
   public Template compile(final String input, final String startDelimiter,
       final String endDelimiter) throws IOException {
-    return Parser.create(this, startDelimiter, endDelimiter).parse(input);
+    checkNotNull(input, "The input text is required.");
+    checkArgument(input.length() > 0, "The input text is required.");
+    String key = input.hashCode() + "_" + startDelimiter + ":" + endDelimiter;
+    debug("Looking for: %s", key);
+    Template template = cache.get(key);
+    if (template == null) {
+      debug("Key not found: %s", key);
+      template = Parser.create(this, startDelimiter, endDelimiter).parse(input);
+      cache.put(key, template);
+      debug("Key saved: %s", key);
+    }
+    return template;
   }
 
   /**
@@ -315,8 +379,8 @@ public final class Handlebars {
    *
    * @return The resource locator.
    */
-  public ResourceLocator<?> getResourceLocator() {
-    return resourceLocator;
+  public TemplateLoader<?> getTemplateLoader() {
+    return loader;
   }
 
   /**
@@ -348,7 +412,9 @@ public final class Handlebars {
    * @see String#format(String, Object...)
    */
   public static void warn(final String message, final Object... args) {
-    logger.warn(String.format(message, args));
+    if (logger.isWarnEnabled()) {
+      logger.warn(String.format(message, args));
+    }
   }
 
   /**
@@ -369,7 +435,9 @@ public final class Handlebars {
    * @see String#format(String, Object...)
    */
   public static void debug(final String message, final Object... args) {
-    logger.debug(String.format(message, args));
+    if (logger.isDebugEnabled()) {
+      logger.debug(String.format(message, args));
+    }
   }
 
   /**
@@ -403,4 +471,20 @@ public final class Handlebars {
   public static void error(final String message) {
     logger.error(message);
   }
+
+  /**
+   * Check if the given delimiters aren't empty.
+   *
+   * @param startDelimiter The start delimiter.
+   * @param endDelimiter The end delimiter.
+   */
+  private static void checkDelimiters(final String startDelimiter,
+      final String endDelimiter) {
+    checkNotNull(startDelimiter, "The start delimiter is required.");
+    checkArgument(startDelimiter.length() > 0,
+        "The start delimiter is required.");
+    checkNotNull(endDelimiter, "The end delimiter is required.");
+    checkArgument(endDelimiter.length() > 0, "The end delimiter is required.");
+  }
+
 }

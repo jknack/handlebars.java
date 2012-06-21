@@ -13,7 +13,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
-import com.github.edgarespina.handlerbars.io.ClasspathLocator;
+import com.github.edgarespina.handlerbars.io.ClassTemplateLoader;
 
 @RunWith(Parameterized.class)
 public class InheritanceTest {
@@ -27,7 +27,7 @@ public class InheritanceTest {
   @Test
   public void inheritance() throws IOException {
     Handlebars handlebars =
-        new Handlebars(new ClasspathLocator("/inheritance"));
+        new Handlebars(new ClassTemplateLoader("/inheritance"));
     Template template = handlebars.compile(URI.create(name));
     CharSequence result = template.apply(new Object());
     String expected =

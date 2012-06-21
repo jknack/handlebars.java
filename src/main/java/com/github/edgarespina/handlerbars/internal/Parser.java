@@ -40,8 +40,8 @@ import org.parboiled.support.Var;
 
 import com.github.edgarespina.handlerbars.Handlebars;
 import com.github.edgarespina.handlerbars.HandlebarsException;
-import com.github.edgarespina.handlerbars.ResourceLocator;
 import com.github.edgarespina.handlerbars.Template;
+import com.github.edgarespina.handlerbars.TemplateLoader;
 import com.github.edgarespina.handlerbars.internal.Variable.Type;
 
 /**
@@ -398,8 +398,8 @@ public class Parser extends BaseParser<BaseTemplate> {
             Partial partial = partials.get(uri);
             if (partial == null) {
               try {
-                ResourceLocator<?> locator = handlebars.getResourceLocator();
-                Reader reader = locator.locate(URI.create(uri));
+                TemplateLoader<?> locator = handlebars.getTemplateLoader();
+                Reader reader = locator.load(URI.create(uri));
                 Parser parser =
                     create(handlebars, partials, startDelimiter, endDelimiter);
                 // Avoid stack overflow exceptions

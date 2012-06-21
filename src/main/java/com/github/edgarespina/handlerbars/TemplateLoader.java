@@ -16,7 +16,7 @@ import java.net.URI;
  * @author edgar.espina
  * @since 0.1.0
  */
-public abstract class ResourceLocator<Location> {
+public abstract class TemplateLoader<Location> {
 
   /**
    * Default resource if cannot be found.
@@ -33,14 +33,14 @@ public abstract class ResourceLocator<Location> {
   };
 
   /**
-   * Locate the resource from a resource repository.
+   * Load the template from a template repository.
    *
    * @param uri The resource's uri. Required.
    * @return The requested resource or {@link #EMPTY} if the resource isn't
    *         found.
    * @throws IOException If the resource cannot be loaded.
    */
-  public Reader locate(final URI uri) throws IOException {
+  public Reader load(final URI uri) throws IOException {
     checkNotNull(uri, "The uri is required.");
     checkArgument(uri.toString().length() > 0, "The uri is required.");
     Location location = resolve(normalize(uri.toString()));

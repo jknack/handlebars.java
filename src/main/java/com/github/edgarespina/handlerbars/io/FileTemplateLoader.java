@@ -8,17 +8,16 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
 
-import com.github.edgarespina.handlerbars.ResourceLocator;
+import com.github.edgarespina.handlerbars.TemplateLoader;
 
 /**
- * A resource locator that let you load files from the file system. A base path
- * must be specified at creation time. The base path serve as template
- * repository.
+ * Load templates from the file system. A base path must be specified at
+ * creation time. The base path serve as template repository.
  *
  * @author edgar.espina
  * @since 0.1.0
  */
-public class FileLocator extends ResourceLocator<File> {
+public class FileTemplateLoader extends TemplateLoader<File> {
 
   /**
    * The base directory.
@@ -26,11 +25,11 @@ public class FileLocator extends ResourceLocator<File> {
   private final File basedir;
 
   /**
-   * Creates a new {@link FileLocator}.
+   * Creates a new {@link FileTemplateLoader}.
    *
    * @param basedir The base directory. Required.
    */
-  public FileLocator(final File basedir) {
+  public FileTemplateLoader(final File basedir) {
     this.basedir = checkNotNull(basedir, "The base dir is required.");
     checkArgument(basedir.exists(), "File not found: %s", basedir);
     checkArgument(basedir.isDirectory(), "A directory is required: %s",

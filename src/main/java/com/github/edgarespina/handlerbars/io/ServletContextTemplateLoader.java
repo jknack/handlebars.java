@@ -10,15 +10,15 @@ import java.io.Reader;
 
 import javax.servlet.ServletContext;
 
-import com.github.edgarespina.handlerbars.ResourceLocator;
+import com.github.edgarespina.handlerbars.TemplateLoader;
 
 /**
- * A resource locator that let you load files from a servlet context.
+ * Load templates from the {@link ServletContext}.
  *
  * @author edgar.espina
  * @since 0.1.0
  */
-public class ServletContextLocator extends ResourceLocator<String> {
+public class ServletContextTemplateLoader extends TemplateLoader<String> {
 
   /**
    * The base path. Required.
@@ -31,12 +31,12 @@ public class ServletContextLocator extends ResourceLocator<String> {
   private final ServletContext servletContext;
 
   /**
-   * Creates a new {@link ServletContextLocator}.
+   * Creates a new {@link ServletContextTemplateLoader}.
    *
    * @param servletContext The servlet context. Required.
    * @param basepath The base path. Required.
    */
-  public ServletContextLocator(final ServletContext servletContext,
+  public ServletContextTemplateLoader(final ServletContext servletContext,
       final String basepath) {
     checkNotNull(servletContext, "The servlet context is required.");
     checkNotNull(basepath, "A base path is required.");
@@ -46,11 +46,11 @@ public class ServletContextLocator extends ResourceLocator<String> {
   }
 
   /**
-   * Creates a new {@link ServletContextLocator}.
+   * Creates a new {@link ServletContextTemplateLoader}.
    *
    * @param servletContext The servlet context. Required.
    */
-  public ServletContextLocator(final ServletContext servletContext) {
+  public ServletContextTemplateLoader(final ServletContext servletContext) {
     this(servletContext, "/");
   }
 

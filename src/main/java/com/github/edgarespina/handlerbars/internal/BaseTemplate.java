@@ -37,7 +37,7 @@ abstract class BaseTemplate implements Template {
    * {@inheritDoc}
    */
   @Override
-  public void apply(final Object context, final Writer writer)
+  public final void apply(final Object context, final Writer writer)
       throws IOException {
     checkNotNull(writer, "A writer is required.");
     merge(DefaultContext.wrap(context), writer);

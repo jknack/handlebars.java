@@ -6,9 +6,9 @@ import java.io.StringReader;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.github.edgarespina.handlerbars.ResourceLocator;
+import com.github.edgarespina.handlerbars.TemplateLoader;
 
-public class SpecResourceLocator extends ResourceLocator<String> {
+public class SpecResourceLocator extends TemplateLoader<String> {
   private Map<String, String> templates;
 
   public SpecResourceLocator(final Spec spec) {

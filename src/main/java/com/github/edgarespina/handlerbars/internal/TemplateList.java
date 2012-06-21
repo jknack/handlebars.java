@@ -14,8 +14,7 @@ import com.github.edgarespina.handlerbars.Template;
  * @author edgar.espina
  * @since 0.1.0
  */
-class TemplateList extends BaseTemplate
-    implements Iterable<BaseTemplate> {
+class TemplateList extends BaseTemplate implements Iterable<BaseTemplate> {
 
   /**
    * The list of child templates.
