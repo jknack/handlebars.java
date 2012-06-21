@@ -80,7 +80,7 @@ handlebars.registerHelper("list", new Helper<List<Map<String, String>>>() {
       ret += "<li>" + options.fn(nav) + "</li>";
     }
     
-    return ret + "</ul>";
+    return new Handlebars.SafeString(ret + "</ul>");
   }
 });
 
