@@ -138,6 +138,35 @@ public abstract class Options {
   }
 
   /**
+   * <p>
+   * Return a parameter at given index. This is analogous to:
+   * </p>
+   * <code>
+   *  Object param = options.params[index]
+   * </code>
+   * <p>
+   * The only difference is the type safe feature:
+   * </p>
+   * <code>
+   *  MyType param = options.param(index)
+   * </code>
+   *
+   * @param <T> The runtime type.
+   * @param index The parameter position.
+   * @param defaultValue The default value to return if the parameter is not
+   *        present or if null.
+   * @return The paramater's value.
+   */
+  @SuppressWarnings("unchecked")
+  public final <T> T param(final int index, final T defaultValue) {
+    T value = null;
+    if (index < params.length) {
+      value = (T) params[index];
+    }
+    return value == null ? defaultValue : value;
+  }
+
+  /**
    * Look for a value in the context's stack.
    *
    * @param <T> The runtime type.
@@ -165,8 +194,7 @@ public abstract class Options {
 
   /**
    * <p>
-   * Find a value inside the {@link #hash} attributes. This is analogous
-   * to:
+   * Find a value inside the {@link #hash} attributes. This is analogous to:
    * </p>
    * <code>
    *  Object myClass = options.hash.get("class");
@@ -182,9 +210,33 @@ public abstract class Options {
    * @param name The hash's name.
    * @return The hash value or null.
    */
-  @SuppressWarnings("unchecked")
   public final <T> T hash(final String name) {
-    return (T) hash.get(name);
+    return hash(name, null);
+  }
+
+  /**
+   * <p>
+   * Find a value inside the {@link #hash} attributes. This is analogous to:
+   * </p>
+   * <code>
+   *  Object myClass = options.hash.get("class");
+   * </code>
+   * <p>
+   * This mehtod works as a shorthand and type safe call:
+   * </p>
+   * <code>
+   *  String myClass = options.hash("class");
+   * </code>
+   *
+   * @param <T> The runtime type.
+   * @param name The hash's name.
+   * @param defaultValue The default value to returns.
+   * @return The hash value or null.
+   */
+  @SuppressWarnings("unchecked")
+  public final <T> T hash(final String name, final Object defaultValue) {
+    Object value = hash.get(name);
+    return (T) (value == null ? defaultValue : value);
   }
 
   /**
