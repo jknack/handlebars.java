@@ -1,4 +1,4 @@
-package com.github.edgarespina.handlerbars.extensions;
+package com.github.edgarespina.handlebars;
 
 import static org.parboiled.common.Preconditions.checkNotNull;
 

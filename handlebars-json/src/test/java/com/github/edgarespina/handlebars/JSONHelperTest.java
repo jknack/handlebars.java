@@ -1,4 +1,4 @@
-package com.github.edgarespina.handlerbars.extensions;
+package com.github.edgarespina.handlebars;
 
 import static org.junit.Assert.assertEquals;
 
@@ -8,7 +8,6 @@ import org.junit.Test;
 
 import com.github.edgarespina.handlerbars.Handlebars;
 import com.github.edgarespina.handlerbars.Template;
-import com.github.edgarespina.handlerbars.custom.Blog;
 
 /**
  * Unit test for {@link JSONHelper}.
