@@ -115,6 +115,9 @@ Output:
  * Handlebars.java includes the built-in helpers: 'if', 'unless', 'with', 'each', 'noop' and 'log'.
  * Handlebars.java also includes two built-in helpers: 'block' and 'partial' for doing [Template Inheritance](http://thejohnfreeman.com/blog/2012/03/23/template-inheritance-for-handlebars.html)
 
+## Modules
+ * [Spring MVC](https://github.com/edgarespina/handlebars-springmvc)
+ 
 ## Dependencies
  Handlebars.java depends on:
  
