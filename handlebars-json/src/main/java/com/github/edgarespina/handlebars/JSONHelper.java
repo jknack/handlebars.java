@@ -6,10 +6,6 @@ import java.io.IOException;
 
 import org.codehaus.jackson.map.ObjectMapper;
 
-import com.github.edgarespina.handlerbars.Handlebars;
-import com.github.edgarespina.handlerbars.Helper;
-import com.github.edgarespina.handlerbars.Options;
-
 /**
  * Format the context object as JSON.
  *

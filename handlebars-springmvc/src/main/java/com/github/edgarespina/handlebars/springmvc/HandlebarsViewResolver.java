@@ -7,8 +7,8 @@ import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.view.AbstractTemplateViewResolver;
 import org.springframework.web.servlet.view.AbstractUrlBasedView;
 
-import com.github.edgarespina.handlerbars.Handlebars;
-import com.github.edgarespina.handlerbars.Template;
+import com.github.edgarespina.handlebars.Handlebars;
+import com.github.edgarespina.handlebars.Template;
 
 /**
  * A Handlebars {@link ViewResolver view resolver}.

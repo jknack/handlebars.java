@@ -6,8 +6,8 @@ import java.io.IOException;
 
 import org.junit.Test;
 
-import com.github.edgarespina.handlerbars.Handlebars;
-import com.github.edgarespina.handlerbars.Template;
+import com.github.edgarespina.handlebars.Handlebars;
+import com.github.edgarespina.handlebars.Template;
 
 /**
  * Unit test for {@link JSONHelper}.

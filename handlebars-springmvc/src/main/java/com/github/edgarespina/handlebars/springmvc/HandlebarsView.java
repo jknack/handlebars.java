@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.util.Assert;
 import org.springframework.web.servlet.view.AbstractTemplateView;
 
-import com.github.edgarespina.handlerbars.Template;
+import com.github.edgarespina.handlebars.Template;
 
 /**
  * A handlebars view implementation.
