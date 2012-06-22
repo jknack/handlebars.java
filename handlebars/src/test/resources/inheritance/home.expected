@@ -1,0 +1,15 @@
+
+
+<!-- base.hbs -->
+<html>
+<head>
+  <title>
+     Home 
+  </title>
+</head>
+<body>
+  header
+ HOME 
+  footer
+</body>
+</html>

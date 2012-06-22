@@ -1,0 +1,363 @@
+overview: |
+  Block helpers make it possible to define custom iterators and other helpers
+  that can invoke the passed block with a new context.
+
+tests:
+  - name: noop
+    desc: |
+      The noop helper will receive an options hash. This options hash contains
+      a function (options.fn) that behaves like a normal compiled Handlebars
+      template. Specifically, the function will take a context and return a
+      String.
+    data: { title: "First Post", body: "Post Body" }
+    template: |
+      <div class="entry">
+        <h1>{{title}}</h1>
+        <div class="body">
+          {{#noop}}{{body}}{{/noop}}
+        </div>
+      </div>
+    expected: |
+      <div class="entry">
+        <h1>First Post</h1>
+        <div class="body">
+          Post Body
+        </div>
+      </div>
+
+  - name: with
+    desc: |
+      Instead of invoking the block with the current context, we will invoke it
+      with whatever context the template passed in.
+    data: {title: "First Post", story: {intro: "Before the jump", body: "After the jump"}}
+    template: |
+      <div class="entry">
+        <h1>{{title}}</h1>
+        {{#with story}}
+        <div class="intro">{{{intro}}}</div>
+        <div class="body">{{{body}}}</div>
+        {{/with}}
+      </div>
+
+    expected: |
+      <div class="entry">
+        <h1>First Post</h1>
+        <div class="intro">Before the jump</div>
+        <div class="body">After the jump</div>
+      </div>
+
+  - name: with empty scope
+    desc: It should render the block body.
+    data: {title: "First Post", story: {}}
+    template: |
+      <div class="entry">
+        <h1>{{title}}</h1>
+        {{#with story}}
+        <div class="intro">{{{intro}}}</div>
+        <div class="body">{{{body}}}</div>
+        {{/with}}
+      </div>
+
+    expected: |
+      <div class="entry">
+        <h1>First Post</h1>
+        <div class="intro"></div>
+        <div class="body"></div>
+      </div>
+
+  - name: with with fail lookup
+    desc: It should n't render the block body.
+    data: {title: "First Post"}
+    template: |
+      <div class="entry">
+        <h1>{{title}}</h1>
+        {{#with story}}
+        <div class="intro">{{{intro}}}</div>
+        <div class="body">{{{body}}}</div>
+        {{/with}}
+      </div>
+
+    expected: |
+      <div class="entry">
+        <h1>First Post</h1>
+      </div>
+  - name: each
+    desc: It should iterate over the elements and render one by one
+    data:
+      {
+        nav: [
+          { url: "http://www.yehudakatz.com", title: "Katz Got Your Tongue" },
+          { url: "http://www.sproutcore.com/block", title: "SproutCore Blog" }
+        ]
+      }
+    template: |
+      {{#each nav}}
+      <a href="{{url}}">{{title}}</a>
+      {{/each}}
+
+    expected: |
+      <a href="http://www.yehudakatz.com">Katz Got Your Tongue</a>
+      <a href="http://www.sproutcore.com/block">SproutCore Blog</a>
+
+  - name: each empty list
+    desc: Don't render text if the list is empty
+    data:
+      {
+        nav: [
+        ]
+      }
+    template: |
+      {{#each nav}}
+      <a href="{{url}}">{{title}}</a>
+      {{/each}}
+
+    expected: |
+
+  - name: each fail lookup
+    desc: Don't render text if the list is empty
+    data: {}
+    template: |
+      {{#each nav}}
+      <a href="{{url}}">{{title}}</a>
+      {{/each}}
+
+    expected: |
+
+  - name: custom list iterator
+    desc: It should iterate over the elements and render one by one
+    data:
+      {
+        nav: [
+          { url: "http://www.yehudakatz.com", title: "Katz Got Your Tongue" },
+          { url: "http://www.sproutcore.com/block", title: "SproutCore Blog" }
+        ]
+      }
+    template: |
+      {{#list nav}}
+      <a href="{{url}}">{{title}}</a>
+      {{/list}}
+
+    expected: |
+      <ul>
+        <li>
+          <a href="http://www.yehudakatz.com">Katz Got Your Tongue</a>
+        </li>
+        <li>
+          <a href="http://www.sproutcore.com/block">SproutCore Blog</a>
+        </li>
+      </ul>
+
+  - name: if
+    desc: It should be rendered only if the value is evaluated as true
+    data: {isActive: true}
+    template: |
+      {{#if isActive}}
+      <img src="star.gif" alt="Active">
+      {{/if}}
+
+    expected: |
+      <img src="star.gif" alt="Active">
+
+  - name: if (empty context)
+    desc: If there isn't a context nothing should be rendered
+    data: {}
+    template: |
+      <div class="entry">
+      {{#if author}}
+        <h1>{{firstName}} {{lastName}}</h1>
+      {{/if}}
+      </div>
+
+    expected: |
+      <div class="entry">
+      </div>
+
+  - name: if (truthy context)
+    desc:
+    data: {author: true,  firstName: 'eric', lastName: 'blair'}
+    template: |
+      <div class="entry">
+      {{#if author}}
+        <h1>{{firstName}} {{lastName}}</h1>
+      {{/if}}
+      </div>
+
+    expected: |
+      <div class="entry">
+        <h1>eric blair</h1>
+      </div>
+
+  - name: if/else
+    desc: It should render the else clause
+    data: {}
+    template: |
+      <div class="entry">
+      {{#if author}}
+        <h1>{{firstName}} {{lastName}}</h1>
+      {{else}}
+        <h1>Unknown Author</h1>
+      {{/if}}
+      </div>
+
+    expected: |
+      <div class="entry">
+
+        <h1>Unknown Author</h1>
+      </div>
+
+  - name: unless (falsy)
+    desc:
+    data: {}
+    template: |
+      <div class="entry">
+      {{#unless license}}
+        <h3 class="warning">WARNING: This entry does not have a license!</h3>
+      {{/unless}}
+      </div>
+
+    expected: |
+      <div class="entry">
+        <h3 class="warning">WARNING: This entry does not have a license!</h3>
+      </div>
+
+  - name: unless (truthy)
+    desc:
+    data: {license: true}
+    template: |
+      <div class="entry">
+      {{#unless license}}
+        <h3 class="warning">WARNING: This entry does not have a license!</h3>
+      {{/unless}}
+        <h3>License Exists!</h3>
+      </div>
+
+    expected: |
+      <div class="entry">
+        <h3>License Exists!</h3>
+      </div>
+
+  - name: qualified path
+    desc:
+    data: {
+      title: "My First Blog Post!",
+      author: {
+        id: 47,
+        name: "Yehuda Katz"
+      },
+      body: "My first post. Wheeeee!"
+    }
+
+    template: |
+      <div class="entry">
+        <h1>{{title}}</h1>
+        <h2>By {{author.name}}</h2>
+        <div class="body">
+          {{body}}
+        </div>
+      </div>
+
+    expected: |
+      <div class="entry">
+        <h1>My First Blog Post!</h1>
+        <h2>By Yehuda Katz</h2>
+        <div class="body">
+          My first post. Wheeeee!
+        </div>
+      </div>
+
+  - name: variable with helper
+    desc: helper should works for var
+    data: {
+      author: {firstName: "Alan", lastName: "Johnson"},
+      body: "I Love Handlebars",
+      comments: [{
+        author: {firstName: "Yehuda", lastName: "Katz"},
+        body: "Me too!"
+      }]}
+
+    template: |
+      <div class="post">
+        <h1>By {{fullName author}}</h1>
+        <div class="body">{{body}}</div>
+
+        <h1>Comments</h1>
+
+        {{#each comments}}
+        <h2>By {{fullName author}}</h2>
+        <div class="body">{{body}}</h2>
+        {{/each}}
+      </div>
+
+    expected: |
+      <div class="post">
+        <h1>By Alan Johnson</h1>
+        <div class="body">I Love Handlebars</div>
+
+        <h1>Comments</h1>
+
+        <h2>By Yehuda Katz</h2>
+        <div class="body">Me too!</h2>
+      </div>
+
+  - name: iterable variable with helper
+    desc: helper should works for iterable var
+    data: {
+      items: [
+        {name: "Handlebars", emotion: "love"},
+        {name: "Mustache", emotion: "enjoy"},
+        {name: "SproutCore", emotion: "want to learn"}
+      ]}
+
+    template: |
+      <ul>
+      {{#each items}}
+        <li>{{agree_button}}</li>
+      {{/each}}
+      </ul>
+
+    expected: |
+      <ul>
+        <li><button>I agree. I love Handlebars</button></li>
+        <li><button>I agree. I enjoy Mustache</button></li>
+        <li><button>I agree. I want to learn SproutCore</button></li>
+      </ul>
+
+  - name: params string literal
+    desc:
+    data: {
+      story: {
+        url: "http://handlebars.java"
+      }}
+
+    template: |
+      {{{link "See more..." story.url}}}
+
+    expected: |
+      <a href='http://handlebars.java'>See more...</a>
+
+  - name: params lookup
+    desc:
+    data: {
+      story: {
+        text: "See more...",
+        url: "http://handlebars.java"
+      }}
+
+    template: |
+      {{{link story.text story.url}}}
+
+    expected: |
+      <a href='http://handlebars.java'>See more...</a>
+
+  - name: hash
+    desc: support lookup params
+    data: {
+      story: {
+        url: "http://handlebars.java"
+      }}
+
+    template: |
+      {{{link-hash "See more..." href=story.url class="story"}}}
+
+    expected: |
+      <a href="http://handlebars.java" class="story">See more...</a>

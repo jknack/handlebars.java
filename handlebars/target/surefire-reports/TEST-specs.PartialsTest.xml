@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuite failures="0" time="0.05" errors="0" skipped="4" tests="11" name="specs.PartialsTest">
+  <properties>
+    <property name="java.runtime.name" value="OpenJDK Runtime Environment"/>
+    <property name="sun.boot.library.path" value="/usr/lib/jvm/java-6-openjdk-i386/jre/lib/i386"/>
+    <property name="java.vm.version" value="20.0-b12"/>
+    <property name="java.vm.vendor" value="Sun Microsystems Inc."/>
+    <property name="java.vendor.url" value="http://java.sun.com/"/>
+    <property name="path.separator" value=":"/>
+    <property name="java.vm.name" value="OpenJDK Server VM"/>
+    <property name="file.encoding.pkg" value="sun.io"/>
+    <property name="user.country" value="US"/>
+    <property name="sun.java.launcher" value="SUN_STANDARD"/>
+    <property name="sun.os.patch.level" value="unknown"/>
+    <property name="java.vm.specification.name" value="Java Virtual Machine Specification"/>
+    <property name="user.dir" value="/home/edgar/workspaces/git/handlebars.java/handlebars"/>
+    <property name="java.runtime.version" value="1.6.0_24-b24"/>
+    <property name="java.awt.graphicsenv" value="sun.awt.X11GraphicsEnvironment"/>
+    <property name="basedir" value="/home/edgar/workspaces/git/handlebars.java/handlebars"/>
+    <property name="java.endorsed.dirs" value="/usr/lib/jvm/java-6-openjdk-i386/jre/lib/endorsed"/>
+    <property name="os.arch" value="i386"/>
+    <property name="surefire.real.class.path" value="/home/edgar/workspaces/git/handlebars.java/handlebars/target/surefire/surefirebooter1836443681233228375.jar"/>
+    <property name="java.io.tmpdir" value="/tmp"/>
+    <property name="line.separator" value="
+"/>
+    <property name="java.vm.specification.vendor" value="Sun Microsystems Inc."/>
+    <property name="os.name" value="Linux"/>
+    <property name="sun.jnu.encoding" value="UTF-8"/>
+    <property name="java.library.path" value="/usr/lib/jvm/java-6-openjdk-i386/jre/lib/i386/server:/usr/lib/jvm/java-6-openjdk-i386/jre/lib/i386:/usr/lib/jvm/java-6-openjdk-i386/jre/../lib/i386:/usr/lib/jvm/java-6-openjdk-i386/jre/lib/i386/client:/usr/lib/jvm/java-6-openjdk-i386/jre/lib/i386::/usr/java/packages/lib/i386:/usr/lib/i386-linux-gnu/jni:/lib/i386-linux-gnu:/usr/lib/i386-linux-gnu:/usr/lib/jni:/lib:/usr/lib"/>
+    <property name="surefire.test.class.path" value="/home/edgar/workspaces/git/handlebars.java/handlebars/target/test-classes:/home/edgar/workspaces/git/handlebars.java/handlebars/target/classes:/home/edgar/.m2/repository/org/parboiled/parboiled-java/1.0.2/parboiled-java-1.0.2.jar:/home/edgar/.m2/repository/asm/asm/3.3.1/asm-3.3.1.jar:/home/edgar/.m2/repository/asm/asm-util/3.3.1/asm-util-3.3.1.jar:/home/edgar/.m2/repository/asm/asm-tree/3.3.1/asm-tree-3.3.1.jar:/home/edgar/.m2/repository/asm/asm-analysis/3.3.1/asm-analysis-3.3.1.jar:/home/edgar/.m2/repository/org/parboiled/parboiled-core/1.0.2/parboiled-core-1.0.2.jar:/home/edgar/.m2/repository/org/slf4j/slf4j-api/1.6.4/slf4j-api-1.6.4.jar:/home/edgar/.m2/repository/javax/servlet/servlet-api/2.5/servlet-api-2.5.jar:/home/edgar/.m2/repository/org/codehaus/jackson/jackson-mapper-asl/1.9.7/jackson-mapper-asl-1.9.7.jar:/home/edgar/.m2/repository/org/codehaus/jackson/jackson-core-asl/1.9.7/jackson-core-asl-1.9.7.jar:/home/edgar/.m2/repository/ch/qos/logback/logback-classic/1.0.3/logback-classic-1.0.3.jar:/home/edgar/.m2/repository/ch/qos/logback/logback-core/1.0.3/logback-core-1.0.3.jar:/home/edgar/.m2/repository/junit/junit/4.10/junit-4.10.jar:/home/edgar/.m2/repository/org/hamcrest/hamcrest-core/1.1/hamcrest-core-1.1.jar:/home/edgar/.m2/repository/org/yaml/snakeyaml/1.10/snakeyaml-1.10.jar:"/>
+    <property name="java.specification.name" value="Java Platform API Specification"/>
+    <property name="java.class.version" value="50.0"/>
+    <property name="sun.management.compiler" value="HotSpot Tiered Compilers"/>
+    <property name="os.version" value="3.2.0-25-generic-pae"/>
+    <property name="user.home" value="/home/edgar"/>
+    <property name="user.timezone" value="America/Argentina/Buenos_Aires"/>
+    <property name="java.awt.printerjob" value="sun.print.PSPrinterJob"/>
+    <property name="file.encoding" value="UTF-8"/>
+    <property name="java.specification.version" value="1.6"/>
+    <property name="user.name" value="edgar"/>
+    <property name="java.class.path" value="/home/edgar/workspaces/git/handlebars.java/handlebars/target/test-classes:/home/edgar/workspaces/git/handlebars.java/handlebars/target/classes:/home/edgar/.m2/repository/org/parboiled/parboiled-java/1.0.2/parboiled-java-1.0.2.jar:/home/edgar/.m2/repository/asm/asm/3.3.1/asm-3.3.1.jar:/home/edgar/.m2/repository/asm/asm-util/3.3.1/asm-util-3.3.1.jar:/home/edgar/.m2/repository/asm/asm-tree/3.3.1/asm-tree-3.3.1.jar:/home/edgar/.m2/repository/asm/asm-analysis/3.3.1/asm-analysis-3.3.1.jar:/home/edgar/.m2/repository/org/parboiled/parboiled-core/1.0.2/parboiled-core-1.0.2.jar:/home/edgar/.m2/repository/org/slf4j/slf4j-api/1.6.4/slf4j-api-1.6.4.jar:/home/edgar/.m2/repository/javax/servlet/servlet-api/2.5/servlet-api-2.5.jar:/home/edgar/.m2/repository/org/codehaus/jackson/jackson-mapper-asl/1.9.7/jackson-mapper-asl-1.9.7.jar:/home/edgar/.m2/repository/org/codehaus/jackson/jackson-core-asl/1.9.7/jackson-core-asl-1.9.7.jar:/home/edgar/.m2/repository/ch/qos/logback/logback-classic/1.0.3/logback-classic-1.0.3.jar:/home/edgar/.m2/repository/ch/qos/logback/logback-core/1.0.3/logback-core-1.0.3.jar:/home/edgar/.m2/repository/junit/junit/4.10/junit-4.10.jar:/home/edgar/.m2/repository/org/hamcrest/hamcrest-core/1.1/hamcrest-core-1.1.jar:/home/edgar/.m2/repository/org/yaml/snakeyaml/1.10/snakeyaml-1.10.jar:"/>
+    <property name="java.vm.specification.version" value="1.0"/>
+    <property name="sun.arch.data.model" value="32"/>
+    <property name="java.home" value="/usr/lib/jvm/java-6-openjdk-i386/jre"/>
+    <property name="sun.java.command" value="/home/edgar/workspaces/git/handlebars.java/handlebars/target/surefire/surefirebooter1836443681233228375.jar /home/edgar/workspaces/git/handlebars.java/handlebars/target/surefire/surefire3174242471241736662tmp /home/edgar/workspaces/git/handlebars.java/handlebars/target/surefire/surefire8917375485244042573tmp"/>
+    <property name="java.specification.vendor" value="Sun Microsystems Inc."/>
+    <property name="user.language" value="en"/>
+    <property name="java.vm.info" value="mixed mode"/>
+    <property name="java.version" value="1.6.0_24"/>
+    <property name="java.ext.dirs" value="/usr/lib/jvm/java-6-openjdk-i386/jre/lib/ext:/usr/java/packages/lib/ext"/>
+    <property name="sun.boot.class.path" value="/usr/lib/jvm/java-6-openjdk-i386/jre/lib/resources.jar:/usr/lib/jvm/java-6-openjdk-i386/jre/lib/rt.jar:/usr/lib/jvm/java-6-openjdk-i386/jre/lib/sunrsasign.jar:/usr/lib/jvm/java-6-openjdk-i386/jre/lib/jsse.jar:/usr/lib/jvm/java-6-openjdk-i386/jre/lib/jce.jar:/usr/lib/jvm/java-6-openjdk-i386/jre/lib/charsets.jar:/usr/lib/jvm/java-6-openjdk-i386/jre/lib/netx.jar:/usr/lib/jvm/java-6-openjdk-i386/jre/lib/plugin.jar:/usr/lib/jvm/java-6-openjdk-i386/jre/lib/rhino.jar:/usr/lib/jvm/java-6-openjdk-i386/jre/lib/modules/jdk.boot.jar:/usr/lib/jvm/java-6-openjdk-i386/jre/classes"/>
+    <property name="java.vendor" value="Sun Microsystems Inc."/>
+    <property name="localRepository" value="/home/edgar/.m2/repository"/>
+    <property name="file.separator" value="/"/>
+    <property name="java.vendor.url.bug" value="http://java.sun.com/cgi-bin/bugreport.cgi"/>
+    <property name="sun.cpu.endian" value="little"/>
+    <property name="sun.io.unicode.encoding" value="UnicodeLittle"/>
+    <property name="sun.desktop" value="gnome"/>
+    <property name="sun.cpu.isalist" value=""/>
+  </properties>
+  <testcase time="0.005" classname="specs.PartialsTest" name="run[0]"/>
+  <testcase time="0.003" classname="specs.PartialsTest" name="run[1]"/>
+  <testcase time="0.003" classname="specs.PartialsTest" name="run[2]"/>
+  <testcase time="0.003" classname="specs.PartialsTest" name="run[3]"/>
+  <testcase time="0.004" classname="specs.PartialsTest" name="run[4]"/>
+  <testcase time="0.003" classname="specs.PartialsTest" name="run[5]"/>
+  <testcase time="0.001" classname="specs.PartialsTest" name="run[6]">
+    <skipped/>
+  </testcase>
+  <testcase time="0.001" classname="specs.PartialsTest" name="run[7]">
+    <skipped/>
+  </testcase>
+  <testcase time="0" classname="specs.PartialsTest" name="run[8]">
+    <skipped/>
+  </testcase>
+  <testcase time="0.001" classname="specs.PartialsTest" name="run[9]">
+    <skipped/>
+  </testcase>
+  <testcase time="0.003" classname="specs.PartialsTest" name="run[10]"/>
+</testsuite>
