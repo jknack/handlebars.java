@@ -12,7 +12,8 @@
   <groupId>com.github.edgarespina</groupId>
   <artifactId>handlebars-springmvc</artifactId>
 
-  <name>Spring MVC Integration for handlebars.java</name>
+  <name>Spring MVC</name>
+  <description>Spring MVC Integration for Handlebars.java</description>
 
   <dependencies>
     <dependency>

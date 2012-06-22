@@ -12,7 +12,7 @@
   <groupId>com.github.edgarespina</groupId>
   <artifactId>handlebars</artifactId>
 
-  <name>The Handlebars Template Engine</name>
+  <name>Handlebars.java</name>
   <description>Logic-less and semantic templates with Java</description>
 
   <dependencies>

@@ -1,4 +1,4 @@
-package com.github.edgarespina.handlerbars.springmvc;
+package com.github.edgarespina.handlebars.springmvc;
 
 import java.util.Map;
 
