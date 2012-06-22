@@ -2,80 +2,51 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
+  <parent>
+    <groupId>com.github.edgarespina</groupId>
+    <artifactId>handlebars.java</artifactId>
+    <version>0.1.0-SNAPSHOT</version>
+  </parent>
+
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.github.edgarespina</groupId>
-  <artifactId>handlebars.java</artifactId>
-  <version>0.1.0-SNAPSHOT</version>
-  <packaging>pom</packaging>
+  <artifactId>handlebars-springmvc</artifactId>
 
-  <name>Handlebars.java</name>
-  <description>Logic-less and semantic templates with Java</description>
+  <name>Spring MVC Integration for handlebars.java</name>
 
-  <modules>
-    <module>handlebars</module>
-    <module>handlebars-springmvc</module>
-  </modules>
+  <dependencies>
+    <dependency>
+      <groupId>com.github.edgarespina</groupId>
+      <artifactId>handlebars</artifactId>
+      <version>${project.version}</version>
+    </dependency>
 
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>org.springframework</groupId>
-        <artifactId>spring-webmvc</artifactId>
-        <version>3.1.1.RELEASE</version>
-      </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-webmvc</artifactId>
+    </dependency>
 
-      <!-- Parboiled -->
-      <dependency>
-        <groupId>org.parboiled</groupId>
-        <artifactId>parboiled-java</artifactId>
-        <version>1.0.2</version>
-      </dependency>
+    <!-- Servlet API -->
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>servlet-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
 
-      <!-- Logging System -->
-      <dependency>
-        <groupId>org.slf4j</groupId>
-        <artifactId>slf4j-api</artifactId>
-        <version>1.6.4</version>
-      </dependency>
+    <!-- Test dependencies -->
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
+      <scope>test</scope>
+    </dependency>
 
-      <!-- Servlet API -->
-      <dependency>
-        <groupId>javax.servlet</groupId>
-        <artifactId>servlet-api</artifactId>
-        <version>2.5</version>
-        <scope>provided</scope>
-      </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
 
-      <dependency>
-        <groupId>org.codehaus.jackson</groupId>
-        <artifactId>jackson-mapper-asl</artifactId>
-        <version>1.9.7</version>
-        <optional>true</optional>
-      </dependency>
-
-      <!-- Test dependencies -->
-      <dependency>
-        <groupId>ch.qos.logback</groupId>
-        <artifactId>logback-classic</artifactId>
-        <version>1.0.3</version>
-        <scope>test</scope>
-      </dependency>
-
-      <dependency>
-        <groupId>junit</groupId>
-        <artifactId>junit</artifactId>
-        <scope>test</scope>
-        <version>4.10</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.yaml</groupId>
-        <artifactId>snakeyaml</artifactId>
-        <version>1.10</version>
-        <scope>test</scope>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
+  </dependencies>
 
   <build>
     <plugins>
@@ -113,7 +84,6 @@
           <consoleOutput>true</consoleOutput>
           <configLocation>checkstyle.xml</configLocation>
           <failsOnError>true</failsOnError>
-          <excludes>**/Parser*</excludes>
         </configuration>
         <executions>
           <execution>

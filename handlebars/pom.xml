@@ -13,6 +13,7 @@
   <artifactId>handlebars</artifactId>
 
   <name>The Handlebars Template Engine</name>
+  <description>Logic-less and semantic templates with Java</description>
 
   <dependencies>
     <!-- Parboiled -->
