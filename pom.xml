@@ -15,6 +15,7 @@
     <module>handlebars</module>
     <module>handlebars-springmvc</module>
     <module>handlebars-json</module>
+    <module>handlebars-markdown</module>
   </modules>
 
   <dependencyManagement>
@@ -51,6 +52,12 @@
         <groupId>org.codehaus.jackson</groupId>
         <artifactId>jackson-mapper-asl</artifactId>
         <version>1.9.7</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.pegdown</groupId>
+        <artifactId>pegdown</artifactId>
+        <version>1.1.0</version>
       </dependency>
 
       <!-- Test dependencies -->
