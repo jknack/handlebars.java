@@ -1,5 +1,6 @@
 package com.github.edgarespina.handlebars.springmvc;
 
+import java.io.IOException;
 import java.net.URI;
 
 import org.springframework.util.Assert;
@@ -45,6 +46,7 @@ public class HandlebarsViewResolver extends AbstractTemplateViewResolver {
    */
   public HandlebarsViewResolver(final Handlebars handlebars) {
     Assert.notNull(handlebars, "The handlebars object is required.");
+
     this.handlebars = handlebars;
     setViewClass(HandlebarsView.class);
     setContentType(DEFAULT_CONTENT_TYPE);
@@ -65,7 +67,18 @@ public class HandlebarsViewResolver extends AbstractTemplateViewResolver {
   @Override
   protected AbstractUrlBasedView buildView(final String viewName)
       throws Exception {
-    HandlebarsView view = (HandlebarsView) super.buildView(viewName);
+    return configure((HandlebarsView) super.buildView(viewName));
+  }
+
+  /**
+   * Configure the handlebars view.
+   *
+   * @param view The handlebars view.
+   * @return The configured view.
+   * @throws IOException If a resource cannot be loaded.
+   */
+  protected AbstractUrlBasedView configure(final HandlebarsView view)
+      throws IOException {
     String url = view.getUrl();
     if (!url.startsWith("/")) {
       url = "/" + url;

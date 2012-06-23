@@ -41,7 +41,7 @@ import com.github.edgarespina.handlebars.io.ClassTemplateLoader;
  * @author edgar.espina
  * @since 0.1.0
  */
-public final class Handlebars {
+public class Handlebars {
 
   /**
    * A {@link SafeString} tell {@link Handlebars} that the content should not be
