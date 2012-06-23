@@ -55,14 +55,14 @@ public class Handlebars {
     /**
      * The content.
      */
-    private String content;
+    private CharSequence content;
 
     /**
      * Creates a new {@link SafeString}.
      *
      * @param content The string content.
      */
-    public SafeString(final String content) {
+    public SafeString(final CharSequence content) {
       this.content = content;
     }
 
@@ -83,7 +83,7 @@ public class Handlebars {
 
     @Override
     public String toString() {
-      return content;
+      return content.toString();
     }
   }
 

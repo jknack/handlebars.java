@@ -3,28 +3,6 @@ overview: |
   that can invoke the passed block with a new context.
 
 tests:
-  - name: noop
-    desc: |
-      The noop helper will receive an options hash. This options hash contains
-      a function (options.fn) that behaves like a normal compiled Handlebars
-      template. Specifically, the function will take a context and return a
-      String.
-    data: { title: "First Post", body: "Post Body" }
-    template: |
-      <div class="entry">
-        <h1>{{title}}</h1>
-        <div class="body">
-          {{#noop}}{{body}}{{/noop}}
-        </div>
-      </div>
-    expected: |
-      <div class="entry">
-        <h1>First Post</h1>
-        <div class="body">
-          Post Body
-        </div>
-      </div>
-
   - name: with
     desc: |
       Instead of invoking the block with the current context, we will invoke it

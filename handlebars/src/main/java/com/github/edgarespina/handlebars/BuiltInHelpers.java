@@ -20,17 +20,6 @@ import java.util.Map;
 public enum BuiltInHelpers implements Helper<Object> {
 
   /**
-   * Just render the context.
-   */
-  NOOP {
-    @Override
-    public CharSequence apply(final Object context, final Options options)
-        throws IOException {
-      return options.fn();
-    }
-  },
-
-  /**
    * <p>
    * Normally, Handlebars templates are evaluated against the context passed
    * into the compiled method.
@@ -270,6 +259,72 @@ public enum BuiltInHelpers implements Helper<Object> {
     @Override
     protected void add(final Handlebars handlebars) {
       add("dateFormat", handlebars);
+    }
+  },
+
+  /**
+   * Given:
+   * home.hbs
+   *
+   * <pre>
+   * &lt;html&gt;
+   * ...
+   * {{emdedded "user.hbs" ["id"]}}
+   * &lt;/html&gt;
+   * </pre>
+   *
+   * where user.hbs is:
+   *
+   * <pre>
+   * &lt;tr&gt;
+   * &lt;td&gt;{{firstName}}&lt;/td&gt;
+   * &lt;td&gt;{{lastName}}&lt;/td&gt;
+   * &lt;/tr&gt;
+   * </pre>
+   *
+   * expected output is:
+   *
+   * <pre>
+   * &lt;script id="user-template" type="text/x-handlebars-template"&gt;
+   * &lt;tr&gt;
+   * &lt;td&gt;{{firstName}}&lt;/td&gt;
+   * &lt;td&gt;{{lastName}}&lt;/td&gt;
+   * &lt;/tr&gt;
+   * &lt;/script&gt;
+   * </pre>
+   *
+   * Optionally, a user can set the template's name:
+   *
+   * <pre>
+   * {{emdedded "user.hbs" "user-tmpl" }}
+   * </pre>
+   *
+   * expected output is:
+   *
+   * <pre>
+   * &lt;script id="user-tmpl" type="text/x-handlebars-template"&gt;
+   * &lt;tr&gt;
+   * &lt;td&gt;{{firstName}}&lt;/td&gt;
+   * &lt;td&gt;{{lastName}}&lt;/td&gt;
+   * &lt;/tr&gt;
+   * &lt;/script&gt;
+   * </pre>
+   */
+  EMBEDDED {
+    @Override
+    public CharSequence apply(final Object context, final Options options)
+        throws IOException {
+      String path = (String) context;
+      checkNotNull(path, "A template path is required.");
+      String defaultId = path.replace('/', '-').replace('.', '-');
+      String id = options.param(0, defaultId);
+      Template template = options.handlebars.compile(URI.create(path));
+      StringBuilder script = new StringBuilder();
+      script.append("<script id=\"").append(id)
+          .append("\" type=\"text/x-handlebars\">\n");
+      script.append(template.text()).append("\n");
+      script.append("</script>");
+      return new Handlebars.SafeString(script);
     }
   },
 
