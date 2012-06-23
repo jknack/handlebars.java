@@ -208,8 +208,20 @@ class Section extends HelperResolver {
 
   @Override
   public String text() {
-    String content = body == null ? "" : body.toString();
-    return "{{" + type + name + "}}" + content + "{{/" + name + "}}";
+    StringBuilder buffer = new StringBuilder();
+    buffer.append("{{").append(type).append(name);
+    String params = paramsToString();
+    if (params.length() > 0) {
+      buffer.append(" ").append(params);
+    }
+    String hash = hashToString();
+    if (hash.length() > 0) {
+      buffer.append(" ").append(hash);
+    }
+    buffer.append("}}");
+    buffer.append(body == null ? "" : body.text());
+    buffer.append("{{/").append(name).append("}}");
+    return buffer.toString();
   }
 
   /**

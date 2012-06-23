@@ -106,11 +106,21 @@ class Variable extends HelperResolver {
      * Format the variable's name.
      *
      * @param name The variable's name.
+     * @param params The parameters.
+     * @param hash The hash.
      * @return The variable's name with the start and end delimiters.
      */
-    public String format(final String name) {
+    public String format(final String name, final String params,
+        final String hash) {
       StringBuilder buffer = new StringBuilder();
-      return buffer.append(start()).append(name).append(end()).toString();
+      buffer.append(start()).append(name);
+      if (params.length() > 0) {
+        buffer.append(" ").append(params);
+      }
+      if (hash.length() > 0) {
+        buffer.append(" ").append(hash);
+      }
+      return buffer.append(end()).toString();
     }
   }
 
@@ -251,6 +261,6 @@ class Variable extends HelperResolver {
 
   @Override
   public String text() {
-    return type.format(name);
+    return type.format(name, paramsToString(), hashToString());
   }
 }

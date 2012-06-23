@@ -156,4 +156,41 @@ abstract class HelperResolver extends BaseTemplate {
     }
     return this;
   }
+
+  /**
+   * Make a string of {@link #params}.
+   *
+   * @return Make a string of {@link #params}.
+   */
+  protected String paramsToString() {
+    if (params.size() > 0) {
+      StringBuilder buffer = new StringBuilder();
+      String sep = " ";
+      for (Object param : params) {
+        buffer.append(param).append(sep);
+      }
+      buffer.setLength(buffer.length() - sep.length());
+      return buffer.toString();
+    }
+    return "";
+  }
+
+  /**
+   * Make a string of {@link #hash}.
+   *
+   * @return Make a string of {@link #hash}.
+   */
+  protected String hashToString() {
+    if (hash.size() > 0) {
+      StringBuilder buffer = new StringBuilder();
+      String sep = " ";
+      for (Entry<String, Object> hash : this.hash.entrySet()) {
+        buffer.append(hash.getKey()).append("=").append(hash.getValue())
+            .append(sep);
+      }
+      buffer.setLength(buffer.length() - sep.length());
+      return buffer.toString();
+    }
+    return "";
+  }
 }

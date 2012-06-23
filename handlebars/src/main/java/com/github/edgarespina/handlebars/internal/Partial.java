@@ -24,12 +24,19 @@ class Partial extends BaseTemplate {
   private Template template;
 
   /**
+   * The partial path.
+   */
+  private String path;
+
+  /**
    * Set the partial template.
    *
+   * @param path The partial path.
    * @param template The template. Required.
    * @return This partial.
    */
-  public Partial template(final Template template) {
+  public Partial template(final String path, final Template template) {
+    this.path = checkNotNull(path, "The path is required.");
     this.template = checkNotNull(template, "The template is required.");
     return this;
   }
@@ -42,7 +49,7 @@ class Partial extends BaseTemplate {
 
   @Override
   public String text() {
-    return template.toString();
+    return "{{>" + path + "}}";
   }
 
   @Override

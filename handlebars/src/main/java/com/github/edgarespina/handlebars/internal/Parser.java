@@ -220,7 +220,8 @@ public class Parser extends BaseParser<BaseTemplate> {
       ParsingResult<BaseTemplate> result = runner.run(input);
       if (result.hasErrors()) {
         ParseError error = result.parseErrors.get(0);
-        throw new HandlebarsException(ErrorFormatter.printParseError(error));
+        String msg = ErrorFormatter.printParseError(error);
+        throw new HandlebarsException(msg);
       }
       TemplateList sequence = (TemplateList) result.resultValue;
       removeBlanks(sequence);
@@ -405,7 +406,7 @@ public class Parser extends BaseParser<BaseTemplate> {
                 partial = new Partial();
                 partials.put(uri, partial);
                 Template template = parser.parse(reader);
-                partial.template(template);
+                partial.template(uri, template);
               } catch (IOException ex) {
                 throw new ActionException("The partial '" + uri
                     + "' could not be found", ex);
