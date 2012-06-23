@@ -117,11 +117,17 @@ public enum BuiltInHelpers implements Helper<Object> {
       String path = (String) context;
       Template template = options.partial(path);
       if (template == null) {
-        template = options.handlebars.compile(URI.create(path));
-        options.partial(path, template);
+        try {
+          template = options.handlebars.compile(URI.create(path));
+          options.partial(path, template);
+        } catch (IOException ex) {
+          // partial not found
+          Handlebars.debug(ex.getMessage());
+          template = options.fn;
+        }
       }
       CharSequence result = options.apply(template);
-      return result == null || result.length() == 0 ? options.fn() : result;
+      return result;
     }
   },
 

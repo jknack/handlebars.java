@@ -34,6 +34,9 @@ public class ClassTemplateLoader extends TemplateLoader<String> {
     checkNotNull(basepath, "A base path is required.");
     checkArgument(basepath.length() > 0, "A base path is required.");
     this.basepath = basepath;
+    if (!this.basepath.startsWith("/")) {
+      this.basepath = "/" + this.basepath;
+    }
     if (!this.basepath.endsWith("/")) {
       this.basepath += "/";
     }

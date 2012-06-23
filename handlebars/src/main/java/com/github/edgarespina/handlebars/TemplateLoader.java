@@ -3,9 +3,9 @@ package com.github.edgarespina.handlebars;
 import static org.parboiled.common.Preconditions.checkArgument;
 import static org.parboiled.common.Preconditions.checkNotNull;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.Reader;
-import java.io.StringReader;
 import java.net.URI;
 
 /**
@@ -17,20 +17,6 @@ import java.net.URI;
  * @since 0.1.0
  */
 public abstract class TemplateLoader<Location> {
-
-  /**
-   * Default resource if cannot be found.
-   */
-  private static final StringReader EMPTY = new StringReader("") {
-    @Override
-    public void close() {
-    }
-
-    @Override
-    public String toString() {
-      return "";
-    };
-  };
 
   /**
    * Load the template from a template repository.
@@ -46,10 +32,7 @@ public abstract class TemplateLoader<Location> {
     Location location = resolve(normalize(uri.toString()));
     Reader reader = read(location);
     if (reader == null) {
-      Handlebars.warn(
-          "Resource not found: '%s'. defaulting to an empty string.",
-          location);
-      return EMPTY;
+      throw new FileNotFoundException(location.toString());
     }
     Handlebars.debug("Resource found: %s", location);
     return reader;

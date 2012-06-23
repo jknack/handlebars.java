@@ -136,6 +136,8 @@ public abstract class SpecTest {
       assertEquals(expected, output);
       report.append("OUTPUT:");
       report.append(output);
+    } catch(HandlebarsException ex) {
+      Handlebars.error(ex.getMessage());
     } catch (ComparisonFailure ex) {
       report.append("FOUND:");
       report.append(ex.getActual());

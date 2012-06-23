@@ -1,8 +1,8 @@
 package com.github.edgarespina.handlebars.io;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.Reader;
 import java.net.URI;
@@ -10,7 +10,6 @@ import java.net.URI;
 import org.junit.Test;
 
 import com.github.edgarespina.handlebars.TemplateLoader;
-import com.github.edgarespina.handlebars.io.ClassTemplateLoader;
 
 /**
  * Unit test for {@link ClassTemplateLoader}.
@@ -41,13 +40,10 @@ public class ClasspathLocatorTest {
     assertNotNull(reader);
   }
 
-  @Test
+  @Test(expected = FileNotFoundException.class)
   public void failLocate() throws IOException {
     TemplateLoader<String> locator = new ClassTemplateLoader();
-    Reader reader = locator.load(URI.create("notExist.html"));
-    assertNotNull(reader);
-    assertNotNull(reader);
-    assertEquals("", reader.toString());
+    locator.load(URI.create("notExist.html"));
   }
 
   @Test
