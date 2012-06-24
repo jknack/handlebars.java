@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import com.github.edgarespina.handlebars.Context;
 import com.github.edgarespina.handlebars.Handlebars;
 import com.github.edgarespina.handlebars.HandlebarsException;
 import com.github.edgarespina.handlebars.Helper;
@@ -96,7 +97,7 @@ abstract class HelperResolver extends BaseTemplate {
    */
   protected Object determineContext(final Context context) {
     if (params.size() == 0) {
-      return context.target();
+      return context.model();
     }
     Object value = params.get(0);
     value = ParamType.parse(context, value);

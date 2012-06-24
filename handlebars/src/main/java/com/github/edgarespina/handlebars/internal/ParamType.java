@@ -2,6 +2,8 @@ package com.github.edgarespina.handlebars.internal;
 
 import java.util.EnumSet;
 
+import com.github.edgarespina.handlebars.Context;
+
 
 /**
  * A strategy for parameter type resolver.
@@ -21,7 +23,7 @@ enum ParamType {
 
     @Override
     Object doParse(final Context scope, final Object param) {
-      return ((Context) param).target();
+      return ((Context) param).model();
     }
   },
 

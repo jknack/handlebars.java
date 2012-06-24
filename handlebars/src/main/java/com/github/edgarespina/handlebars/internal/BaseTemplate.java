@@ -5,6 +5,8 @@ import static org.parboiled.common.Preconditions.checkNotNull;
 import java.io.IOException;
 import java.io.Writer;
 
+import com.github.edgarespina.handlebars.Context;
+import com.github.edgarespina.handlebars.ContextFactory;
 import com.github.edgarespina.handlebars.Template;
 
 /**
@@ -40,7 +42,7 @@ abstract class BaseTemplate implements Template {
   public final void apply(final Object context, final Writer writer)
       throws IOException {
     checkNotNull(writer, "A writer is required.");
-    merge(DefaultContext.wrap(context), writer);
+    merge(ContextFactory.wrap(context), writer);
   }
 
   /**

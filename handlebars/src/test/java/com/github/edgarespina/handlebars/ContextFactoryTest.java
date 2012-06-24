@@ -1,4 +1,4 @@
-package com.github.edgarespina.handlebars.internal;
+package com.github.edgarespina.handlebars;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -8,9 +8,6 @@ import java.util.Map;
 
 import org.junit.Test;
 
-import com.github.edgarespina.handlebars.internal.Context;
-import com.github.edgarespina.handlebars.internal.DefaultContext;
-
 
 /**
  * Unit test for {@link DefaultContext}.
@@ -18,7 +15,7 @@ import com.github.edgarespina.handlebars.internal.DefaultContext;
  * @author edgar.espina
  * @since 0.1.0
  */
-public class DefaultContextTest {
+public class ContextFactoryTest {
 
   static class Base {
     public String getBaseProperty() {
@@ -39,21 +36,48 @@ public class DefaultContextTest {
 
   @Test
   public void newContext() {
-    Context context = DefaultContext.wrap("String");
+    Context context = ContextFactory.wrap("String");
     assertNotNull(context);
-    assertEquals("String", context.target());
+    assertEquals("String", context.model());
+  }
+
+  @Test
+  public void noWrap() {
+    Map<String, Object> model = new HashMap<String, Object>();
+    Context context = ContextFactory.wrap(model);
+    assertEquals(context, ContextFactory.wrap(context));
+  }
+
+  @Test
+  public void parentContext() {
+    Map<String, Object> model = new HashMap<String, Object>();
+    model.put("name", "Handlebars");
+    Context parent = ContextFactory.wrap(model);
+    assertNotNull(parent);
+    assertEquals("Handlebars", parent.get("name"));
+
+    Map<String, Object> extended = new HashMap<String, Object>();
+    extended.put("n", "Extended");
+    Context child = ContextFactory.wrap(parent, extended);
+    assertEquals("Extended", child.get("n"));
+    assertEquals("Handlebars", child.get("name"));
+  }
+
+  @Test(expected = NullPointerException.class)
+  public void nullParent() {
+    ContextFactory.wrap(null, new Object());
   }
 
   @Test
   public void dotLookup() {
-    Context context = DefaultContext.wrap("String");
+    Context context = ContextFactory.wrap("String");
     assertNotNull(context);
     assertEquals("String", context.get("."));
   }
 
   @Test
   public void thisLookup() {
-    Context context = DefaultContext.wrap("String");
+    Context context = ContextFactory.wrap("String");
     assertNotNull(context);
     assertEquals("String", context.get("this"));
   }
@@ -62,7 +86,7 @@ public class DefaultContextTest {
   public void singleMapLookup() {
     Map<String, Object> model = new HashMap<String, Object>();
     model.put("simple", "value");
-    Context context = DefaultContext.wrap(model);
+    Context context = ContextFactory.wrap(model);
     assertNotNull(context);
     assertEquals("value", context.get("simple"));
   }
@@ -73,7 +97,7 @@ public class DefaultContextTest {
     Map<String, Object> nested = new HashMap<String, Object>();
     model.put("nested", nested);
     nested.put("simple", "value");
-    Context context = DefaultContext.wrap(model);
+    Context context = ContextFactory.wrap(model);
     assertNotNull(context);
     assertEquals("value", context.get("nested.simple"));
   }
@@ -86,7 +110,7 @@ public class DefaultContextTest {
         return "value";
       }
     };
-    Context context = DefaultContext.wrap(model);
+    Context context = ContextFactory.wrap(model);
     assertNotNull(context);
     assertEquals("value", context.get("simple"));
   }
@@ -103,14 +127,14 @@ public class DefaultContextTest {
         };
       }
     };
-    Context context = DefaultContext.wrap(model);
+    Context context = ContextFactory.wrap(model);
     assertNotNull(context);
     assertEquals("value", context.get("nested.simple"));
   }
 
   @Test
   public void customLookup() {
-    Context context = DefaultContext.wrap(new Base());
+    Context context = ContextFactory.wrap(new Base());
     assertNotNull(context);
     assertEquals("baseProperty", context.get("baseProperty"));
     assertEquals("baseProperty", context.get("childProperty"));
@@ -118,7 +142,7 @@ public class DefaultContextTest {
 
   @Test
   public void customLookupOnChildClass() {
-    Context context = DefaultContext.wrap(new Child());
+    Context context = ContextFactory.wrap(new Child());
     assertNotNull(context);
     assertEquals("baseProperty", context.get("baseProperty"));
     assertEquals("childProperty", context.get("childProperty"));

@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.Map;
 
+import com.github.edgarespina.handlebars.Context;
+import com.github.edgarespina.handlebars.ContextFactory;
 import com.github.edgarespina.handlebars.Handlebars;
 import com.github.edgarespina.handlebars.Options;
 import com.github.edgarespina.handlebars.Template;
@@ -63,7 +65,7 @@ class DefaultOptions extends Options {
       final Map<String, Object> hash) {
     super(handlebars, fn, inverse == null ? EMPTY : inverse, params, hash);
     this.context = checkNotNull(context, "The context is required");
-    this.storage = ((DefaultContext) context).storage;
+    this.storage = context.storage();
   }
 
   @Override
@@ -134,7 +136,7 @@ class DefaultOptions extends Options {
     CharSequence result =
         template.apply(context == this.context
             ? context
-            : DefaultContext.wrap(this.context, context));
+            : ContextFactory.wrap(this.context, context));
     return result;
   }
 

@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Map;
 
 import com.github.edgarespina.handlebars.BuiltInHelpers;
+import com.github.edgarespina.handlebars.Context;
+import com.github.edgarespina.handlebars.ContextFactory;
 import com.github.edgarespina.handlebars.Handlebars;
 import com.github.edgarespina.handlebars.Helper;
 import com.github.edgarespina.handlebars.Lambda;
@@ -86,7 +88,7 @@ class Section extends HelperResolver {
       final Writer writer) throws IOException {
     Helper<Object> helper = helper(name);
     BaseTemplate template = body;
-    Object context;
+    final Object context;
     Context currentScope = scope;
     if (helper == null) {
       context = transform(scope.get(name));
@@ -105,7 +107,7 @@ class Section extends HelperResolver {
                 startDelimiter, endDelimiter);
       } else {
         helper = BuiltInHelpers.WITH;
-        currentScope = DefaultContext.wrap(scope, context);
+        currentScope = ContextFactory.wrap(scope, context);
       }
     } else {
       context = determineContext(scope);

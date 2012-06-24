@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import com.github.edgarespina.handlebars.Context;
 import com.github.edgarespina.handlebars.Template;
 
 /**

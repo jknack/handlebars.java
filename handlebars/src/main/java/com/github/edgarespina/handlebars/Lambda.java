@@ -39,10 +39,10 @@ import java.io.IOException;
  * </pre>
  *
  * @author edgar.espina
- * @param <Context> The lambda context.
- * @param <Out> The lambda output.
+ * @param <C> The lambda context.
+ * @param <O> The lambda output.
  */
-public interface Lambda<Context, Out> {
+public interface Lambda<C, O> {
 
   /**
    * Apply the lambda.
@@ -52,5 +52,5 @@ public interface Lambda<Context, Out> {
    * @return The resulting text.
    * @throws IOException If the resource cannot be loaded.
    */
-  Out apply(Context context, Template template) throws IOException;
+  O apply(C context, Template template) throws IOException;
 }

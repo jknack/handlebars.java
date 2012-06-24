@@ -5,6 +5,7 @@ import static org.parboiled.common.Preconditions.checkNotNull;
 import java.io.IOException;
 import java.io.Writer;
 
+import com.github.edgarespina.handlebars.Context;
 import com.github.edgarespina.handlebars.Template;
 
 /**

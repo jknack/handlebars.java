@@ -273,12 +273,25 @@ public class Parser extends BaseParser<BaseTemplate> {
         newDelimiter(), newstartDelimiter.set(match()),
         OneOrMore(spaceNoAction()),
         newDelimiter(), newendDelimiter.set(match()),
+        new Action<BaseTemplate>() {
+          @Override
+          public boolean run(final Context<BaseTemplate> context) {
+            String start = newstartDelimiter.get();
+            String end = newendDelimiter.get();
+            if (start.length() != end.length()) {
+              throw new ActionException("Unbalanced delimiters: '"
+                  + start + "'.length != '" + end
+                  + "'.length");
+            }
+            return true;
+          }
+        },
         spacing(),
         '=',
         endDelimiter(),
-        new Action<Object>() {
+        new Action<BaseTemplate>() {
           @Override
-          public boolean run(final Context<Object> context) {
+          public boolean run(final Context<BaseTemplate> context) {
             endDelimiter = newendDelimiter.get();
             startDelimiter = newstartDelimiter.get();
             onlyWhites = false;
@@ -410,7 +423,8 @@ public class Parser extends BaseParser<BaseTemplate> {
                 TemplateLoader locator = handlebars.getTemplateLoader();
                 Reader reader = locator.load(URI.create(uri));
                 Parser parser =
-                    create(handlebars, uri, partials, startDelimiter, endDelimiter);
+                    create(handlebars, uri, partials, startDelimiter,
+                        endDelimiter);
                 // Avoid stack overflow exceptions
                 partial = new Partial();
                 partials.put(uri, partial);

@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import com.github.edgarespina.handlebars.Context;
 import com.github.edgarespina.handlebars.Handlebars;
 import com.github.edgarespina.handlebars.Helper;
 import com.github.edgarespina.handlebars.Lambda;

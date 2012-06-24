@@ -1,4 +1,6 @@
-package com.github.edgarespina.handlebars.internal;
+package com.github.edgarespina.handlebars;
+
+import java.util.Map;
 
 /**
  * Mustache/Handlabars are contextual template engines. This class represent the
@@ -18,12 +20,21 @@ package com.github.edgarespina.handlebars.internal;
  * @since 0.1.0
  */
 public interface Context {
+
   /**
-   * Resolved as '.' or 'this' inside templates. Required.
+   * Resolved as '.' or 'this' inside templates.
    *
-   * @return The target value
+   * @return The model or data.
    */
-  Object target();
+  Object model();
+
+  /**
+   * A contextual storage useful for saving values in a thread-safety way. The
+   * storage is cleaned up once a template has been rendered.
+   *
+   * @return A contextual storage. Never null.
+   */
+  Map<String, Object> storage();
 
   /**
    * Lookup the given key inside the context stack.
@@ -38,7 +49,7 @@ public interface Context {
    * against former resolutions.
    * </ul>
    *
-   * @param key The object' key.
+   * @param key The object key.
    * @return The value associated to the given key or <code>null</code> if no
    *         value is found.
    */

@@ -2,6 +2,7 @@ package com.github.edgarespina.handlebars.internal;
 
 import java.io.IOException;
 
+import com.github.edgarespina.handlebars.Context;
 import com.github.edgarespina.handlebars.Handlebars;
 import com.github.edgarespina.handlebars.Lambda;
 import com.github.edgarespina.handlebars.Template;
