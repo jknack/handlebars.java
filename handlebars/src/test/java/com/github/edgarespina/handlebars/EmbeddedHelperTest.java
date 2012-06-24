@@ -23,7 +23,7 @@ public class EmbeddedHelperTest {
 
     String input = "<html>\n";
     input += "...\n";
-    input += "{{embedded \"user.hbs\"}}\n";
+    input += "{{embedded \"user\"}}\n";
     input += "...\n";
     input += "</html>";
 
@@ -46,7 +46,7 @@ public class EmbeddedHelperTest {
 
     String input = "<html>\n";
     input += "...\n";
-    input += "{{embedded \"user.hbs\" \"user-tmpl\"}}\n";
+    input += "{{embedded \"user\" \"user-tmpl\"}}\n";
     input += "...\n";
     input += "</html>";
 

@@ -218,7 +218,7 @@ public class Handlebars {
   /**
    * The template loader. Required.
    */
-  private final TemplateLoader<?> loader;
+  private final TemplateLoader loader;
 
   /**
    * The template cache. Required.
@@ -244,7 +244,7 @@ public class Handlebars {
    * @param loader The template loader. Required.
    * @param cache The template cache. Required.
    */
-  public Handlebars(final TemplateLoader<?> loader, final TemplateCache cache) {
+  public Handlebars(final TemplateLoader loader, final TemplateCache cache) {
     this.loader =
         checkNotNull(loader, "The template loader is required.");
     this.cache =
@@ -257,7 +257,7 @@ public class Handlebars {
    *
    * @param loader The template loader. Required.
    */
-  public Handlebars(final TemplateLoader<?> loader) {
+  public Handlebars(final TemplateLoader loader) {
     this(loader, NO_CACHE);
   }
 
@@ -382,7 +382,7 @@ public class Handlebars {
    *
    * @return The resource locator.
    */
-  public TemplateLoader<?> getTemplateLoader() {
+  public TemplateLoader getTemplateLoader() {
     return loader;
   }
 

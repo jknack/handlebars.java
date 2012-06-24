@@ -1,8 +1,5 @@
 package com.github.edgarespina.handlebars.io;
 
-import static org.parboiled.common.Preconditions.checkArgument;
-import static org.parboiled.common.Preconditions.checkNotNull;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -18,28 +15,26 @@ import com.github.edgarespina.handlebars.TemplateLoader;
  * @author edgar.espina
  * @since 0.1.0
  */
-public class ClassTemplateLoader extends TemplateLoader<String> {
-
-  /**
-   * The base path. Required.
-   */
-  private String basepath;
+public class ClassTemplateLoader extends TemplateLoader {
 
   /**
    * Creates a new {@link ClassTemplateLoader}.
    *
-   * @param basepath The base path. Required.
+   * @param prefix The view prefix. Required.
+   * @param suffix The view suffix. Required.
    */
-  public ClassTemplateLoader(final String basepath) {
-    checkNotNull(basepath, "A base path is required.");
-    checkArgument(basepath.length() > 0, "A base path is required.");
-    this.basepath = basepath;
-    if (!this.basepath.startsWith("/")) {
-      this.basepath = "/" + this.basepath;
-    }
-    if (!this.basepath.endsWith("/")) {
-      this.basepath += "/";
-    }
+  public ClassTemplateLoader(final String prefix, final String suffix) {
+    setPrefix(prefix);
+    setSuffix(suffix);
+  }
+
+  /**
+   * Creates a new {@link ClassTemplateLoader}.
+   *
+   * @param prefix The view prefix. Required.
+   */
+  public ClassTemplateLoader(final String prefix) {
+    this(prefix, DEFAULT_SUFFIX);
   }
 
   /**
@@ -48,11 +43,6 @@ public class ClassTemplateLoader extends TemplateLoader<String> {
    */
   public ClassTemplateLoader() {
     this("/");
-  }
-
-  @Override
-  protected String resolve(final String uri) {
-    return basepath + uri;
   }
 
   @Override

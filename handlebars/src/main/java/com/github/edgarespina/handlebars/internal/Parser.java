@@ -407,7 +407,7 @@ public class Parser extends BaseParser<BaseTemplate> {
             Partial partial = partials.get(uri);
             if (partial == null) {
               try {
-                TemplateLoader<?> locator = handlebars.getTemplateLoader();
+                TemplateLoader locator = handlebars.getTemplateLoader();
                 Reader reader = locator.load(URI.create(uri));
                 Parser parser =
                     create(handlebars, uri, partials, startDelimiter, endDelimiter);

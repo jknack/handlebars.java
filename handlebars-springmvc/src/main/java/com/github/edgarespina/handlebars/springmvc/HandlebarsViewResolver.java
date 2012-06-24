@@ -10,6 +10,7 @@ import org.springframework.web.servlet.view.AbstractUrlBasedView;
 
 import com.github.edgarespina.handlebars.Handlebars;
 import com.github.edgarespina.handlebars.Template;
+import com.github.edgarespina.handlebars.TemplateLoader;
 
 /**
  * A Handlebars {@link ViewResolver view resolver}.
@@ -23,16 +24,6 @@ public class HandlebarsViewResolver extends AbstractTemplateViewResolver {
    * The default content type.
    */
   public static final String DEFAULT_CONTENT_TYPE = "text/html;charset=UTF-8";
-
-  /**
-   * The default view prefix.
-   */
-  public static final String DEFAULT_PREFIX = "/";
-
-  /**
-   * The default view suffix.
-   */
-  public static final String DEFAULT_SUFFIX = ".html";
 
   /**
    * The handlebars instance.
@@ -50,8 +41,18 @@ public class HandlebarsViewResolver extends AbstractTemplateViewResolver {
     this.handlebars = handlebars;
     setViewClass(HandlebarsView.class);
     setContentType(DEFAULT_CONTENT_TYPE);
-    setPrefix(DEFAULT_PREFIX);
-    setSuffix(DEFAULT_SUFFIX);
+  }
+
+  @Override
+  public void setPrefix(final String prefix) {
+    throw new UnsupportedOperationException("Use "
+        + TemplateLoader.class.getName() + "#setPrefix");
+  }
+
+  @Override
+  public void setSuffix(final String suffix) {
+    throw new UnsupportedOperationException("Use "
+        + TemplateLoader.class.getName() + "#setSuffix");
   }
 
   /**
@@ -84,7 +85,6 @@ public class HandlebarsViewResolver extends AbstractTemplateViewResolver {
       url = "/" + url;
     }
     URI uri = URI.create(url);
-    logger.debug("Compiling: " + uri);
     Template template = handlebars.compile(uri);
     view.setTemplate(template);
     return view;

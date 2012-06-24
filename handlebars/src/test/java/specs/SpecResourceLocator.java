@@ -8,7 +8,7 @@ import java.util.Map;
 
 import com.github.edgarespina.handlebars.TemplateLoader;
 
-public class SpecResourceLocator extends TemplateLoader<String> {
+public class SpecResourceLocator extends TemplateLoader {
   private Map<String, String> templates;
 
   public SpecResourceLocator(final Spec spec) {

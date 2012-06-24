@@ -1,6 +1,5 @@
 package com.github.edgarespina.handlebars.io;
 
-import static org.parboiled.common.Preconditions.checkArgument;
 import static org.parboiled.common.Preconditions.checkNotNull;
 
 import java.io.IOException;
@@ -18,12 +17,7 @@ import com.github.edgarespina.handlebars.TemplateLoader;
  * @author edgar.espina
  * @since 0.1.0
  */
-public class ServletContextTemplateLoader extends TemplateLoader<String> {
-
-  /**
-   * The base path. Required.
-   */
-  private final String basepath;
+public class ServletContextTemplateLoader extends TemplateLoader {
 
   /**
    * The servlet context. Required.
@@ -34,15 +28,29 @@ public class ServletContextTemplateLoader extends TemplateLoader<String> {
    * Creates a new {@link ServletContextTemplateLoader}.
    *
    * @param servletContext The servlet context. Required.
-   * @param basepath The base path. Required.
+   * @param prefix The prefix that gets prepended to view names when building a
+   *        URI.
+   * @param suffix The suffix that gets appended to view names when building a
+   *        URI. Required.
    */
   public ServletContextTemplateLoader(final ServletContext servletContext,
-      final String basepath) {
-    checkNotNull(servletContext, "The servlet context is required.");
-    checkNotNull(basepath, "A base path is required.");
-    checkArgument(basepath.length() > 0, "A base path is required.");
-    this.servletContext = servletContext;
-    this.basepath = basepath;
+      final String prefix, final String suffix) {
+    setPrefix(prefix);
+    setSuffix(suffix);
+    this.servletContext =
+        checkNotNull(servletContext, "The servlet context is required.");
+  }
+
+  /**
+   * Creates a new {@link ServletContextTemplateLoader}.
+   *
+   * @param servletContext The servlet context. Required.
+   * @param prefix The prefix that gets prepended to view names when building a
+   *        URI.
+   */
+  public ServletContextTemplateLoader(final ServletContext servletContext,
+      final String prefix) {
+    this(servletContext, prefix, DEFAULT_SUFFIX);
   }
 
   /**
@@ -51,12 +59,7 @@ public class ServletContextTemplateLoader extends TemplateLoader<String> {
    * @param servletContext The servlet context. Required.
    */
   public ServletContextTemplateLoader(final ServletContext servletContext) {
-    this(servletContext, "/");
-  }
-
-  @Override
-  protected String resolve(final String uri) {
-    return basepath + uri;
+    this(servletContext, "/", DEFAULT_SUFFIX);
   }
 
   @Override

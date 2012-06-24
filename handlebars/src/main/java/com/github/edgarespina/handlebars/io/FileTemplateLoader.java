@@ -17,12 +17,22 @@ import com.github.edgarespina.handlebars.TemplateLoader;
  * @author edgar.espina
  * @since 0.1.0
  */
-public class FileTemplateLoader extends TemplateLoader<File> {
+public class FileTemplateLoader extends TemplateLoader {
 
   /**
-   * The base directory.
+   * Creates a new {@link FileTemplateLoader}.
+   *
+   * @param basedir The base directory. Required.
+   * @param suffix The view suffix. Required.
    */
-  private final File basedir;
+  public FileTemplateLoader(final File basedir, final String suffix) {
+    checkNotNull(basedir, "The base dir is required.");
+    checkArgument(basedir.exists(), "File not found: %s", basedir);
+    checkArgument(basedir.isDirectory(), "A directory is required: %s",
+        basedir);
+    setPrefix(basedir.toString());
+    setSuffix(suffix);
+  }
 
   /**
    * Creates a new {@link FileTemplateLoader}.
@@ -30,19 +40,32 @@ public class FileTemplateLoader extends TemplateLoader<File> {
    * @param basedir The base directory. Required.
    */
   public FileTemplateLoader(final File basedir) {
-    this.basedir = checkNotNull(basedir, "The base dir is required.");
-    checkArgument(basedir.exists(), "File not found: %s", basedir);
-    checkArgument(basedir.isDirectory(), "A directory is required: %s",
-        basedir);
+    this(basedir, DEFAULT_SUFFIX);
+  }
+
+  /**
+   * Creates a new {@link FileTemplateLoader}.
+   *
+   * @param basedir The base directory. Required.
+   * @param suffix The view suffix. Required.
+   */
+  public FileTemplateLoader(final String basedir, final String suffix) {
+    setPrefix(basedir);
+    setSuffix(suffix);
+  }
+
+  /**
+   * Creates a new {@link FileTemplateLoader}.
+   *
+   * @param basedir The base directory. Required.
+   */
+  public FileTemplateLoader(final String basedir) {
+    this(basedir, DEFAULT_SUFFIX);
   }
 
   @Override
-  protected File resolve(final String uri) {
-    return new File(basedir, uri);
-  }
-
-  @Override
-  protected Reader read(final File file) throws IOException {
+  protected Reader read(final String location) throws IOException {
+    File file = new File(location);
     if (!file.exists()) {
       return null;
     }

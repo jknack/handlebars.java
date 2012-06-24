@@ -22,48 +22,48 @@ public class FileLocatorTest {
 
   @Test
   public void locate() throws IOException {
-    TemplateLoader<File> locator =
+    TemplateLoader locator =
         new FileTemplateLoader(new File("src/test/resources"));
-    Reader reader = locator.load(URI.create("template.html"));
+    Reader reader = locator.load(URI.create("template"));
     assertNotNull(reader);
   }
 
   @Test
   public void subFolder() throws IOException {
-    TemplateLoader<File> locator =
-        new FileTemplateLoader(new File("src/test/resources"));
-    Reader reader = locator.load(URI.create("specs/comments.yml"));
+    TemplateLoader locator =
+        new FileTemplateLoader(new File("src/test/resources"), ".yml");
+    Reader reader = locator.load(URI.create("specs/comments"));
     assertNotNull(reader);
   }
 
   @Test
   public void subFolderwithDashAtBeginning() throws IOException {
-    TemplateLoader<File> locator =
-        new FileTemplateLoader(new File("src/test/resources"));
-    Reader reader = locator.load(URI.create("/specs/comments.yml"));
+    TemplateLoader locator =
+        new FileTemplateLoader(new File("src/test/resources"), ".yml");
+    Reader reader = locator.load(URI.create("/specs/comments"));
     assertNotNull(reader);
   }
 
   @Test(expected = FileNotFoundException.class)
   public void failLocate() throws IOException {
-    TemplateLoader<File> locator =
+    TemplateLoader locator =
         new FileTemplateLoader(new File("src/test/resources"));
-    locator.load(URI.create("notExist.html"));
+    locator.load(URI.create("notExist"));
   }
 
   @Test
   public void setBasePath() throws IOException {
-    TemplateLoader<File> locator =
-        new FileTemplateLoader(new File("src/test/resources/specs"));
-    Reader reader = locator.load(URI.create("comments.yml"));
+    TemplateLoader locator =
+        new FileTemplateLoader(new File("src/test/resources/specs"), ".yml");
+    Reader reader = locator.load(URI.create("comments"));
     assertNotNull(reader);
   }
 
   @Test
   public void setBasePathWithDash() throws IOException {
-    TemplateLoader<File> locator =
-        new FileTemplateLoader(new File("src/test/resources/specs/"));
-    Reader reader = locator.load(URI.create("comments.yml"));
+    TemplateLoader locator =
+        new FileTemplateLoader(new File("src/test/resources/specs/"), ".yml");
+    Reader reader = locator.load(URI.create("comments"));
     assertNotNull(reader);
   }
 

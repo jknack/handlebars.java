@@ -21,49 +21,44 @@ public class ClasspathLocatorTest {
 
   @Test
   public void locate() throws IOException {
-    TemplateLoader<String> locator = new ClassTemplateLoader();
-    Reader reader = locator.load(URI.create("template.html"));
+    TemplateLoader locator = new ClassTemplateLoader();
+    Reader reader = locator.load(URI.create("template"));
     assertNotNull(reader);
   }
 
   @Test
   public void subFolder() throws IOException {
-    TemplateLoader<String> locator = new ClassTemplateLoader();
-    Reader reader = locator.load(URI.create("specs/comments.yml"));
+    TemplateLoader locator = new ClassTemplateLoader();
+    locator.setSuffix(".yml");
+    Reader reader = locator.load(URI.create("specs/comments"));
     assertNotNull(reader);
   }
 
   @Test
   public void subFolderwithDashAtBeginning() throws IOException {
-    TemplateLoader<String> locator = new ClassTemplateLoader();
-    Reader reader = locator.load(URI.create("/specs/comments.yml"));
+    TemplateLoader locator = new ClassTemplateLoader();
+    locator.setSuffix(".yml");
+    Reader reader = locator.load(URI.create("/specs/comments"));
     assertNotNull(reader);
   }
 
   @Test(expected = FileNotFoundException.class)
   public void failLocate() throws IOException {
-    TemplateLoader<String> locator = new ClassTemplateLoader();
-    locator.load(URI.create("notExist.html"));
+    TemplateLoader locator = new ClassTemplateLoader();
+    locator.load(URI.create("notExist"));
   }
 
   @Test
   public void setBasePath() throws IOException {
-    TemplateLoader<String> locator = new ClassTemplateLoader("specs");
-    Reader reader = locator.load(URI.create("comments.yml"));
-    assertNotNull(reader);
-  }
-
-  @Test
-  public void setBasePathWithDash() throws IOException {
-    TemplateLoader<String> locator = new ClassTemplateLoader("/specs");
-    Reader reader = locator.load(URI.create("comments.yml"));
+    TemplateLoader locator = new ClassTemplateLoader("/specs", ".yml");
+    Reader reader = locator.load(URI.create("comments"));
     assertNotNull(reader);
   }
 
   @Test
   public void setBasePathWithDashDash() throws IOException {
-    TemplateLoader<String> locator = new ClassTemplateLoader("/specs/");
-    Reader reader = locator.load(URI.create("comments.yml"));
+    TemplateLoader locator = new ClassTemplateLoader("/specs/", ".yml");
+    Reader reader = locator.load(URI.create("comments"));
     assertNotNull(reader);
   }
 }

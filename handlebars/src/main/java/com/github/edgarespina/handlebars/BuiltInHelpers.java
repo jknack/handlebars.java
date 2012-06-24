@@ -269,7 +269,7 @@ public enum BuiltInHelpers implements Helper<Object> {
    * <pre>
    * &lt;html&gt;
    * ...
-   * {{emdedded "user.hbs" ["id"]}}
+   * {{emdedded "user" ["id"]}}
    * &lt;/html&gt;
    * </pre>
    *
@@ -285,7 +285,7 @@ public enum BuiltInHelpers implements Helper<Object> {
    * expected output is:
    *
    * <pre>
-   * &lt;script id="user-template" type="text/x-handlebars-template"&gt;
+   * &lt;script id="user-hbs" type="text/x-handlebars-template"&gt;
    * &lt;tr&gt;
    * &lt;td&gt;{{firstName}}&lt;/td&gt;
    * &lt;td&gt;{{lastName}}&lt;/td&gt;
@@ -296,7 +296,7 @@ public enum BuiltInHelpers implements Helper<Object> {
    * Optionally, a user can set the template's name:
    *
    * <pre>
-   * {{emdedded "user.hbs" "user-tmpl" }}
+   * {{emdedded "user" "user-tmpl" }}
    * </pre>
    *
    * expected output is:
@@ -316,7 +316,7 @@ public enum BuiltInHelpers implements Helper<Object> {
         throws IOException {
       String path = (String) context;
       checkNotNull(path, "A template path is required.");
-      String defaultId = path.replace('/', '-').replace('.', '-');
+      String defaultId = path.replace('/', '-').replace('.', '-') + "-hbs";
       String id = options.param(0, defaultId);
       Template template = options.handlebars.compile(URI.create(path));
       StringBuilder script = new StringBuilder();

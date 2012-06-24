@@ -77,8 +77,8 @@ public class RawTextTest {
   @Test
   public void partial() throws IOException {
     Handlebars handlebars = new Handlebars();
-    Template template = handlebars.compile("hello {{> user.hbs }}!");
-    assertEquals("hello {{>user.hbs}}!", template.text());
+    Template template = handlebars.compile("hello {{> user }}!");
+    assertEquals("hello {{>user}}!", template.text());
   }
 
   @Test
