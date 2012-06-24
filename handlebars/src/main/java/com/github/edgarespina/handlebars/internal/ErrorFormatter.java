@@ -15,7 +15,6 @@ import org.parboiled.errors.ParseError;
 import org.parboiled.matchers.AnyOfMatcher;
 import org.parboiled.matchers.Matcher;
 import org.parboiled.support.MatcherPath;
-import org.parboiled.support.ParsingResult;
 import org.parboiled.support.Position;
 
 /**
@@ -160,26 +159,12 @@ class ErrorFormatter implements Formatter<InvalidInputError> {
    * Pretty prints the given parse error showing its location in the given input
    * buffer.
    *
-   * @param result the parse result.
-   * @return the pretty print text.
-   */
-  public static String printResult(final ParsingResult<?> result) {
-    List<ParseError> errors = result.parseErrors;
-    StringBuilder buffer = new StringBuilder();
-    for (ParseError error : errors) {
-      buffer.append(printParseError(error)).append("\n");
-    }
-    return buffer.toString().trim();
-  }
-
-  /**
-   * Pretty prints the given parse error showing its location in the given input
-   * buffer.
-   *
+   * @param filename The file's name.
    * @param error the parse error
    * @return the pretty print text
    */
-  public static String printParseError(final ParseError error) {
+  public static String printParseError(final String filename,
+      final ParseError error) {
     checkArgNotNull(error, "error");
     String message =
         error.getErrorMessage() != null
@@ -187,7 +172,7 @@ class ErrorFormatter implements Formatter<InvalidInputError> {
             : error instanceof InvalidInputError
                 ? new ErrorFormatter().format((InvalidInputError) error)
                 : "";
-    return printErrorMessage("line %2$s:%3$s: %1$s", message,
+    return printErrorMessage(filename + ":%2$s:%3$s: %1$s", message,
         error.getStartIndex(), error.getEndIndex(), error.getInputBuffer())
         .trim();
   }

@@ -13,8 +13,6 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
-import com.github.edgarespina.handlebars.Handlebars;
-import com.github.edgarespina.handlebars.Template;
 import com.github.edgarespina.handlebars.io.ClassTemplateLoader;
 
 @RunWith(Parameterized.class)
@@ -28,14 +26,19 @@ public class InheritanceTest {
 
   @Test
   public void inheritance() throws IOException {
-    Handlebars handlebars =
-        new Handlebars(new ClassTemplateLoader("/inheritance"));
-    Template template = handlebars.compile(URI.create(name));
-    CharSequence result = template.apply(new Object());
-    String expected =
-        toString(getClass().getResourceAsStream(
-            "/inheritance/" + name + ".expected"));
-    assertEquals(expected, result);
+    try {
+      Handlebars handlebars =
+          new Handlebars(new ClassTemplateLoader("/inheritance"));
+      Template template = handlebars.compile(URI.create(name));
+      CharSequence result = template.apply(new Object());
+      String expected =
+          toString(getClass().getResourceAsStream(
+              "/inheritance/" + name + ".expected"));
+      assertEquals(expected, result);
+    } catch (HandlebarsException ex) {
+      Handlebars.error(ex.getMessage());
+      throw ex;
+    }
   }
 
   @Parameters

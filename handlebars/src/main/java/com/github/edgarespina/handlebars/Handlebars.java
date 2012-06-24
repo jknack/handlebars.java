@@ -294,14 +294,15 @@ public class Handlebars {
     checkNotNull(uri, "The uri is required.");
     checkArgument(uri.toString().length() > 0, "The uri is required.");
     checkDelimiters(startDelimiter, endDelimiter);
-    String key = uri + "_" + startDelimiter + ":" + endDelimiter;
+    String key = uri + "_" + startDelimiter + endDelimiter;
     debug("Looking for: %s", key);
     Template template = cache.get(key);
     if (template == null) {
       debug("Key not found: %s", key);
       Reader reader = loader.load(uri);
       template =
-          Parser.create(this, startDelimiter, endDelimiter).parse(reader);
+          Parser.create(this, uri.toString(), startDelimiter, endDelimiter)
+              .parse(reader);
       cache.put(key, template);
       debug("Key saved: %s", key);
     }
@@ -332,12 +333,14 @@ public class Handlebars {
       final String endDelimiter) throws IOException {
     checkNotNull(input, "The input text is required.");
     checkArgument(input.length() > 0, "The input text is required.");
-    String key = input.hashCode() + "_" + startDelimiter + ":" + endDelimiter;
+    String key = input.hashCode() + "_" + startDelimiter + endDelimiter;
     debug("Looking for: %s", key);
     Template template = cache.get(key);
     if (template == null) {
       debug("Key not found: %s", key);
-      template = Parser.create(this, startDelimiter, endDelimiter).parse(input);
+      template =
+          Parser.create(this, "embedded", startDelimiter, endDelimiter).parse(
+              input);
       cache.put(key, template);
       debug("Key saved: %s", key);
     }

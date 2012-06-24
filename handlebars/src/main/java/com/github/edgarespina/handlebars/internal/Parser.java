@@ -45,7 +45,7 @@ import com.github.edgarespina.handlebars.TemplateLoader;
 import com.github.edgarespina.handlebars.internal.Variable.Type;
 
 /**
- * The template parser.
+ * The Handlebars parser.
  *
  * @author edgar.espina
  * @since 0.1.0
@@ -172,10 +172,13 @@ public class Parser extends BaseParser<BaseTemplate> {
 
   protected final Map<String, Partial> partials;
 
-  Parser(final Handlebars handlebars,
+  protected final String filename;
+
+  Parser(final Handlebars handlebars, final String filename,
       final Map<String, Partial> partials, final String startDelimiter,
       final String endDelimiter) {
     this.handlebars = handlebars;
+    this.filename = filename;
     this.partials =
         partials == null ? new HashMap<String, Partial>() : partials;
     this.startDelimiter = startDelimiter;
@@ -183,16 +186,18 @@ public class Parser extends BaseParser<BaseTemplate> {
   }
 
   private static Parser create(final Handlebars handlebars,
+      final String filename,
       final Map<String, Partial> partials, final String startDelimiter,
       final String endDelimiter) {
-    return Parboiled.createParser(Parser.class, handlebars, partials,
+    return Parboiled.createParser(Parser.class, handlebars, filename, partials,
         startDelimiter, endDelimiter);
   }
 
   public static Parser create(final Handlebars handlebars,
+      final String filename,
       final String startDelimiter,
       final String endDelimiter) {
-    return create(handlebars, null, startDelimiter, endDelimiter);
+    return create(handlebars, filename, null, startDelimiter, endDelimiter);
   }
 
   public static void initialize() {
@@ -220,7 +225,7 @@ public class Parser extends BaseParser<BaseTemplate> {
       ParsingResult<BaseTemplate> result = runner.run(input);
       if (result.hasErrors()) {
         ParseError error = result.parseErrors.get(0);
-        String msg = ErrorFormatter.printParseError(error);
+        String msg = ErrorFormatter.printParseError(filename, error);
         throw new HandlebarsException(msg);
       }
       TemplateList sequence = (TemplateList) result.resultValue;
@@ -230,6 +235,10 @@ public class Parser extends BaseParser<BaseTemplate> {
       }
       return sequence;
     } catch (ParserRuntimeException ex) {
+      Throwable cause = ex.getCause();
+      if (cause instanceof HandlebarsException) {
+        throw (HandlebarsException) cause;
+      }
       HandlebarsException hex = new HandlebarsException(ex.getMessage());
       hex.initCause(ex.getCause() == null ? ex : ex.getCause());
       throw hex;
@@ -401,7 +410,7 @@ public class Parser extends BaseParser<BaseTemplate> {
                 TemplateLoader<?> locator = handlebars.getTemplateLoader();
                 Reader reader = locator.load(URI.create(uri));
                 Parser parser =
-                    create(handlebars, partials, startDelimiter, endDelimiter);
+                    create(handlebars, uri, partials, startDelimiter, endDelimiter);
                 // Avoid stack overflow exceptions
                 partial = new Partial();
                 partials.put(uri, partial);
