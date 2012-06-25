@@ -101,8 +101,14 @@ public enum BuiltInHelpers implements Helper<Object> {
     @Override
     public CharSequence apply(final Object context, final Options options)
         throws IOException {
-      checkNotNull(context, "A template path is required.");
-
+      if (context == null) {
+        throw new IllegalArgumentException(
+            "{{#block}} helper required a context.");
+      }
+      if (!(context instanceof String)) {
+        throw new IllegalArgumentException(
+            "{{#block}} helper required a partial's path");
+      }
       String path = (String) context;
       Template template = options.partial(path);
       if (template == null) {
@@ -129,6 +135,14 @@ public enum BuiltInHelpers implements Helper<Object> {
     @Override
     public CharSequence apply(final Object context, final Options options)
         throws IOException {
+      if (context == null) {
+        throw new IllegalArgumentException(
+            "{{#partial}} helper required a context.");
+      }
+      if (!(context instanceof String)) {
+        throw new IllegalArgumentException(
+            "{{#partial}} helper required a partial's path");
+      }
       options.partial((String) context, options.fn);
       return null;
     }

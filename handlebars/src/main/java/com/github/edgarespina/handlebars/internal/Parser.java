@@ -254,7 +254,7 @@ public class Parser extends BaseParser<BaseTemplate> {
         push(new TemplateList()),
         ZeroOrMore(
         FirstOf(
-            section(),
+            block(),
             partial(),
             setDelimiters(),
             comment(),
@@ -441,7 +441,7 @@ public class Parser extends BaseParser<BaseTemplate> {
         spacing(), endDelimiter());
   }
 
-  Rule section() throws IOException {
+  Rule block() throws IOException {
     final StringVar name = new StringVar();
     final Var<Boolean> inverted = new Var<Boolean>();
     final Var<Section> section = new Var<Section>();
@@ -487,7 +487,7 @@ public class Parser extends BaseParser<BaseTemplate> {
             }
             return addToline(section.get());
           }
-        }).label("section");
+        }).label("block");
   }
 
   Rule elseSection() {

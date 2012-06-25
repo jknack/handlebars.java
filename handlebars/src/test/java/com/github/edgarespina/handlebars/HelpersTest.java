@@ -8,10 +8,6 @@ import java.util.Map.Entry;
 
 import org.junit.runners.Parameterized.Parameters;
 
-import com.github.edgarespina.handlebars.Handlebars;
-import com.github.edgarespina.handlebars.Helper;
-import com.github.edgarespina.handlebars.Options;
-
 import specs.Spec;
 import specs.SpecTest;
 

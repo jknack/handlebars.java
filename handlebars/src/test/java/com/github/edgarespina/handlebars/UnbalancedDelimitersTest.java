@@ -6,14 +6,10 @@ import org.junit.Test;
 
 public class UnbalancedDelimitersTest {
 
-  @Test
+  @Test(expected = HandlebarsException.class)
   public void defaultFormat() throws IOException {
-    try {
       Handlebars handlebars = new Handlebars();
       handlebars.compile("{{=<% >=}}");
-    } catch (Exception ex) {
-      System.out.println(ex.getMessage());
-    }
   }
 
 }
