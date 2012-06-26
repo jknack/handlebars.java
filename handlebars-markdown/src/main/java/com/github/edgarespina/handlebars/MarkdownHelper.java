@@ -15,7 +15,10 @@ public class MarkdownHelper implements Helper<Object> {
   @Override
   public CharSequence apply(final Object context, final Options options)
       throws IOException {
-    String markdown = (String) context;
+    if (context == null) {
+      return "";
+    }
+    String markdown = context.toString();
     PegDownProcessor processor = new PegDownProcessor();
     return new Handlebars.SafeString(processor.markdownToHtml(markdown));
   }

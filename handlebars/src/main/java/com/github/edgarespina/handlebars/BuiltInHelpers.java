@@ -107,7 +107,7 @@ public enum BuiltInHelpers implements Helper<Object> {
       }
       if (!(context instanceof String)) {
         throw new IllegalArgumentException(
-            "{{#block}} helper required a partial's path");
+            "{{#block}} helper required a partial path");
       }
       String path = (String) context;
       Template template = options.partial(path);
@@ -141,7 +141,7 @@ public enum BuiltInHelpers implements Helper<Object> {
       }
       if (!(context instanceof String)) {
         throw new IllegalArgumentException(
-            "{{#partial}} helper required a partial's path");
+            "{{#partial}} helper required a partial path");
       }
       options.partial((String) context, options.fn);
       return null;
@@ -328,8 +328,15 @@ public enum BuiltInHelpers implements Helper<Object> {
     @Override
     public CharSequence apply(final Object context, final Options options)
         throws IOException {
+      if (context == null) {
+        throw new IllegalArgumentException(
+            "{{embedded}} helper required a context.");
+      }
+      if (!(context instanceof String)) {
+        throw new IllegalArgumentException(
+            "{{embedded}} helper required a partial path");
+      }
       String path = (String) context;
-      checkNotNull(path, "A template path is required.");
       String defaultId = path.replace('/', '-').replace('.', '-') + "-hbs";
       String id = options.param(0, defaultId);
       Template template = options.handlebars.compile(URI.create(path));
