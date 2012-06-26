@@ -194,8 +194,8 @@ handlebars.compile("{{#blog-list blogs}}{{/blog-list}}");
 ```
 ## Advanced Usage
 
-### Using the Context API
- Handlebars.java let you extend the context stack. Let's say you need to access to the current logged-in user in every single view/page.
+### Extending the context stack
+ Let's say you need to access to the current logged-in user in every single view/page.
  You can publishing the current logged in user by hooking the context-stack. See it in action:
  ```java
   hookContextStack(Object model, Template template) {
