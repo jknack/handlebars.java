@@ -8,7 +8,8 @@ Handlebars provides the power necessary to let you build semantic templates effe
 
 # Getting Started
 
-## Basic Usage
+## Hello Handlebars.java
+
 ```java
 Handlebars handlebars = new Handlebars();
 
@@ -21,102 +22,256 @@ Output:
 Hello Handlebars.java!
 ```
 
-## JavaBean Usage
-```java
-Blog blog = new Blog("My First Post", "edgar");
-blog.setBody("...");
+## Helpers
 
-Handlebars handlebars = new Handlebars();
+### Built-in helpers:
+ * 'with'
+ * 'each'
+ * 'if'
+ * 'unless'
+ * 'log'
+ * 'dateFormat'
+ * 'block'
+ * 'partial'
+ * 'embedded'
 
-Template template = handlebars.compile("{{title}} by {{author}}\n{{body}}");
+### with, each, if, unless:
+ See the [built-in helper documentation](http://handlebarsjs.com/block_helpers.html).
 
-System.out.println(template.apply(blog));
+### dateFormat:
+
+Usage:
+```
+  {{dateFormat date ["format"] ["locale"]}}
+```
+
+context: a java.util.Date object. Required.
+param(0): one of "full", "long", "medium", "sort" or a date pattern like ("MM/dd/yyyy", etc.). Default is "medium".
+param(1): a locale representation ("es_AR", "en", "es", etc). Default is platform specific.
+
+### block and partial
+ Block and partial helpers work together to provide you [Template Inheritance](http://thejohnfreeman.com/blog/2012/03/23/template-inheritance-for-handlebars.html).
+
+Usage:
+```
+  {{#block "title"}}
+    ...
+  {{/block}}
+```
+context: A string literal which define the region's name.
+
+Usage:
+```
+  {{#partial "title"}}
+    ...
+  {{/partial}}
+```
+context: A string literal which define the region's name.
+
+### embedded
+ The embedded helper allow you to "embedded" a handlebars template inside a ```<script>``` HTML tag. See it in action:
+
+user.hbs
+
+```html
+<tr>
+  <td>{{firstName}}</td>
+  <td>{{lastName}}</td>
+</tr>
+```
+
+home.hbs
+
+```html
+<html>
+...
+{{embedded "user"}}
+...
+</html>
 ```
 Output:
-```
-My First Post by edgar
+```html
+<html>
 ...
-```
-
-## Map Usage
-```java
-Map blog = new HashMap();
-blog.put("title", "My First Post");
-blog.put("author", "edgar");
-blog.put("body", "...");
-
-Handlebars handlebars = new Handlebars();
-
-Template template = handlebars.compile("{{title}} by {{author}}\n{{body}}");
-
-System.out.println(template.apply(blog));
-```
-Output:
-```
-My First Post by edgar
+<script id="user-hbs" type="text/x-handlebars">
+<tr>
+  <td>{{firstName}}</td>
+  <td>{{lastName}}</td>
+</tr>
+</script>
 ...
+</html>
 ```
 
-## Helper Usage
+Usage:
+```
+{{embedded "template"}}
+```
+context: A template name. Required.
+
+### Type Safety:
+
 ```java
+handlebars.registerHelper("blog", new Helper<Blog>() {
+  public CharSequence apply(Blog blog, Options options) {
+    return options.fn(blog);
+  }
+});
+```
 
-Map<String, String> nav1 = new HashMap<String, String>();
-nav1.put("url", "http://www.yehudakatz.com");
-nav1.put("title", "Katz Got Your Tongue");
-
-Map<String, String> nav2 = new HashMap<String, String>();
-nav2.put("url", "http://www.sproutcore.com/block");
-nav2.put("title", "SproutCore Blog");
-
-Map<String, Object> navs = new HashMap<String, Object>();
-navs.put("nav", Arrays.asList(nav1, nav2));
-
-Handlebars handlebars = new Handlebars();
-handlebars.registerHelper("list", new Helper<List<Map<String, String>>>() {
-  public CharSequence apply(List<Map<String, String>> context, Options options) {
+```java
+handlebars.registerHelper("blog-list", new Helper<List<Blog>>() {
+  public CharSequence apply(List<Blog> list, Options options) {
     String ret = "<ul>";
-    
-    for(Map<String, String> nav: context) {
-      ret += "<li>" + options.fn(nav) + "</li>";
+    for (Blog blog: list) {
+      ret += "<li>" + options.fn(blog) + "</li>";
     }
-    
     return new Handlebars.SafeString(ret + "</ul>");
   }
 });
+```
 
-Template template = handlebars.compile("{{#list nav}}<a href="{{url}}">{{title}}</a>{{/list}}");
+### Helper Options
 
-System.out.println(template.apply(navs));
+#### Parameters
+```java
+handlebars.registerHelper("blog-list", new Helper<Blog>() {
+  public CharSequence apply(List<Blog> list, Options options) {
+    String p0 = options.param(0);
+    assertEquals("param0", p0);
+    Integer p1 = options.param(1);
+    assertEquals(123, p1);
+    ...
+  }
+});
+
+Bean bean = new Bean();
+bean.setParam1(123);
+
+Template template = handlebars.compile("{{#blog-list blogs \"param0\" param1}}{{/blog-list}}");
+template.apply(bean);
 ```
-Output:
+
+#### Default parameters
+```java
+handlebars.registerHelper("blog-list", new Helper<Blog>() {
+  public CharSequence apply(List<Blog> list, Options options) {
+    String p0 = options.param(0, "param0");
+    assertEquals("param0", p0);
+    Integer p1 = options.param(1, 123);
+    assertEquals(123, p1);
+    ...
+  }
+});
+
+Template template = handlebars.compile("{{#blog-list blogs}}{{/blog-list}}");
 ```
-<ul>
-<li><a href="http://www.yehudakatz.com">Katz Got Your Tongue</a></li>
-<li><a href="http://www.sproutcore.com/block">SproutCore Blog</a></li>
-</ul>
+
+#### Hash
+```java
+handlebars.registerHelper("blog-list", new Helper<Blog>() {
+  public CharSequence apply(List<Blog> list, Options options) {
+    String class = options.hash("class");
+    assertEquals("blog-css", class);
+    ...
+  }
+});
+
+handlebars.compile("{{#blog-list blogs class=\"blog-css\"}}{{/blog-list}}");
 ```
+
+#### Default hash
+```java
+handlebars.registerHelper("blog-list", new Helper<Blog>() {
+  public CharSequence apply(List<Blog> list, Options options) {
+    String class = options.hash("class", "blog-css");
+    assertEquals("blog-css", class);
+    ...
+  }
+});
+
+handlebars.compile("{{#blog-list blogs}}{{/blog-list}}");
+```
+## Advanced Usage
+
+### Using the Context API
+ Handlebars.java let you extend the context stack. Let's say you need to access to the current logged-in user in every single view/page.
+ You can publishing the current logged in user by hooking the context-stack. See it in action:
+ ```java
+  hookContextStack(Object model, Template template) {
+    User user = ....;// Get the logged-in user from somewhere
+    Context parent = ContextFactory.wrap(model);
+    template.apply(ContextFactory.wrap(parent, user));
+  }
+ ```
+ Where is the ```hookContextStack``` method? Well, that will depends on our current application architecture.
+
+# Modules
+## JSON
+
+Maven:
+```xml
+ <dependency>
+   <groupId>com.github.edgarespina</groupId>
+   <artifactId>handlebars-json</artifactId>
+   <version>0.1.0</version>
+ </dependency>
+```
+Usage:
+
+```java
+ handlebars.registerHelper("json", new JSONHelper());
+```
+```
+ {{json context}}
+```
+context: An object or null. Required.
+
+## Markdown
+
+Maven:
+```xml
+ <dependency>
+   <groupId>com.github.edgarespina</groupId>
+   <artifactId>handlebars-markdown</artifactId>
+   <version>0.1.0</version>
+ </dependency>
+```
+Usage:
+
+```java
+ handlebars.registerHelper("md", new MarkdownHelper());
+```
+```
+ {{md context}}
+```
+context: An object or null. Required.
+
+## SpringMVC
+
+Maven:
+```xml
+ <dependency>
+   <groupId>com.github.edgarespina</groupId>
+   <artifactId>handlebars-springmvc</artifactId>
+   <version>0.1.0</version>
+ </dependency>
+```
+
+Checkout the HandlebarsViewResolver.
+
+# Architecture
+ * Handlebars.java follows the JavaScript API with some minors exceptions due to the nature of the Java language.
+ * The parser is built on top of [Parboiled] (https://github.com/sirthias/parboiled).
+ * Data is provided as primitive types (int, boolean, double, etc.), strings, maps, list or JavaBeans objects.
+ * Helpers are type-safe.
+ * Handlebars.java is thread-safe.
 
 ## Status
 ### Mustache Spec
  * Passes 123 of 127 tests from the [Mustache Spec](https://github.com/mustache/spec).
  * The 4 missing tests are: "Standalone Line Endings", "Standalone Without Previous Line", "Standalone Without Newline", "Standalone Indentation" all them from partials.yml.
  * In short, partials works 100% if you ignore white spaces indentation.
-
-### Maven Central
- * There isn't a public release yet.
-
-## Design
- * Handlebars.java do the best to follows the JavaScript API with some minors exceptions due to the nature of the Java Language.
- * The parser is built on top of [Parboiled] (https://github.com/sirthias/parboiled).
- * Data is provided as primitive types (int, boolean, double, etc.), strings, maps, list or JavaBeans objects.
- * Handlebars.java is thread-safe.
-
-## Helpers
- * Handlebars.java includes the built-in helpers: 'if', 'unless', 'with', 'each', 'noop' and 'log'.
- * Handlebars.java also includes two built-in helpers: 'block' and 'partial' for doing [Template Inheritance](http://thejohnfreeman.com/blog/2012/03/23/template-inheritance-for-handlebars.html)
-
-## Modules
- * [Spring MVC](https://github.com/edgarespina/handlebars-springmvc)
  
 ## Dependencies
  Handlebars.java depends on:
@@ -129,13 +284,6 @@ Output:
   |  +- asm:asm-analysis:jar:3.3.1:compile
   |  \- org.parboiled:parboiled-core:jar:1.0.2:compile
   \- org.slf4j:slf4j-api:jar:1.6.4:compile
- ```
-
-### Optional dependencies:
-#### Jackson
-
- ```text 
-  org.codehaus.jackson:jackson-mapper-asl:1.9.7
  ```
 
 ## FAQ
