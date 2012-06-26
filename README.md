@@ -7,6 +7,15 @@ Handlebars provides the power necessary to let you build semantic templates effe
 [Mustache](http://mustache.github.com/mustache.5.html) templates are compatible with Handlebars, so you can take a [Mustache](http://mustache.github.com/mustache.5.html) template, import it into Handlebars, and start taking advantage of the extra Handlebars features.
 
 # Getting Started
+## Maven
+
+```xml
+  <dependency>
+    <groupId>com.github.edgarespina</groupId>
+    <artifactId>handlebars</artifactId>
+    <version>0.1.0</version>
+  </dependency>
+```
 
 ## Hello Handlebars.java
 
