@@ -9,7 +9,6 @@ import java.util.Map;
 
 import com.github.edgarespina.handlebars.BuiltInHelpers;
 import com.github.edgarespina.handlebars.Context;
-import com.github.edgarespina.handlebars.ContextFactory;
 import com.github.edgarespina.handlebars.Handlebars;
 import com.github.edgarespina.handlebars.Helper;
 import com.github.edgarespina.handlebars.Lambda;
@@ -84,38 +83,38 @@ class Section extends HelperResolver {
 
   @SuppressWarnings("unchecked")
   @Override
-  public void merge(final Context scope,
+  public void merge(final Context context,
       final Writer writer) throws IOException {
     Helper<Object> helper = helper(name);
     BaseTemplate template = body;
-    final Object context;
-    Context currentScope = scope;
+    final Object childContext;
+    Context currentScope = context;
     if (helper == null) {
-      context = transform(scope.get(name));
+      childContext = transform(context.get(name));
       if (inverted) {
         helper = BuiltInHelpers.UNLESS;
-      } else if (context instanceof Iterable) {
+      } else if (childContext instanceof Iterable) {
         helper = BuiltInHelpers.EACH;
-      } else if (context instanceof Boolean) {
+      } else if (childContext instanceof Boolean) {
         helper = BuiltInHelpers.IF;
-      } else if (context instanceof Lambda) {
+      } else if (childContext instanceof Lambda) {
         helper = BuiltInHelpers.WITH;
         template = Lambdas
             .compile(handlebars,
-                (Lambda<Object, Object>) context,
-                scope, template,
+                (Lambda<Object, Object>) childContext,
+                context, template,
                 startDelimiter, endDelimiter);
       } else {
         helper = BuiltInHelpers.WITH;
-        currentScope = ContextFactory.wrap(scope, context);
+        currentScope = Context.newContext(context, childContext);
       }
     } else {
-      context = determineContext(scope);
+      childContext = determineContext(context);
     }
     DefaultOptions options =
         new DefaultOptions(handlebars, template, inverse, currentScope,
-            params(currentScope), hash(scope));
-    CharSequence result = helper.apply(context, options);
+            params(currentScope), hash(context));
+    CharSequence result = helper.apply(childContext, options);
     if (result != null) {
       writer.append(result);
     }

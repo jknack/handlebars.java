@@ -36,48 +36,48 @@ public class ContextFactoryTest {
 
   @Test
   public void newContext() {
-    Context context = ContextFactory.wrap("String");
+    Context context = Context.newContext("String");
     assertNotNull(context);
     assertEquals("String", context.model());
   }
 
-  @Test
-  public void noWrap() {
+  @Test(expected = IllegalArgumentException.class)
+  public void noContext() {
     Map<String, Object> model = new HashMap<String, Object>();
-    Context context = ContextFactory.wrap(model);
-    assertEquals(context, ContextFactory.wrap(context));
+    Context context = Context.newContext(model);
+    assertEquals(context, Context.newContext(context));
   }
 
   @Test
   public void parentContext() {
     Map<String, Object> model = new HashMap<String, Object>();
     model.put("name", "Handlebars");
-    Context parent = ContextFactory.wrap(model);
+    Context parent = Context.newContext(model);
     assertNotNull(parent);
     assertEquals("Handlebars", parent.get("name"));
 
     Map<String, Object> extended = new HashMap<String, Object>();
     extended.put("n", "Extended");
-    Context child = ContextFactory.wrap(parent, extended);
+    Context child = Context.newContext(parent, extended);
     assertEquals("Extended", child.get("n"));
     assertEquals("Handlebars", child.get("name"));
   }
 
   @Test(expected = NullPointerException.class)
   public void nullParent() {
-    ContextFactory.wrap(null, new Object());
+    Context.newContext(null, new Object());
   }
 
   @Test
   public void dotLookup() {
-    Context context = ContextFactory.wrap("String");
+    Context context = Context.newContext("String");
     assertNotNull(context);
     assertEquals("String", context.get("."));
   }
 
   @Test
   public void thisLookup() {
-    Context context = ContextFactory.wrap("String");
+    Context context = Context.newContext("String");
     assertNotNull(context);
     assertEquals("String", context.get("this"));
   }
@@ -86,7 +86,7 @@ public class ContextFactoryTest {
   public void singleMapLookup() {
     Map<String, Object> model = new HashMap<String, Object>();
     model.put("simple", "value");
-    Context context = ContextFactory.wrap(model);
+    Context context = Context.newContext(model);
     assertNotNull(context);
     assertEquals("value", context.get("simple"));
   }
@@ -97,7 +97,7 @@ public class ContextFactoryTest {
     Map<String, Object> nested = new HashMap<String, Object>();
     model.put("nested", nested);
     nested.put("simple", "value");
-    Context context = ContextFactory.wrap(model);
+    Context context = Context.newContext(model);
     assertNotNull(context);
     assertEquals("value", context.get("nested.simple"));
   }
@@ -110,7 +110,7 @@ public class ContextFactoryTest {
         return "value";
       }
     };
-    Context context = ContextFactory.wrap(model);
+    Context context = Context.newContext(model);
     assertNotNull(context);
     assertEquals("value", context.get("simple"));
   }
@@ -127,14 +127,14 @@ public class ContextFactoryTest {
         };
       }
     };
-    Context context = ContextFactory.wrap(model);
+    Context context = Context.newContext(model);
     assertNotNull(context);
     assertEquals("value", context.get("nested.simple"));
   }
 
   @Test
   public void customLookup() {
-    Context context = ContextFactory.wrap(new Base());
+    Context context = Context.newContext(new Base());
     assertNotNull(context);
     assertEquals("baseProperty", context.get("baseProperty"));
     assertEquals("baseProperty", context.get("childProperty"));
@@ -142,7 +142,7 @@ public class ContextFactoryTest {
 
   @Test
   public void customLookupOnChildClass() {
-    Context context = ContextFactory.wrap(new Child());
+    Context context = Context.newContext(new Child());
     assertNotNull(context);
     assertEquals("baseProperty", context.get("baseProperty"));
     assertEquals("childProperty", context.get("childProperty"));

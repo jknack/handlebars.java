@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.io.Writer;
 
 import com.github.edgarespina.handlebars.Context;
-import com.github.edgarespina.handlebars.ContextFactory;
 import com.github.edgarespina.handlebars.Template;
 
 /**
@@ -42,7 +41,20 @@ abstract class BaseTemplate implements Template {
   public final void apply(final Object context, final Writer writer)
       throws IOException {
     checkNotNull(writer, "A writer is required.");
-    merge(ContextFactory.wrap(context), writer);
+    merge(wrap(context), writer);
+  }
+
+  /**
+   * Wrap the candidate object as a Context, or creates a new context.
+   *
+   * @param candidate The candidate object.
+   * @return A context.
+   */
+  private static Context wrap(final Object candidate) {
+    if (candidate instanceof Context) {
+      return (Context) candidate;
+    }
+    return Context.newContext(candidate);
   }
 
   /**

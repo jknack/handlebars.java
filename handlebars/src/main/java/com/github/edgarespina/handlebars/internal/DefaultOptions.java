@@ -7,7 +7,6 @@ import java.io.Writer;
 import java.util.Map;
 
 import com.github.edgarespina.handlebars.Context;
-import com.github.edgarespina.handlebars.ContextFactory;
 import com.github.edgarespina.handlebars.Handlebars;
 import com.github.edgarespina.handlebars.Options;
 import com.github.edgarespina.handlebars.Template;
@@ -136,7 +135,7 @@ class DefaultOptions extends Options {
     CharSequence result =
         template.apply(context == this.context
             ? context
-            : ContextFactory.wrap(this.context, context));
+            : Context.newContext(this.context, context));
     return result;
   }
 
