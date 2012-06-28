@@ -3,6 +3,8 @@ package com.github.edgarespina.handlebars;
 import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
+import java.io.Reader;
+import java.io.StringReader;
 
 import org.junit.Test;
 
@@ -27,7 +29,9 @@ public class EmbeddedHelperTest {
     input += "...\n";
     input += "</html>";
 
-    Template template = new Handlebars().compile(input);
+    Template template = new Handlebars(new StringTemplateLoader()).compile(input);
+System.out.println(expected);
+System.out.println(template.apply(null));
     assertEquals(expected, template.apply(null));
   }
 
@@ -50,7 +54,21 @@ public class EmbeddedHelperTest {
     input += "...\n";
     input += "</html>";
 
-    Template template = new Handlebars().compile(input);
+    Template template = new Handlebars(new StringTemplateLoader()).compile(input);
     assertEquals(expected, template.apply(null));
+  }
+
+  static class StringTemplateLoader extends TemplateLoader {
+    protected Reader read(String location) throws IOException {
+      System.out.println(location);
+      if (location.equals("/user.hbs")) {
+        return new StringReader(
+          "<tr>\n" +
+          "  <td>{{firstName}}</td>\n" +
+          "  <td>{{lastName}}</td>\n" +
+          "</tr>");
+       }
+       return null;
+    }
   }
 }
