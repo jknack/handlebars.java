@@ -8,14 +8,13 @@ import java.util.Map;
 
 import org.junit.Test;
 
-
 /**
- * Unit test for {@link DefaultContext}.
+ * Unit test for {@link Context}.
  *
  * @author edgar.espina
  * @since 0.1.0
  */
-public class ContextFactoryTest {
+public class ContextTest {
 
   static class Base {
     public String getBaseProperty() {
@@ -109,6 +108,11 @@ public class ContextFactoryTest {
       public String getSimple() {
         return "value";
       }
+
+      @Override
+      public String toString() {
+        return "Model Object";
+      }
     };
     Context context = Context.newContext(model);
     assertNotNull(context);
@@ -146,5 +150,58 @@ public class ContextFactoryTest {
     assertNotNull(context);
     assertEquals("baseProperty", context.get("baseProperty"));
     assertEquals("childProperty", context.get("childProperty"));
+  }
+
+  @Test
+  public void combine() {
+    Context context = Context
+        .newBuilder(new Base())
+        .combine("expanded", "value")
+        .build();
+    assertNotNull(context);
+    assertEquals("baseProperty", context.get("baseProperty"));
+    assertEquals("value", context.get("expanded"));
+  }
+
+  @Test
+  public void contextResolutionInCombine() {
+    Context context = Context
+        .newBuilder(new Base())
+        .combine("baseProperty", "value")
+        .build();
+    assertNotNull(context);
+    assertEquals("baseProperty", context.get("baseProperty"));
+  }
+
+  @Test
+  public void combineNested() {
+    Map<String, Object> expanded = new HashMap<String, Object>();
+    expanded.put("a", "a");
+    expanded.put("b", true);
+    Context context = Context
+        .newBuilder(new Base())
+        .combine("expanded", expanded)
+        .build();
+    assertNotNull(context);
+    assertEquals("baseProperty", context.get("baseProperty"));
+    assertEquals(expanded, context.get("expanded"));
+    assertEquals("a", context.get("expanded.a"));
+    assertEquals(true, context.get("expanded.b"));
+  }
+
+  @Test
+  public void expanded() {
+    Map<String, Object> expanded = new HashMap<String, Object>();
+    expanded.put("a", "a");
+    expanded.put("b", true);
+    Context context = Context
+        .newBuilder(new Base())
+        .combine(expanded)
+        .build();
+    assertNotNull(context);
+    assertEquals("baseProperty", context.get("baseProperty"));
+    assertEquals(null, context.get("expanded"));
+    assertEquals("a", context.get("a"));
+    assertEquals(true, context.get("b"));
   }
 }
