@@ -2,11 +2,12 @@ package com.github.edgarespina.handlebars;
 
 import static org.parboiled.common.Preconditions.checkNotNull;
 
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.StringTokenizer;
+
+import com.github.edgarespina.handlebars.context.JavaBeanValueResolver;
+import com.github.edgarespina.handlebars.context.MapValueResolver;
 
 /**
  * Mustache/Handlabars are contextual template engines. This class represent the
@@ -26,6 +27,40 @@ import java.util.StringTokenizer;
  * @since 0.1.0
  */
 public final class Context {
+
+  /**
+   * A composite value resolver. It delegate the value resolution.
+   *
+   * @author edgar.espina
+   * @since 0.1.1
+   */
+  private static class CompositeValueResolver implements ValueResolver {
+
+    /**
+     * The internal value resolvers.
+     */
+    private ValueResolver[] resolvers;
+
+    /**
+     * Creates a new {@link CompositeValueResolver}.
+     *
+     * @param resolvers The value resolvers.
+     */
+    public CompositeValueResolver(final ValueResolver... resolvers) {
+      this.resolvers = resolvers;
+    }
+
+    @Override
+    public Object resolve(final Object context, final String name) {
+      for (ValueResolver resolver : resolvers) {
+        Object value = resolver.resolve(context, name);
+        if (value != UNRESOLVED) {
+          return value;
+        }
+      }
+      return null;
+    }
+  }
 
   /**
    * A context builder.
@@ -83,53 +118,45 @@ public final class Context {
     }
 
     /**
+     * Set the value resolvers to use.
+     *
+     * @param resolvers The value resolvers. Required.
+     * @return This builder.
+     */
+    public Builder resolver(final ValueResolver... resolvers) {
+      if (resolvers.length == 0) {
+        throw new IllegalArgumentException(
+            "At least one value-resolver must be present.");
+      }
+      context.setResolver(new CompositeValueResolver(resolvers));
+      return this;
+    }
+
+    /**
      * Build a context stack.
      *
      * @return A new context stack.
      */
     public Context build() {
+      if (context.resolver == null) {
+        // Set default value resolvers: Java Bean like and Map resolvers.
+        context.setResolver(
+            new CompositeValueResolver(MapValueResolver.INSTANCE,
+                JavaBeanValueResolver.INSTANCE));
+      }
       return context;
     }
-  }
-
-  /**
-   * Strategy for method execution.
-   *
-   * @author edgar.espina
-   * @since 0.1.0
-   */
-  private interface MethodCallback {
-    /**
-     * Execute the method.
-     *
-     * @param method The method.
-     * @return The method return value.
-     * @throws Exception If the method cannot be executed.
-     */
-    Object doWith(Method method) throws Exception;
-  }
-
-  /**
-   * Strategy for method lookup.
-   *
-   * @author edgar.espina
-   * @since 0.1.0
-   */
-  private interface MethodFilter {
-
-    /**
-     * Returns true if the method matches.
-     *
-     * @param method The candidate method.
-     * @return True if the method matches.
-     */
-    boolean matches(Method method);
   }
 
   /**
    * Mark for fail context lookup.
    */
   private static final Object NULL = new Object();
+
+  /**
+   * The qualified name for partials. Internal use.
+   */
+  public static final String PARTIALS = Context.class.getName() + "#partials";
 
   /**
    * The parent context. Optional.
@@ -150,6 +177,11 @@ public final class Context {
    * Additional, data can be stored here.
    */
   private Context extendedContext;
+
+  /**
+   * The value resolver.
+   */
+  private ValueResolver resolver;
 
   /**
    * Creates a new context.
@@ -177,7 +209,7 @@ public final class Context {
     root.extendedContext = new Context(new HashMap<String, Object>());
     root.parent = null;
     root.storage = new HashMap<String, Object>();
-    root.storage.put("partials", new HashMap<String, Template>());
+    root.storage.put(PARTIALS, new HashMap<String, Template>());
     return root;
   }
 
@@ -192,7 +224,7 @@ public final class Context {
   private static Context child(final Context parent, final Object model) {
     checkNotNull(parent, "A parent context is required.");
     Context root = new Context(model);
-    root.extendedContext = parent;
+    root.extendedContext = parent.extendedContext;
     root.parent = parent;
     root.storage = parent.storage;
     return root;
@@ -306,13 +338,13 @@ public final class Context {
   private Object get(final String[] path) {
     Object current = model;
     for (int i = 0; i < path.length - 1; i++) {
-      current = get(current, path[i]);
+      current = resolve(current, path[i]);
       if (current == null) {
         return null;
       }
     }
     String name = path[path.length - 1];
-    Object value = get(current, name);
+    Object value = resolve(current, name);
     if (value == null && current != model) {
       // We're looking in the right scope, but the value isn't there
       // returns a custom mark to stop looking
@@ -328,98 +360,23 @@ public final class Context {
    * @param name The property's name.
    * @return The associated value.
    */
-  @SuppressWarnings("rawtypes")
-  private Object get(final Object current, final String name) {
-    final Object value;
-    if (current == null) {
-      value = null;
-    } else if (current instanceof Map) {
-      value = ((Map) current).get(name);
-    } else {
-      value = invoke(current, name);
-    }
-    return value;
+  private Object resolve(final Object current, final String name) {
+    return current == null ? null : resolver.resolve(current, name);
   }
 
   /**
-   * Look for the property name in the object hierarchy and execute the
-   * appropriated JavaBean method.
+   * Set the value resolver and propagate it to the extendedContext.
    *
-   * @param current The target object.
-   * @param property The property's name.
-   * @return The associated value.
+   * @param resolver The value resolver.
    */
-  private static Object invoke(final Object current, final String property) {
-    final String getMethod = javaBeanMethod("get", property);
-    final String isMethod = javaBeanMethod("is", property);
-    Object value = invoke(current.getClass(), new MethodCallback() {
-      @Override
-      public Object doWith(final Method method) throws Exception {
-        return method.invoke(current);
-      }
-    }, new MethodFilter() {
-      @Override
-      public boolean matches(final Method method) {
-        boolean isStatic = Modifier.isStatic(method.getModifiers());
-        return !isStatic
-            && (method.getName().equals(getMethod)
-            || method.getName().equals(isMethod));
-      }
-    });
-    return value;
+  private void setResolver(final ValueResolver resolver) {
+    this.resolver = resolver;
+    this.extendedContext.resolver = resolver;
   }
 
-  /**
-   * Convert the property's name to a JavaBean read method name.
-   *
-   * @param prefix The prefix: 'get' or 'is'.
-   * @param name The unqualified property name.
-   * @return The javaBean method name.
-   */
-  private static String javaBeanMethod(final String prefix,
-      final String name) {
-    StringBuilder buffer = new StringBuilder(prefix);
-    buffer.append(name);
-    buffer.setCharAt(prefix.length(), Character.toUpperCase(name.charAt(0)));
-    return buffer.toString();
-  }
-
-  /**
-   * Perform the given callback operation on all matching methods of the given
-   * class and superclasses (or given interface and super-interfaces).
-   * <p>
-   * The same named method occurring on subclass and superclass will appear
-   * twice, unless excluded by the specified {@link MethodFilter}.
-   *
-   * @param clazz class to start looking at
-   * @param mc the callback to invoke for each method
-   * @param mf the filter that determines the methods to apply the callback to
-   * @return The method return value.
-   */
-  private static Object invoke(final Class<?> clazz,
-      final MethodCallback mc, final MethodFilter mf) {
-    // Keep backing up the inheritance hierarchy.
-    Method[] methods = clazz.getDeclaredMethods();
-    for (Method method : methods) {
-      if (mf != null && !mf.matches(method)) {
-        continue;
-      }
-      try {
-        return mc.doWith(method);
-      } catch (Exception ex) {
-        throw new IllegalStateException(
-            "Shouldn't be illegal to access method '" + method.getName()
-                + "': " + ex);
-      }
-    }
-    if (clazz.getSuperclass() != null) {
-      return invoke(clazz.getSuperclass(), mc, mf);
-    } else if (clazz.isInterface()) {
-      for (Class<?> superIfc : clazz.getInterfaces()) {
-        return invoke(superIfc, mc, mf);
-      }
-    }
-    return null;
+  @Override
+  public String toString() {
+    return String.valueOf(model);
   }
 
   /**
@@ -463,11 +420,6 @@ public final class Context {
    */
   public static Context newContext(final Object model) {
     return newBuilder(model).build();
-  }
-
-  @Override
-  public String toString() {
-    return String.valueOf(model);
   }
 
 }

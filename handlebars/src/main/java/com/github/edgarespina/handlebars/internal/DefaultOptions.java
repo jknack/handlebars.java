@@ -146,7 +146,7 @@ class DefaultOptions extends Options {
    */
   @SuppressWarnings("unchecked")
   private Map<String, Template> partials() {
-    return (Map<String, Template>) storage.get("partials");
+    return (Map<String, Template>) storage.get(Context.PARTIALS);
   }
 
   /**

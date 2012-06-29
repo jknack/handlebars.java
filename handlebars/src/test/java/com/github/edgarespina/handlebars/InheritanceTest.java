@@ -18,6 +18,9 @@ import com.github.edgarespina.handlebars.io.ClassTemplateLoader;
 @RunWith(Parameterized.class)
 public class InheritanceTest {
 
+  static Handlebars handlebars =
+      new Handlebars(new ClassTemplateLoader("/inheritance"));
+
   private String name;
 
   public InheritanceTest(final String name) {
@@ -27,8 +30,7 @@ public class InheritanceTest {
   @Test
   public void inheritance() throws IOException {
     try {
-      Handlebars handlebars =
-          new Handlebars(new ClassTemplateLoader("/inheritance"));
+
       Template template = handlebars.compile(URI.create(name));
       CharSequence result = template.apply(new Object());
       String expected =

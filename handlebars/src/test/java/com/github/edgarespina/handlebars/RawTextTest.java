@@ -3,6 +3,8 @@ package com.github.edgarespina.handlebars;
 import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
+import java.io.Reader;
+import java.io.StringReader;
 
 import org.junit.Test;
 
@@ -76,7 +78,12 @@ public class RawTextTest {
 
   @Test
   public void partial() throws IOException {
-    Handlebars handlebars = new Handlebars();
+    Handlebars handlebars = new Handlebars(new TemplateLoader() {
+      @Override
+      protected Reader read(final String location) throws IOException {
+        return new StringReader("user.hbs");
+      }
+    });
     Template template = handlebars.compile("hello {{> user }}!");
     assertEquals("hello {{>user}}!", template.text());
   }
