@@ -205,15 +205,78 @@ handlebars.compile("{{#blog-list blogs}}{{/blog-list}}");
 
 ### Extending the context stack
  Let's say you need to access to the current logged-in user in every single view/page.
- You can publishing the current logged in user by hooking the context-stack. See it in action:
+ You can publishing the current logged in user by hooking into the context-stack. See it in action:
  ```java
   hookContextStack(Object model, Template template) {
     User user = ....;// Get the logged-in user from somewhere
-    Context parent = ContextFactory.wrap(model);
-    template.apply(ContextFactory.wrap(parent, user));
+    Map moreData = ...;
+    Context context = Context
+      .newBuilder(model)
+        .combine("user", user)
+        .combine(moreData)
+        .build();
+    template.apply(user);
   }
  ```
  Where is the ```hookContextStack``` method? Well, that will depends on our current application architecture.
+
+### Using the ValueResolver
+ By default, Handlebars.java use the JavaBean methods (i.e. public getXxx methods) and Map as value resolvers.
+ 
+ You can choose a different value resolver and this section describe how to do it.
+ 
+#### The JavaBeanValueResolver
+ It resovle values as public method prefixed with "get"
+
+```java
+Context context = Context
+  .newBuilder(model)
+  .resolver(JavaBeanValueResolver.INSTANCE)
+  .build();
+```
+
+#### The FieldValueResolver
+ It resolve values as no-static fields.
+
+```java
+Context context = Context
+  .newBuilder(model)
+  .resolver(FieldValueResolver.INSTANCE)
+  .build();
+```
+
+#### The MapValueResolver
+ It resolve values as map key.
+
+```java
+Context context = Context
+  .newBuilder(model)
+  .resolver(MapValueResolver.INSTANCE)
+  .build();
+```
+
+#### The MethodValueResolver
+ It resolve values as public methods.
+
+```java
+Context context = Context
+  .newBuilder(model)
+  .resolver(MethodValueResolver.INSTANCE)
+  .build();
+```
+
+#### Using multiples value resolvers
+ Finally, you can merge multiples value resolvers
+
+```java
+Context context = Context
+  .newBuilder(model)
+  .resolver(
+      MapValueResolver.INSTANCE,
+      JavaBeanValueResolver.INSTANCE,
+      FieldValueResolver.INSTANCE)
+  .build();
+```
 
 # Modules
 ## JSON
