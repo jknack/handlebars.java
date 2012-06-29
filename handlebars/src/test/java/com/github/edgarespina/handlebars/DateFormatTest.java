@@ -11,15 +11,14 @@ import java.util.Locale;
 
 import org.junit.Test;
 
-import com.github.edgarespina.handlebars.Handlebars;
-import com.github.edgarespina.handlebars.Template;
-
 public class DateFormatTest {
 
   @Test
   public void defaultFormat() throws IOException {
     Date date = date(19, 6, 2012);
-    String expected = DateFormat.getDateInstance(DateFormat.DEFAULT, Locale.getDefault()).format(date);
+    String expected =
+        DateFormat.getDateInstance(DateFormat.DEFAULT, Locale.getDefault())
+            .format(date);
     Handlebars handlebars = new Handlebars();
     Template template = handlebars.compile("{{dateFormat this}}");
     assertEquals(expected, template.apply(date));
@@ -28,7 +27,9 @@ public class DateFormatTest {
   @Test
   public void fullFormat() throws IOException {
     Date date = date(19, 6, 2012);
-    String expected = DateFormat.getDateInstance(DateFormat.FULL, Locale.getDefault()).format(date);
+    String expected =
+        DateFormat.getDateInstance(DateFormat.FULL, Locale.getDefault())
+            .format(date);
     Handlebars handlebars = new Handlebars();
     Template template = handlebars.compile("{{dateFormat this \"full\"}}");
     assertEquals(expected, template.apply(date));
@@ -37,7 +38,9 @@ public class DateFormatTest {
   @Test
   public void longFormat() throws IOException {
     Date date = date(19, 6, 2012);
-    String expected = DateFormat.getDateInstance(DateFormat.LONG, Locale.getDefault()).format(date);
+    String expected =
+        DateFormat.getDateInstance(DateFormat.LONG, Locale.getDefault())
+            .format(date);
     Handlebars handlebars = new Handlebars();
     Template template = handlebars.compile("{{dateFormat this \"long\"}}");
     assertEquals(expected, template.apply(date));
@@ -47,7 +50,8 @@ public class DateFormatTest {
   public void mediumFormat() throws IOException {
     Date date = date(19, 6, 2012);
     String expected =
-        DateFormat.getDateInstance(DateFormat.MEDIUM, Locale.getDefault()).format(date);
+        DateFormat.getDateInstance(DateFormat.MEDIUM, Locale.getDefault())
+            .format(date);
     Handlebars handlebars = new Handlebars();
     Template template = handlebars.compile("{{dateFormat this \"medium\"}}");
     assertEquals(expected, template.apply(date));
@@ -56,7 +60,9 @@ public class DateFormatTest {
   @Test
   public void shortFormat() throws IOException {
     Date date = date(19, 6, 2012);
-    String expected = DateFormat.getDateInstance(DateFormat.SHORT, Locale.getDefault()).format(date);
+    String expected =
+        DateFormat.getDateInstance(DateFormat.SHORT, Locale.getDefault())
+            .format(date);
     Handlebars handlebars = new Handlebars();
     Template template = handlebars.compile("{{dateFormat this \"short\"}}");
     assertEquals(expected, template.apply(date));
@@ -65,7 +71,8 @@ public class DateFormatTest {
   @Test
   public void pattern() throws IOException {
     Date date = date(19, 6, 2012);
-    String expected = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(date);
+    String expected =
+        new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(date);
     Handlebars handlebars = new Handlebars();
     Template template =
         handlebars.compile("{{dateFormat this \"dd/MM/yyyy\"}}");
