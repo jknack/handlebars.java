@@ -13,7 +13,7 @@ Handlebars provides the power necessary to let you build semantic templates effe
   <dependency>
     <groupId>com.github.edgarespina</groupId>
     <artifactId>handlebars</artifactId>
-    <version>0.1.0</version>
+    <version>0.2.0</version>
   </dependency>
 ```
 
@@ -286,7 +286,7 @@ Maven:
  <dependency>
    <groupId>com.github.edgarespina</groupId>
    <artifactId>handlebars-json</artifactId>
-   <version>0.1.0</version>
+   <version>0.2.0</version>
  </dependency>
 ```
 Usage:
@@ -306,7 +306,7 @@ Maven:
  <dependency>
    <groupId>com.github.edgarespina</groupId>
    <artifactId>handlebars-markdown</artifactId>
-   <version>0.1.0</version>
+   <version>0.2.0</version>
  </dependency>
 ```
 Usage:
@@ -326,7 +326,7 @@ Maven:
  <dependency>
    <groupId>com.github.edgarespina</groupId>
    <artifactId>handlebars-springmvc</artifactId>
-   <version>0.1.0</version>
+   <version>0.2.0</version>
  </dependency>
 ```
 
