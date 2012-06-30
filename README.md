@@ -55,7 +55,9 @@ Usage:
 ```
 
 context: a java.util.Date object. Required.
+
 param(0): one of "full", "long", "medium", "sort" or a date pattern like ("MM/dd/yyyy", etc.). Default is "medium".
+
 param(1): a locale representation ("es_AR", "en", "es", etc). Default is platform specific.
 
 ### block and partial
