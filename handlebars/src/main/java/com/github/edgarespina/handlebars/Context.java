@@ -139,10 +139,15 @@ public final class Context {
      */
     public Context build() {
       if (context.resolver == null) {
-        // Set default value resolvers: Java Bean like and Map resolvers.
-        context.setResolver(
-            new CompositeValueResolver(MapValueResolver.INSTANCE,
-                JavaBeanValueResolver.INSTANCE));
+        if (context.parent != null) {
+          // Set resolver from parent.
+          context.resolver = context.parent.resolver;
+        } else {
+          // Set default value resolvers: Java Bean like and Map resolvers.
+          context.setResolver(
+              new CompositeValueResolver(MapValueResolver.INSTANCE,
+                  JavaBeanValueResolver.INSTANCE));
+        }
       }
       return context;
     }
@@ -296,9 +301,11 @@ public final class Context {
     }
     String[] path = toPath(key);
     Object value = get(path);
+    // Check the parent context.
     if (value == null && parent != null) {
       value = parent.get(key);
     }
+    // Check the extended context.
     if (value == null && extendedContext != null) {
       value = extendedContext.get(key);
     }
@@ -313,7 +320,11 @@ public final class Context {
    */
   private String[] toPath(final Object key) {
     StringTokenizer tokenizer = new StringTokenizer(key.toString(), ".");
-    String[] path = new String[tokenizer.countTokens()];
+    int len = tokenizer.countTokens();
+    if (len == 1) {
+      return new String[] {key.toString() };
+    }
+    String[] path = new String[len];
     int i = 0;
     while (tokenizer.hasMoreTokens()) {
       path[i++] = tokenizer.nextToken();

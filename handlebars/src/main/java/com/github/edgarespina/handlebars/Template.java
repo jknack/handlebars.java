@@ -30,6 +30,24 @@ public interface Template {
   CharSequence apply(Object context) throws IOException;
 
   /**
+   * Merge the template tree using the given context.
+   *
+   * @param context The context object. Required.
+   * @param writer The writer object. Required.
+   * @throws IOException If a resource cannot be loaded.
+   */
+  void apply(Context context, Writer writer) throws IOException;
+
+  /**
+   * Merge the template tree using the given context.
+   *
+   * @param context The context object. Required.
+   * @return The resulting template.
+   * @throws IOException If a resource cannot be loaded.
+   */
+  CharSequence apply(Context context) throws IOException;
+
+  /**
    * Provide the raw text.
    *
    * @return The raw text.

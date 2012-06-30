@@ -3,7 +3,10 @@ package com.github.edgarespina.handlebars;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.junit.Test;
@@ -118,5 +121,39 @@ public class ValueResolverTest {
     // by map
     assertEquals("a", context.get("map.base"));
     assertEquals("b", context.get("map.child"));
+  }
+
+  @Test
+  public void propagateValueResolver() throws IOException {
+    final Object userFiledAccess = new Object() {
+      @SuppressWarnings("unused")
+      private String name = "User A";
+    };
+
+    final Object userMethodAccess = new Object() {
+      @SuppressWarnings("unused")
+      public String getName() {
+        return "User B";
+      }
+    };
+
+    Object users = new Object() {
+      @SuppressWarnings("unused")
+      public List<Object> getUsers() {
+        return Arrays.asList(userFiledAccess, userMethodAccess);
+      }
+    };
+
+    Template template =
+        new Handlebars().compile("{{#each users}}{{name}}, {{/each}}");
+
+    Context context = Context.newBuilder(users)
+        .resolver(
+            FieldValueResolver.INSTANCE,
+            JavaBeanValueResolver.INSTANCE
+        )
+        .build();
+
+    assertEquals("User A, User B, ", template.apply(context));
   }
 }

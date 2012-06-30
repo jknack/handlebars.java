@@ -1,7 +1,5 @@
 package com.github.edgarespina.handlebars.internal;
 
-import static org.parboiled.common.Preconditions.checkNotNull;
-
 import java.io.IOException;
 import java.io.Writer;
 import java.util.Map;
@@ -34,15 +32,20 @@ class DefaultOptions extends Options {
     }
 
     @Override
+    public CharSequence apply(final Context context) throws IOException {
+      return "";
+    }
+
+    @Override
+    public void apply(final Context context, final Writer writer)
+        throws IOException {
+    }
+
+    @Override
     public void apply(final Object context, final Writer writer)
         throws IOException {
     }
   };
-
-  /**
-   * The current context. Required.
-   */
-  private Context context;
 
   /**
    * A thread safe storage.
@@ -62,8 +65,8 @@ class DefaultOptions extends Options {
   public DefaultOptions(final Handlebars handlebars, final Template fn,
       final Template inverse, final Context context, final Object[] params,
       final Map<String, Object> hash) {
-    super(handlebars, fn, inverse == null ? EMPTY : inverse, params, hash);
-    this.context = checkNotNull(context, "The context is required");
+    super(handlebars, context, fn, inverse == null ? EMPTY : inverse, params,
+        hash);
     this.storage = context.storage();
   }
 
@@ -132,10 +135,15 @@ class DefaultOptions extends Options {
   @Override
   public CharSequence apply(final Template template, final Object context)
       throws IOException {
-    CharSequence result =
-        template.apply(context == this.context
-            ? context
-            : Context.newContext(this.context, context));
+
+    final CharSequence result;
+    if (context == this.context || context instanceof Context) {
+      // Same context or the param is a context already.
+      result = template.apply(context);
+    } else {
+      // Expand the provided context.
+      result = template.apply(Context.newContext(this.context, context));
+    }
     return result;
   }
 
@@ -154,7 +162,6 @@ class DefaultOptions extends Options {
    */
   public void destroy() {
     this.hash.clear();
-    this.context = null;
     this.storage = null;
   }
 

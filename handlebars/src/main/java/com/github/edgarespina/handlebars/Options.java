@@ -19,6 +19,11 @@ public abstract class Options {
   public final Handlebars handlebars;
 
   /**
+   * The current context. Not null.
+   */
+  public final Context context;
+
+  /**
    * The current template. Not null.
    */
   public final Template fn;
@@ -42,15 +47,17 @@ public abstract class Options {
    * Creates a new Handlebars {@link Options}.
    *
    * @param handlebars The handlebars instance. Required.
+   * @param context The current context. Required.
    * @param fn The template function. Required.
    * @param inverse The inverse template function. Required.
    * @param params The parameters. Required.
    * @param hash The optional hash. Required.
    */
-  public Options(final Handlebars handlebars, final Template fn,
-      final Template inverse, final Object[] params,
+  public Options(final Handlebars handlebars, final Context context,
+      final Template fn, final Template inverse, final Object[] params,
       final Map<String, Object> hash) {
     this.handlebars = checkNotNull(handlebars, "The handlebars is required.");
+    this.context = checkNotNull(context, "The context is required");
     this.fn = checkNotNull(fn, "The template is required.");
     this.inverse = checkNotNull(inverse, "The inverse template is required.");
     this.params = checkNotNull(params, "The parameters are required.");

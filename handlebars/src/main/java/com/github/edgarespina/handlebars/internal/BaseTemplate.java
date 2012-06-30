@@ -29,9 +29,7 @@ abstract class BaseTemplate implements Template {
    */
   @Override
   public final CharSequence apply(final Object context) throws IOException {
-    FastStringWriter writer = new FastStringWriter();
-    apply(context, writer);
-    return writer.toString();
+    return apply(wrap(context));
   }
 
   /**
@@ -39,6 +37,19 @@ abstract class BaseTemplate implements Template {
    */
   @Override
   public final void apply(final Object context, final Writer writer)
+      throws IOException {
+    apply(wrap(context), writer);
+  }
+
+  @Override
+  public CharSequence apply(final Context context) throws IOException {
+    FastStringWriter writer = new FastStringWriter();
+    apply(context, writer);
+    return writer.toString();
+  }
+
+  @Override
+  public void apply(final Context context, final Writer writer)
       throws IOException {
     checkNotNull(writer, "A writer is required.");
     merge(wrap(context), writer);
