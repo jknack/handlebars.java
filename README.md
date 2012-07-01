@@ -4,12 +4,13 @@ Handlebars.java is a Java port of [handlebars](http://handlebarsjs.com/).
 
 Handlebars provides the power necessary to let you build semantic templates effectively with no frustration.
 
-[Mustache](http://mustache.github.com/mustache.5.html) templates are compatible with Handlebars, so you can take a [Mustache](http://mustache.github.com/mustache.5.html) template, import it into Handlebars, and start taking advantage of the extra Handlebars features.
+[Mustache](http://mustache.github.com/mustache.5.html) templates are compatible with Handlebars, so you can take a [Mustache](http://mustache.github.com) template, import it into Handlebars, and start taking advantage of the extra Handlebars features.
 
 # Getting Started
+ In general, the syntax of **Handlebars** templates is a superset of [Mustache](http://mustache.github.com) templates. For basic syntax, check out the [Mustache manpage](http://mustache.github.com).
 
 ## Maven
- Current version is: 0.2.0
+ Current version: **0.2.0**
 
 ```xml
   <dependency>
@@ -122,7 +123,7 @@ Usage:
 ```
 context: A template name. Required.
 
-### Type Safety:
+### Registering Helpers
 
 ```java
 handlebars.registerHelper("blog", new Helper<Blog>() {
@@ -416,6 +417,9 @@ Checkout the HandlebarsViewResolver.
  * Helpers are type-safe.
  * Handlebars.java is thread-safe.
 
+## Differences between Handlebars.js and Handlebars.java
+ * Paths aren't support in Handlebars.java and there isn't a plan for adding them.
+
 ## Status
 ### Mustache Spec
  * Passes 123 of 127 tests from the [Mustache Spec](https://github.com/mustache/spec).
@@ -441,6 +445,11 @@ Checkout the HandlebarsViewResolver.
  [Help and discussion](https://groups.google.com/forum/#!forum/handlebarsjava)
 
  [Bugs, Issues and Features](https://github.com/edgarespina/handlebars.java/issues)
+
+## Related Projects
+ * [Handlebars.js](http://handlebarsjs.com/)
+ * [Try Handlebars.js](http://tryhandlebarsjs.com/)
+ * [Mustache](mustache.github.com)
 
 ## Credits
  * [Mathias](https://github.com/sirthias): For the [parboiled](https://github.com/sirthias/parboiled) PEG library
