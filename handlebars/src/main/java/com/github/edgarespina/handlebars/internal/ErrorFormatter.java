@@ -6,6 +6,7 @@ import static org.parboiled.common.Preconditions.checkArgument;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.parboiled.buffers.InputBuffer;
 import org.parboiled.common.Formatter;
@@ -188,7 +189,7 @@ class ErrorFormatter implements Formatter<InvalidInputError> {
             : error instanceof InvalidInputError
                 ? new ErrorFormatter().format((InvalidInputError) error)
                 : "").replace("EOI", "eof");
-    return printErrorMessage(filename + ":%2$s:%3$s: %1$s", message,
+    return printErrorMessage(filename, filename + ":%2$s:%3$s: %1$s", message,
         error.getStartIndex() - noffset, error.getEndIndex() - noffset,
         error.getInputBuffer(),
         stacktrace);
@@ -197,6 +198,7 @@ class ErrorFormatter implements Formatter<InvalidInputError> {
   /**
    * Prints an error message showing a location in the given InputBuffer.
    *
+   * @param filename The file's name.
    * @param format the format string, must include three placeholders for a
    *        string
    *        (the error message) and two integers (the error line / column
@@ -211,7 +213,8 @@ class ErrorFormatter implements Formatter<InvalidInputError> {
    * @return the error message including the relevant line from the underlying
    *         input plus location indicators
    */
-  private static String printErrorMessage(final String format,
+  private static String printErrorMessage(final String filename,
+      final String format,
       final String errorMessage,
       final int startIndex, final int endIndex,
       final InputBuffer inputBuffer, final List<Stacktrace> stacktrace) {
@@ -241,11 +244,18 @@ class ErrorFormatter implements Formatter<InvalidInputError> {
     }
 
     if (stacktrace.size() > 0) {
-      sb.append(nl);
-      for (Stacktrace st : new LinkedHashSet<Stacktrace>(stacktrace)) {
-        sb.append(st).append(nl);
+      boolean includeStack = true;
+      Set<Stacktrace> set = new LinkedHashSet<Stacktrace>(stacktrace);
+      if (set.size() == 1) {
+        includeStack = !set.iterator().next().getFilename().equals(filename);
       }
-      sb.setLength(sb.length() - nl.length());
+      if (includeStack) {
+        sb.append(nl);
+        for (Stacktrace st : set) {
+          sb.append(st).append(nl);
+        }
+        sb.setLength(sb.length() - nl.length());
+      }
     }
 
     return sb.toString();

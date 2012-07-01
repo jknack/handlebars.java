@@ -618,7 +618,7 @@ public class Parser extends BaseParser<BaseTemplate> {
   @Label("string")
   Rule stringLiteral() {
     return Sequence('"',
-        ZeroOrMore(TestNot('"'), ANY), '"');
+        ZeroOrMore(TestNot(AnyOf("\"\r\n")), ANY), '"');
   }
 
   @Label("parameter::hash")

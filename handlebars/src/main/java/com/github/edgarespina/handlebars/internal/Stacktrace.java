@@ -75,6 +75,15 @@ class Stacktrace {
     return true;
   }
 
+  /**
+   * The file's name.
+   *
+   * @return The file's name.
+   */
+  public String getFilename() {
+    return filename;
+  }
+
   @Override
   public String toString() {
     StringBuilder buffer = new StringBuilder();
