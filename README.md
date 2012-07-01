@@ -242,7 +242,7 @@ at /deep.hbs:1:10
 ### Helper/Runtime errors
 Helper or runtime errors are similar to syntax errors, except for two thing:
 
-1. The location of the problem may/mayn't the correct one.
+1. The location of the problem may (or may not) be the correct one.
 2. The stack-trace isn't available
 
 Examples:
