@@ -5,6 +5,7 @@ import static org.parboiled.common.Preconditions.checkNotNull;
 import java.io.IOException;
 
 import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.map.ObjectWriter;
 
 /**
  * Format the context object as JSON.
@@ -13,6 +14,11 @@ import org.codehaus.jackson.map.ObjectMapper;
  * @since 0.1.0
  */
 public class JSONHelper implements Helper<Object> {
+
+  /**
+   * A singleton version of {@link JSONHelper}.
+   */
+  public static final Helper<Object> INSTANCE = new JSONHelper();
 
   /**
    * The JSON parser.
@@ -31,7 +37,7 @@ public class JSONHelper implements Helper<Object> {
   /**
    * Creates a new {@link JSONHelper}.
    */
-  public JSONHelper() {
+  private JSONHelper() {
     this(new ObjectMapper());
   }
 
@@ -41,7 +47,19 @@ public class JSONHelper implements Helper<Object> {
     if (context == null) {
       return "";
     }
-    return new Handlebars.SafeString(mapper.writeValueAsString(context));
+    String viewName = options.hash("view", "");
+    ObjectWriter writer;
+    if (viewName.length() > 0) {
+      try {
+        Class<?> viewClass = Class.forName(viewName);
+        writer = mapper.writerWithView(viewClass);
+      } catch (ClassNotFoundException ex) {
+        throw new IllegalArgumentException(viewName, ex);
+      }
+    } else {
+      writer = mapper.writer();
+    }
+    return new Handlebars.SafeString(writer.writeValueAsString(context));
   }
 
 }

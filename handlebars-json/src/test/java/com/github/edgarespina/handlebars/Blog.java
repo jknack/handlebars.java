@@ -3,7 +3,16 @@ package com.github.edgarespina.handlebars;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.codehaus.jackson.map.annotate.JsonView;
+
 public class Blog {
+
+  public static class Views {
+    public static class Public {
+    }
+  }
+
+  @JsonView(Views.Public.class)
   private String title;
 
   private String body;
