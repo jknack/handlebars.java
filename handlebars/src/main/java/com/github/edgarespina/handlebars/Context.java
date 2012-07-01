@@ -148,6 +148,10 @@ public final class Context {
               new CompositeValueResolver(MapValueResolver.INSTANCE,
                   JavaBeanValueResolver.INSTANCE));
         }
+        // Expand resolver to the extended context.
+        if (context.extendedContext != null) {
+          context.extendedContext.resolver = context.resolver;
+        }
       }
       return context;
     }
@@ -229,7 +233,7 @@ public final class Context {
   private static Context child(final Context parent, final Object model) {
     checkNotNull(parent, "A parent context is required.");
     Context root = new Context(model);
-    root.extendedContext = parent.extendedContext;
+    root.extendedContext = null;
     root.parent = parent;
     root.storage = parent.storage;
     return root;
