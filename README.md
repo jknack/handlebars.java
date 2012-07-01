@@ -82,7 +82,7 @@ Usage:
 context: A string literal which define the region's name.
 
 ### embedded
- The embedded helper allow you to "embedded" a handlebars template inside a ```<script>``` HTML tag. See it in action:
+ The embedded helper allow you to "embedded" a handlebars template inside a ```<script>``` HTML tag:
 
 user.hbs
 
@@ -205,6 +205,30 @@ handlebars.registerHelper("blog-list", new Helper<Blog>() {
 
 handlebars.compile("{{#blog-list blogs}}{{/blog-list}}");
 ```
+## Error reporting
+ A syntax error looks like:
+
+```
+file:line:column: message
+   evidence
+   ^
+[at file:line:column]
+```
+
+Examples:
+
+template.hbs
+```
+{{value
+```
+
+```
+/templates.hbs:1:8: found 'eof', expected: 'id', 'parameter', 'hash' or '}'
+    {{value
+           ^
+```
+
+
 ## Advanced Usage
 
 ### Extending the context stack
