@@ -20,6 +20,7 @@ import org.parboiled.MatcherContext;
 import org.parboiled.Parboiled;
 import org.parboiled.Rule;
 import org.parboiled.annotations.DontLabel;
+import org.parboiled.annotations.Label;
 import org.parboiled.annotations.MemoMismatches;
 import org.parboiled.buffers.InputBuffer;
 import org.parboiled.errors.ActionException;
@@ -34,6 +35,7 @@ import org.parboiled.parserunners.ParseRunner;
 import org.parboiled.parserunners.ReportingParseRunner;
 import org.parboiled.support.MatcherPath;
 import org.parboiled.support.ParsingResult;
+import org.parboiled.support.Position;
 import org.parboiled.support.StringVar;
 import org.parboiled.support.ValueStack;
 import org.parboiled.support.Var;
@@ -174,30 +176,38 @@ public class Parser extends BaseParser<BaseTemplate> {
 
   protected final String filename;
 
+  protected final LinkedList<Stacktrace> stacktraceList;
+
+  protected int noffset = 0;
+
   Parser(final Handlebars handlebars, final String filename,
       final Map<String, Partial> partials, final String startDelimiter,
-      final String endDelimiter) {
+      final String endDelimiter, final LinkedList<Stacktrace> stacktrace) {
     this.handlebars = handlebars;
-    this.filename = filename;
+    this.filename =
+        handlebars == null ? null : handlebars.getTemplateLoader().resolve(
+            filename);
     this.partials =
         partials == null ? new HashMap<String, Partial>() : partials;
     this.startDelimiter = startDelimiter;
     this.endDelimiter = endDelimiter;
+    this.stacktraceList = stacktrace;
   }
 
   private static Parser create(final Handlebars handlebars,
-      final String filename,
-      final Map<String, Partial> partials, final String startDelimiter,
-      final String endDelimiter) {
+      final String filename, final Map<String, Partial> partials,
+      final String startDelimiter, final String endDelimiter,
+      final LinkedList<Stacktrace> stacktrace) {
     return Parboiled.createParser(Parser.class, handlebars, filename, partials,
-        startDelimiter, endDelimiter);
+        startDelimiter, endDelimiter, stacktrace);
   }
 
   public static Parser create(final Handlebars handlebars,
       final String filename,
       final String startDelimiter,
       final String endDelimiter) {
-    return create(handlebars, filename, null, startDelimiter, endDelimiter);
+    return create(handlebars, filename, null, startDelimiter, endDelimiter,
+        new LinkedList<Stacktrace>());
   }
 
   public static void initialize() {
@@ -225,7 +235,9 @@ public class Parser extends BaseParser<BaseTemplate> {
       ParsingResult<BaseTemplate> result = runner.run(input);
       if (result.hasErrors()) {
         ParseError error = result.parseErrors.get(0);
-        String msg = ErrorFormatter.printParseError(filename, error);
+        String msg =
+            ErrorFormatter.printParseError(filename, error, noffset,
+                stacktraceList);
         throw new HandlebarsException(msg);
       }
       TemplateList sequence = (TemplateList) result.resultValue;
@@ -256,7 +268,7 @@ public class Parser extends BaseParser<BaseTemplate> {
         FirstOf(
             block(),
             partial(),
-            setDelimiters(),
+            delimiters(),
             comment(),
             variable(),
             space(),
@@ -264,7 +276,7 @@ public class Parser extends BaseParser<BaseTemplate> {
             text())));
   }
 
-  Rule setDelimiters() {
+  Rule delimiters() {
     final StringVar newstartDelimiter = new StringVar();
     final StringVar newendDelimiter = new StringVar();
     return Sequence(startDelimiter(),
@@ -279,6 +291,7 @@ public class Parser extends BaseParser<BaseTemplate> {
             String start = newstartDelimiter.get();
             String end = newendDelimiter.get();
             if (start.length() != end.length()) {
+              noffset = end.length();
               throw new ActionException("Unbalanced delimiters: '"
                   + start + "'.length != '" + end
                   + "'.length");
@@ -300,15 +313,17 @@ public class Parser extends BaseParser<BaseTemplate> {
         });
   }
 
+  @Label("delimiter")
   Rule newDelimiter() {
     return Sequence(delim(), Optional(delim()));
   }
 
+  @Label("delimiter")
   Rule delim() {
     return Sequence(TestNot(AnyOf(" \t\r\n=")), ANY);
   }
 
-  @DontLabel
+  @Label("text")
   Rule text() {
     return Sequence(
         OneOrMore(
@@ -319,10 +334,12 @@ public class Parser extends BaseParser<BaseTemplate> {
         add(new Text(match())));
   }
 
+  @Label("variable")
   Rule variable() {
     return FirstOf(ampersandVar(), tripleVar(), var());
   }
 
+  @Label("variable")
   Rule ampersandVar() {
     return Sequence(
         startDelimiter(),
@@ -333,6 +350,7 @@ public class Parser extends BaseParser<BaseTemplate> {
         endDelimiter());
   }
 
+  @Label("variable")
   Rule tripleVar() {
     return Sequence(
         startDelimiter(),
@@ -344,6 +362,7 @@ public class Parser extends BaseParser<BaseTemplate> {
         endDelimiter());
   }
 
+  @Label("variable")
   Rule var() {
     return Sequence(
         startDelimiter(),
@@ -353,11 +372,12 @@ public class Parser extends BaseParser<BaseTemplate> {
         endDelimiter());
   }
 
+  @Label("variable")
   Rule varName(final Type type) {
     final List<Object> params = new ArrayList<Object>();
     final Map<String, Object> hash = new LinkedHashMap<String, Object>();
     final StringVar var = new StringVar();
-    return Sequence(identifier(),
+    return Sequence(id(),
         var.set(match()),
         spacing(),
         reset(params),
@@ -418,20 +438,26 @@ public class Parser extends BaseParser<BaseTemplate> {
           public boolean run(final Context<BaseTemplate> context) {
             String uri = uriVar.get();
             Partial partial = partials.get(uri);
+            TemplateLoader loader = handlebars.getTemplateLoader();
             if (partial == null) {
               try {
-                TemplateLoader locator = handlebars.getTemplateLoader();
-                Reader reader = locator.load(URI.create(uri));
+                Position pos = context.getPosition();
+                Stacktrace stacktrace =
+                    new Stacktrace(pos.line, pos.column, filename);
+                stacktraceList.addFirst(stacktrace);
+                Reader reader = loader.load(URI.create(uri));
                 Parser parser =
                     create(handlebars, uri, partials, startDelimiter,
-                        endDelimiter);
+                        endDelimiter, stacktraceList);
                 // Avoid stack overflow exceptions
                 partial = new Partial();
                 partials.put(uri, partial);
                 Template template = parser.parse(reader);
                 partial.template(uri, template);
+                stacktraceList.removeLast();
               } catch (IOException ex) {
-                throw new ActionException("The partial '" + uri
+                noffset = uri.length();
+                throw new ActionException("The partial '" + loader.resolve(uri)
                     + "' could not be found", ex);
               }
             }
@@ -441,6 +467,7 @@ public class Parser extends BaseParser<BaseTemplate> {
         spacing(), endDelimiter());
   }
 
+  @Label("start-block")
   Rule block() throws IOException {
     final StringVar name = new StringVar();
     final Var<Boolean> inverted = new Var<Boolean>();
@@ -490,17 +517,19 @@ public class Parser extends BaseParser<BaseTemplate> {
         }).label("block");
   }
 
+  @Label("else")
   Rule elseSection() {
     return String("else");
   }
 
+  @Label("start-block")
   Rule sectionStart(final char type, final StringVar name,
       final Var<Boolean> inverted, final List<Object> params,
       final Map<String, Object> hash) {
     return Sequence(
         startDelimiter(), type, inverted.set(matchedChar() == '^'),
         spacing(),
-        identifier(), name.set(match()),
+        id(), name.set(match()),
         spacing(),
         reset(params),
         reset(hash),
@@ -508,16 +537,17 @@ public class Parser extends BaseParser<BaseTemplate> {
         endDelimiter());
   }
 
-  @DontLabel
+  @Label("end-block")
   Rule sectionEnd(final StringVar name) {
     return Sequence(
         startDelimiter(), '/', spacing(),
-        identifier(), new Action<BaseTemplate>() {
+        id(), new Action<BaseTemplate>() {
           @Override
           public boolean run(final Context<BaseTemplate> context) {
             String endName = context.getMatch();
             boolean match = name.get().equals(endName);
             if (!match) {
+              noffset = endName.length();
               throw new ActionException(String.format(
                   "found: '%s', expected: '%s'", endName, name.get()));
             }
@@ -528,7 +558,7 @@ public class Parser extends BaseParser<BaseTemplate> {
         endDelimiter());
   }
 
-  @DontLabel
+  @Label("parameter::hash")
   Rule paramOrHash(final List<Object> params, final Map<String, Object> hash) {
     final Var<Object> var = new Var<Object>();
     return ZeroOrMore(FirstOf(
@@ -538,8 +568,9 @@ public class Parser extends BaseParser<BaseTemplate> {
               @Override
               public boolean run(final Context<BaseTemplate> context) {
                 if (!hash.isEmpty()) {
-                  throw new ActionException("parameter out of order: '"
-                      + var.get() + "'");
+                  noffset = var.get().toString().length();
+                  throw new ActionException("'" + var.get()
+                      + "' is out of order, a 'hash' was found previously");
                 }
                 return true;
               }
@@ -551,21 +582,23 @@ public class Parser extends BaseParser<BaseTemplate> {
     return true;
   }
 
+  @Label("string")
   Rule string(final Var<Object> value) {
     return Sequence(stringLiteral(), value.set(match()));
   }
 
-  @DontLabel
+  @Label("string")
   Rule stringLiteral() {
     return Sequence('"',
         ZeroOrMore(TestNot('"'), ANY), '"');
   }
 
+  @Label("parameter::hash")
   Rule hash(final Map<String, Object> hash) {
     final StringVar name = new StringVar();
     final Var<Object> value = new Var<Object>();
     return Sequence(
-        identifier(),
+        id(),
         name.set(match()),
         spacing(),
         '=',
@@ -579,18 +612,18 @@ public class Parser extends BaseParser<BaseTemplate> {
     return true;
   }
 
-  @DontLabel
+  @Label("parameter::hash")
   @MemoMismatches
   Rule param(final Var<Object> value) {
     return FirstOf(
         string(value),
         integer(value),
         bool(value),
-        Sequence(identifier(), value.set(match())));
+        Sequence(id(), value.set(match())));
   }
 
   @MemoMismatches
-  Rule identifier() {
+  Rule id() {
     return Sequence(TestNot(startDelimiter()), TestNot(elseSection()),
         idStart(), ZeroOrMore(idEnd()));
   }
@@ -601,6 +634,7 @@ public class Parser extends BaseParser<BaseTemplate> {
   }
 
   @MemoMismatches
+  @Label("boolean")
   Rule bool(final Var<Object> var) {
     return Sequence(FirstOf(String("true"), String("false")), var.set(match()));
   }
@@ -612,7 +646,7 @@ public class Parser extends BaseParser<BaseTemplate> {
         OneOrMore(pathSegment()));
   }
 
-  @DontLabel
+  @Label("ignore")
   Rule spacing() {
     return ZeroOrMore(FirstOf(
         // whitespace
@@ -623,12 +657,12 @@ public class Parser extends BaseParser<BaseTemplate> {
         comment()));
   }
 
-  @DontLabel
+  @Label("ignore")
   Rule spaceNoAction() {
     return AnyOf(" \t\f");
   }
 
-  @DontLabel
+  @Label("ignore")
   Rule space() {
     return Sequence(spaceNoAction(), new Action<BaseTemplate>() {
       @Override
@@ -638,12 +672,12 @@ public class Parser extends BaseParser<BaseTemplate> {
     });
   }
 
-  @DontLabel
+  @Label("ignore")
   Rule nlNoAction() {
     return Sequence(Optional('\r'), '\n');
   }
 
-  @DontLabel
+  @Label("ignore")
   Rule nl() {
     return Sequence(nlNoAction(), new Action<BaseTemplate>() {
       @Override
@@ -687,6 +721,7 @@ public class Parser extends BaseParser<BaseTemplate> {
     ignored.clear();
   }
 
+  @DontLabel
   Rule comment() {
     return Sequence(startDelimiter(), '!',
         ZeroOrMore(TestNot(endDelimiter()), ANY),
@@ -699,24 +734,27 @@ public class Parser extends BaseParser<BaseTemplate> {
         });
   }
 
-  @DontLabel
+  @MemoMismatches
+  @Label("id")
   Rule idStart() {
     return FirstOf(CharRange('a', 'z'), CharRange('A', 'Z'), '.', '_', '$', '@');
   }
 
-  @DontLabel
   @MemoMismatches
+  @Label("id")
   Rule idEnd() {
     return FirstOf(CharRange('a', 'z'), CharRange('A', 'Z'), digit(), '_', '$',
         '.', '-', '@');
   }
 
-  @DontLabel
   @MemoMismatches
+  @Label("digit")
   Rule digit() {
     return CharRange('0', '9');
   }
 
+  @MemoMismatches
+  @Label("path")
   Rule pathSegment() {
     return FirstOf(CharRange('0', '9'), CharRange('a', 'z'),
         CharRange('A', 'Z'), '_', '$', '/', '.', '-');

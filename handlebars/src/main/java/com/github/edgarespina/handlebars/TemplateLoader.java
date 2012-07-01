@@ -63,7 +63,7 @@ public abstract class TemplateLoader {
    * @param uri The candidate uri.
    * @return Resolve the uri to an absolute location.
    */
-  protected String resolve(final String uri) {
+  public String resolve(final String uri) {
     return prefix + uri + suffix;
   }
 

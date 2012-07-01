@@ -20,7 +20,7 @@ public class SpecResourceLocator extends TemplateLoader {
   }
 
   @Override
-  protected String resolve(final String uri) {
+  public String resolve(final String uri) {
     return uri;
   }
 

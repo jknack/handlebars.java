@@ -4,6 +4,7 @@ import static org.parboiled.common.Preconditions.checkArgNotNull;
 import static org.parboiled.common.Preconditions.checkArgument;
 
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
 
 import org.parboiled.buffers.InputBuffer;
@@ -45,7 +46,7 @@ class ErrorFormatter implements Formatter<InvalidInputError> {
     }
     String expectedString = getExpectedString(error);
     if (StringUtils.isNotEmpty(expectedString)) {
-      sb.append(", expected ").append(expectedString);
+      sb.append(", expected: ").append(expectedString);
     }
     return sb.toString();
   }
@@ -56,7 +57,7 @@ class ErrorFormatter implements Formatter<InvalidInputError> {
    * @param error The current error.
    * @return The expected value for the given error.
    */
-  public String getExpectedString(final InvalidInputError error) {
+  private String getExpectedString(final InvalidInputError error) {
     // In non recovery-mode there is no complexity in the error and start
     // indices since they are all stable.
     // However, in recovery-mode the RecoveringParseRunner inserts characters
@@ -79,8 +80,15 @@ class ErrorFormatter implements Formatter<InvalidInputError> {
       }
       String[] labels = getLabels(labelMatcher);
       for (String label : labels) {
-        if (label != null && !labelList.contains(label)) {
-          labelList.add(label);
+        if (label != null) {
+          for (String l : label.split("::")) {
+            if ("ignore".equals(l) || "text".equals(l) || "'{'".equals(l)) {
+              continue;
+            }
+            if (!labelList.contains(l)) {
+              labelList.add(l);
+            }
+          }
         }
       }
     }
@@ -95,7 +103,7 @@ class ErrorFormatter implements Formatter<InvalidInputError> {
    * @param matcher the matcher
    * @return the labels
    */
-  public String[] getLabels(final Matcher matcher) {
+  private String[] getLabels(final Matcher matcher) {
     if (matcher instanceof AnyOfMatcher
         && ((AnyOfMatcher) matcher).characters.toString().equals(
             matcher.getLabel())) {
@@ -118,13 +126,18 @@ class ErrorFormatter implements Formatter<InvalidInputError> {
    * @param labelList The label list.
    * @return A string version of the labels.
    */
-  public String join(final List<String> labelList) {
+  private String join(final List<String> labelList) {
     StringBuilder sb = new StringBuilder();
     for (int i = 0; i < labelList.size(); i++) {
       if (i > 0) {
         sb.append(i < labelList.size() - 1 ? ", " : " or ");
       }
-      sb.append(labelList.get(i));
+      String label = labelList.get(i);
+      if (label.startsWith("'")) {
+        sb.append(labelList.get(i));
+      } else {
+        sb.append("'").append(labelList.get(i)).append("'");
+      }
     }
     return StringUtils.escape(sb.toString());
   }
@@ -161,42 +174,24 @@ class ErrorFormatter implements Formatter<InvalidInputError> {
    *
    * @param filename The file's name.
    * @param error the parse error
+   * @param noffset A negative offset for better error reporting.
+   * @param stacktrace The stack trace.
    * @return the pretty print text
    */
   public static String printParseError(final String filename,
-      final ParseError error) {
+      final ParseError error, final int noffset,
+      final List<Stacktrace> stacktrace) {
     checkArgNotNull(error, "error");
     String message =
-        error.getErrorMessage() != null
+        (error.getErrorMessage() != null
             ? error.getErrorMessage()
             : error instanceof InvalidInputError
                 ? new ErrorFormatter().format((InvalidInputError) error)
-                : "";
+                : "").replace("EOI", "eof");
     return printErrorMessage(filename + ":%2$s:%3$s: %1$s", message,
-        error.getStartIndex(), error.getEndIndex(), error.getInputBuffer())
-        .trim();
-  }
-
-  /**
-   * Prints an error message showing a location in the given InputBuffer.
-   *
-   * @param format the format string, must include three placeholders for a
-   *        string
-   *        (the error message) and two integers (the error line / column
-   *        respectively)
-   * @param errorMessage the error message
-   * @param errorIndex the error location as an index into the inputBuffer
-   * @param inputBuffer the underlying InputBuffer
-   * @return the error message including the relevant line from the underlying
-   *         input plus location indicator
-   */
-  public static String printErrorMessage(final String format,
-      final String errorMessage,
-      final int errorIndex,
-      final InputBuffer inputBuffer) {
-    checkArgNotNull(inputBuffer, "inputBuffer");
-    return printErrorMessage(format, errorMessage, errorIndex, errorIndex + 1,
-        inputBuffer);
+        error.getStartIndex() - noffset, error.getEndIndex() - noffset,
+        error.getInputBuffer(),
+        stacktrace);
   }
 
   /**
@@ -212,36 +207,46 @@ class ErrorFormatter implements Formatter<InvalidInputError> {
    * @param endIndex the end location of the error as an index into the
    *        inputBuffer
    * @param inputBuffer the underlying InputBuffer
+   * @param stacktrace The calling stack.
    * @return the error message including the relevant line from the underlying
    *         input plus location indicators
    */
-  public static String printErrorMessage(final String format,
+  private static String printErrorMessage(final String format,
       final String errorMessage,
       final int startIndex, final int endIndex,
-      final InputBuffer inputBuffer) {
+      final InputBuffer inputBuffer, final List<Stacktrace> stacktrace) {
     checkArgNotNull(inputBuffer, "inputBuffer");
     checkArgument(startIndex <= endIndex);
+    String nl = "\n";
     Position pos = inputBuffer.getPosition(startIndex);
     StringBuilder sb =
         new StringBuilder(String.format(format, errorMessage, pos.line,
             pos.column));
-    sb.append('\n');
+    sb.append(nl);
 
     String line = inputBuffer.extractLine(pos.line);
-    sb.append(line);
-    sb.append('\n');
+    String indent = "    ";
+    sb.append(indent).append(line);
+    sb.append(nl);
 
     int charCount =
         Math.max(
             Math.min(endIndex - startIndex, StringUtils.length(line)
                 - pos.column + 2), 1);
-    for (int i = 0; i < pos.column - 1; i++) {
+    for (int i = 0; i < pos.column - 1 + indent.length(); i++) {
       sb.append(' ');
     }
     for (int i = 0; i < charCount; i++) {
       sb.append('^');
     }
-    sb.append("\n");
+
+    if (stacktrace.size() > 0) {
+      sb.append(nl);
+      for (Stacktrace st : new LinkedHashSet<Stacktrace>(stacktrace)) {
+        sb.append(st).append(nl);
+      }
+      sb.setLength(sb.length() - nl.length());
+    }
 
     return sb.toString();
   }
