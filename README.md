@@ -36,15 +36,15 @@ Hello Handlebars.java!
 ## Helpers
 
 ### Built-in helpers:
- * 'with'
- * 'each'
- * 'if'
- * 'unless'
- * 'log'
- * 'dateFormat'
- * 'block'
- * 'partial'
- * 'embedded'
+ * **with**
+ * **each**
+ * **if**
+ * **unless**
+ * **log**
+ * **dateFormat**
+ * **block**
+ * **partial**
+ * **embedded**
 
 ### with, each, if, unless:
  See the [built-in helper documentation](http://handlebarsjs.com/block_helpers.html).
@@ -206,7 +206,8 @@ handlebars.registerHelper("blog-list", new Helper<Blog>() {
 handlebars.compile("{{#blog-list blogs}}{{/blog-list}}");
 ```
 ## Error reporting
- A syntax error looks like:
+
+### Syntax errors
 
 ```
 file:line:column: message
@@ -228,6 +229,52 @@ template.hbs
            ^
 ```
 
+If a partial isn't found or if has errors, a call stack is added
+
+```
+/deep1.hbs:1:5: The partial '/deep2.hbs' could not be found
+    {{> deep2
+        ^
+at /deep1.hbs:1:10
+at /deep.hbs:1:10
+```
+### Helper/Runtime errors
+Helper or runtime errors are similar to syntax errors, except for two thing:
+
+1. The location of the problem may/mayn't the correct one.
+2. The stack-trace isn't available
+
+Examples:
+
+Block helper:
+
+```java
+public CharSequence apply(final Object context, final Options options) throws IOException {
+  if (context == null) {
+    throw new IllegalArgumentException(
+        "found 'null', expected 'string'");
+  }
+  if (!(context instanceof String)) {
+    throw new IllegalArgumentException(
+        "found '" + context + "', expected 'string'");
+  }
+  ...
+}
+```
+
+base.hbs
+```
+
+{{#block}} {{/block}}
+```
+
+Handlebars.java reports:
+```
+/base.hbs:2:4: found 'null', expected 'string'
+    {{#block}} ... {{/block}}
+```
+
+In short from a helper you can throw an Exception and Handlebars.java will add the filename, line, column and the evidence.
 
 ## Advanced Usage
 
