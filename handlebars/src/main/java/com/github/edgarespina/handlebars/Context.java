@@ -232,11 +232,11 @@ public final class Context {
    */
   private static Context child(final Context parent, final Object model) {
     checkNotNull(parent, "A parent context is required.");
-    Context root = new Context(model);
-    root.extendedContext = null;
-    root.parent = parent;
-    root.storage = parent.storage;
-    return root;
+    Context child = new Context(model);
+    child.extendedContext = new Context(new HashMap<String, Object>());
+    child.parent = parent;
+    child.storage = parent.storage;
+    return child;
   }
 
   /**
