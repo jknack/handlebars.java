@@ -7,13 +7,15 @@ Handlebars provides the power necessary to let you build semantic templates effe
 [Mustache](http://mustache.github.com/mustache.5.html) templates are compatible with Handlebars, so you can take a [Mustache](http://mustache.github.com/mustache.5.html) template, import it into Handlebars, and start taking advantage of the extra Handlebars features.
 
 # Getting Started
+
 ## Maven
+ Current version is: 0.2.0
 
 ```xml
   <dependency>
     <groupId>com.github.edgarespina</groupId>
     <artifactId>handlebars</artifactId>
-    <version>0.2.0</version>
+    <version>${handlebars-version}</version>
   </dependency>
 ```
 
@@ -225,10 +227,10 @@ handlebars.compile("{{#blog-list blogs}}{{/blog-list}}");
 ### Using the ValueResolver
  By default, Handlebars.java use the JavaBean methods (i.e. public getXxx methods) and Map as value resolvers.
  
- You can choose a different value resolver and this section describe how to do it.
+ You can choose a different value resolver. This section describe how to do it.
  
 #### The JavaBeanValueResolver
- It resovle values as public method prefixed with "get"
+ Resolves a value as public method prefixed with "get"
 
 ```java
 Context context = Context
@@ -238,7 +240,7 @@ Context context = Context
 ```
 
 #### The FieldValueResolver
- It resolve values as no-static fields.
+ Resolves a value as no-static field.
 
 ```java
 Context context = Context
@@ -258,7 +260,7 @@ Context context = Context
 ```
 
 #### The MethodValueResolver
- It resolve values as public methods.
+ Resolves a value as public method.
 
 ```java
 Context context = Context
@@ -288,7 +290,7 @@ Maven:
  <dependency>
    <groupId>com.github.edgarespina</groupId>
    <artifactId>handlebars-json</artifactId>
-   <version>0.2.0</version>
+   <version>${handlebars-version}</version>
  </dependency>
 ```
 Usage:
@@ -297,9 +299,11 @@ Usage:
  handlebars.registerHelper("json", new JSONHelper());
 ```
 ```
- {{json context}}
+ {{json context [view="fullyQualifiedClassName"]}}
 ```
-context: An object or null. Required.
+context: An object, may be null.
+
+view: The name of the [Jackson View](http://wiki.fasterxml.com/JacksonJsonViews). Optional.
 
 ## Markdown
 
@@ -308,7 +312,7 @@ Maven:
  <dependency>
    <groupId>com.github.edgarespina</groupId>
    <artifactId>handlebars-markdown</artifactId>
-   <version>0.2.0</version>
+   <version>${handlebars-version}</version>
  </dependency>
 ```
 Usage:
