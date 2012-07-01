@@ -11,7 +11,6 @@ import java.util.Map.Entry;
 
 import com.github.edgarespina.handlebars.Context;
 import com.github.edgarespina.handlebars.Handlebars;
-import com.github.edgarespina.handlebars.HandlebarsException;
 import com.github.edgarespina.handlebars.Helper;
 import com.github.edgarespina.handlebars.Template;
 
@@ -123,7 +122,8 @@ abstract class HelperResolver extends BaseTemplate {
   protected Helper<Object> helper(final String name) {
     Helper<Object> helper = handlebars.helper(name);
     if (helper == null && (params.size() > 0 || hash.size() > 0)) {
-      throw new HandlebarsException("Could not find helper: '" + name + "'");
+      throw new IllegalArgumentException("could not find helper: '" + name
+          + "'");
     }
     return helper;
   }
@@ -194,4 +194,5 @@ abstract class HelperResolver extends BaseTemplate {
     }
     return "";
   }
+
 }

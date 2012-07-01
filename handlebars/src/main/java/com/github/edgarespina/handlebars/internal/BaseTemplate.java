@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.Writer;
 
 import com.github.edgarespina.handlebars.Context;
+import com.github.edgarespina.handlebars.HandlebarsException;
 import com.github.edgarespina.handlebars.Template;
 
 /**
@@ -15,6 +16,21 @@ import com.github.edgarespina.handlebars.Template;
  * @since 0.1.0
  */
 abstract class BaseTemplate implements Template {
+
+  /**
+   * The line of this template.
+   */
+  protected int line;
+
+  /**
+   * The column of this template.
+   */
+  protected int column;
+
+  /**
+   * The file's name.
+   */
+  protected String filename;
 
   /**
    * Remove the child template.
@@ -52,7 +68,20 @@ abstract class BaseTemplate implements Template {
   public void apply(final Context context, final Writer writer)
       throws IOException {
     checkNotNull(writer, "A writer is required.");
-    merge(wrap(context), writer);
+    try {
+      merge(wrap(context), writer);
+    } catch (HandlebarsException ex) {
+      throw ex;
+    } catch (Exception ex) {
+      String message =
+          filename + ":" + line + ":" + column + ": "
+              + ex.getMessage() + "\n";
+      message += "    " + toString();
+      HandlebarsException hex = new HandlebarsException(message);
+      // Override the stack-trace
+      hex.setStackTrace(ex.getStackTrace());
+      throw hex;
+    }
   }
 
   /**
@@ -79,7 +108,31 @@ abstract class BaseTemplate implements Template {
       throws IOException;
 
   @Override
-  public final String toString() {
+  public String toString() {
     return text();
+  }
+
+  /**
+   * Set the file's name.
+   *
+   * @param filename The file's name.
+   * @return This template.
+   */
+  public BaseTemplate filename(final String filename) {
+    this.filename = filename;
+    return this;
+  }
+
+  /**
+   * Set the template position.
+   *
+   * @param line The line.
+   * @param column The column.
+   * @return This template.
+   */
+  public BaseTemplate position(final int line, final int column) {
+    this.line = line;
+    this.column = column;
+    return this;
   }
 }

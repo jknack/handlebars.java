@@ -54,6 +54,22 @@ import com.github.edgarespina.handlebars.internal.Variable.Type;
  */
 public class Parser extends BaseParser<BaseTemplate> {
 
+  static class Token {
+    public String text;
+
+    public Position position;
+
+    public boolean text(final String text) {
+      this.text = text;
+      return true;
+    }
+
+    public boolean position(final Position position) {
+      this.position = position;
+      return true;
+    }
+  }
+
   /**
    * Fix a NPE when asking for a matcher.
    *
@@ -376,14 +392,19 @@ public class Parser extends BaseParser<BaseTemplate> {
   Rule varName(final Type type) {
     final List<Object> params = new ArrayList<Object>();
     final Map<String, Object> hash = new LinkedHashMap<String, Object>();
-    final StringVar var = new StringVar();
-    return Sequence(id(),
-        var.set(match()),
+    final Var<Token> var = new Var<Token>();
+    return Sequence(
+        var.set(new Token()),
+        var.get().position(position()),
+        id(),
+        var.get().text(match()),
         spacing(),
         reset(params),
         reset(hash),
         paramOrHash(params, hash),
-        add(new Variable(handlebars, var.get(), type, params, hash)));
+        add(new Variable(handlebars, var.get().text, type, params, hash)
+            .filename(filename).position(var.get().position.line,
+                var.get().position.column)));
   }
 
   boolean reset(final List<Object> list) {
@@ -469,21 +490,27 @@ public class Parser extends BaseParser<BaseTemplate> {
 
   @Label("start-block")
   Rule block() throws IOException {
-    final StringVar name = new StringVar();
+    final Var<Token> name = new Var<Token>();
     final Var<Boolean> inverted = new Var<Boolean>();
-    final Var<Section> section = new Var<Section>();
+    final Var<BaseTemplate> section = new Var<BaseTemplate>();
     List<Object> params = new ArrayList<Object>();
     Map<String, Object> hash = new LinkedHashMap<String, Object>();
     return Sequence(
         reset(params),
         reset(hash),
+        name.set(new Token()),
         FirstOf(
-            sectionStart('#', name, inverted, params, hash),
-            sectionStart('^', name, inverted, params, hash)
+            blockStart('#', name, inverted, params, hash),
+            blockStart('^', name, inverted, params, hash)
         ),
         section.set(
-            new Section(handlebars, name.get(), inverted.get(), params, hash)
-                .startDelimiter(startDelimiter).endDelimiter(endDelimiter)),
+            new Block(handlebars, name.get().text, inverted.get(), params,
+                hash)
+                .startDelimiter(startDelimiter)
+                .endDelimiter(endDelimiter)
+                .position(name.get().position.line, name.get().position.column)
+                .filename(filename)
+            ),
         add(section.get()),
         body(),
         Optional(
@@ -497,20 +524,20 @@ public class Parser extends BaseParser<BaseTemplate> {
                 ValueStack<BaseTemplate> stack = context.getValueStack();
                 if (stack.size() > 1) {
                   BaseTemplate body = pop();
-                  section.get().inverse(body);
+                  ((Block) section.get()).inverse(body);
                 }
                 return addToline(section.get());
               }
             }
         ),
-        sectionEnd(name),
+        blockEnd(name),
         new Action<BaseTemplate>() {
           @Override
           public boolean run(final Context<BaseTemplate> context) {
             ValueStack<BaseTemplate> stack = context.getValueStack();
             if (stack.size() > 1) {
               BaseTemplate body = pop();
-              section.get().body(body);
+              ((Block) section.get()).body(body);
             }
             return addToline(section.get());
           }
@@ -523,13 +550,14 @@ public class Parser extends BaseParser<BaseTemplate> {
   }
 
   @Label("start-block")
-  Rule sectionStart(final char type, final StringVar name,
+  Rule blockStart(final char type, final Var<Token> name,
       final Var<Boolean> inverted, final List<Object> params,
       final Map<String, Object> hash) {
     return Sequence(
         startDelimiter(), type, inverted.set(matchedChar() == '^'),
         spacing(),
-        id(), name.set(match()),
+        name.get().position(position()),
+        id(), name.get().text(match()),
         spacing(),
         reset(params),
         reset(hash),
@@ -538,18 +566,18 @@ public class Parser extends BaseParser<BaseTemplate> {
   }
 
   @Label("end-block")
-  Rule sectionEnd(final StringVar name) {
+  Rule blockEnd(final Var<Token> name) {
     return Sequence(
         startDelimiter(), '/', spacing(),
         id(), new Action<BaseTemplate>() {
           @Override
           public boolean run(final Context<BaseTemplate> context) {
             String endName = context.getMatch();
-            boolean match = name.get().equals(endName);
+            boolean match = name.get().text.equals(endName);
             if (!match) {
               noffset = endName.length();
               throw new ActionException(String.format(
-                  "found: '%s', expected: '%s'", endName, name.get()));
+                  "found: '%s', expected: '%s'", endName, name.get().text));
             }
             return match;
           }

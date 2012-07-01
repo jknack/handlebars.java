@@ -36,7 +36,7 @@ class Text extends BaseTemplate {
   }
 
   @Override
-  public void merge(final Context scope, final Writer writer)
+  protected void merge(final Context scope, final Writer writer)
       throws IOException {
     writer.append(text);
   }

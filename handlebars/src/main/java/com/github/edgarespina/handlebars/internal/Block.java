@@ -15,16 +15,17 @@ import com.github.edgarespina.handlebars.Lambda;
 import com.github.edgarespina.handlebars.Template;
 
 /**
- * Sections render blocks of text one or more times, depending on the value of
+ * Blocks render blocks of text one or more times, depending on the value of
  * the key in the current context.
  * A section begins with a pound and ends with a slash. That is, {{#person}}
  * begins a "person" section while {{/person}} ends it.
- * The behavior of the section is determined by the value of the key.
+ * The behavior of the block is determined by the value of the key if the block
+ * isn't present.
  *
  * @author edgar.espina
  * @since 0.1.0
  */
-class Section extends HelperResolver {
+class Block extends HelperResolver {
 
   /**
    * The body template.
@@ -62,7 +63,7 @@ class Section extends HelperResolver {
   private BaseTemplate inverse;
 
   /**
-   * Creates a new {@link Section}.
+   * Creates a new {@link Block}.
    *
    * @param handlebars The handlebars object.
    * @param name The section's name.
@@ -70,7 +71,7 @@ class Section extends HelperResolver {
    * @param params The parameter list.
    * @param hash The hash.
    */
-  public Section(final Handlebars handlebars, final String name,
+  public Block(final Handlebars handlebars, final String name,
       final boolean inverted, final List<Object> params,
       final Map<String, Object> hash) {
     super(handlebars);
@@ -150,7 +151,7 @@ class Section extends HelperResolver {
    * @param body The template body. Required.
    * @return This section.
    */
-  public Section body(final BaseTemplate body) {
+  public Block body(final BaseTemplate body) {
     this.body = checkNotNull(body, "The template's body is required.");
     return this;
   }
@@ -182,7 +183,7 @@ class Section extends HelperResolver {
    * @param endDelimiter The end delimiter.
    * @return This section.
    */
-  public Section endDelimiter(final String endDelimiter) {
+  public Block endDelimiter(final String endDelimiter) {
     this.endDelimiter = endDelimiter;
     return this;
   }
@@ -193,7 +194,7 @@ class Section extends HelperResolver {
    * @param startDelimiter The start delimiter.
    * @return This section.
    */
-  public Section startDelimiter(final String startDelimiter) {
+  public Block startDelimiter(final String startDelimiter) {
     this.startDelimiter = startDelimiter;
     return this;
   }
@@ -209,6 +210,16 @@ class Section extends HelperResolver {
 
   @Override
   public String text() {
+    return text(true);
+  }
+
+  /**
+   * Build a text version of this block.
+   *
+   * @param complete True if the inner block should be added.
+   * @return A string version of this block.
+   */
+  private String text(final boolean complete) {
     StringBuilder buffer = new StringBuilder();
     buffer.append("{{").append(type).append(name);
     String params = paramsToString();
@@ -220,7 +231,11 @@ class Section extends HelperResolver {
       buffer.append(" ").append(hash);
     }
     buffer.append("}}");
-    buffer.append(body == null ? "" : body.text());
+    if (complete) {
+      buffer.append(body == null ? "" : body.text());
+    } else {
+      buffer.append(" ... ");
+    }
     buffer.append("{{/").append(name).append("}}");
     return buffer.toString();
   }
@@ -243,4 +258,8 @@ class Section extends HelperResolver {
     return endDelimiter;
   }
 
+  @Override
+  public String toString() {
+    return text(false);
+  }
 }

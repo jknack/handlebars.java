@@ -48,7 +48,7 @@ public class JSONHelper implements Helper<Object> {
       return "";
     }
     String viewName = options.hash("view", "");
-    ObjectWriter writer;
+    final ObjectWriter writer;
     if (viewName.length() > 0) {
       try {
         Class<?> viewClass = Class.forName(viewName);

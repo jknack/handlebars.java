@@ -46,10 +46,10 @@ class TemplateList extends BaseTemplate implements Iterable<BaseTemplate> {
   }
 
   @Override
-  public void merge(final Context scope, final Writer writer)
+  protected void merge(final Context context, final Writer writer)
       throws IOException {
     for (BaseTemplate node : nodes) {
-      node.merge(scope, writer);
+      node.apply(context, writer);
     }
   }
 
@@ -57,7 +57,7 @@ class TemplateList extends BaseTemplate implements Iterable<BaseTemplate> {
   public String text() {
     StringBuilder buffer = new StringBuilder();
     for (BaseTemplate node : nodes) {
-      buffer.append(node);
+      buffer.append(node.text());
     }
     return buffer.toString();
   }

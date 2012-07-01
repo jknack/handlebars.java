@@ -202,7 +202,7 @@ class Variable extends HelperResolver {
 
   @SuppressWarnings("unchecked")
   @Override
-  public void merge(final Context scope, final Writer writer)
+  protected void merge(final Context scope, final Writer writer)
       throws IOException {
     Helper<Object> helper = helper(name);
     if (helper != null) {

@@ -103,11 +103,11 @@ public enum BuiltInHelpers implements Helper<Object> {
         throws IOException {
       if (context == null) {
         throw new IllegalArgumentException(
-            "{{#block}} helper required a context.");
+            "found 'null', expected 'string'");
       }
       if (!(context instanceof String)) {
         throw new IllegalArgumentException(
-            "{{#block}} helper required a partial path");
+            "found '" + context + "', expected 'string'");
       }
       String path = (String) context;
       Template template = options.partial(path);
@@ -137,11 +137,11 @@ public enum BuiltInHelpers implements Helper<Object> {
         throws IOException {
       if (context == null) {
         throw new IllegalArgumentException(
-            "{{#partial}} helper required a context.");
+            "found 'null', expected 'string'");
       }
       if (!(context instanceof String)) {
         throw new IllegalArgumentException(
-            "{{#partial}} helper required a partial path");
+            "found '" + context + "', expected 'string'");
       }
       options.partial((String) context, options.fn);
       return null;
@@ -330,11 +330,11 @@ public enum BuiltInHelpers implements Helper<Object> {
         throws IOException {
       if (context == null) {
         throw new IllegalArgumentException(
-            "{{embedded}} helper required a context.");
+            "found 'null', expected 'string'");
       }
       if (!(context instanceof String)) {
         throw new IllegalArgumentException(
-            "{{embedded}} helper required a partial path");
+            "found '" + context + "', expected 'string'");
       }
       String path = (String) context;
       String defaultId = path.replace('/', '-').replace('.', '-') + "-hbs";
