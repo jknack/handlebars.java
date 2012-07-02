@@ -441,6 +441,17 @@ Checkout the HandlebarsViewResolver.
 
 ## FAQ
 
+## Want to contribute?
+* Fork the project on Github.
+* Wandering what to work on? See task/bug list and pick up something you would like to work on.
+* Create an issue or fix one from [issues list](https://github.com/edgarespina/handlebars.java/issues).
+* If you know the answer to a question posted to our [mailing list](https://groups.google.com/forum/#!forum/handlebarsjava) - don't hesitate to write a reply.
+* Share your ideas or ask questions on [mailing list](https://groups.google.com/forum/#!forum/handlebarsjava) - don't hesitate to write a reply - that helps us improve javadocs/FAQ.
+* If you miss a particular feature - browse or ask on the [mailing list](https://groups.google.com/forum/#!forum/handlebarsjava) - don't hesitate to write a reply, show us a sample code and describe the problem.
+* Write a blog post about how you use or extend handlebars.java.
+* Please suggest changes to javadoc/exception messages when you find something unclear.
+* If you have problems with documentation, find it non intuitive or hard to follow - let us know about it, we'll try to make it better according to your suggestions. Any constructive critique is greatly appreciated. Don't forget that this is an open source project developed and documented in spare time.
+
 ## Help and Support
  [Help and discussion](https://groups.google.com/forum/#!forum/handlebarsjava)
 
