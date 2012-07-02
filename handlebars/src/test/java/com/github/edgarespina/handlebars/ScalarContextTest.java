@@ -11,9 +11,6 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
-import com.github.edgarespina.handlebars.Handlebars;
-import com.github.edgarespina.handlebars.Template;
-
 @RunWith(Parameterized.class)
 public class ScalarContextTest {
 
@@ -35,6 +32,34 @@ public class ScalarContextTest {
     Handlebars handlebars = new Handlebars();
     Template template = handlebars.compile("var s = '{{" + selector + "}}';");
     assertEquals("var s = 'Hello';", template.apply("Hello"));
+  }
+
+  @Test
+  public void quoteParam() throws IOException {
+    Handlebars handlebars = new Handlebars();
+    handlebars.registerHelper("quote", new Helper<String>() {
+      @Override
+      public CharSequence apply(final String context, final Options options)
+          throws IOException {
+        return context;
+      }
+    });
+    Template template = handlebars.compile("{{{quote \"2\\\"secs\"}}}");
+    assertEquals("2\"secs", template.apply(new Object()));
+  }
+
+  @Test
+  public void quoteHash() throws IOException {
+    Handlebars handlebars = new Handlebars();
+    handlebars.registerHelper("quote", new Helper<String>() {
+      @Override
+      public CharSequence apply(final String context, final Options options)
+          throws IOException {
+        return (CharSequence) options.hash.get("q");
+      }
+    });
+    Template template = handlebars.compile("{{{quote q=\"2\\\"secs\"}}}");
+    assertEquals("2\"secs", template.apply(null));
   }
 
   @Test

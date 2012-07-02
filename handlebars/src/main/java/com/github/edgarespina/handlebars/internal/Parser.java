@@ -612,13 +612,17 @@ public class Parser extends BaseParser<BaseTemplate> {
 
   @Label("string")
   Rule string(final Var<Object> value) {
-    return Sequence(stringLiteral(), value.set(match()));
+    return Sequence(stringLiteral(), value.set(match().replace("\\\"", "\"")));
   }
 
   @Label("string")
   Rule stringLiteral() {
     return Sequence('"',
-        ZeroOrMore(TestNot(AnyOf("\"\r\n")), ANY), '"');
+        ZeroOrMore(
+        FirstOf(
+            String("\\\""),
+            Sequence(TestNot(AnyOf("\"\r\n")), ANY))),
+        '"');
   }
 
   @Label("parameter::hash")
