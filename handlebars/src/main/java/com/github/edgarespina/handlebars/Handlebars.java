@@ -126,14 +126,20 @@ public class Handlebars {
       if (value == null) {
         return true;
       }
+      if (value instanceof CharSequence) {
+        return ((CharSequence) value).length() == 0;
+      }
       if (value instanceof Collection) {
         return ((Collection) value).size() == 0;
       }
-      if (value instanceof Boolean) {
-        return !((Boolean) value).booleanValue();
-      }
       if (value.getClass().isArray()) {
         return Array.getLength(value) == 0;
+      }
+      if (value instanceof Iterable) {
+        return !((Iterable) value).iterator().hasNext();
+      }
+      if (value instanceof Boolean) {
+        return !((Boolean) value).booleanValue();
       }
       return false;
     }
