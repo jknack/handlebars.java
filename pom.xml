@@ -179,8 +179,9 @@
         <configuration>
           <header>LICENSE</header>
           <strictCheck>true</strictCheck>
+          <skipExistingHeaders>true</skipExistingHeaders>
           <includes>
-            <include>src/**/*.java</include>
+            <include>src/main/java/**/*.java</include>
           </includes>
         </configuration>
         <executions>
