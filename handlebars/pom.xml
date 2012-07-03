@@ -11,7 +11,7 @@
   <groupId>com.github.edgarespina</groupId>
   <artifactId>handlebars</artifactId>
 
-  <name>Handlebars.java</name>
+  <name>Handlebars</name>
   <description>Logic-less and semantic templates with Java</description>
 
   <dependencies>

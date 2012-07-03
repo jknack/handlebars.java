@@ -1,14 +1,10 @@
 /**
  * Copyright (c) 2012 Edgar Espina
- *
  * This file is part of Handlebars.java.
- *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * http://www.apache.org/licenses/LICENSE-2.0
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -322,15 +318,29 @@ public final class Context {
     }
     String[] path = toPath(key);
     Object value = get(path);
-    // Check the parent context.
-    if (value == null && parent != null) {
-      value = parent.get(key);
-    }
-    // Check the extended context.
-    if (value == null && extendedContext != null) {
-      value = extendedContext.get(key);
+    if (value == null) {
+      // No luck, check the extended context.
+      value = get(extendedContext, key);
+      if (value == null) {
+        // No luck, check the parent context.
+        value = get(parent, key);
+      }
     }
     return value == NULL ? null : value;
+  }
+
+  /**
+   * Look for the speficied key in an external context.
+   *
+   * @param external The external context.
+   * @param key The associated key.
+   * @return The associated value or null if not found.
+   */
+  private Object get(final Context external, final Object key) {
+    if (external != null) {
+      return external.get(key);
+    }
+    return null;
   }
 
   /**

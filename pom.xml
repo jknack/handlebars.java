@@ -8,7 +8,7 @@
   <version>0.2.2-SNAPSHOT</version>
   <packaging>pom</packaging>
 
-  <name>The Handlebars Template Engine</name>
+  <name>Handlebars.java/name>
   <description>Logic-less and semantic templates with Java</description>
 
   <url>https://github.com/edgarespina/handlebars.java</url>
