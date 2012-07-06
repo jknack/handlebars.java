@@ -58,6 +58,12 @@
   <dependencyManagement>
     <dependencies>
       <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-lang3</artifactId>
+        <version>3.1</version>
+      </dependency>
+
+      <dependency>
         <groupId>org.springframework</groupId>
         <artifactId>spring-webmvc</artifactId>
         <version>3.1.1.RELEASE</version>
@@ -123,6 +129,26 @@
         <groupId>org.easymock</groupId>
         <artifactId>easymock</artifactId>
         <version>3.1</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.powermock</groupId>
+        <artifactId>powermock-api-easymock</artifactId>
+        <version>1.4.12</version>
+        <scope>test</scope>
+        <exclusions>
+          <exclusion>
+            <groupId>org.easymock</groupId>
+            <artifactId>easymock</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+
+      <dependency>
+        <groupId>org.powermock</groupId>
+        <artifactId>powermock-module-junit4</artifactId>
+        <version>1.4.12</version>
+        <scope>test</scope>
       </dependency>
 
     </dependencies>
