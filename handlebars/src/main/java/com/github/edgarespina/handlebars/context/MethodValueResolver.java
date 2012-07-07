@@ -53,7 +53,7 @@ public class MethodValueResolver extends MemberValueResolver<Method> {
   }
 
   @Override
-  protected Method findMember(final Class<?> clazz, final String name) {
+  protected Method find(final Class<?> clazz, final String name) {
     // Keep backing up the inheritance hierarchy.
     Method[] methods = clazz.getDeclaredMethods();
     for (Method method : methods) {
@@ -62,10 +62,10 @@ public class MethodValueResolver extends MemberValueResolver<Method> {
       }
     }
     if (clazz.getSuperclass() != null) {
-      return findMember(clazz.getSuperclass(), name);
+      return find(clazz.getSuperclass(), name);
     } else if (clazz.isInterface()) {
       for (Class<?> superIfc : clazz.getInterfaces()) {
-        return findMember(superIfc, name);
+        return find(superIfc, name);
       }
     }
     return null;

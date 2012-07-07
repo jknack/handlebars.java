@@ -1,14 +1,10 @@
 /**
  * Copyright (c) 2012 Edgar Espina
- *
  * This file is part of Handlebars.java.
- *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * http://www.apache.org/licenses/LICENSE-2.0
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -47,7 +43,7 @@ public abstract class MemberValueResolver<M extends Member>
     String key = key(context, name);
     M member = cache.get(key);
     if (member == null) {
-      member = findMember(context.getClass(), name);
+      member = find(context.getClass(), name);
       if (member == null) {
         // No luck, move to the next value resolver.
         return UNRESOLVED;
@@ -69,7 +65,7 @@ public abstract class MemberValueResolver<M extends Member>
    * @param name The attribute's name.
    * @return A {@link Member} or null.
    */
-  protected abstract M findMember(Class<?> clazz, String name);
+  protected abstract M find(Class<?> clazz, String name);
 
   /**
    * Invoke the member in the given context.

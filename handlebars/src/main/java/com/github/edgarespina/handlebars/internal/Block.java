@@ -24,7 +24,6 @@ import java.io.Writer;
 import java.util.List;
 import java.util.Map;
 
-import com.github.edgarespina.handlebars.BuiltInHelpers;
 import com.github.edgarespina.handlebars.Context;
 import com.github.edgarespina.handlebars.Handlebars;
 import com.github.edgarespina.handlebars.Helper;
@@ -109,23 +108,26 @@ class Block extends HelperResolver {
     Context currentScope = context;
     if (helper == null) {
       childContext = transform(context.get(name));
+      final String hname;
       if (inverted) {
-        helper = BuiltInHelpers.UNLESS;
+        hname = "unless";
       } else if (childContext instanceof Iterable) {
-        helper = BuiltInHelpers.EACH;
+        hname = "each";
       } else if (childContext instanceof Boolean) {
-        helper = BuiltInHelpers.IF;
+        hname = "if";
       } else if (childContext instanceof Lambda) {
-        helper = BuiltInHelpers.WITH;
+        hname = "with";
         template = Lambdas
             .compile(handlebars,
                 (Lambda<Object, Object>) childContext,
                 context, template,
                 startDelimiter, endDelimiter);
       } else {
-        helper = BuiltInHelpers.WITH;
+        hname = "with";
         currentScope = Context.newContext(context, childContext);
       }
+      // A built-in helper might be overrived it.
+      helper = handlebars.helper(hname);
     } else {
       childContext = determineContext(context);
     }

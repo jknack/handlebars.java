@@ -53,7 +53,7 @@ public class FieldValueResolver extends MemberValueResolver<Field> {
   }
 
   @Override
-  protected Field findMember(final Class<?> clazz, final String name) {
+  protected Field find(final Class<?> clazz, final String name) {
     Class<?> targetClass = clazz;
     do {
       Field[] fields = targetClass.getDeclaredFields();
