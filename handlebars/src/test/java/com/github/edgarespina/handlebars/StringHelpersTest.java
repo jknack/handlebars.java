@@ -40,7 +40,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({Options.class, StringHelpers.class, Context.class })
-public class TextHelpersTest {
+public class StringHelpersTest {
 
   @Test
   public void capFirst() throws IOException {

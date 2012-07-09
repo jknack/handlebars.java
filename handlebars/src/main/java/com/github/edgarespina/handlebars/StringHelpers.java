@@ -21,9 +21,16 @@ import static org.apache.commons.lang3.Validate.isTrue;
 import static org.apache.commons.lang3.Validate.notNull;
 
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang3.LocaleUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.text.WordUtils;
 
@@ -441,7 +448,68 @@ public enum StringHelpers implements Helper<Object> {
       (value == Boolean.TRUE ? options.hash("yes", "yes")
           : options.hash("no", "no"));
     }
-  };
+  },
+
+  /**
+   * <p>
+   * Usage:
+   * </p>
+   *
+   * <pre>
+   *    {{dateFormat date ["format"]}}
+   * </pre>
+   *
+   * Format parameters is one of:
+   * <ul>
+   * <li>"full": full date format. For example: Tuesday, June 19, 2012</li>
+   * <li>"long": long date format. For example: June 19, 2012</li>
+   * <li>"medium": medium date format. For example: Jun 19, 2012</li>
+   * <li>"short": short date format. For example: 6/19/12</li>
+   * <li>"pattern": a date pattern.</li>
+   * </ul>
+   * Otherwise, the default formatter will be used.
+   */
+  DATE_FORMAT {
+    /**
+     * The default date styles.
+     */
+    @SuppressWarnings("serial")
+    private Map<String, Integer> styles = new HashMap<String, Integer>()
+    {
+      {
+        put("full", DateFormat.FULL);
+        put("long", DateFormat.LONG);
+        put("medium", DateFormat.MEDIUM);
+        put("short", DateFormat.SHORT);
+      }
+    };
+
+    @Override
+    public CharSequence apply(final Object context, final Options options)
+        throws IOException {
+      if (context == null) {
+        return null;
+      }
+      Date date = (Date) context;
+      final DateFormat dateFormat;
+      Object pattern = options.param(0, "medium");
+      String localeStr = options.param(1, Locale.getDefault().toString());
+      Locale locale = LocaleUtils.toLocale(localeStr);
+      Integer style = styles.get(pattern);
+      if (style == null) {
+        dateFormat = new SimpleDateFormat(pattern.toString(), locale);
+      } else {
+        dateFormat = DateFormat.getDateInstance(style, locale);
+      }
+      return dateFormat.format(date);
+    }
+
+    @Override
+    public String helperName() {
+      return "dateFormat";
+    }
+  }
+  ;
 
   /**
    * Return the helper's name.
