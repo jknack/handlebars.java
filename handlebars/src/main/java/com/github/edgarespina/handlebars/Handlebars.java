@@ -27,6 +27,14 @@ import java.util.Map;
 
 import org.slf4j.Logger;
 
+import com.github.edgarespina.handlebars.helper.BlockHelper;
+import com.github.edgarespina.handlebars.helper.EachHelper;
+import com.github.edgarespina.handlebars.helper.EachPseudoVarHelper;
+import com.github.edgarespina.handlebars.helper.EmbeddedHelper;
+import com.github.edgarespina.handlebars.helper.IfHelper;
+import com.github.edgarespina.handlebars.helper.PartialHelper;
+import com.github.edgarespina.handlebars.helper.UnlessHelper;
+import com.github.edgarespina.handlebars.helper.WithHelper;
 import com.github.edgarespina.handlebars.internal.Parser;
 import com.github.edgarespina.handlebars.io.ClassTemplateLoader;
 
@@ -268,7 +276,8 @@ public class Handlebars {
         checkNotNull(loader, "The template loader is required.");
     this.cache =
         checkNotNull(cache, "The template cache is required.");
-    BuiltInHelpers.register(this);
+
+    registerBuiltinsHelpers(this);
   }
 
   /**
@@ -407,9 +416,7 @@ public class Handlebars {
   public Handlebars setExposePseudoVariables(
       final boolean exposePseudoVariables) {
     if (exposePseudoVariables) {
-      PseudoVarsHelpers.register(this);
-    } else {
-      BuiltInHelpers.register(this);
+      registerHelper(EachPseudoVarHelper.NAME, EachPseudoVarHelper.INSTANCE);
     }
     return this;
   }
@@ -527,4 +534,18 @@ public class Handlebars {
     checkArgument(endDelimiter.length() > 0, "The end delimiter is required.");
   }
 
+  /**
+   * Register built-in helpers.
+   *
+   * @param handlebars The handlebars instance.
+   */
+  private static void registerBuiltinsHelpers(final Handlebars handlebars) {
+    handlebars.registerHelper(WithHelper.NAME, WithHelper.INSTANCE);
+    handlebars.registerHelper(IfHelper.NAME, IfHelper.INSTANCE);
+    handlebars.registerHelper(UnlessHelper.NAME, UnlessHelper.INSTANCE);
+    handlebars.registerHelper(EachHelper.NAME, EachHelper.INSTANCE);
+    handlebars.registerHelper(EmbeddedHelper.NAME, EmbeddedHelper.INSTANCE);
+    handlebars.registerHelper(BlockHelper.NAME, BlockHelper.INSTANCE);
+    handlebars.registerHelper(PartialHelper.NAME, PartialHelper.INSTANCE);
+  }
 }

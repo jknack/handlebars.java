@@ -29,6 +29,10 @@ import com.github.edgarespina.handlebars.Handlebars;
 import com.github.edgarespina.handlebars.Helper;
 import com.github.edgarespina.handlebars.Lambda;
 import com.github.edgarespina.handlebars.Template;
+import com.github.edgarespina.handlebars.helper.EachHelper;
+import com.github.edgarespina.handlebars.helper.IfHelper;
+import com.github.edgarespina.handlebars.helper.UnlessHelper;
+import com.github.edgarespina.handlebars.helper.WithHelper;
 
 /**
  * Blocks render blocks of text one or more times, depending on the value of
@@ -110,20 +114,20 @@ class Block extends HelperResolver {
       childContext = transform(context.get(name));
       final String hname;
       if (inverted) {
-        hname = "unless";
+        hname = UnlessHelper.NAME;
       } else if (childContext instanceof Iterable) {
-        hname = "each";
+        hname = EachHelper.NAME;
       } else if (childContext instanceof Boolean) {
-        hname = "if";
+        hname = IfHelper.NAME;
       } else if (childContext instanceof Lambda) {
-        hname = "with";
+        hname = WithHelper.NAME;
         template = Lambdas
             .compile(handlebars,
                 (Lambda<Object, Object>) childContext,
                 context, template,
                 startDelimiter, endDelimiter);
       } else {
-        hname = "with";
+        hname = WithHelper.NAME;
         currentScope = Context.newContext(context, childContext);
       }
       // A built-in helper might be overrived it.
