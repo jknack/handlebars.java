@@ -81,7 +81,7 @@ public abstract class TemplateLoader {
    * @return Resolve the uri to an absolute location.
    */
   public String resolve(final String uri) {
-    return prefix + uri + suffix;
+    return prefix + normalize(uri) + suffix;
   }
 
   /**

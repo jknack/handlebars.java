@@ -1,14 +1,10 @@
 /**
  * Copyright (c) 2012 Edgar Espina
- *
  * This file is part of Handlebars.java.
- *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * http://www.apache.org/licenses/LICENSE-2.0
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -325,7 +321,7 @@ public class Parser extends BaseParser<BaseTemplate> {
             String end = newendDelimiter.get();
             if (start.length() != end.length()) {
               noffset = end.length();
-              throw new ActionException("Unbalanced delimiters: '"
+              throw new ActionException("unbalanced delimiters: '"
                   + start + "'.length != '" + end
                   + "'.length");
             }
@@ -475,8 +471,14 @@ public class Parser extends BaseParser<BaseTemplate> {
           @Override
           public boolean run(final Context<BaseTemplate> context) {
             String uri = uriVar.get();
-            Partial partial = partials.get(uri);
             TemplateLoader loader = handlebars.getTemplateLoader();
+            if (uri.startsWith("/")) {
+              noffset = uri.length();
+              throw new ActionException(
+                  "found: '" + loader.resolve(uri)
+                      + "', partial shouldn't start with '/'");
+            }
+            Partial partial = partials.get(uri);
             if (partial == null) {
               try {
                 Position pos = context.getPosition();

@@ -44,6 +44,8 @@ public class ParsingErrorTest {
           .$("/deep.hbs", "{{> deep1}}")
           .$("/deep1.hbs", "{{> deep2")
           .$("/unbalancedDelim.hbs", "{{=<% >=}}")
+          .$("/partialName.hbs", "{{> /user}}")
+          .$("/partialName2.hbs", "{{> /layout/base}}")
           .$("/paramOrder.hbs", "{{f param hash=1 param}}");
 
   @Test(expected = HandlebarsException.class)
@@ -84,6 +86,16 @@ public class ParsingErrorTest {
   @Test(expected = HandlebarsException.class)
   public void paramOutOfOrder() throws IOException {
     parse("paramOrder");
+  }
+
+  @Test(expected = HandlebarsException.class)
+  public void partialName() throws IOException {
+    parse("partialName");
+  }
+
+  @Test(expected = HandlebarsException.class)
+  public void partialName2() throws IOException {
+    parse("partialName2");
   }
 
   private Object parse(final String uri) throws IOException {
