@@ -20,6 +20,7 @@ package com.github.edgarespina.handlebars;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -232,5 +233,45 @@ public class ContextTest {
         Context.newBuilder(root, "child2")
             .combine(new HashMap<String, Object>()).build();
     assertEquals("child2", child2.get("this"));
+  }
+
+  @Test
+  @SuppressWarnings("unused")
+  public void issue42() throws IOException {
+    Object context = new Object() {
+      public Object getFoo() {
+        return new Object() {
+          public String getTitle() {
+            return "foo";
+          }
+
+          public Object getBar() {
+            return new Object() {
+              public String getTitle() {
+                return null;
+              }
+
+              @Override
+              public String toString() {
+                return "bar";
+              }
+            };
+          }
+
+          @Override
+          public String toString() {
+            return "foo";
+          }
+        };
+      }
+    };
+
+    Handlebars handlebars = new Handlebars();
+
+    Template template =
+        handlebars
+            .compile("{{#foo}}{{title}} {{#bar}}{{title}}{{/bar}}{{/foo}}");
+
+    assertEquals("foo ", template.apply(context));
   }
 }
