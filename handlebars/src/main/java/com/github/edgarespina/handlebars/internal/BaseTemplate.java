@@ -61,7 +61,7 @@ abstract class BaseTemplate implements Template {
    * {@inheritDoc}
    */
   @Override
-  public final CharSequence apply(final Object context) throws IOException {
+  public final String apply(final Object context) throws IOException {
     return apply(wrap(context));
   }
 
@@ -75,7 +75,7 @@ abstract class BaseTemplate implements Template {
   }
 
   @Override
-  public CharSequence apply(final Context context) throws IOException {
+  public String apply(final Context context) throws IOException {
     FastStringWriter writer = new FastStringWriter();
     apply(context, writer);
     return writer.toString();

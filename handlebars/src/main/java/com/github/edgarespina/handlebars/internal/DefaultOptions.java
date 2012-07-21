@@ -49,7 +49,7 @@ class DefaultOptions extends Options {
     }
 
     @Override
-    public CharSequence apply(final Context context) throws IOException {
+    public String apply(final Context context) throws IOException {
       return "";
     }
 
