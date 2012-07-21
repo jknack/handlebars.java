@@ -68,7 +68,7 @@ public final class Context {
       for (ValueResolver resolver : resolvers) {
         Object value = resolver.resolve(context, name);
         if (value != UNRESOLVED) {
-          return value;
+          return value == null ? NULL : value;
         }
       }
       return null;
@@ -365,14 +365,11 @@ public final class Context {
 
   /**
    * Iterate over the qualified path and return a value. The value can be
-   * null, {@link #NULL} or not null. If the value is 'null', the value isn't
-   * present
-   * and the lookup algorithm will searchin for the value in the parent
-   * context.
+   * null, {@link #NULL} or not null. If the value is <code>null</code>, the
+   * value isn't present and the lookup algorithm will searchin for the value in
+   * the parent context.
    * If the value is {@value #NULL} the search must stop bc the context for
-   * the
-   * given path exists but there isn't a value there.
-   * Finally, a not null value means
+   * the given path exists but there isn't a value there.
    *
    * @param path The qualified path.
    * @return The value inside the stack for the given path.
