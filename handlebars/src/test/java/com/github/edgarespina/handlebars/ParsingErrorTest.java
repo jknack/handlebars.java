@@ -46,7 +46,11 @@ public class ParsingErrorTest {
           .$("/unbalancedDelim.hbs", "{{=<% >=}}")
           .$("/partialName.hbs", "{{> /user}}")
           .$("/partialName2.hbs", "{{> /layout/base}}")
-          .$("/paramOrder.hbs", "{{f param hash=1 param}}");
+          .$("/paramOrder.hbs", "{{f param hash=1 param}}")
+          .$("/idx1.hbs", "{{list[0]}}")
+          .$("/idx2.hbs", "{{list.[0}}")
+          .$("/idx3.hbs", "{{list.[]}}")
+          .$("/idx4.hbs", "{{list.[}}");
 
   @Test(expected = HandlebarsException.class)
   public void correctPath() throws IOException {
@@ -96,6 +100,26 @@ public class ParsingErrorTest {
   @Test(expected = HandlebarsException.class)
   public void partialName2() throws IOException {
     parse("partialName2");
+  }
+
+  @Test(expected = HandlebarsException.class)
+  public void idx1() throws IOException {
+    parse("idx1");
+  }
+
+  @Test(expected = HandlebarsException.class)
+  public void idx2() throws IOException {
+    parse("idx2");
+  }
+
+  @Test(expected = HandlebarsException.class)
+  public void idx3() throws IOException {
+    parse("idx3");
+  }
+
+  @Test(expected = HandlebarsException.class)
+  public void idx4() throws IOException {
+    parse("idx4");
   }
 
   private Object parse(final String uri) throws IOException {

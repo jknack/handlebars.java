@@ -15,9 +15,13 @@ package com.github.edgarespina.handlebars;
 
 import static org.parboiled.common.Preconditions.checkNotNull;
 
+import java.lang.reflect.Array;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import com.github.edgarespina.handlebars.context.JavaBeanValueResolver;
 import com.github.edgarespina.handlebars.context.MapValueResolver;
@@ -174,6 +178,11 @@ public final class Context {
    * Mark for fail context lookup.
    */
   private static final Object NULL = new Object();
+
+  /**
+   * Array access expression.
+   */
+  private static final Pattern IDX = Pattern.compile("\\[((\\d)+)\\]");
 
   /**
    * The qualified name for partials. Internal use.
@@ -396,11 +405,39 @@ public final class Context {
    * Do the actual lookup of an unqualify property name.
    *
    * @param current The target object.
-   * @param name The property's name.
+   * @param expression The access expression.
    * @return The associated value.
    */
-  private Object resolve(final Object current, final String name) {
-    return current == null ? null : resolver.resolve(current, name);
+  private Object resolve(final Object current, final String expression) {
+    // Null => null
+    if (current == null) {
+      return null;
+    }
+
+    // array or list access?
+    Matcher matcher = IDX.matcher(expression);
+    if (matcher.matches()) {
+      return elementAt(current, Integer.parseInt(matcher.group(1)));
+    }
+    return resolver.resolve(current, expression);
+  }
+
+  /**
+   * Access to the element at the given idx.
+   *
+   * @param current An array or list obejct.
+   * @param idx The index at the array or list.
+   * @return The element at the given position.
+   */
+  @SuppressWarnings("rawtypes")
+  private Object elementAt(final Object current, final int idx) {
+    if (current.getClass().isArray()) {
+      return Array.get(current, idx);
+    } else if (current instanceof List) {
+      return ((List) current).get(idx);
+    }
+    throw new IllegalArgumentException("found: " + current.getClass().getName()
+        + ", expected: 'array' or 'list'");
   }
 
   /**

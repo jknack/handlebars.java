@@ -409,7 +409,7 @@ public class Parser extends BaseParser<BaseTemplate> {
     return Sequence(
         var.set(new Token()),
         var.get().position(position()),
-        id(),
+        qualifiedId(),
         var.get().text(match()),
         spacing(),
         reset(params),
@@ -576,7 +576,7 @@ public class Parser extends BaseParser<BaseTemplate> {
         startDelimiter(), type, inverted.set(matchedChar() == '^'),
         spacing(),
         name.get().position(position()),
-        id(), name.get().text(match()),
+        qualifiedId(), name.get().text(match()),
         spacing(),
         reset(params),
         reset(hash),
@@ -588,7 +588,7 @@ public class Parser extends BaseParser<BaseTemplate> {
   Rule blockEnd(final Var<Token> name) {
     return Sequence(
         startDelimiter(), '/', spacing(),
-        id(), new Action<BaseTemplate>() {
+        qualifiedId(), new Action<BaseTemplate>() {
           @Override
           public boolean run(final Context<BaseTemplate> context) {
             String endName = context.getMatch();
@@ -649,7 +649,7 @@ public class Parser extends BaseParser<BaseTemplate> {
     final StringVar name = new StringVar();
     final Var<Object> value = new Var<Object>();
     return Sequence(
-        id(),
+        qualifiedId(),
         name.set(match()),
         spacing(),
         '=',
@@ -670,13 +670,62 @@ public class Parser extends BaseParser<BaseTemplate> {
         string(value),
         integer(value),
         bool(value),
-        Sequence(id(), value.set(match())));
+        Sequence(qualifiedId(), value.set(match())));
   }
 
   @MemoMismatches
+  @Label("id")
+  Rule qualifiedId() {
+    return FirstOf(
+        dot(),
+        Sequence(id(), ZeroOrMore(dot(), id())));
+  }
+
+  @MemoMismatches
+  @Label("id")
   Rule id() {
     return Sequence(TestNot(startDelimiter()), TestNot(elseSection()),
-        idStart(), ZeroOrMore(idEnd()));
+        nameStart(), ZeroOrMore(idSuffix()));
+  }
+
+  @MemoMismatches
+  @Label("id")
+  Rule idSuffix() {
+    return FirstOf(arrayAccess(), nameEnd());
+  }
+
+  @MemoMismatches
+  Rule arrayAccess() {
+    return Sequence(dot(), "[", spacing(), OneOrMore(digit())
+        .label("idx"), spacing(), "]");
+  }
+
+  @MemoMismatches
+  @Label("id")
+  Rule nameStart() {
+    return Sequence(TestNot(dot()),
+        FirstOf(
+            CharRange('a', 'z'),
+            CharRange('A', 'Z'),
+            '_', '$', '@'));
+  }
+
+  @MemoMismatches
+  @Label("id")
+  Rule nameEnd() {
+    return Sequence(TestNot(dot()),
+        FirstOf(
+            CharRange('a', 'z'),
+            CharRange('A', 'Z'),
+            digit(),
+            '_', '$',
+            '-', '@'));
+  }
+
+  @MemoMismatches
+  @Label(".")
+  Rule dot() {
+    return Ch('.');
   }
 
   @MemoMismatches
@@ -783,19 +832,6 @@ public class Parser extends BaseParser<BaseTemplate> {
             return true;
           }
         });
-  }
-
-  @MemoMismatches
-  @Label("id")
-  Rule idStart() {
-    return FirstOf(CharRange('a', 'z'), CharRange('A', 'Z'), '.', '_', '$', '@');
-  }
-
-  @MemoMismatches
-  @Label("id")
-  Rule idEnd() {
-    return FirstOf(CharRange('a', 'z'), CharRange('A', 'Z'), digit(), '_', '$',
-        '.', '-', '@');
   }
 
   @MemoMismatches

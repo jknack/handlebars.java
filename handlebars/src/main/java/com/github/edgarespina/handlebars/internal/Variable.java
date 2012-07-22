@@ -281,4 +281,5 @@ class Variable extends HelperResolver {
   public String text() {
     return type.format(name, paramsToString(), hashToString());
   }
+
 }
