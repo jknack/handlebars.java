@@ -35,17 +35,23 @@ public abstract class MemberValueResolver<M extends Member>
   /**
    * A concurrent and thread-safe cache for {@link Member}.
    */
-  private final Map<String, M> cache =
-      new ConcurrentHashMap<String, M>();
+  private final Map<String, Object> cache =
+      new ConcurrentHashMap<String, Object>();
 
   @Override
   public final Object resolve(final Object context, final String name) {
     String key = key(context, name);
-    M member = cache.get(key);
+    Object value = cache.get(key);
+    if (value == UNRESOLVED) {
+      return value;
+    }
+    @SuppressWarnings("unchecked")
+    M member = (M) value;
     if (member == null) {
       member = find(context.getClass(), name);
       if (member == null) {
         // No luck, move to the next value resolver.
+        cache.put(key, UNRESOLVED);
         return UNRESOLVED;
       }
       // Mark as accessible.
