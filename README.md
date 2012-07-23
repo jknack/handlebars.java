@@ -42,26 +42,12 @@ Hello Handlebars.java!
  * **if**
  * **unless**
  * **log**
- * **dateFormat**
  * **block**
  * **partial**
  * **embedded**
 
 ### with, each, if, unless:
  See the [built-in helper documentation](http://handlebarsjs.com/block_helpers.html).
-
-### dateFormat:
-
-Usage:
-```
-  {{dateFormat date ["format"] ["locale"]}}
-```
-
-context: a java.util.Date object. Required.
-
-param(0): one of "full", "long", "medium", "sort" or a date pattern like ("MM/dd/yyyy", etc.). Default is "medium".
-
-param(1): a locale representation ("es_AR", "en", "es", etc). Default is platform specific.
 
 ### block and partial
  Block and partial helpers work together to provide you [Template Inheritance](http://thejohnfreeman.com/blog/2012/03/23/template-inheritance-for-handlebars.html).
@@ -294,7 +280,7 @@ In short from a helper you can throw an Exception and Handlebars.java will add t
     template.apply(user);
   }
  ```
- Where is the ```hookContextStack``` method? Well, that will depends on our current application architecture.
+ Where is the ```hookContextStack``` method? Well, that will depends on your application architecture.
 
 ### Using the ValueResolver
  By default, Handlebars.java use the JavaBean methods (i.e. public getXxx methods) and Map as value resolvers.
@@ -404,11 +390,19 @@ Maven:
  <dependency>
    <groupId>com.github.edgarespina</groupId>
    <artifactId>handlebars-springmvc</artifactId>
-   <version>0.2.0</version>
+   <version>${handlebars-version}</version>
  </dependency>
 ```
 
 Checkout the HandlebarsViewResolver.
+
+## String Helpers
+ Functions like abbreviate, capitalize, join, dateFormat, yesno, etc., are available from [StringHelpers] (https://github.com/edgarespina/handlebars.java/blob/master/handlebars/src/main/java/com/github/edgarespina/handlebars/StringHelpers.java).
+ 
+### Usage:
+```java
+ StringHelpers.register(handlebars);
+```
 
 # Architecture
  * Handlebars.java follows the JavaScript API with some minors exceptions due to the nature of the Java language.
@@ -430,13 +424,14 @@ Checkout the HandlebarsViewResolver.
  Handlebars.java depends on:
  
  ```text
-  +- org.parboiled:parboiled-java:jar:1.0.2:compile
-  |  +- asm:asm:jar:3.3.1:compile
-  |  +- asm:asm-util:jar:3.3.1:compile
-  |  +- asm:asm-tree:jar:3.3.1:compile
-  |  +- asm:asm-analysis:jar:3.3.1:compile
-  |  \- org.parboiled:parboiled-core:jar:1.0.2:compile
-  \- org.slf4j:slf4j-api:jar:1.6.4:compile
++- org.apache.commons:commons-lang3:jar:3.1:compile
++- org.parboiled:parboiled-java:jar:1.0.2:compile
+|  +- asm:asm:jar:3.3.1:compile
+|  +- asm:asm-util:jar:3.3.1:compile
+|  +- asm:asm-tree:jar:3.3.1:compile
+|  +- asm:asm-analysis:jar:3.3.1:compile
+|  \- org.parboiled:parboiled-core:jar:1.0.2:compile
++- org.slf4j:slf4j-api:jar:1.6.4:compile
  ```
 
 ## FAQ
