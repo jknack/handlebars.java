@@ -565,7 +565,7 @@ public class Parser extends BaseParser<BaseTemplate> {
 
   @Label("else")
   Rule elseSection() {
-    return String("else");
+    return FirstOf("else", "^");
   }
 
   @Label("start-block")
