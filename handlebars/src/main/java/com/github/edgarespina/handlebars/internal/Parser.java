@@ -141,7 +141,7 @@ public class Parser extends BaseParser<BaseTemplate> {
      * @param rule the parser rule
      * @param errorIndex the index of the error to report
      * @param inner another MatchHandler to delegate the actual match handling
-     *        to, can be null
+     *          to, can be null
      */
     public SafeErrorReportingParseRunner(final Rule rule, final int errorIndex,
         final MatchHandler inner) {
@@ -220,7 +220,7 @@ public class Parser extends BaseParser<BaseTemplate> {
         partials == null ? new HashMap<String, Partial>() : partials;
     this.startDelimiter = startDelimiter;
     this.endDelimiter = endDelimiter;
-    this.stacktraceList = stacktrace;
+    stacktraceList = stacktrace;
   }
 
   private static Parser create(final Handlebars handlebars,
@@ -295,22 +295,34 @@ public class Parser extends BaseParser<BaseTemplate> {
         push(new TemplateList()),
         ZeroOrMore(
         FirstOf(
-            block(),
-            partial(),
-            delimiters(),
-            comment(),
-            variable(),
             space(),
             nl(),
-            text())));
+            text(),
+            Sequence(startDelimiter(),
+                FirstOf(
+                    // {{# }}
+                    Sequence('#', spacing(), block(false)),
+                    // {{^ }}
+                    Sequence('^', spacing(), block(true)),
+                    // {{> }}
+                    Sequence('>', spacing(), partial()),
+                    // {{& }}
+                    Sequence('&', spacing(), ampersandVar()),
+                    // {{{ }}}
+                    Sequence('{', spacing(), tripleVar()),
+                    // {{= }}
+                    Sequence('=', spacing(), delimiters()),
+                    // {{! }}
+                    comment(),
+                    Sequence(spacing(), var())
+                ))
+        )));
   }
 
   Rule delimiters() {
     final StringVar newstartDelimiter = new StringVar();
     final StringVar newendDelimiter = new StringVar();
-    return Sequence(startDelimiter(),
-        '=',
-        spacing(),
+    return Sequence(
         newDelimiter(), newstartDelimiter.set(match()),
         OneOrMore(spaceNoAction()),
         newDelimiter(), newendDelimiter.set(match()),
@@ -364,16 +376,8 @@ public class Parser extends BaseParser<BaseTemplate> {
   }
 
   @Label("variable")
-  Rule variable() {
-    return FirstOf(ampersandVar(), tripleVar(), var());
-  }
-
-  @Label("variable")
   Rule ampersandVar() {
     return Sequence(
-        startDelimiter(),
-        "&",
-        spacing(),
         varName(Type.AMPERSAND_VAR),
         spacing(),
         endDelimiter());
@@ -382,9 +386,6 @@ public class Parser extends BaseParser<BaseTemplate> {
   @Label("variable")
   Rule tripleVar() {
     return Sequence(
-        startDelimiter(),
-        '{',
-        spacing(),
         varName(Type.TRIPLE_VAR),
         spacing(),
         '}',
@@ -394,8 +395,6 @@ public class Parser extends BaseParser<BaseTemplate> {
   @Label("variable")
   Rule var() {
     return Sequence(
-        startDelimiter(),
-        spacing(),
         varName(Type.VAR),
         spacing(),
         endDelimiter());
@@ -465,7 +464,8 @@ public class Parser extends BaseParser<BaseTemplate> {
 
   Rule partial() throws IOException {
     final StringVar uriVar = new StringVar();
-    return Sequence(startDelimiter(), '>', spacing(), path(),
+    return Sequence(
+        path(),
         uriVar.set(match()),
         new Action<BaseTemplate>() {
           @Override
@@ -508,9 +508,8 @@ public class Parser extends BaseParser<BaseTemplate> {
   }
 
   @Label("start-block")
-  Rule block() throws IOException {
+  Rule block(final boolean inverted) throws IOException {
     final Var<Token> name = new Var<Token>();
-    final Var<Boolean> inverted = new Var<Boolean>();
     final Var<BaseTemplate> section = new Var<BaseTemplate>();
     List<Object> params = new ArrayList<Object>();
     Map<String, Object> hash = new LinkedHashMap<String, Object>();
@@ -518,13 +517,9 @@ public class Parser extends BaseParser<BaseTemplate> {
         reset(params),
         reset(hash),
         name.set(new Token()),
-        FirstOf(
-            blockStart('#', name, inverted, params, hash),
-            blockStart('^', name, inverted, params, hash)
-        ),
+        blockStart(name, params, hash),
         section.set(
-            new Block(handlebars, name.get().text, inverted.get(), params,
-                hash)
+            new Block(handlebars, name.get().text, inverted, params, hash)
                 .startDelimiter(startDelimiter)
                 .endDelimiter(endDelimiter)
                 .position(name.get().position.line, name.get().position.column)
@@ -533,8 +528,7 @@ public class Parser extends BaseParser<BaseTemplate> {
         add(section.get()),
         body(),
         Optional(
-            Sequence(
-                startDelimiter(), spacing(), elseSection(), spacing(),
+            Sequence(startDelimiter(), spacing(), elseKey(), spacing(),
                 endDelimiter()),
             body(),
             new Action<BaseTemplate>() {
@@ -564,17 +558,14 @@ public class Parser extends BaseParser<BaseTemplate> {
   }
 
   @Label("else")
-  Rule elseSection() {
+  Rule elseKey() {
     return FirstOf("else", "^");
   }
 
   @Label("start-block")
-  Rule blockStart(final char type, final Var<Token> name,
-      final Var<Boolean> inverted, final List<Object> params,
+  Rule blockStart(final Var<Token> name, final List<Object> params,
       final Map<String, Object> hash) {
     return Sequence(
-        startDelimiter(), type, inverted.set(matchedChar() == '^'),
-        spacing(),
         name.get().position(position()),
         qualifiedId(), name.get().text(match()),
         spacing(),
@@ -684,7 +675,7 @@ public class Parser extends BaseParser<BaseTemplate> {
   @MemoMismatches
   @Label("id")
   Rule id() {
-    return Sequence(TestNot(startDelimiter()), TestNot(elseSection()),
+    return Sequence(TestNot(startDelimiter()), TestNot(elseKey()),
         nameStart(), ZeroOrMore(idSuffix()));
   }
 
@@ -788,7 +779,7 @@ public class Parser extends BaseParser<BaseTemplate> {
   }
 
   boolean sync() {
-    List<BaseTemplate> currentLine = this.line;
+    List<BaseTemplate> currentLine = line;
     if (!onlyWhites) {
       boolean ignore = true;
       for (BaseTemplate template : currentLine) {
@@ -823,9 +814,11 @@ public class Parser extends BaseParser<BaseTemplate> {
 
   @DontLabel
   Rule comment() {
-    return Sequence(startDelimiter(), '!',
+    return Sequence(
+        '!',
         ZeroOrMore(TestNot(endDelimiter()), ANY),
-        endDelimiter(), new Action<BaseTemplate>() {
+        endDelimiter(),
+        new Action<BaseTemplate>() {
           @Override
           public boolean run(final Context<BaseTemplate> context) {
             onlyWhites = false;
