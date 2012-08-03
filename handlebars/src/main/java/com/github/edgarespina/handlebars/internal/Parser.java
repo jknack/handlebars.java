@@ -727,7 +727,8 @@ public class Parser extends BaseParser<BaseTemplate> {
   @MemoMismatches
   @Label("boolean")
   Rule bool(final Var<Object> var) {
-    return Sequence(FirstOf(String("true"), String("false")), var.set(match()));
+    return Sequence(FirstOf(String("true"), String("false")),
+        var.set(Boolean.valueOf(match())));
   }
 
   @MemoMismatches
@@ -739,13 +740,18 @@ public class Parser extends BaseParser<BaseTemplate> {
 
   @Label("ignore")
   Rule spacing() {
-    return ZeroOrMore(FirstOf(
+    return ZeroOrMore(spaces());
+  }
+
+  @Label("ignore")
+  Rule spaces() {
+    return FirstOf(
         // whitespace
         spaceNoAction(),
         // nl
         nlNoAction(),
         // Comment
-        comment()));
+        comment());
   }
 
   @Label("ignore")
