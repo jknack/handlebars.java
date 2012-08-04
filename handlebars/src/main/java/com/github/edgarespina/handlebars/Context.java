@@ -99,7 +99,7 @@ public final class Context {
      * @param model The model data.
      */
     private Builder(final Context parent, final Object model) {
-      this.context = Context.child(parent, model);
+      context = Context.child(parent, model);
     }
 
     /**
@@ -108,7 +108,7 @@ public final class Context {
      * @param model The model data.
      */
     private Builder(final Object model) {
-      this.context = Context.root(model);
+      context = Context.root(model);
     }
 
     /**
@@ -218,7 +218,7 @@ public final class Context {
    * Creates a new context.
    *
    * @param model The target value. Resolved as '.' or 'this' inside
-   *        templates. Required.
+   *          templates. Required.
    */
   private Context(final Object model) {
     if (model instanceof Context) {
@@ -232,7 +232,7 @@ public final class Context {
    * Creates a root context.
    *
    * @param model The target value. Resolved as '.' or 'this' inside
-   *        templates. Required.
+   *          templates. Required.
    * @return A root context.
    */
   private static Context root(final Object model) {
@@ -249,7 +249,7 @@ public final class Context {
    *
    * @param parent The parent context. Required.
    * @param model The target value. Resolved as '.' or 'this' inside
-   *        templates. Required.
+   *          templates. Required.
    * @return A child context.
    */
   private static Context child(final Context parent, final Object model) {
@@ -321,9 +321,12 @@ public final class Context {
    * @return The value associated to the given key or <code>null</code> if no
    *         value is found.
    */
-  public Object get(final Object key) {
+  public Object get(final String key) {
     if (".".equals(key) || "this".equals(key)) {
       return model;
+    }
+    if (key.startsWith("../")) {
+      return parent == null ? null : parent.get(key.substring("../".length()));
     }
     String[] path = toPath(key);
     Object value = get(path);
@@ -339,13 +342,13 @@ public final class Context {
   }
 
   /**
-   * Look for the speficied key in an external context.
+   * Look for the specified key in an external context.
    *
    * @param external The external context.
    * @param key The associated key.
    * @return The associated value or null if not found.
    */
-  private Object get(final Context external, final Object key) {
+  private Object get(final Context external, final String key) {
     if (external != null) {
       return external.get(key);
     }
@@ -358,8 +361,8 @@ public final class Context {
    * @param key The property's name.
    * @return A path representation of the property (array based).
    */
-  private String[] toPath(final Object key) {
-    StringTokenizer tokenizer = new StringTokenizer(key.toString(), ".");
+  private String[] toPath(final String key) {
+    StringTokenizer tokenizer = new StringTokenizer(key, ".");
     int len = tokenizer.countTokens();
     if (len == 1) {
       return new String[] {key.toString() };
@@ -447,7 +450,7 @@ public final class Context {
    */
   private void setResolver(final ValueResolver resolver) {
     this.resolver = resolver;
-    this.extendedContext.resolver = resolver;
+    extendedContext.resolver = resolver;
   }
 
   @Override

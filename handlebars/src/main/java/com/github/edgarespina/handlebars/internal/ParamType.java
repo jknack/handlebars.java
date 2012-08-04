@@ -1,14 +1,10 @@
 /**
  * Copyright (c) 2012 Edgar Espina
- *
  * This file is part of Handlebars.java.
- *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * http://www.apache.org/licenses/LICENSE-2.0
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -20,7 +16,6 @@ package com.github.edgarespina.handlebars.internal;
 import java.util.EnumSet;
 
 import com.github.edgarespina.handlebars.Context;
-
 
 /**
  * A strategy for parameter type resolver.
@@ -105,7 +100,7 @@ enum ParamType {
 
     @Override
     Object doParse(final Context scope, final Object param) {
-      return scope.get(param);
+      return scope.get((String) param);
     }
   };
 
@@ -118,7 +113,7 @@ enum ParamType {
   abstract boolean apply(Object param);
 
   /**
-   * Parse the canidate param.
+   * Parse the candidate param.
    *
    * @param context The context.
    * @param param The candidate param.

@@ -1,14 +1,10 @@
 /**
  * Copyright (c) 2012 Edgar Espina
- *
  * This file is part of Handlebars.java.
- *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * http://www.apache.org/licenses/LICENSE-2.0
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -273,5 +269,37 @@ public class ContextTest {
             .compile("{{#foo}}{{title}} {{#bar}}{{title}}{{/bar}}{{/foo}}");
 
     assertEquals("foo ", template.apply(context));
+  }
+
+  @Test
+  public void paths() throws IOException {
+    Handlebars handlebars = new Handlebars();
+
+    Map<String, Object> bar = new HashMap<String, Object>();
+    bar.put("title", "bar");
+
+    Map<String, Object> foo = new HashMap<String, Object>();
+    foo.put("bar", bar);
+    foo.put("title", "foo");
+
+    Map<String, Object> context = new HashMap<String, Object>();
+    context.put("foo", foo);
+    context.put("title", "root");
+
+    assertEquals("bar",
+        handlebars.compile("{{#foo}}{{#bar}}{{title}}{{/bar}}{{/foo}}")
+            .apply(context));
+
+    assertEquals("foo",
+        handlebars.compile("{{#foo}}{{#bar}}{{../title}}{{/bar}}{{/foo}}")
+            .apply(context));
+
+    assertEquals("root",
+        handlebars.compile("{{#foo}}{{#bar}}{{../../title}}{{/bar}}{{/foo}}")
+            .apply(context));
+
+    assertEquals("",
+        handlebars.compile("{{#foo}}{{#bar}}{{../../../title}}{{/bar}}{{/foo}}")
+            .apply(context));
   }
 }

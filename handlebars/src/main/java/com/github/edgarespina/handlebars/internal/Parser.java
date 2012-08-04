@@ -668,6 +668,8 @@ public class Parser extends BaseParser<BaseTemplate> {
   @Label("id")
   Rule qualifiedId() {
     return FirstOf(
+        // ../id
+        Sequence(dot(), dot(), '/', qualifiedId()),
         dot(),
         Sequence(id(), ZeroOrMore(dot(), id())));
   }

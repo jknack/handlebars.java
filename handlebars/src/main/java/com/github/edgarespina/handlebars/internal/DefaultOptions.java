@@ -1,14 +1,10 @@
 /**
  * Copyright (c) 2012 Edgar Espina
- *
  * This file is part of Handlebars.java.
- *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * http://www.apache.org/licenses/LICENSE-2.0
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -84,7 +80,7 @@ class DefaultOptions extends Options {
       final Map<String, Object> hash) {
     super(handlebars, context, fn, inverse == null ? EMPTY : inverse, params,
         hash);
-    this.storage = context.storage();
+    storage = context.storage();
   }
 
   @Override
@@ -146,7 +142,7 @@ class DefaultOptions extends Options {
 
   @Override
   public CharSequence apply(final Template template) throws IOException {
-    return apply(template, this.context);
+    return apply(template, context);
   }
 
   @Override
@@ -154,9 +150,10 @@ class DefaultOptions extends Options {
       throws IOException {
 
     final CharSequence result;
-    if (context == this.context || context instanceof Context) {
+    if (context == this.context.model() || context == this.context
+        || context instanceof Context) {
       // Same context or the param is a context already.
-      result = template.apply(context);
+      result = template.apply(this.context);
     } else {
       // Expand the provided context.
       result = template.apply(Context.newContext(this.context, context));
@@ -178,8 +175,8 @@ class DefaultOptions extends Options {
    * Cleanup resources.
    */
   public void destroy() {
-    this.hash.clear();
-    this.storage = null;
+    hash.clear();
+    storage = null;
   }
 
 }
