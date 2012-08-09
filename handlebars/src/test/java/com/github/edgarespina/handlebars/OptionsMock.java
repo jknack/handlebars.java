@@ -30,6 +30,11 @@ public class OptionsMock extends Options {
   }
 
   @Override
+  public Context wrap(final Object model) {
+    return null;
+  }
+
+  @Override
   public CharSequence fn(final Object context) throws IOException {
     return null;
   }

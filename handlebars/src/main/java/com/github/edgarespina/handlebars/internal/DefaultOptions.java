@@ -148,17 +148,21 @@ class DefaultOptions extends Options {
   @Override
   public CharSequence apply(final Template template, final Object context)
       throws IOException {
+    return template.apply(wrap(context));
+  }
 
-    final CharSequence result;
-    if (context == this.context.model() || context == this.context
-        || context instanceof Context) {
-      // Same context or the param is a context already.
-      result = template.apply(this.context);
-    } else {
-      // Expand the provided context.
-      result = template.apply(Context.newContext(this.context, context));
+  @Override
+  public Context wrap(final Object model) {
+    if (model == context) {
+      return context;
     }
-    return result;
+    if (model == context.model()) {
+      return context;
+    }
+    if (model instanceof Context) {
+      return (Context) model;
+    }
+    return Context.newContext(context, model);
   }
 
   /**
