@@ -153,7 +153,7 @@ class DefaultOptions extends Options {
     if (context == this.context.model() || context == this.context
         || context instanceof Context) {
       // Same context or the param is a context already.
-      result = template.apply(this.context);
+      result = template.apply(context);
     } else {
       // Expand the provided context.
       result = template.apply(Context.newContext(this.context, context));
