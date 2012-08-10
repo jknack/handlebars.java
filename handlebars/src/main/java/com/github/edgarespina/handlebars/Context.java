@@ -180,9 +180,14 @@ public final class Context {
   private static final Object NULL = new Object();
 
   /**
-   * Array access expression.
+   * Property access expression.
    */
-  private static final Pattern IDX = Pattern.compile("\\[((\\d)+)\\]");
+  private static final Pattern IDX = Pattern.compile("\\[((.)+)\\]");
+
+  /**
+   * Index access expression.
+   */
+  private static final Pattern INT = Pattern.compile("\\d+");
 
   /**
    * The qualified name for partials. Internal use.
@@ -419,7 +424,13 @@ public final class Context {
     // array or list access?
     Matcher matcher = IDX.matcher(expression);
     if (matcher.matches()) {
-      return elementAt(current, Integer.parseInt(matcher.group(1)));
+      String idx = matcher.group(1);
+      if (INT.matcher(idx).matches()) {
+        // Integer base access
+        return elementAt(current, Integer.parseInt(idx));
+      }
+      // String base access
+      return resolver.resolve(current, idx);
     }
     return resolver.resolve(current, expression);
   }

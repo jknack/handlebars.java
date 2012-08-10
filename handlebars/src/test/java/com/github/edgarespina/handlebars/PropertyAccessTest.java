@@ -22,7 +22,7 @@ import java.util.Map;
 
 import org.junit.Test;
 
-public class ArrayAccessTest {
+public class PropertyAccessTest {
 
   @Test
   public void arrayAccess() throws IOException {
@@ -71,5 +71,19 @@ public class ArrayAccessTest {
     Map<String, Object> context = new HashMap<String, Object>();
     context.put("array", new String[] {"" });
     assertEquals("", template.apply(context));
+  }
+
+  @Test
+  public void notJavaNameAccess() throws IOException {
+    Handlebars handlebars = new Handlebars();
+    Map<String, Object> context = new HashMap<String, Object>();
+    context.put("1foo", "foo");
+    context.put("'foo'", "foo");
+    context.put("foo or bar", "foo");
+
+    assertEquals("foo", handlebars.compile("{{this.[1foo]}}").apply(context));
+    assertEquals("foo", handlebars.compile("{{this.['foo']}}").apply(context));
+    assertEquals("foo", handlebars.compile("{{this.[foo or bar]}}")
+        .apply(context));
   }
 }

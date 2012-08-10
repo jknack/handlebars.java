@@ -141,7 +141,7 @@ public class Parser extends BaseParser<BaseTemplate> {
      * @param rule the parser rule
      * @param errorIndex the index of the error to report
      * @param inner another MatchHandler to delegate the actual match handling
-     *          to, can be null
+     *        to, can be null
      */
     public SafeErrorReportingParseRunner(final Rule rule, final int errorIndex,
         final MatchHandler inner) {
@@ -684,13 +684,17 @@ public class Parser extends BaseParser<BaseTemplate> {
   @MemoMismatches
   @Label("id")
   Rule idSuffix() {
-    return FirstOf(arrayAccess(), nameEnd());
+    return FirstOf(propertyAccess(), nameEnd());
   }
 
   @MemoMismatches
-  Rule arrayAccess() {
-    return Sequence(dot(), "[", spacing(), OneOrMore(digit())
-        .label("idx"), spacing(), "]");
+  Rule propertyAccess() {
+    return Sequence(dot(), "[", spacing(), idx(), spacing(), "]");
+  }
+
+  @MemoMismatches
+  Rule idx() {
+    return OneOrMore(TestNot("]"), ANY);
   }
 
   @MemoMismatches
