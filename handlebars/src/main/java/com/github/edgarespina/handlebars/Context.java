@@ -27,15 +27,15 @@ import com.github.edgarespina.handlebars.context.JavaBeanValueResolver;
 import com.github.edgarespina.handlebars.context.MapValueResolver;
 
 /**
- * Mustache/Handlabars are contextual template engines. This class represent the
+ * Mustache/Handlebars are contextual template engines. This class represent the
  * 'context stack' of a template.
  * <ul>
  * <li>Objects and hashes should be pushed onto the context stack.
  * <li>All elements on the context stack should be accessible.
  * <li>Multiple sections per template should be permitted.
- * <li>Failed context lookups should be considered falsey.
+ * <li>Failed context lookups should be considered falsy.
  * <li>Dotted names should be valid for Section tags.
- * <li>Dotted names that cannot be resolved should be considered falsey.
+ * <li>Dotted names that cannot be resolved should be considered falsy.
  * <li>Dotted Names - Context Precedence: Dotted names should be resolved
  * against former resolutions.
  * </ul>
@@ -218,7 +218,7 @@ public final class Context {
    * Creates a new context.
    *
    * @param model The target value. Resolved as '.' or 'this' inside
-   *          templates. Required.
+   *        templates. Required.
    */
   private Context(final Object model) {
     if (model instanceof Context) {
@@ -232,7 +232,7 @@ public final class Context {
    * Creates a root context.
    *
    * @param model The target value. Resolved as '.' or 'this' inside
-   *          templates. Required.
+   *        templates. Required.
    * @return A root context.
    */
   private static Context root(final Object model) {
@@ -249,7 +249,7 @@ public final class Context {
    *
    * @param parent The parent context. Required.
    * @param model The target value. Resolved as '.' or 'this' inside
-   *          templates. Required.
+   *        templates. Required.
    * @return A child context.
    */
   private static Context child(final Context parent, final Object model) {
@@ -349,10 +349,7 @@ public final class Context {
    * @return The associated value or null if not found.
    */
   private Object get(final Context external, final String key) {
-    if (external != null) {
-      return external.get(key);
-    }
-    return null;
+    return external == null ? null : external.get(key);
   }
 
   /**
@@ -388,7 +385,9 @@ public final class Context {
    */
   private Object get(final String[] path) {
     Object current = model;
-    for (int i = 0; i < path.length - 1; i++) {
+    // Resolve 'this' to the current model.
+    int start = path[0].startsWith("this") ? 1 : 0;
+    for (int i = start; i < path.length - 1; i++) {
       current = resolve(current, path[i]);
       if (current == null) {
         return null;

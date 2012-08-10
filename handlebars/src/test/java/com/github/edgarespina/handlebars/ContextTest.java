@@ -299,7 +299,61 @@ public class ContextTest {
             .apply(context));
 
     assertEquals("",
-        handlebars.compile("{{#foo}}{{#bar}}{{../../../title}}{{/bar}}{{/foo}}")
+        handlebars
+            .compile("{{#foo}}{{#bar}}{{../../../title}}{{/bar}}{{/foo}}")
             .apply(context));
   }
+
+  @Test
+  public void nameConflict$() throws IOException {
+    Handlebars handlebars = new Handlebars();
+
+    Map<String, Object> inner = new HashMap<String, Object>();
+    inner.put("name", "an inner attribute");
+
+    Map<String, Object> context = new HashMap<String, Object>();
+    context.put("name", "an attribute");
+    context.put("inner", inner);
+
+    // simple
+    assertEquals("an attribute", handlebars.compile("{{name}}").apply(context));
+
+    // qualified
+    assertEquals("an attribute",
+        handlebars.compile("{{this.name}}").apply(context));
+
+    // simple inner
+    assertEquals("an inner attribute",
+        handlebars.compile("{{#inner}}{{name}}{{/inner}}").apply(context));
+
+    // qualified inner
+    assertEquals("an inner attribute",
+        handlebars.compile("{{#inner}}{{this.name}}{{/inner}}").apply(context));
+
+    // A name conflict
+    handlebars.registerHelper("name", new Helper<Object>() {
+      @Override
+      public CharSequence apply(final Object context, final Options options)
+          throws IOException {
+        return "helper response";
+      }
+    });
+
+    // helper
+    assertEquals("helper response",
+        handlebars.compile("{{name}}").apply(context));
+
+    // attribute
+    assertEquals("an attribute",
+        handlebars.compile("{{this.name}}").apply(context));
+
+    // simple inner helper
+    assertEquals("helper response",
+        handlebars.compile("{{#inner}}{{name}}{{/inner}}").apply(context));
+
+    // qualified inner attribute
+    assertEquals("an inner attribute",
+        handlebars.compile("{{#inner}}{{this.name}}{{/inner}}").apply(context));
+  }
+
 }
