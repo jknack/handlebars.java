@@ -9,10 +9,10 @@
 
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.github.jknack</groupId>
-  <artifactId>handlebars-json</artifactId>
+  <artifactId>handlebars-jackson2</artifactId>
 
-  <name>A Jackson 1.x helper</name>
-  <description>A JSON Helper base on Jackson</description>
+  <name>A Jackson 2.x helper</name>
+  <description>A JSON Helper base on Jackson2</description>
 
   <dependencies>
     <dependency>
