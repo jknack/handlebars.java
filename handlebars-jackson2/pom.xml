@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
   <parent>
     <groupId>com.github.jknack</groupId>
@@ -9,10 +10,10 @@
 
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.github.jknack</groupId>
-  <artifactId>handlebars-json</artifactId>
+  <artifactId>handlebars-jackson2</artifactId>
 
-  <name>A Jackson 1.x helper</name>
-  <description>A JSON Helper base on Jackson</description>
+  <name>A Jackson 2.x helper</name>
+  <description>A JSON Helper base on Jackson2</description>
 
   <dependencies>
     <dependency>
@@ -22,8 +23,8 @@
     </dependency>
 
     <dependency>
-      <groupId>org.codehaus.jackson</groupId>
-      <artifactId>jackson-mapper-asl</artifactId>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
     </dependency>
 
     <!-- Servlet API -->

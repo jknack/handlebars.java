@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.github.jknack</groupId>
@@ -16,6 +17,7 @@
     <module>handlebars</module>
     <module>handlebars-springmvc</module>
     <module>handlebars-json</module>
+    <module>handlebars-jackson2</module>
     <module>handlebars-markdown</module>
   </modules>
 
@@ -90,12 +92,21 @@
         <scope>provided</scope>
       </dependency>
 
+      <!-- Jackson 1.x -->
       <dependency>
         <groupId>org.codehaus.jackson</groupId>
         <artifactId>jackson-mapper-asl</artifactId>
-        <version>1.9.7</version>
+        <version>${jackson-version}</version>
       </dependency>
 
+      <!-- Jackson 2.x -->
+      <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-databind</artifactId>
+        <version>${jackson2-version}</version>
+      </dependency>
+
+      <!-- Markdown -->
       <dependency>
         <groupId>org.pegdown</groupId>
         <artifactId>pegdown</artifactId>
@@ -296,5 +307,7 @@
   <properties>
     <!-- Encoding UTF-8 -->
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <jackson2-version>2.0.5</jackson2-version>
+    <jackson-version>1.9.9</jackson-version>
   </properties>
 </project>
