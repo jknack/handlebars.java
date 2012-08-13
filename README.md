@@ -383,8 +383,9 @@ Maven:
    <artifactId>handlebars-jackson2</artifactId>
    <version>${handlebars-version}</version>
  </dependency>
+```
 
-Similar to Jackson1.x, except for the helper's name: ```Jackson2Helper```
+Similar to Jackson1.x, except for the helper's name: Jackson2Helper
 
 ## Markdown
 
