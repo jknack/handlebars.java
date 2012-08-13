@@ -86,7 +86,7 @@ public class Jackson2HelperTest {
     mapper.configure(MapperFeature.DEFAULT_VIEW_INCLUSION, false);
 
     handlebars.registerHelper("@json",
-        new Jackson2Helper(mapper).alias("myView", Public.class));
+        new Jackson2Helper(mapper).viewAlias("myView", Public.class));
 
     Template template =
         handlebars

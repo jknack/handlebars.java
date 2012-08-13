@@ -341,7 +341,7 @@ Context context = Context
 ```
 
 # Modules
-## JSON
+## Jackson 1.x
 
 Maven:
 ```xml
@@ -350,6 +350,7 @@ Maven:
    <artifactId>handlebars-json</artifactId>
    <version>${handlebars-version}</version>
  </dependency>
+
 ```
 Usage:
 
@@ -357,11 +358,33 @@ Usage:
  handlebars.registerHelper("json", new JSONHelper());
 ```
 ```
- {{json context [view="fullyQualifiedClassName"]}}
+ {{json context [view="foo.MyFullyQualifiedClassName"]}}
 ```
+
+Alternative:
+```java
+ handlebars.registerHelper("json", new JSONHelper().viewAlias("myView",
+   foo.MyFullyQualifiedClassName.class);
+```
+```
+ {{json context [view="myView"]}}
+```
+
 context: An object, may be null.
 
 view: The name of the [Jackson View](http://wiki.fasterxml.com/JacksonJsonViews). Optional.
+
+## Jackson 2.x
+
+Maven:
+```xml
+ <dependency>
+   <groupId>com.github.jknack</groupId>
+   <artifactId>handlebars-jackson2</artifactId>
+   <version>${handlebars-version}</version>
+ </dependency>
+
+Similar to Jackson1.x, except for the helper's name: ```Jackson2Helper```
 
 ## Markdown
 

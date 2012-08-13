@@ -52,7 +52,6 @@ import com.fasterxml.jackson.databind.ObjectWriter;
  *  {{json model view="foo.MyView"}}
  *
  * </pre>
- *
  * <p>
  * View alias usage:
  * </p>
@@ -62,7 +61,7 @@ import com.fasterxml.jackson.databind.ObjectWriter;
  *  Handlebars hbs = new Handlebars();
  *
  *  hbs.registerHelper("json", Jackson2Helper.INSTANCE
- *    .alias("myView", foo.MyView.class));
+ *    .viewAlias("myView", foo.MyView.class));
  *
  *  ...
  *
@@ -137,7 +136,8 @@ public class Jackson2Helper implements Helper<Object> {
    * @param viewClass The view class. Required.
    * @return This helper.
    */
-  public Jackson2Helper alias(final String alias, final Class<?> viewClass) {
+  public Jackson2Helper viewAlias(final String alias,
+      final Class<?> viewClass) {
     this.alias.put(notEmpty(alias, "A view alias is required."),
         notNull(viewClass, "A view class is required."));
     return this;

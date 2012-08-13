@@ -62,7 +62,7 @@ import org.codehaus.jackson.map.ObjectWriter;
  *  Handlebars hbs = new Handlebars();
  *
  *  hbs.registerHelper("json", JSONHelper.INSTANCE
- *    .alias("myView", foo.MyView.class));
+ *    .viewAlias("myView", foo.MyView.class));
  *
  *  ...
  *
@@ -137,7 +137,7 @@ public class JSONHelper implements Helper<Object> {
    * @param viewClass The view class. Required.
    * @return This helper.
    */
-  public JSONHelper alias(final String alias, final Class<?> viewClass) {
+  public JSONHelper viewAlias(final String alias, final Class<?> viewClass) {
     this.alias.put(notEmpty(alias, "A view alias is required."),
         notNull(viewClass, "A view class is required."));
     return this;

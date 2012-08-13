@@ -86,7 +86,7 @@ public class JSONHelperTest {
     mapper.configure(Feature.DEFAULT_VIEW_INCLUSION, false);
 
     handlebars.registerHelper("@json",
-        new JSONHelper(mapper).alias("myView", Public.class));
+        new JSONHelper(mapper).viewAlias("myView", Public.class));
 
     Template template =
         handlebars
