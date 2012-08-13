@@ -385,7 +385,7 @@ Maven:
  </dependency>
 ```
 
-Similar to Jackson1.x, except for the helper's name: Jackson2Helper
+Similar to Jackson1.x, except for the name of the helper: ```Jackson2Helper```
 
 ## Markdown
 
