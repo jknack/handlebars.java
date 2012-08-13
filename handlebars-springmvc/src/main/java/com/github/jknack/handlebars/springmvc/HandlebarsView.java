@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.edgarespina.handlebars.springmvc;
+package com.github.jknack.handlebars.springmvc;
 
 import java.util.Map;
 

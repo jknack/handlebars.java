@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.edgarespina.handlebars.springmvc;
+package com.github.jknack.handlebars.springmvc;
 
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expect;
@@ -30,6 +30,8 @@ import org.junit.Test;
 
 import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Template;
+import com.github.jknack.handlebars.springmvc.HandlebarsView;
+import com.github.jknack.handlebars.springmvc.HandlebarsViewResolver;
 
 /**
  * Unit test for {@link HandlebarsViewResolver}.

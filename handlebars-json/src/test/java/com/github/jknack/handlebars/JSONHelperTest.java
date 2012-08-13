@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.edgarespina.handlebars;
+package com.github.jknack.handlebars;
 
 import static org.junit.Assert.assertEquals;
 
@@ -24,9 +24,6 @@ import java.io.IOException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.SerializationConfig;
 import org.junit.Test;
-
-import com.github.jknack.handlebars.Handlebars;
-import com.github.jknack.handlebars.Template;
 
 /**
  * Unit test for {@link JSONHelper}.
@@ -57,7 +54,7 @@ public class JSONHelperTest {
 
     Template template =
         handlebars
-            .compile("{{@json this view=\"com.github.edgarespina.handlebars.Blog$Views$Public\"}}");
+            .compile("{{@json this view=\"com.github.jknack.handlebars.Blog$Views$Public\"}}");
 
     CharSequence result = template.apply(new Blog("First Post", "..."));
 
@@ -76,7 +73,7 @@ public class JSONHelperTest {
 
     Template template =
         handlebars
-            .compile("{{@json this view=\"com.github.edgarespina.handlebars.Blog$Views$Public\"}}");
+            .compile("{{@json this view=\"com.github.jknack.handlebars.Blog$Views$Public\"}}");
 
     CharSequence result = template.apply(new Blog("First Post", "..."));
 

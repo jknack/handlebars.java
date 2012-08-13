@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.edgarespina.handlebars;
+package com.github.jknack.handlebars;
 
 import static org.parboiled.common.Preconditions.checkNotNull;
 
@@ -23,10 +23,6 @@ import java.io.IOException;
 
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.ObjectWriter;
-
-import com.github.jknack.handlebars.Handlebars;
-import com.github.jknack.handlebars.Helper;
-import com.github.jknack.handlebars.Options;
 
 /**
  * Format the context object as JSON.
@@ -52,7 +48,7 @@ public class JSONHelper implements Helper<Object> {
    * @param objectMapper The object's mapper. Required.
    */
   public JSONHelper(final ObjectMapper objectMapper) {
-    this.mapper = checkNotNull(objectMapper, "The object mapper is required.");
+    mapper = checkNotNull(objectMapper, "The object mapper is required.");
   }
 
   /**

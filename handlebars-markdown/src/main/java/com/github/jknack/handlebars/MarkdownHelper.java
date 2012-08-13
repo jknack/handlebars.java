@@ -15,34 +15,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.edgarespina.handlebars;
+package com.github.jknack.handlebars;
 
-public class Comment {
-  private String author;
+import java.io.IOException;
 
-  private String comment;
+import org.pegdown.PegDownProcessor;
 
-  public Comment(final String author, final String comment) {
-    this.author = author;
-    this.comment = comment;
+/**
+ * A markdown helper.
+ *
+ * @author edgar.espina
+ * @since 0.1.0
+ */
+public class MarkdownHelper implements Helper<Object> {
+
+  @Override
+  public CharSequence apply(final Object context, final Options options)
+      throws IOException {
+    if (context == null) {
+      return "";
+    }
+    String markdown = context.toString();
+    PegDownProcessor processor = new PegDownProcessor();
+    return new Handlebars.SafeString(processor.markdownToHtml(markdown));
   }
 
-  public Comment() {
-  }
-
-  public String getAuthor() {
-    return author;
-  }
-
-  public String getComment() {
-    return comment;
-  }
-
-  public void setAuthor(final String author) {
-    this.author = author;
-  }
-
-  public void setComment(final String comment) {
-    this.comment = comment;
-  }
 }

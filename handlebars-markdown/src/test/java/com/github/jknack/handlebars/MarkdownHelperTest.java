@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.edgarespina.handlebars;
+package com.github.jknack.handlebars;
 
 import static org.junit.Assert.assertEquals;
 
@@ -24,6 +24,7 @@ import java.io.IOException;
 import org.junit.Test;
 
 import com.github.jknack.handlebars.Handlebars;
+import com.github.jknack.handlebars.MarkdownHelper;
 import com.github.jknack.handlebars.Template;
 
 /**
