@@ -22,8 +22,8 @@ import java.util.Collection;
 
 import org.junit.runners.Parameterized.Parameters;
 
-import com.github.edgarespina.handlebars.Lambda;
-import com.github.edgarespina.handlebars.Template;
+import com.github.jknack.handlebars.Lambda;
+import com.github.jknack.handlebars.Template;
 
 public class LambdasTest extends SpecTest {
 

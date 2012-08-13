@@ -10,11 +10,11 @@ Handlebars provides the power necessary to let you build semantic templates effe
  In general, the syntax of **Handlebars** templates is a superset of [Mustache](http://mustache.github.com) templates. For basic syntax, check out the [Mustache manpage](http://mustache.github.com).
 
 ## Maven
- Current version: **0.3.1**
+ Current version: **0.4.0**
 
 ```xml
   <dependency>
-    <groupId>com.github.edgarespina</groupId>
+    <groupId>com.github.jknack</groupId>
     <artifactId>handlebars</artifactId>
     <version>${handlebars-version}</version>
   </dependency>
@@ -346,7 +346,7 @@ Context context = Context
 Maven:
 ```xml
  <dependency>
-   <groupId>com.github.edgarespina</groupId>
+   <groupId>com.github.jknack</groupId>
    <artifactId>handlebars-json</artifactId>
    <version>${handlebars-version}</version>
  </dependency>
@@ -368,7 +368,7 @@ view: The name of the [Jackson View](http://wiki.fasterxml.com/JacksonJsonViews)
 Maven:
 ```xml
  <dependency>
-   <groupId>com.github.edgarespina</groupId>
+   <groupId>com.github.jknack</groupId>
    <artifactId>handlebars-markdown</artifactId>
    <version>${handlebars-version}</version>
  </dependency>
@@ -388,7 +388,7 @@ context: An object or null. Required.
 Maven:
 ```xml
  <dependency>
-   <groupId>com.github.edgarespina</groupId>
+   <groupId>com.github.jknack</groupId>
    <artifactId>handlebars-springmvc</artifactId>
    <version>${handlebars-version}</version>
  </dependency>
@@ -397,7 +397,7 @@ Maven:
 Checkout the HandlebarsViewResolver.
 
 ## String Helpers
- Functions like abbreviate, capitalize, join, dateFormat, yesno, etc., are available from [StringHelpers] (https://github.com/edgarespina/handlebars.java/blob/master/handlebars/src/main/java/com/github/edgarespina/handlebars/StringHelpers.java).
+ Functions like abbreviate, capitalize, join, dateFormat, yesno, etc., are available from [StringHelpers] (https://github.com/jknack/handlebars.java/blob/master/handlebars/src/main/java/com/github/jknack/handlebars/StringHelpers.java).
  
 ### Usage:
 ```java
@@ -439,7 +439,7 @@ Checkout the HandlebarsViewResolver.
 ## Want to contribute?
 * Fork the project on Github.
 * Wandering what to work on? See task/bug list and pick up something you would like to work on.
-* Create an issue or fix one from [issues list](https://github.com/edgarespina/handlebars.java/issues).
+* Create an issue or fix one from [issues list](https://github.com/jknack/handlebars.java/issues).
 * If you know the answer to a question posted to our [mailing list](https://groups.google.com/forum/#!forum/handlebarsjava) - don't hesitate to write a reply.
 * Share your ideas or ask questions on [mailing list](https://groups.google.com/forum/#!forum/handlebarsjava) - don't hesitate to write a reply - that helps us improve javadocs/FAQ.
 * If you miss a particular feature - browse or ask on the [mailing list](https://groups.google.com/forum/#!forum/handlebarsjava) - don't hesitate to write a reply, show us a sample code and describe the problem.
@@ -450,7 +450,7 @@ Checkout the HandlebarsViewResolver.
 ## Help and Support
  [Help and discussion](https://groups.google.com/forum/#!forum/handlebarsjava)
 
- [Bugs, Issues and Features](https://github.com/edgarespina/handlebars.java/issues)
+ [Bugs, Issues and Features](https://github.com/jknack/handlebars.java/issues)
 
 ## Related Projects
  * [Handlebars.js](http://handlebarsjs.com/)
@@ -459,6 +459,7 @@ Checkout the HandlebarsViewResolver.
 
 ## Credits
  * [Mathias](https://github.com/sirthias): For the [parboiled](https://github.com/sirthias/parboiled) PEG library
+ * [Handlebars.js](https://github.com/wycats/handlebars.js/)
 
 ## License
 [Apache License 2](http://www.apache.org/licenses/LICENSE-2.0.html)

@@ -30,7 +30,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.junit.Test;
 
-import com.github.edgarespina.handlebars.Template;
+import com.github.jknack.handlebars.Template;
 
 /**
  * Unit test for {@link HandlebarsView}.

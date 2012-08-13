@@ -28,8 +28,8 @@ import java.net.URI;
 
 import org.junit.Test;
 
-import com.github.edgarespina.handlebars.Handlebars;
-import com.github.edgarespina.handlebars.Template;
+import com.github.jknack.handlebars.Handlebars;
+import com.github.jknack.handlebars.Template;
 
 /**
  * Unit test for {@link HandlebarsViewResolver}.

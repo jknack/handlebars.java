@@ -23,7 +23,7 @@ import java.util.List;
 
 import org.junit.runners.Parameterized.Parameters;
 
-import com.github.edgarespina.handlebars.TemplateNotFoundTest;
+import com.github.jknack.handlebars.TemplateNotFoundTest;
 
 /**
  * There are 4 tests what don't work as the spec says:

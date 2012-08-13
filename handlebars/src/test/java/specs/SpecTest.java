@@ -34,11 +34,11 @@ import org.yaml.snakeyaml.TypeDescription;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
 
-import com.github.edgarespina.handlebars.Handlebars;
-import com.github.edgarespina.handlebars.HandlebarsException;
-import com.github.edgarespina.handlebars.Template;
-import com.github.edgarespina.handlebars.custom.Blog;
-import com.github.edgarespina.handlebars.custom.Comment;
+import com.github.jknack.handlebars.Handlebars;
+import com.github.jknack.handlebars.HandlebarsException;
+import com.github.jknack.handlebars.Template;
+import com.github.jknack.handlebars.custom.Blog;
+import com.github.jknack.handlebars.custom.Comment;
 
 @RunWith(SpecRunner.class)
 public abstract class SpecTest {

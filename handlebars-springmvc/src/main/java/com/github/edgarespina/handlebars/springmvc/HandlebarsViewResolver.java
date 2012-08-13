@@ -25,9 +25,9 @@ import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.view.AbstractTemplateViewResolver;
 import org.springframework.web.servlet.view.AbstractUrlBasedView;
 
-import com.github.edgarespina.handlebars.Handlebars;
-import com.github.edgarespina.handlebars.Template;
-import com.github.edgarespina.handlebars.TemplateLoader;
+import com.github.jknack.handlebars.Handlebars;
+import com.github.jknack.handlebars.Template;
+import com.github.jknack.handlebars.TemplateLoader;
 
 /**
  * A Handlebars {@link ViewResolver view resolver}.

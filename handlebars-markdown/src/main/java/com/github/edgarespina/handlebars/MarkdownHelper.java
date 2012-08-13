@@ -21,6 +21,10 @@ import java.io.IOException;
 
 import org.pegdown.PegDownProcessor;
 
+import com.github.jknack.handlebars.Handlebars;
+import com.github.jknack.handlebars.Helper;
+import com.github.jknack.handlebars.Options;
+
 /**
  * A markdown helper.
  *
