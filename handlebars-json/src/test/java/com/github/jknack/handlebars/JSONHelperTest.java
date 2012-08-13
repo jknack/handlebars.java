@@ -1,14 +1,10 @@
 /**
  * Copyright (c) 2012 Edgar Espina
- *
  * This file is part of Handlebars.java.
- *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * http://www.apache.org/licenses/LICENSE-2.0
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -22,8 +18,10 @@ import static org.junit.Assert.assertEquals;
 import java.io.IOException;
 
 import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.SerializationConfig;
+import org.codehaus.jackson.map.SerializationConfig.Feature;
 import org.junit.Test;
+
+import com.github.jknack.handlebars.Blog.Views.Public;
 
 /**
  * Unit test for {@link JSONHelper}.
@@ -67,13 +65,50 @@ public class JSONHelperTest {
     Handlebars handlebars = new Handlebars();
 
     ObjectMapper mapper = new ObjectMapper();
-    mapper.configure(SerializationConfig.Feature.DEFAULT_VIEW_INCLUSION, false);
+    mapper.configure(Feature.DEFAULT_VIEW_INCLUSION, false);
 
     handlebars.registerHelper("@json", new JSONHelper(mapper));
 
     Template template =
         handlebars
             .compile("{{@json this view=\"com.github.jknack.handlebars.Blog$Views$Public\"}}");
+
+    CharSequence result = template.apply(new Blog("First Post", "..."));
+
+    assertEquals("{\"title\":\"First Post\"}", result);
+  }
+
+  @Test
+  public void toJSONAliasViewExclusive() throws IOException {
+    Handlebars handlebars = new Handlebars();
+
+    ObjectMapper mapper = new ObjectMapper();
+    mapper.configure(Feature.DEFAULT_VIEW_INCLUSION, false);
+
+    handlebars.registerHelper("@json",
+        new JSONHelper(mapper).alias("myView", Public.class));
+
+    Template template =
+        handlebars
+            .compile("{{@json this view=\"myView\"}}");
+
+    CharSequence result = template.apply(new Blog("First Post", "..."));
+
+    assertEquals("{\"title\":\"First Post\"}", result);
+  }
+
+  @Test(expected = HandlebarsException.class)
+  public void jsonViewNotFound() throws IOException {
+    Handlebars handlebars = new Handlebars();
+
+    ObjectMapper mapper = new ObjectMapper();
+    mapper.configure(Feature.DEFAULT_VIEW_INCLUSION, false);
+
+    handlebars.registerHelper("@json", new JSONHelper(mapper));
+
+    Template template =
+        handlebars
+            .compile("{{@json this view=\"missing.ViewClass\"}}");
 
     CharSequence result = template.apply(new Blog("First Post", "..."));
 
