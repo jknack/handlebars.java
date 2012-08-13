@@ -14,8 +14,11 @@
 package com.github.edgarespina.handlebars;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -40,6 +43,51 @@ public class PropertyAccessTest {
     Map<String, Object> context = new HashMap<String, Object>();
     context.put("list", Arrays.asList("s1", "s2"));
     assertEquals("s2", template.apply(context));
+  }
+
+  @Test
+  public void listArrayIndexOutOfBounds() throws IOException {
+    Handlebars handlebars = new Handlebars();
+    Template template = handlebars.compile("{{list.[10]}}");
+    Map<String, Object> context = new HashMap<String, Object>();
+    context.put("list", Arrays.asList("s1", "s2"));
+    try {
+      assertEquals("s2", template.apply(context));
+      fail("An " + ArrayIndexOutOfBoundsException.class.getName()
+          + " is expected.");
+    } catch (HandlebarsException ex) {
+      assertTrue(ex.getCause() instanceof ArrayIndexOutOfBoundsException);
+    }
+  }
+
+  @Test
+  public void listIndexOutOfBounds() throws IOException {
+    Handlebars handlebars = new Handlebars();
+    Template template = handlebars.compile("{{list.[10]}}");
+    Map<String, Object> context = new HashMap<String, Object>();
+    context.put("list", new ArrayList<String>(Arrays.asList("s1", "s2")));
+    try {
+      assertEquals("s2", template.apply(context));
+      fail("An " + ArrayIndexOutOfBoundsException.class.getName()
+          + " is expected.");
+    } catch (HandlebarsException ex) {
+      assertTrue(ex.getCause() instanceof IndexOutOfBoundsException);
+    }
+  }
+
+  @Test
+  public void arrayIndexOutOfBounds() throws IOException {
+    Handlebars handlebars = new Handlebars();
+    Template template = handlebars.compile("{{list.[10]}}");
+    Map<String, Object> context = new HashMap<String, Object>();
+    context.put("list", new String[] {"s1", "s2" });
+    try {
+      assertEquals("s2", template.apply(context));
+      fail("An " + ArrayIndexOutOfBoundsException.class.getName()
+          + " is expected.");
+    } catch (HandlebarsException ex) {
+      assertTrue(ex.getCause() instanceof ArrayIndexOutOfBoundsException);
+    }
   }
 
   @SuppressWarnings("unchecked")
@@ -80,10 +128,12 @@ public class PropertyAccessTest {
     context.put("1foo", "foo");
     context.put("'foo'", "foo");
     context.put("foo or bar", "foo");
+    context.put("134", "134");
 
     assertEquals("foo", handlebars.compile("{{this.[1foo]}}").apply(context));
     assertEquals("foo", handlebars.compile("{{this.['foo']}}").apply(context));
     assertEquals("foo", handlebars.compile("{{this.[foo or bar]}}")
         .apply(context));
+    assertEquals("134", handlebars.compile("{{this.[134]}}").apply(context));
   }
 }

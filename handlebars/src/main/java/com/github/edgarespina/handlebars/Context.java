@@ -415,6 +415,7 @@ public final class Context {
    * @param expression The access expression.
    * @return The associated value.
    */
+  @SuppressWarnings("rawtypes")
   private Object resolve(final Object current, final String expression) {
     // Null => null
     if (current == null) {
@@ -426,31 +427,19 @@ public final class Context {
     if (matcher.matches()) {
       String idx = matcher.group(1);
       if (INT.matcher(idx).matches()) {
-        // Integer base access
-        return elementAt(current, Integer.parseInt(idx));
+        // It is a number, check if the current value is a index base object.
+        int pos = Integer.parseInt(idx);
+        if (current instanceof List) {
+          return ((List) current).get(pos);
+        } else if (current.getClass().isArray()) {
+          return Array.get(current, pos);
+        }
       }
-      // String base access
+      // It is not a index base object, defaults to string property lookup
+      // (usually not a valid Java identifier)
       return resolver.resolve(current, idx);
     }
     return resolver.resolve(current, expression);
-  }
-
-  /**
-   * Access to the element at the given idx.
-   *
-   * @param current An array or list obejct.
-   * @param idx The index at the array or list.
-   * @return The element at the given position.
-   */
-  @SuppressWarnings("rawtypes")
-  private Object elementAt(final Object current, final int idx) {
-    if (current.getClass().isArray()) {
-      return Array.get(current, idx);
-    } else if (current instanceof List) {
-      return ((List) current).get(idx);
-    }
-    throw new IllegalArgumentException("found: " + current.getClass().getName()
-        + ", expected: 'array' or 'list'");
   }
 
   /**

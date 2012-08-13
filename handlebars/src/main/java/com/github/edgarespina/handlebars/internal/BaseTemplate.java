@@ -90,7 +90,7 @@ abstract class BaseTemplate implements Template {
           filename + ":" + line + ":" + column + ": "
               + ex + "\n";
       message += "    " + toString();
-      HandlebarsException hex = new HandlebarsException(message);
+      HandlebarsException hex = new HandlebarsException(message, ex);
       // Override the stack-trace
       hex.setStackTrace(ex.getStackTrace());
       throw hex;
