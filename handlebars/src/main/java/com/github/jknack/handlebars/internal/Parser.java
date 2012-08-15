@@ -16,7 +16,6 @@ package com.github.jknack.handlebars.internal;
 import static org.parboiled.common.Preconditions.checkArgNotNull;
 
 import java.io.IOException;
-import java.io.Reader;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -243,20 +242,6 @@ public class Parser extends BaseParser<BaseTemplate> {
     create(null, null, null, null);
   }
 
-  public Template parse(final Reader reader) throws IOException {
-    try {
-      return parse(toString(reader));
-    } finally {
-      if (reader != null) {
-        try {
-          reader.close();
-        } catch (IOException ex) {
-          throw new IllegalStateException("Cannot close the input reader", ex);
-        }
-      }
-    }
-  }
-
   public Template parse(final String input) throws IOException {
     try {
       ParseRunner<BaseTemplate> runner =
@@ -276,12 +261,13 @@ public class Parser extends BaseParser<BaseTemplate> {
       }
       return sequence;
     } catch (ParserRuntimeException ex) {
-      Throwable cause = ex.getCause();
+      Throwable cause = ex.getCause() == null ? ex : ex.getCause();
       if (cause instanceof HandlebarsException) {
         throw (HandlebarsException) cause;
       }
-      HandlebarsException hex = new HandlebarsException(ex.getMessage());
-      hex.initCause(ex.getCause() == null ? ex : ex.getCause());
+      HandlebarsException hex =
+          new HandlebarsException(cause.getMessage(), cause);
+      hex.setStackTrace(ex.getStackTrace());
       throw hex;
     }
   }
@@ -485,14 +471,14 @@ public class Parser extends BaseParser<BaseTemplate> {
                 Stacktrace stacktrace =
                     new Stacktrace(pos.line, pos.column, filename);
                 stacktraceList.addFirst(stacktrace);
-                Reader reader = loader.load(URI.create(uri));
+                String input = loader.loadAsString(URI.create(uri));
                 Parser parser =
                     create(handlebars, uri, partials, startDelimiter,
                         endDelimiter, stacktraceList);
                 // Avoid stack overflow exceptions
                 partial = new Partial();
                 partials.put(uri, partial);
-                Template template = parser.parse(reader);
+                Template template = parser.parse(input);
                 partial.template(uri, template);
                 stacktraceList.removeLast();
               } catch (IOException ex) {
@@ -850,17 +836,6 @@ public class Parser extends BaseParser<BaseTemplate> {
   Rule pathSegment() {
     return FirstOf(CharRange('0', '9'), CharRange('a', 'z'),
         CharRange('A', 'Z'), '_', '$', '/', '.', '-');
-  }
-
-  static String toString(final Reader reader)
-      throws IOException {
-    StringBuilder buffer = new StringBuilder(1024 * 4);
-    int ch;
-    while ((ch = reader.read()) != -1) {
-      buffer.append((char) ch);
-    }
-    buffer.trimToSize();
-    return buffer.toString();
   }
 
 }

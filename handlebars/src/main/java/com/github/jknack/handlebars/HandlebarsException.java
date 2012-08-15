@@ -44,7 +44,7 @@ public class HandlebarsException extends RuntimeException {
    *
    * @param cause The error's cause.
    */
-  public HandlebarsException(final Exception cause) {
+  public HandlebarsException(final Throwable cause) {
     super(cause);
   }
 
@@ -54,7 +54,7 @@ public class HandlebarsException extends RuntimeException {
    * @param message The error's message.
    * @param cause The error's cause.
    */
-  public HandlebarsException(final String message, final Exception cause) {
+  public HandlebarsException(final String message, final Throwable cause) {
     super(message, cause);
   }
 }

@@ -13,7 +13,7 @@
  */
 package com.github.jknack.handlebars.internal;
 
-import static org.parboiled.common.Preconditions.checkNotNull;
+import static org.apache.commons.lang3.Validate.notNull;
 
 import java.io.IOException;
 import java.io.Writer;
@@ -80,7 +80,7 @@ abstract class BaseTemplate implements Template {
   @Override
   public void apply(final Context context, final Writer writer)
       throws IOException {
-    checkNotNull(writer, "A writer is required.");
+    notNull(writer, "A writer is required.");
     try {
       merge(wrap(context), writer);
     } catch (HandlebarsException ex) {

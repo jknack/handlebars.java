@@ -13,12 +13,12 @@
  */
 package com.github.jknack.handlebars;
 
-import static org.parboiled.common.Preconditions.checkArgument;
+import static org.apache.commons.lang3.Validate.notEmpty;
+import static org.apache.commons.lang3.Validate.notNull;
 import static org.parboiled.common.Preconditions.checkNotNull;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import java.io.IOException;
-import java.io.Reader;
 import java.lang.reflect.Array;
 import java.net.URI;
 import java.util.Collection;
@@ -337,28 +337,16 @@ public class Handlebars {
    */
   public Template compile(final URI uri, final String startDelimiter,
       final String endDelimiter) throws IOException {
-    checkNotNull(uri, "The uri is required.");
-    checkArgument(uri.toString().length() > 0, "The uri is required.");
-    checkDelimiters(startDelimiter, endDelimiter);
-    String key = uri + "_" + startDelimiter + endDelimiter;
-    debug("Looking for: %s", key);
-    Template template = cache.get(key);
-    if (template == null) {
-      debug("Key not found: %s", key);
-      Reader reader = loader.load(uri);
-      template =
-          Parser.create(this, uri.toString(), startDelimiter, endDelimiter)
-              .parse(reader);
-      cache.put(key, template);
-      debug("Key saved: %s", key);
-    }
-    return template;
+    notNull(uri, "The uri is required.");
+    notEmpty(uri.toString(), "The uri is required.");
+    return compile(uri.toString(), loader.loadAsString(uri), startDelimiter,
+        endDelimiter);
   }
 
   /**
-   * Compile the given input.
+   * Compile a handlebars template.
    *
-   * @param input The resource's input. Required.
+   * @param input The handlebars input. Required.
    * @return A compiled template.
    * @throws IOException If the resource cannot be loaded.
    */
@@ -367,7 +355,7 @@ public class Handlebars {
   }
 
   /**
-   * Compile the given input.
+   * Compile a handlebars template.
    *
    * @param input The input text. Required.
    * @param startDelimiter The start delimiter. Required.
@@ -377,16 +365,36 @@ public class Handlebars {
    */
   public Template compile(final String input, final String startDelimiter,
       final String endDelimiter) throws IOException {
-    checkNotNull(input, "The input text is required.");
-    checkArgument(input.length() > 0, "The input text is required.");
-    String key = input.hashCode() + "_" + startDelimiter + endDelimiter;
+    return compile("inline", input, startDelimiter, endDelimiter);
+  }
+
+  /**
+   * Compile the given input.
+   *
+   * @param filename The name of the file.
+   * @param input The input text. Required.
+   * @param startDelimiter The start delimiter. Required.
+   * @param endDelimiter The end delimiter. Required.
+   * @return A compiled template.
+   * @throws IOException If the resource cannot be loaded.
+   */
+  private Template compile(final String filename, final String input,
+      final String startDelimiter, final String endDelimiter)
+      throws IOException {
+    notNull(input, "The input text is required.");
+    checkDelimiter(startDelimiter, "start");
+    checkDelimiter(endDelimiter, "end");
+
+    String key =
+        filename + "@" + startDelimiter + input.hashCode() + endDelimiter;
+
     debug("Looking for: %s", key);
     Template template = cache.get(key);
     if (template == null) {
       debug("Key not found: %s", key);
       template =
-          Parser.create(this, "embedded", startDelimiter, endDelimiter).parse(
-              input);
+          Parser.create(this, filename, startDelimiter, endDelimiter)
+              .parse(input);
       cache.put(key, template);
       debug("Key saved: %s", key);
     }
@@ -427,8 +435,8 @@ public class Handlebars {
    * Indicates if Handlebars should publish pseudo variables.
    *
    * @param exposePseudoVariables True if Handlebars should add pseudo variables
-   *        like: <code>@index, @first, @last, @key, @value</code>. Default is:
-   *        false.
+   *        like: <code>@index, @first, @last, @odd, @even</code> useful for
+   *        index base objects. Default is: false.
    * @return This handlebars.
    */
   public Handlebars setExposePseudoVariables(
@@ -540,16 +548,13 @@ public class Handlebars {
   /**
    * Check if the given delimiters aren't empty.
    *
-   * @param startDelimiter The start delimiter.
-   * @param endDelimiter The end delimiter.
+   * @param delimiter The delimiter.
+   * @param type The delimiter's type.
    */
-  private static void checkDelimiters(final String startDelimiter,
-      final String endDelimiter) {
-    checkNotNull(startDelimiter, "The start delimiter is required.");
-    checkArgument(startDelimiter.length() > 0,
-        "The start delimiter is required.");
-    checkNotNull(endDelimiter, "The end delimiter is required.");
-    checkArgument(endDelimiter.length() > 0, "The end delimiter is required.");
+  private static void checkDelimiter(final String delimiter,
+      final String type) {
+    notNull(delimiter, "The %s delimiter is required.", type);
+    notEmpty(delimiter, "The %s delimiter is required.", type);
   }
 
   /**
@@ -566,4 +571,5 @@ public class Handlebars {
     handlebars.registerHelper(BlockHelper.NAME, BlockHelper.INSTANCE);
     handlebars.registerHelper(PartialHelper.NAME, PartialHelper.INSTANCE);
   }
+
 }

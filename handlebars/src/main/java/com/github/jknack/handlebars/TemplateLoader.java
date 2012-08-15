@@ -1,14 +1,10 @@
 /**
  * Copyright (c) 2012 Edgar Espina
- *
  * This file is part of Handlebars.java.
- *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * http://www.apache.org/licenses/LICENSE-2.0
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,9 +13,12 @@
  */
 package com.github.jknack.handlebars;
 
+import static org.apache.commons.lang3.Validate.notEmpty;
+import static org.apache.commons.lang3.Validate.notNull;
 import static org.parboiled.common.Preconditions.checkArgument;
 import static org.parboiled.common.Preconditions.checkNotNull;
 
+import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.Reader;
@@ -58,13 +57,12 @@ public abstract class TemplateLoader {
    * Load the template from a template repository.
    *
    * @param uri The resource's uri. Required.
-   * @return The requested resource or {@link #EMPTY} if the resource isn't
-   *         found.
+   * @return The requested resource.
    * @throws IOException If the resource cannot be loaded.
    */
   public Reader load(final URI uri) throws IOException {
-    checkNotNull(uri, "The uri is required.");
-    checkArgument(uri.toString().length() > 0, "The uri is required.");
+    notNull(uri, "The uri is required.");
+    notEmpty(uri.toString(), "The uri is required.");
     String location = resolve(normalize(uri.toString()));
     Reader reader = read(location);
     if (reader == null) {
@@ -72,6 +70,27 @@ public abstract class TemplateLoader {
     }
     Handlebars.debug("Resource found: %s", location);
     return reader;
+  }
+
+  /**
+   * Load the template as string from a template repository.
+   *
+   * @param uri The resource's uri. Required.
+   * @return The requested resource.
+   * @throws IOException If the resource cannot be loaded.
+   */
+  public String loadAsString(final URI uri) throws IOException {
+    Reader reader = new BufferedReader(load(uri));
+    try {
+      StringBuilder buffer = new StringBuilder(1024 * 4);
+      int ch;
+      while ((ch = reader.read()) != -1) {
+        buffer.append((char) ch);
+      }
+      return buffer.toString();
+    } finally {
+      reader.close();
+    }
   }
 
   /**
