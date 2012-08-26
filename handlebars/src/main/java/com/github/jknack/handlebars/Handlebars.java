@@ -35,7 +35,7 @@ import com.github.jknack.handlebars.helper.IfHelper;
 import com.github.jknack.handlebars.helper.PartialHelper;
 import com.github.jknack.handlebars.helper.UnlessHelper;
 import com.github.jknack.handlebars.helper.WithHelper;
-import com.github.jknack.handlebars.internal.Parser;
+import com.github.jknack.handlebars.internal.ParserFactory;
 import com.github.jknack.handlebars.io.ClassTemplateLoader;
 
 /**
@@ -276,13 +276,6 @@ public class Handlebars {
   private final Map<String, Helper<Object>> helpers =
       new HashMap<String, Helper<Object>>();
 
-  static {
-    /**
-     * Initialize the parser and speed up for later.
-     */
-    Parser.initialize();
-  }
-
   /**
    * Creates a new {@link Handlebars}.
    *
@@ -393,7 +386,7 @@ public class Handlebars {
     if (template == null) {
       debug("Key not found: %s", key);
       template =
-          Parser.create(this, filename, startDelimiter, endDelimiter)
+          ParserFactory.create(this, filename, startDelimiter, endDelimiter)
               .parse(input);
       cache.put(key, template);
       debug("Key saved: %s", key);

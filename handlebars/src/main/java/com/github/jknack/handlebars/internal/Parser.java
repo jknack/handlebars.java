@@ -29,7 +29,6 @@ import org.parboiled.BaseParser;
 import org.parboiled.Context;
 import org.parboiled.MatchHandler;
 import org.parboiled.MatcherContext;
-import org.parboiled.Parboiled;
 import org.parboiled.Rule;
 import org.parboiled.annotations.DontLabel;
 import org.parboiled.annotations.Label;
@@ -220,26 +219,6 @@ public class Parser extends BaseParser<BaseTemplate> {
     this.startDelimiter = startDelimiter;
     this.endDelimiter = endDelimiter;
     stacktraceList = stacktrace;
-  }
-
-  private static Parser create(final Handlebars handlebars,
-      final String filename, final Map<String, Partial> partials,
-      final String startDelimiter, final String endDelimiter,
-      final LinkedList<Stacktrace> stacktrace) {
-    return Parboiled.createParser(Parser.class, handlebars, filename, partials,
-        startDelimiter, endDelimiter, stacktrace);
-  }
-
-  public static Parser create(final Handlebars handlebars,
-      final String filename,
-      final String startDelimiter,
-      final String endDelimiter) {
-    return create(handlebars, filename, null, startDelimiter, endDelimiter,
-        new LinkedList<Stacktrace>());
-  }
-
-  public static void initialize() {
-    create(null, null, null, null);
   }
 
   public Template parse(final String input) throws IOException {
@@ -473,8 +452,8 @@ public class Parser extends BaseParser<BaseTemplate> {
                 stacktraceList.addFirst(stacktrace);
                 String input = loader.loadAsString(URI.create(uri));
                 Parser parser =
-                    create(handlebars, uri, partials, startDelimiter,
-                        endDelimiter, stacktraceList);
+                    ParserFactory.create(handlebars, uri, partials,
+                        startDelimiter, endDelimiter, stacktraceList);
                 // Avoid stack overflow exceptions
                 partial = new Partial();
                 partials.put(uri, partial);

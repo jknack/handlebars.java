@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
   <parent>
     <groupId>com.github.jknack</groupId>
@@ -13,6 +14,65 @@
 
   <name>Handlebars</name>
   <description>Logic-less and semantic templates with Java</description>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <version>1.2.1</version>
+        <executions>
+          <execution>
+            <id>dump-parboiled-classes</id>
+            <phase>process-classes</phase>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+            <configuration>
+              <executable>java</executable>
+              <arguments>
+                <argument>-javaagent:${user.home}/.m2/repository/com/github/jknack/handlebars-parboiled-processor/${project.version}/handlebars-parboiled-processor-${project.version}.jar</argument>
+                <argument>-Doutput.dir=${project.build.outputDirectory}</argument>
+                <argument>-cp</argument>
+                <classpath />
+                <argument>com.github.jknack.handlebars.internal.ParboiledProcessor</argument>
+              </arguments>
+            </configuration>
+          </execution>
+
+          <!-- JavaC -->
+          <execution>
+            <id>replace-parser-factory</id>
+            <phase>process-classes</phase>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+            <configuration>
+              <executable>javac</executable>
+              <arguments>
+                <argument>-d</argument>
+                <argument>${project.build.outputDirectory}</argument>
+                <argument>-source</argument>
+                <argument>1.6</argument>
+                <argument>-target</argument>
+                <argument>1.6</argument>
+                <argument>-classpath</argument>
+                <classpath />
+                <argument>${project.basedir}/src/main/resources/com/github/jknack/handlebars/internal/ParserFactory.java</argument>
+              </arguments>
+            </configuration>
+          </execution>
+        </executions>
+        <dependencies>
+          <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>handlebars-parboiled-processor</artifactId>
+            <version>${project.version}</version>
+          </dependency>
+        </dependencies>
+      </plugin>
+    </plugins>
+  </build>
 
   <dependencies>
     <!-- commons-lang3 -->

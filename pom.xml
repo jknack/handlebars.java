@@ -18,6 +18,7 @@
     <module>handlebars-json</module>
     <module>handlebars-jackson2</module>
     <module>handlebars-markdown</module>
+    <module>handlebars-parboiled-processor</module>
   </modules>
 
   <licenses>
@@ -194,7 +195,7 @@
           <consoleOutput>true</consoleOutput>
           <configLocation>checkstyle.xml</configLocation>
           <failsOnError>true</failsOnError>
-          <excludes>**/Parser*</excludes>
+          <excludes>**/Parser*,**/Parboiled*</excludes>
         </configuration>
         <executions>
           <execution>
