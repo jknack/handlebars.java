@@ -30,8 +30,6 @@ import org.junit.Test;
 
 import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Template;
-import com.github.jknack.handlebars.springmvc.HandlebarsView;
-import com.github.jknack.handlebars.springmvc.HandlebarsViewResolver;
 
 /**
  * Unit test for {@link HandlebarsViewResolver}.
@@ -46,10 +44,10 @@ public class HandlebarsViewResolverTest {
     Template template = createMock(Template.class);
 
     Handlebars handlebars = createMock(Handlebars.class);
-    expect(handlebars.compile(URI.create("/home.html"))).andReturn(template);
+    expect(handlebars.compile(URI.create("home"))).andReturn(template);
 
     HandlebarsView view = createMock(HandlebarsView.class);
-    expect(view.getUrl()).andReturn("home.html");
+    expect(view.getUrl()).andReturn("home.hbs");
     view.setTemplate(template);
     expectLastCall();
 
@@ -67,10 +65,10 @@ public class HandlebarsViewResolverTest {
     Template template = createMock(Template.class);
 
     Handlebars handlebars = createMock(Handlebars.class);
-    expect(handlebars.compile(URI.create("/home.html"))).andReturn(template);
+    expect(handlebars.compile(URI.create("/home"))).andReturn(template);
 
     HandlebarsView view = createMock(HandlebarsView.class);
-    expect(view.getUrl()).andReturn("/home.html");
+    expect(view.getUrl()).andReturn("/home.hbs");
     view.setTemplate(template);
     expectLastCall();
 

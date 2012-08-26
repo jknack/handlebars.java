@@ -1,14 +1,10 @@
 /**
  * Copyright (c) 2012 Edgar Espina
- *
  * This file is part of Handlebars.java.
- *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * http://www.apache.org/licenses/LICENSE-2.0
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,16 +13,17 @@
  */
 package com.github.jknack.handlebars.springmvc;
 
+import static org.apache.commons.lang3.Validate.notNull;
+
 import java.io.IOException;
 import java.net.URI;
 
-import org.springframework.util.Assert;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.view.AbstractTemplateViewResolver;
 import org.springframework.web.servlet.view.AbstractUrlBasedView;
 
 import com.github.jknack.handlebars.Handlebars;
-import com.github.jknack.handlebars.Template;
 import com.github.jknack.handlebars.TemplateLoader;
 
 /**
@@ -35,7 +32,8 @@ import com.github.jknack.handlebars.TemplateLoader;
  * @author edgar.espina
  * @since 0.1
  */
-public class HandlebarsViewResolver extends AbstractTemplateViewResolver {
+public class HandlebarsViewResolver extends AbstractTemplateViewResolver
+    implements InitializingBean {
 
   /**
    * The default content type.
@@ -43,7 +41,7 @@ public class HandlebarsViewResolver extends AbstractTemplateViewResolver {
   public static final String DEFAULT_CONTENT_TYPE = "text/html;charset=UTF-8";
 
   /**
-   * The handlebars instance.
+   * The handlebars object.
    */
   private Handlebars handlebars;
 
@@ -53,30 +51,18 @@ public class HandlebarsViewResolver extends AbstractTemplateViewResolver {
    * @param handlebars The handlebars object. Required.
    */
   public HandlebarsViewResolver(final Handlebars handlebars) {
-    Assert.notNull(handlebars, "The handlebars object is required.");
-
-    this.handlebars = handlebars;
-    setViewClass(HandlebarsView.class);
-    setContentType(DEFAULT_CONTENT_TYPE);
-  }
-
-  @Override
-  public void setPrefix(final String prefix) {
-    throw new UnsupportedOperationException("Use "
-        + TemplateLoader.class.getName() + "#setPrefix");
-  }
-
-  @Override
-  public void setSuffix(final String suffix) {
-    throw new UnsupportedOperationException("Use "
-        + TemplateLoader.class.getName() + "#setSuffix");
+    this();
+    this.handlebars = notNull(handlebars, "A handlebars object is required.");
   }
 
   /**
    * Creates a new {@link HandlebarsViewResolver}.
    */
   public HandlebarsViewResolver() {
-    this(new Handlebars());
+    setViewClass(HandlebarsView.class);
+    setContentType(DEFAULT_CONTENT_TYPE);
+    setPrefix(TemplateLoader.DEFAULT_PREFIX);
+    setSuffix(TemplateLoader.DEFAULT_SUFFIX);
   }
 
   /**
@@ -98,12 +84,10 @@ public class HandlebarsViewResolver extends AbstractTemplateViewResolver {
   protected AbstractUrlBasedView configure(final HandlebarsView view)
       throws IOException {
     String url = view.getUrl();
-    if (!url.startsWith("/")) {
-      url = "/" + url;
-    }
-    URI uri = URI.create(url);
-    Template template = handlebars.compile(uri);
-    view.setTemplate(template);
+    // Remove suffix
+    url = url.substring(0, url.length() - getSuffix().length());
+    // Compile the template.
+    view.setTemplate(handlebars.compile(URI.create(url)));
     return view;
   }
 
@@ -115,6 +99,19 @@ public class HandlebarsViewResolver extends AbstractTemplateViewResolver {
   @Override
   protected Class<?> requiredViewClass() {
     return HandlebarsView.class;
+  }
+
+  @Override
+  public void afterPropertiesSet() throws Exception {
+    if (handlebars == null) {
+      // No handlebars instance was set, use default configuration.
+      handlebars =
+          new Handlebars(new SpringTemplateLoader(getApplicationContext()));
+    }
+    TemplateLoader templateLoader = handlebars.getTemplateLoader();
+    // Override preffix and sufffix.
+    templateLoader.setPrefix(getPrefix());
+    templateLoader.setSuffix(getSuffix());
   }
 
 }

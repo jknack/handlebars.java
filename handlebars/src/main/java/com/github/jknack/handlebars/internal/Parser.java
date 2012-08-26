@@ -835,7 +835,7 @@ public class Parser extends BaseParser<BaseTemplate> {
   @Label("path")
   Rule pathSegment() {
     return FirstOf(CharRange('0', '9'), CharRange('a', 'z'),
-        CharRange('A', 'Z'), '_', '$', '/', '.', '-');
+        CharRange('A', 'Z'), '_', '$', '/', '.', ':', '-');
   }
 
 }

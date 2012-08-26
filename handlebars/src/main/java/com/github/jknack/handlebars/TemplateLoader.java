@@ -15,8 +15,6 @@ package com.github.jknack.handlebars;
 
 import static org.apache.commons.lang3.Validate.notEmpty;
 import static org.apache.commons.lang3.Validate.notNull;
-import static org.parboiled.common.Preconditions.checkArgument;
-import static org.parboiled.common.Preconditions.checkNotNull;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -36,7 +34,7 @@ public abstract class TemplateLoader {
   /**
    * The default view prefix.
    */
-  protected static final String DEFAULT_PREFIX = "/";
+  public static final String DEFAULT_PREFIX = "/";
 
   /**
    * The default view suffix.
@@ -64,6 +62,7 @@ public abstract class TemplateLoader {
     notNull(uri, "The uri is required.");
     notEmpty(uri.toString(), "The uri is required.");
     String location = resolve(normalize(uri.toString()));
+    Handlebars.debug("Loading resource: %s", location);
     Reader reader = read(location);
     if (reader == null) {
       throw new FileNotFoundException(location.toString());
@@ -132,9 +131,7 @@ public abstract class TemplateLoader {
    *        URI.
    */
   public void setPrefix(final String prefix) {
-    checkNotNull(prefix, "A view prefix is required.");
-    checkArgument(prefix.length() > 0, "A view prefix is required.");
-    this.prefix = prefix;
+    this.prefix = notNull(prefix, "A view prefix is required.");
     if (!this.prefix.endsWith("/")) {
       this.prefix += "/";
     }
@@ -147,9 +144,7 @@ public abstract class TemplateLoader {
    *        URI.
    */
   public void setSuffix(final String suffix) {
-    checkNotNull(suffix, "A view suffix is required.");
-    checkArgument(suffix.length() > 0, "A view suffix  is required.");
-    this.suffix = checkNotNull(suffix, "The view suffix is required.");
+    this.suffix = notEmpty(suffix, "The view suffix is required.");
   }
 
   /**
