@@ -31,7 +31,7 @@
             <configuration>
               <executable>java</executable>
               <arguments>
-                <argument>-javaagent:${user.home}/.m2/repository/com/github/jknack/handlebars-parboiled-processor/${project.version}/handlebars-parboiled-processor-${project.version}.jar</argument>
+                <argument>-javaagent:../handlebars-parboiled-processor/target/handlebars-parboiled-processor-${project.version}.jar</argument>
                 <argument>-Doutput.dir=${project.build.outputDirectory}</argument>
                 <argument>-cp</argument>
                 <classpath />
