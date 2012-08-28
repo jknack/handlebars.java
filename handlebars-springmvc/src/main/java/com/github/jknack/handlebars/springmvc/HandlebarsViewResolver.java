@@ -84,8 +84,9 @@ public class HandlebarsViewResolver extends AbstractTemplateViewResolver
   protected AbstractUrlBasedView configure(final HandlebarsView view)
       throws IOException {
     String url = view.getUrl();
-    // Remove suffix
-    url = url.substring(0, url.length() - getSuffix().length());
+    // Remove prefix & suffix.
+    url = url.substring(getPrefix().length(), url.length()
+        - getSuffix().length());
     // Compile the template.
     view.setTemplate(handlebars.compile(URI.create(url)));
     return view;
@@ -109,7 +110,7 @@ public class HandlebarsViewResolver extends AbstractTemplateViewResolver
           new Handlebars(new SpringTemplateLoader(getApplicationContext()));
     }
     TemplateLoader templateLoader = handlebars.getTemplateLoader();
-    // Override preffix and sufffix.
+    // Override prefix and suffix.
     templateLoader.setPrefix(getPrefix());
     templateLoader.setSuffix(getSuffix());
   }
