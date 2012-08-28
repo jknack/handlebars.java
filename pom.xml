@@ -4,7 +4,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.github.jknack</groupId>
   <artifactId>handlebars.java</artifactId>
-  <version>0.4.2-SNAPSHOT</version>
+  <version>0.4.2</version>
   <packaging>pom</packaging>
 
   <name>Handlebars.java</name>
@@ -40,7 +40,7 @@
     <connection>scm:git:git@github.com:jknack/handlebars.java.git</connection>
     <developerConnection>scm:git:git@github.com:jknack/handlebars.java.git</developerConnection>
     <url>scm:git:git@github.com:jknack/handlebars.java.git</url>
-    <tag>HEAD</tag>
+    <tag>handlebars.java-0.4.2</tag>
   </scm>
 
   <distributionManagement>
