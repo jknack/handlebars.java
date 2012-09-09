@@ -1,3 +1,5 @@
+[![Build Status](http://travis-ci.org/alexo/wro4j.png)](http://travis-ci.org/jknack/handlebars.java)
+
 Handlebars.java - Logic-less and semantic templates with Java
 ===============
 Handlebars.java is a Java port of [handlebars](http://handlebarsjs.com/).
