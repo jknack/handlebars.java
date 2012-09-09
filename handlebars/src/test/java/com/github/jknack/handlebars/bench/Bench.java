@@ -23,7 +23,8 @@ public class Bench {
   }
 
   public void run(final Unit unit) throws IOException {
-    System.out.printf("'%s' per second\n", unit);
+    System.out.printf("%s\n", unit);
+    long avg = 0;
     for (int b = 0; b < size; b++) {
       {
         long start = System.currentTimeMillis();
@@ -35,8 +36,11 @@ public class Bench {
             break;
           }
         }
-        System.out.printf("  (%s): %s\n", b, total * 1000 / time);
+        long unitPerSecond = total * 1000 / time;
+        avg += unitPerSecond;
+        System.out.printf("  (%s): %s per second\n", b, unitPerSecond);
       }
     }
+    System.out.printf("AVG: %s per second\n\n", avg / size);
   }
 }
