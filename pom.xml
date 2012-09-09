@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.github.jknack</groupId>
@@ -56,6 +57,13 @@
     </repository>
   </distributionManagement>
 
+  <repositories>
+    <repository>
+      <id>parboiled</id>
+      <url>http://repo.spray.cc</url>
+    </repository>
+  </repositories>
+
   <dependencyManagement>
     <dependencies>
       <dependency>
@@ -74,7 +82,17 @@
       <dependency>
         <groupId>org.parboiled</groupId>
         <artifactId>parboiled-java</artifactId>
-        <version>1.0.2</version>
+        <version>1.1</version>
+        <exclusions>
+          <exclusion>
+            <groupId>org.scala-lang</groupId>
+            <artifactId>scala-library</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.scalatest</groupId>
+            <artifactId>scalatest_2.10.0-M6</artifactId>
+          </exclusion>
+        </exclusions>
       </dependency>
 
       <!-- Logging System -->
