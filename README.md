@@ -13,6 +13,7 @@ Handlebars provides the power necessary to let you build semantic templates effe
 
 ## Maven
  Stable version: **0.4.2**
+ Development version: **0.5.0-SNAPSHOT**
 
 ```xml
   <dependency>
@@ -342,7 +343,15 @@ Context context = Context
   .build();
 ```
 
-# Modules
+# Additional Helpers
+## String Helpers
+ Functions like abbreviate, capitalize, join, dateFormat, yesno, etc., are available from [StringHelpers] (https://github.com/jknack/handlebars.java/blob/master/handlebars/src/main/java/com/github/jknack/handlebars/StringHelpers.java).
+ 
+### Usage:
+```java
+ StringHelpers.register(handlebars);
+```
+
 ## Jackson 1.x
 
 Maven:
@@ -409,6 +418,31 @@ Usage:
 ```
 context: An object or null. Required.
 
+## Humanize
+
+Maven:
+```xml
+ <dependency>
+   <groupId>com.github.jknack</groupId>
+   <artifactId>handlebars-humanize</artifactId>
+   <version>${handlebars-version}</version>
+ </dependency>
+```
+Usage:
+
+```java
+ // Register all the humanize helpers.
+ HumanizeHelper.register(handlebars);
+```
+```
+ {{naturalDay now [local="locale"]}}
+```
+context: A date object. Required.
+locale: A locale to use. Optional.
+
+See the JavaDoc of the [HumanizeHelper] (https://github.com/jknack/handlebars.java/blob/master/handlebars-humanize/src/main/java/com/github/jknack/handlebars/HumanizeHelper.java) for more information.
+
+# Modules
 ## SpringMVC
 
 Maven:
@@ -421,14 +455,6 @@ Maven:
 ```
 
 Checkout the HandlebarsViewResolver.
-
-## String Helpers
- Functions like abbreviate, capitalize, join, dateFormat, yesno, etc., are available from [StringHelpers] (https://github.com/jknack/handlebars.java/blob/master/handlebars/src/main/java/com/github/jknack/handlebars/StringHelpers.java).
- 
-### Usage:
-```java
- StringHelpers.register(handlebars);
-```
 
 # Architecture
  * Handlebars.java follows the JavaScript API with some minors exceptions due to the nature of the Java language.
@@ -482,6 +508,7 @@ Checkout the HandlebarsViewResolver.
  * [Handlebars.js](http://handlebarsjs.com/)
  * [Try Handlebars.js](http://tryhandlebarsjs.com/)
  * [Mustache](mustache.github.com)
+ * [Humanize](https://github.com/mfornos/humanize)
 
 ## Credits
  * [Mathias](https://github.com/sirthias): For the [parboiled](https://github.com/sirthias/parboiled) PEG library

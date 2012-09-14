@@ -19,6 +19,7 @@
     <module>handlebars-json</module>
     <module>handlebars-jackson2</module>
     <module>handlebars-markdown</module>
+    <module>handlebars-humanize</module>
     <module>handlebars-parboiled-processor</module>
   </modules>
 
@@ -129,6 +130,13 @@
         <groupId>org.pegdown</groupId>
         <artifactId>pegdown</artifactId>
         <version>1.1.0</version>
+      </dependency>
+
+      <!-- Humanize -->
+      <dependency>
+        <groupId>com.github.mfornos</groupId>
+        <artifactId>humanize-slim</artifactId>
+        <version>0.1.4</version>
       </dependency>
 
       <!-- Test dependencies -->
