@@ -434,13 +434,8 @@ Usage:
  // Register all the humanize helpers.
  HumanizeHelper.register(handlebars);
 ```
-```
- {{naturalDay now [local="locale"]}}
-```
-context: A date object. Required.
-locale: A locale to use. Optional.
 
-See the JavaDoc of the [HumanizeHelper] (https://github.com/jknack/handlebars.java/blob/master/handlebars-humanize/src/main/java/com/github/jknack/handlebars/HumanizeHelper.java) for more information.
+See the JavaDoc of the [HumanizeHelper] (https://github.com/jknack/handlebars.java/blob/develop/handlebars-humanize/src/main/java/com/github/jknack/handlebars/HumanizeHelper.java) for more information.
 
 # Modules
 ## SpringMVC
