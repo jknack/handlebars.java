@@ -12,8 +12,10 @@ Handlebars provides the power necessary to let you build semantic templates effe
  In general, the syntax of **Handlebars** templates is a superset of [Mustache](http://mustache.github.com) templates. For basic syntax, check out the [Mustache manpage](http://mustache.github.com).
 
 ## Maven
- Stable version: **0.4.2**
  Development version: **0.5.0-SNAPSHOT**
+
+ Stable version: **0.4.2**
+
 
 ```xml
   <dependency>
