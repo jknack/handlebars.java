@@ -52,6 +52,7 @@ import org.parboiled.support.ValueStack;
 import org.parboiled.support.Var;
 
 import com.github.jknack.handlebars.Handlebars;
+import com.github.jknack.handlebars.HandlebarsError;
 import com.github.jknack.handlebars.HandlebarsException;
 import com.github.jknack.handlebars.Template;
 import com.github.jknack.handlebars.TemplateLoader;
@@ -228,10 +229,10 @@ public class Parser extends BaseParser<BaseTemplate> {
       ParsingResult<BaseTemplate> result = runner.run(input);
       if (result.hasErrors()) {
         ParseError error = result.parseErrors.get(0);
-        String msg =
+        HandlebarsError hbsError =
             ErrorFormatter.printParseError(filename, error, noffset,
                 stacktraceList);
-        throw new HandlebarsException(msg);
+        throw new HandlebarsException(hbsError);
       }
       TemplateList sequence = (TemplateList) result.resultValue;
       removeBlanks(sequence);

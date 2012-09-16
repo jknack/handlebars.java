@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.io.Writer;
 
 import com.github.jknack.handlebars.Context;
+import com.github.jknack.handlebars.HandlebarsError;
 import com.github.jknack.handlebars.HandlebarsException;
 import com.github.jknack.handlebars.Template;
 
@@ -86,11 +87,16 @@ abstract class BaseTemplate implements Template {
     } catch (HandlebarsException ex) {
       throw ex;
     } catch (Exception ex) {
+      String evidence = toString();
+      String reason = ex.toString();
       String message =
           filename + ":" + line + ":" + column + ": "
-              + ex + "\n";
-      message += "    " + toString();
-      HandlebarsException hex = new HandlebarsException(message, ex);
+              + reason + "\n";
+      message += "    " + evidence;
+      HandlebarsError error =
+          new HandlebarsError(filename, line, column, reason, evidence,
+              message);
+      HandlebarsException hex = new HandlebarsException(error, ex);
       // Override the stack-trace
       hex.setStackTrace(ex.getStackTrace());
       throw hex;

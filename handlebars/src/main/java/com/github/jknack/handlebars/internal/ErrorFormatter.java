@@ -1,14 +1,10 @@
 /**
  * Copyright (c) 2012 Edgar Espina
- *
  * This file is part of Handlebars.java.
- *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * http://www.apache.org/licenses/LICENSE-2.0
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -35,6 +31,8 @@ import org.parboiled.matchers.AnyOfMatcher;
 import org.parboiled.matchers.Matcher;
 import org.parboiled.support.MatcherPath;
 import org.parboiled.support.Position;
+
+import com.github.jknack.handlebars.HandlebarsError;
 
 /**
  * A {@link Formatter} for {@link InvalidInputError}s that automatically creates
@@ -196,7 +194,7 @@ class ErrorFormatter implements Formatter<InvalidInputError> {
    * @param stacktrace The stack trace.
    * @return the pretty print text
    */
-  public static String printParseError(final String filename,
+  public static HandlebarsError printParseError(final String filename,
       final ParseError error, final int noffset,
       final List<Stacktrace> stacktrace) {
     checkArgNotNull(error, "error");
@@ -220,7 +218,7 @@ class ErrorFormatter implements Formatter<InvalidInputError> {
    *        string
    *        (the error message) and two integers (the error line / column
    *        respectively)
-   * @param errorMessage the error message
+   * @param reason the error message
    * @param startIndex the start location of the error as an index into the
    *        inputBuffer
    * @param endIndex the end location of the error as an index into the
@@ -230,9 +228,9 @@ class ErrorFormatter implements Formatter<InvalidInputError> {
    * @return the error message including the relevant line from the underlying
    *         input plus location indicators
    */
-  private static String printErrorMessage(final String filename,
+  private static HandlebarsError printErrorMessage(final String filename,
       final String format,
-      final String errorMessage,
+      final String reason,
       final int startIndex, final int endIndex,
       final InputBuffer inputBuffer, final List<Stacktrace> stacktrace) {
     checkArgNotNull(inputBuffer, "inputBuffer");
@@ -240,25 +238,31 @@ class ErrorFormatter implements Formatter<InvalidInputError> {
     String nl = "\n";
     Position pos = inputBuffer.getPosition(startIndex);
     StringBuilder sb =
-        new StringBuilder(String.format(format, errorMessage, pos.line,
+        new StringBuilder(String.format(format, reason, pos.line,
             pos.column));
     sb.append(nl);
 
+    int evidenceStart = sb.length();
     String line = inputBuffer.extractLine(pos.line);
-    String indent = "    ";
-    sb.append(indent).append(line);
+    sb.append(line);
     sb.append(nl);
 
     int charCount =
         Math.max(
             Math.min(endIndex - startIndex, StringUtils.length(line)
                 - pos.column + 2), 1);
-    for (int i = 0; i < pos.column - 1 + indent.length(); i++) {
+    for (int i = 0; i < pos.column - 1; i++) {
       sb.append(' ');
     }
     for (int i = 0; i < charCount; i++) {
       sb.append('^');
     }
+    String prevLine = inputBuffer.extractLine(Math.max(1, pos.line - 1));
+    String nextLine =
+        inputBuffer.extractLine(Math.min(inputBuffer.getLineCount(),
+            pos.line + 1));
+    String evidence =
+        prevLine + "\n" + sb.substring(evidenceStart) + "\n" + nextLine;
 
     if (stacktrace.size() > 0) {
       boolean includeStack = true;
@@ -274,7 +278,8 @@ class ErrorFormatter implements Formatter<InvalidInputError> {
         sb.setLength(sb.length() - nl.length());
       }
     }
-
-    return sb.toString();
+    String message = sb.toString();
+    return new HandlebarsError(filename, pos.line, pos.column, reason,
+        evidence, message);
   }
 }

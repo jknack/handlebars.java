@@ -97,7 +97,7 @@ class Block extends HelperResolver {
     super(handlebars);
     this.name = checkNotNull(name, "Section's name is required.");
     this.inverted = inverted;
-    this.type = inverted ? "^" : "#";
+    type = inverted ? "^" : "#";
     params(params);
     hash(hash);
   }
@@ -257,7 +257,7 @@ class Block extends HelperResolver {
     if (complete) {
       buffer.append(body == null ? "" : body.text());
     } else {
-      buffer.append(" ... ");
+      buffer.append("\n...\n");
     }
     buffer.append("{{/").append(name).append("}}");
     return buffer.toString();
