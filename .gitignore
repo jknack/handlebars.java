@@ -9,3 +9,4 @@ target
 .project
 .settings
 bin
+dependency-reduced-pom.xml

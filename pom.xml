@@ -20,6 +20,7 @@
     <module>handlebars-jackson2</module>
     <module>handlebars-markdown</module>
     <module>handlebars-humanize</module>
+    <module>handlebars-proto</module>
     <module>handlebars-parboiled-processor</module>
   </modules>
 
@@ -233,7 +234,7 @@
           <consoleOutput>true</consoleOutput>
           <configLocation>checkstyle.xml</configLocation>
           <failsOnError>true</failsOnError>
-          <excludes>**/Parser*,**/Parboiled*</excludes>
+          <excludes>**/Parser*,**/Parboiled*,**/HbsServer*</excludes>
         </configuration>
         <executions>
           <execution>
