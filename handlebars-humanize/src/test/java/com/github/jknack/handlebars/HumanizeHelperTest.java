@@ -149,24 +149,12 @@ public class HumanizeHelperTest {
 
     Date now = calendar.getTime();
 
-    calendar.add(Calendar.HOUR, -24);
-    Date yesterday = calendar.getTime();
-
-    calendar.add(Calendar.HOUR, 24 * 2);
-    Date tomorrow = calendar.getTime();
-
     Thread.sleep(1000);
-    assertEquals("one day ago",
-        handlebars.compile("{{naturalTime this locale=\"en_US\"}}")
-            .apply(yesterday));
 
     assertEquals("moments ago",
         handlebars.compile("{{naturalTime this locale=\"en_US\"}}")
             .apply(now));
 
-    assertEquals("one day from now",
-        handlebars.compile("{{naturalTime this locale=\"en_US\"}}")
-            .apply(tomorrow));
   }
 
   @Test
