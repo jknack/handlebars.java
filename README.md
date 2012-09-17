@@ -449,9 +449,10 @@ Usage:
 ```java -jar handlebars-proto-${current-version}.jar -dir myTemplates```
 
 Example:
+
 **myTemplates/home.html**
 
-```html
+```
 <ul>
  {{#items}}
  {{name}}
@@ -460,7 +461,8 @@ Example:
 ```
 
 **myTemplates/home.js**
-```js
+
+```
 {
   items: [
     {
@@ -471,17 +473,18 @@ Example:
 ```
 
 Open a browser a type:
-```http://localhost:6780/home.html```
+```
+http://localhost:6780/home.html
+```
 
 Additional options:
 
-```
--dir: set the template directory
--suffix: set the template's suffix, default is .html
--context: set the context's path, default is /
--port: set port number, default is 6780
--content-type: set the content-type header, default is text/html
-```
+* -dir: set the template directory
+* -suffix: set the template's suffix, default is .html
+* -context: set the context's path, default is /
+* -port: set port number, default is 6780
+* -content-type: set the content-type header, default is text/html
+
 
 ## SpringMVC
 
