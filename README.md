@@ -440,6 +440,49 @@ Usage:
 See the JavaDoc of the [HumanizeHelper] (https://github.com/jknack/handlebars.java/blob/develop/handlebars-humanize/src/main/java/com/github/jknack/handlebars/HumanizeHelper.java) for more information.
 
 # Modules
+## Handlebars.java Server
+The handlebars.java server is a standalone application where you can write Mustache/Handlebars template and merge them with data.
+
+It a useful tool for Web Designer.
+
+Usage:
+```java -jar handlebars-proto-${current-version}.jar -dir myTemplates```
+
+Example:
+**myTemplates/home.html**
+
+```html
+<ul>
+ {{#items}}
+ {{name}}
+ {{/items}}
+</ul>
+```
+
+**myTemplates/home.js**
+```js
+{
+  items: [
+    {
+      name: "Handlebars.java rocks!"
+    }
+  ]
+}
+```
+
+Open a browser a type:
+```http://localhost:6780/home.html```
+
+Additional options:
+
+```
+-dir: set the template directory
+-suffix: set the template's suffix, default is .html
+-context: set the context's path, default is /
+-port: set port number, default is 6780
+-content-type: set the content-type header, default is text/html
+```
+
 ## SpringMVC
 
 Maven:
