@@ -22,6 +22,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.webapp.WebAppContext;
@@ -82,7 +83,7 @@ public class HbsServer {
      * @return The option's value.
      */
     public String getValue() {
-      return (value == null ? defaultValue : value).trim();
+      return StringUtils.trim(value == null ? defaultValue : value);
     }
 
     @Override
@@ -126,21 +127,21 @@ public class HbsServer {
       String opt = args[i];
       Option option = options.get(opt);
       if (option == null) {
-        System.out.println("Unknown option: " + opt);
+        System.out.println("Unknown parameter: " + opt);
         usage(options);
       }
       try {
         String value = args[i + 1];
         option.value = value;
       } catch (ArrayIndexOutOfBoundsException ex) {
-        System.out.println("Option value not found for: " + opt);
+        System.out.println("Missing value for parameter: " + opt);
         usage(options);
       }
     }
     for (Entry<String, Option> entry : options.entrySet()) {
       Option option = entry.getValue();
       if (option.getValue() == null) {
-        System.out.println("Option value not found for: " + entry.getKey());
+        System.out.println("Missing value for parameter: " + entry.getKey());
         usage(options);
       }
     }
