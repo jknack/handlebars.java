@@ -1,14 +1,10 @@
 /**
  * Copyright (c) 2012 Edgar Espina
- *
  * This file is part of Handlebars.java.
- *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * http://www.apache.org/licenses/LICENSE-2.0
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,14 +14,22 @@
 package com.github.jknack.handlebars;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Properties;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletHolder;
+import org.eclipse.jetty.util.component.AbstractLifeCycle.AbstractLifeCycleListener;
+import org.eclipse.jetty.util.component.LifeCycle;
 import org.eclipse.jetty.webapp.WebAppContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.github.jknack.handlebars.io.FileTemplateLoader;
 
@@ -35,6 +39,28 @@ import com.github.jknack.handlebars.io.FileTemplateLoader;
  * @author edgar.espina
  */
 public class HbsServer {
+
+  /**
+   * The logging system.
+   */
+  public static final Logger logger = LoggerFactory.getLogger(HbsServer.class);
+
+  public static String version;
+
+  static {
+    InputStream in = null;
+    try {
+      in = HbsServer.class.getResourceAsStream("/hbs.properties");
+      Properties properties = new Properties();
+      properties.load(in);
+      version = properties.getProperty("version");
+    } catch (IOException e) {
+      e.printStackTrace();
+    } finally {
+      IOUtils.closeQuietly(in);
+    }
+
+  }
 
   /**
    * A command line option
@@ -161,9 +187,10 @@ public class HbsServer {
       System.out.println("File not found: " + dir);
       usage(options);
     }
-    int port = Integer.parseInt(options.get("-port").getValue());
-    String suffix = options.get("-suffix").getValue();
-    String contextPath = options.get("-context").getValue();
+    logger.info("Welcome to the Handlebars.java server");
+    final int port = Integer.parseInt(options.get("-port").getValue());
+    final String suffix = options.get("-suffix").getValue();
+    final String contextPath = options.get("-context").getValue();
 
     TemplateLoader loader = new FileTemplateLoader(new File(dir));
     loader.setSuffix(suffix);
@@ -175,7 +202,27 @@ public class HbsServer {
     // Humanize helpers
     HumanizeHelper.register(handlebars);
 
-    Server server = new Server(port);
+    final Server server = new Server(port);
+    Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
+      @Override
+      public void run() {
+        logger.info("Hope you enjoy it! bye!");
+        try {
+          server.stop();
+        } catch (Exception ex) {
+          logger.info("Enable to stop server", ex);
+        }
+      }
+    }));
+
+    server.addLifeCycleListener(new AbstractLifeCycleListener() {
+      @Override
+      public void lifeCycleStarted(final LifeCycle event) {
+        logger.info("Open a browser and type:");
+        logger.info("  http://localhost:{}{}/[page]{}", new Object[] {port,
+            contextPath.equals("/") ? "" : contextPath, suffix });
+      }
+    });
 
     WebAppContext root = new WebAppContext();
     root.setContextPath(contextPath);

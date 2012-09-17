@@ -156,6 +156,7 @@ public class HbsServlet extends HttpServlet {
             .resolver(MapValueResolver.INSTANCE, FieldValueResolver.INSTANCE,
                 JavaBeanValueResolver.INSTANCE)
             .combine("lang", "Xml")
+            .combine("version", HbsServer.version)
             .combine("firstLine", firstLine).build()
         , writer);
 
