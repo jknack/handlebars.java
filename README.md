@@ -12,9 +12,9 @@ Handlebars provides the power necessary to let you build semantic templates effe
  In general, the syntax of **Handlebars** templates is a superset of [Mustache](http://mustache.github.com) templates. For basic syntax, check out the [Mustache manpage](http://mustache.github.com).
 
 ## Maven
- Development version: **0.5.0-SNAPSHOT**
+ Development version: **0.5.1-SNAPSHOT**
 
- Stable version: **0.4.2**
+ Stable version: **0.5.0**
 
 
 ```xml
@@ -444,6 +444,21 @@ See the JavaDoc of the [HumanizeHelper] (https://github.com/jknack/handlebars.ja
 The handlebars.java server is a standalone application where you can write Mustache/Handlebars template and merge them with data.
 
 It a useful tool for Web Designer.
+
+
+Download from Maven Central:
+
+1. Go [here](http://search.maven.org/#search%7Cga%7C1%7Chandlebars-proto)
+2. Under the **Download** section click on **jar**
+
+Maven:
+```xml
+<dependency>
+  <groupId>com.github.jknack</groupId>
+  <artifactId>handlebars-proto</artifactId>
+  <version>${current-version}</version>
+</dependency>
+```
 
 Usage:
 ```java -jar handlebars-proto-${current-version}.jar -dir myTemplates```
