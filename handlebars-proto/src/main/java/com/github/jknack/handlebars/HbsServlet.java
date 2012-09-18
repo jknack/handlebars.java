@@ -21,6 +21,8 @@ import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.Writer;
 import java.net.URI;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.ServletException;
@@ -31,6 +33,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.yaml.snakeyaml.Yaml;
 
 import com.fasterxml.jackson.core.JsonParser.Feature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -68,6 +71,11 @@ public class HbsServlet extends HttpServlet {
   private final ObjectMapper mapper = new ObjectMapper();
 
   /**
+   * A yaml parser.
+   */
+  private final Yaml yaml = new Yaml();
+
+  /**
    * The server options.
    */
   private final Map<String, Option> options;
@@ -97,11 +105,11 @@ public class HbsServlet extends HttpServlet {
       Template template =
           handlebars.compile(
               URI.create(removeExtension(requestURI(request))));
-      @SuppressWarnings("rawtypes")
-      Map data = mapper.readValue(json(request), Map.class);
+
+      Object model = model(request);
 
       writer = response.getWriter();
-      String output = template.apply(data);
+      String output = template.apply(model);
       writer.write(output);
       response.setContentType(options.get("-content-type").getValue());
     } catch (HandlebarsException ex) {
@@ -121,6 +129,21 @@ public class HbsServlet extends HttpServlet {
     } finally {
       IOUtils.closeQuietly(writer);
     }
+  }
+
+  /**
+   * Attempt to load a json or yml file.
+   *
+   * @param request The original request.
+   * @return The associated model.
+   * @throws IOException If something goes wrong.
+   */
+  private Object model(final HttpServletRequest request) throws IOException {
+    Object data = json(request);
+    if (data == null) {
+      data = yml(request);
+    }
+    return data == null ? Collections.emptyMap() : data;
   }
 
   /**
@@ -177,17 +200,38 @@ public class HbsServlet extends HttpServlet {
   }
 
   /**
-   * Try to load a <code>js</code> file that matches the given request.
+   * Try to load a <code>json</code> file that matches the given request.
    *
    * @param request The requested object.
-   * @return A json string.
+   * @return The associated data.
    * @throws IOException If the file isn't found.
    */
-  private String json(final HttpServletRequest request) throws IOException {
+  private Object json(final HttpServletRequest request) throws IOException {
     try {
-      return read(removeExtension(requestURI(request)) + ".json");
+      String json = read(removeExtension(requestURI(request)) + ".json");
+      if (json.trim().startsWith("[")) {
+        return mapper.readValue(json, List.class);
+      }
+      return mapper.readValue(json, Map.class);
     } catch (FileNotFoundException ex) {
-      return "{}";
+      return null;
+    }
+  }
+
+  /**
+   * Try to load a <code>yml</code> file that matches the given request.
+   *
+   * @param request The requested object.
+   * @return A yaml map.
+   * @throws IOException If the file isn't found.
+   */
+  private Object yml(final HttpServletRequest request) throws IOException {
+    try {
+      String yml = read(removeExtension(requestURI(request)) + ".yml");
+      Object data = yaml.load(yml);
+      return data;
+    } catch (FileNotFoundException ex) {
+      return null;
     }
   }
 
@@ -211,7 +255,8 @@ public class HbsServlet extends HttpServlet {
       }
       input = getServletContext().getResourceAsStream(absURI);
       if (input == null) {
-        throw new FileNotFoundException(options.get("-dir").getValue() + uri);
+        throw new FileNotFoundException(options.get("-dir").getValue()
+            + absURI);
       }
       return IOUtils.toString(input);
     } finally {

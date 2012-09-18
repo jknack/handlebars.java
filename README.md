@@ -63,7 +63,7 @@ Usage:
 
 Example:
 
-**myTemplates/home.html**
+**myTemplates/home.hbs**
 
 ```
 <ul>
@@ -73,9 +73,9 @@ Example:
 </ul>
 ```
 
-**myTemplates/home.js**
+**myTemplates/home.json**
 
-```
+```json
 {
   items: [
     {
@@ -85,10 +85,19 @@ Example:
 }
 ```
 
+or if you prefer YAML:
+
+```yml
+list:
+  - name: Handlebars.java rocks!
+```
+
 Open a browser a type:
 ```
 http://localhost:6780/home.hbs
 ```
+enjoy it!
+
 
 Additional options:
 
