@@ -185,7 +185,7 @@ public class HbsServlet extends HttpServlet {
    */
   private String json(final HttpServletRequest request) throws IOException {
     try {
-      return read(removeExtension(requestURI(request)) + ".js");
+      return read(removeExtension(requestURI(request)) + ".json");
     } catch (FileNotFoundException ex) {
       return "{}";
     }
