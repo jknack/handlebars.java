@@ -1,14 +1,10 @@
 /**
  * Copyright (c) 2012 Edgar Espina
- *
  * This file is part of Handlebars.java.
- *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * http://www.apache.org/licenses/LICENSE-2.0
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -25,6 +21,8 @@ import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.Writer;
 import java.net.URI;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.ServletException;
@@ -33,6 +31,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.yaml.snakeyaml.Yaml;
 
 import com.fasterxml.jackson.core.JsonParser.Feature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -54,6 +55,12 @@ public class HbsServlet extends HttpServlet {
   private static final long serialVersionUID = 1L;
 
   /**
+   * The logging system.
+   */
+  private static final Logger logger =
+      LoggerFactory.getLogger(HbsServlet.class);
+
+  /**
    * The handlebars object.
    */
   private final Handlebars handlebars;
@@ -62,6 +69,11 @@ public class HbsServlet extends HttpServlet {
    * The object mapper.
    */
   private final ObjectMapper mapper = new ObjectMapper();
+
+  /**
+   * A yaml parser.
+   */
+  private final Yaml yaml = new Yaml();
 
   /**
    * The server options.
@@ -93,11 +105,11 @@ public class HbsServlet extends HttpServlet {
       Template template =
           handlebars.compile(
               URI.create(removeExtension(requestURI(request))));
-      @SuppressWarnings("rawtypes")
-      Map data = mapper.readValue(json(request), Map.class);
+
+      Object model = model(request);
 
       writer = response.getWriter();
-      String output = template.apply(data);
+      String output = template.apply(model);
       writer.write(output);
       response.setContentType(options.get("-content-type").getValue());
     } catch (HandlebarsException ex) {
@@ -105,9 +117,33 @@ public class HbsServlet extends HttpServlet {
     } catch (FileNotFoundException ex) {
       response.sendError(HttpServletResponse.SC_NOT_FOUND,
           "NOT FOUND: " + ex.getMessage());
+    } catch (IOException ex) {
+      logger.error("Unexpected error", ex);
+      throw ex;
+    } catch (RuntimeException ex) {
+      logger.error("Unexpected error", ex);
+      throw ex;
+    } catch (Exception ex) {
+      logger.error("Unexpected error", ex);
+      throw new ServletException(ex);
     } finally {
       IOUtils.closeQuietly(writer);
     }
+  }
+
+  /**
+   * Attempt to load a json or yml file.
+   *
+   * @param request The original request.
+   * @return The associated model.
+   * @throws IOException If something goes wrong.
+   */
+  private Object model(final HttpServletRequest request) throws IOException {
+    Object data = json(request);
+    if (data == null) {
+      data = yml(request);
+    }
+    return data == null ? Collections.emptyMap() : data;
   }
 
   /**
@@ -164,17 +200,38 @@ public class HbsServlet extends HttpServlet {
   }
 
   /**
-   * Try to load a <code>js</code> file that matches the given request.
+   * Try to load a <code>json</code> file that matches the given request.
    *
    * @param request The requested object.
-   * @return A json string.
+   * @return The associated data.
    * @throws IOException If the file isn't found.
    */
-  private String json(final HttpServletRequest request) throws IOException {
+  private Object json(final HttpServletRequest request) throws IOException {
     try {
-      return read(removeExtension(requestURI(request)) + ".js");
+      String json = read(removeExtension(requestURI(request)) + ".json");
+      if (json.trim().startsWith("[")) {
+        return mapper.readValue(json, List.class);
+      }
+      return mapper.readValue(json, Map.class);
     } catch (FileNotFoundException ex) {
-      return "{}";
+      return null;
+    }
+  }
+
+  /**
+   * Try to load a <code>yml</code> file that matches the given request.
+   *
+   * @param request The requested object.
+   * @return A yaml map.
+   * @throws IOException If the file isn't found.
+   */
+  private Object yml(final HttpServletRequest request) throws IOException {
+    try {
+      String yml = read(removeExtension(requestURI(request)) + ".yml");
+      Object data = yaml.load(yml);
+      return data;
+    } catch (FileNotFoundException ex) {
+      return null;
     }
   }
 
@@ -188,9 +245,18 @@ public class HbsServlet extends HttpServlet {
   private String read(final String uri) throws IOException {
     InputStream input = null;
     try {
-      input = getServletContext().getResourceAsStream(uri);
+      String absURI = uri;
+      String prefix = options.get("-prefix").getValue();
+      if (!"/".equals(prefix)) {
+        absURI = prefix + absURI;
+      }
+      if (!absURI.startsWith("/")) {
+        absURI = "/" + absURI;
+      }
+      input = getServletContext().getResourceAsStream(absURI);
       if (input == null) {
-        throw new FileNotFoundException(options.get("-dir").getValue() + uri);
+        throw new FileNotFoundException(options.get("-dir").getValue()
+            + absURI);
       }
       return IOUtils.toString(input);
     } finally {

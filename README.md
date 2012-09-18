@@ -12,9 +12,9 @@ Handlebars provides the power necessary to let you build semantic templates effe
  In general, the syntax of **Handlebars** templates is a superset of [Mustache](http://mustache.github.com) templates. For basic syntax, check out the [Mustache manpage](http://mustache.github.com).
 
 ## Maven
- Development version: **0.5.0-SNAPSHOT**
+ Development version: **0.5.1-SNAPSHOT**
 
- Stable version: **0.4.2**
+ Stable version: **0.5.0**
 
 
 ```xml
@@ -30,7 +30,7 @@ Handlebars provides the power necessary to let you build semantic templates effe
 ```java
 Handlebars handlebars = new Handlebars();
 
-Template template = handlebars.compile("Hello {{.}}!");
+Template template = handlebars.compile("Hello {{this}}!");
 
 System.out.println(template.apply("Handlebars.java"));
 ```
@@ -38,6 +38,75 @@ Output:
 ```
 Hello Handlebars.java!
 ```
+
+## The Handlebars.java Server
+The handlebars.java server is small application where you can write Mustache/Handlebars template and merge them with data.
+
+It a useful tool for Web Designer.
+
+Download from Maven Central:
+
+1. Go [here](http://search.maven.org/#search%7Cga%7C1%7Chandlebars-proto)
+2. Under the **Download** section click on **jar**
+
+Maven:
+```xml
+<dependency>
+  <groupId>com.github.jknack</groupId>
+  <artifactId>handlebars-proto</artifactId>
+  <version>${current-version}</version>
+</dependency>
+```
+
+Usage:
+```java -jar handlebars-proto-${current-version}.jar -dir myTemplates```
+
+Example:
+
+**myTemplates/home.hbs**
+
+```
+<ul>
+ {{#items}}
+ {{name}}
+ {{/items}}
+</ul>
+```
+
+**myTemplates/home.json**
+
+```json
+{
+  items: [
+    {
+      name: "Handlebars.java rocks!"
+    }
+  ]
+}
+```
+
+or if you prefer YAML:
+
+```yml
+list:
+  - name: Handlebars.java rocks!
+```
+
+Open a browser a type:
+```
+http://localhost:6780/home.hbs
+```
+enjoy it!
+
+
+Additional options:
+
+* -dir: set the template directory
+* -prefix: set the template's prefix, default is /
+* -suffix: set the template's suffix, default is .hbs
+* -context: set the context's path, default is /
+* -port: set port number, default is 6780
+* -content-type: set the content-type header, default is text/html
 
 ## Helpers
 
@@ -440,52 +509,6 @@ Usage:
 See the JavaDoc of the [HumanizeHelper] (https://github.com/jknack/handlebars.java/blob/develop/handlebars-humanize/src/main/java/com/github/jknack/handlebars/HumanizeHelper.java) for more information.
 
 # Modules
-## Handlebars.java Server
-The handlebars.java server is a standalone application where you can write Mustache/Handlebars template and merge them with data.
-
-It a useful tool for Web Designer.
-
-Usage:
-```java -jar handlebars-proto-${current-version}.jar -dir myTemplates```
-
-Example:
-
-**myTemplates/home.html**
-
-```
-<ul>
- {{#items}}
- {{name}}
- {{/items}}
-</ul>
-```
-
-**myTemplates/home.js**
-
-```
-{
-  items: [
-    {
-      name: "Handlebars.java rocks!"
-    }
-  ]
-}
-```
-
-Open a browser a type:
-```
-http://localhost:6780/home.html
-```
-
-Additional options:
-
-* -dir: set the template directory
-* -suffix: set the template's suffix, default is .html
-* -context: set the context's path, default is /
-* -port: set port number, default is 6780
-* -content-type: set the content-type header, default is text/html
-
-
 ## SpringMVC
 
 Maven:
