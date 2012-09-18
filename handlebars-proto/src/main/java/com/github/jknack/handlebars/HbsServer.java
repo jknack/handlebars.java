@@ -131,7 +131,9 @@ public class HbsServer {
         {
           put("-dir", new Option("-dir", "set the template directory", null));
           put("-suffix", new Option("-suffix",
-              "set the template's suffix, default is .html", ".html"));
+              "set the template's suffix, default is .hbs", ".hbs"));
+          put("-prefix", new Option("-prefix",
+              "set the template's prefix, default is /", "/"));
           put("-context", new Option("-context",
               "set the context's path, default is /", "/"));
           put("-port", new Option("-port", "set port number, default is 6780",
@@ -189,10 +191,12 @@ public class HbsServer {
     }
     logger.info("Welcome to the Handlebars.java server");
     final int port = Integer.parseInt(options.get("-port").getValue());
+    final String prefix = options.get("-prefix").getValue();
     final String suffix = options.get("-suffix").getValue();
     final String contextPath = options.get("-context").getValue();
 
     TemplateLoader loader = new FileTemplateLoader(new File(dir));
+    loader.setPrefix(new File(dir, prefix).getAbsolutePath());
     loader.setSuffix(suffix);
     Handlebars handlebars = new Handlebars(loader);
     handlebars.registerHelper("json", Jackson2Helper.INSTANCE);
