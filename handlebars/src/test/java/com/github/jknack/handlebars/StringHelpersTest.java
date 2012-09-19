@@ -26,6 +26,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 
+import org.apache.commons.lang3.SystemUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.api.easymock.PowerMock;
@@ -370,8 +371,9 @@ public class StringHelpersTest {
 
     assertEquals("wordWrap", WORD_WRAP.helperName());
 
-    assertEquals("Joel\nis a\nslug",
-        WORD_WRAP.apply("Joel is a slug", options));
+    assertEquals("Joel" + SystemUtils.LINE_SEPARATOR + "is a"
+            + SystemUtils.LINE_SEPARATOR + "slug",
+            WORD_WRAP.apply("Joel is a slug", options));
 
     verify(options);
   }
