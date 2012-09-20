@@ -12,9 +12,9 @@ Handlebars provides the power necessary to let you build semantic templates effe
  In general, the syntax of **Handlebars** templates is a superset of [Mustache](http://mustache.github.com) templates. For basic syntax, check out the [Mustache manpage](http://mustache.github.com).
 
 ## Maven
- Development version: **0.5.1-SNAPSHOT**
+ Development version: **0.5.3-SNAPSHOT**
 
- Stable version: **0.5.0**
+ Stable version: **0.5.2**
 
 
 ```xml
@@ -42,7 +42,7 @@ Hello Handlebars.java!
 ## The Handlebars.java Server
 The handlebars.java server is small application where you can write Mustache/Handlebars template and merge them with data.
 
-It a useful tool for Web Designer.
+It is a useful tool for Web Designers.
 
 Download from Maven Central:
 
@@ -85,7 +85,7 @@ Example:
 }
 ```
 
-or if you prefer YAML:
+or if you prefer YAML **myTemplates/home.yml**:
 
 ```yml
 list:
