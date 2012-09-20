@@ -1,14 +1,10 @@
 /**
  * Copyright (c) 2012 Edgar Espina
- *
  * This file is part of Handlebars.java.
- *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * http://www.apache.org/licenses/LICENSE-2.0
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,8 +13,7 @@
  */
 package com.github.jknack.handlebars.internal;
 
-import java.lang.reflect.Array;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.List;
 
@@ -46,14 +41,20 @@ enum Transformer {
 
     @Override
     public Object doTransform(final Object candidate) {
-      int size = Array.getLength(candidate);
-      List<Object> list = new ArrayList<Object>(size);
-      for (int i = 0; i < size; i++) {
-        list.add(Array.get(candidate, i));
-      }
+      List<Object> list = Arrays.asList((Object[]) candidate);
       return list;
     }
   };
+
+  /**
+   * All the transformer are here except {@link #NONE}.
+   */
+  private static final EnumSet<Transformer> transformers = EnumSet
+      .allOf(Transformer.class);;
+
+  static {
+    transformers.remove(NONE);
+  }
 
   /**
    * Return true if the strategy applies for the candidate value.
@@ -92,9 +93,7 @@ enum Transformer {
    * @return The best transformer for the given value. Not null.
    */
   private static Transformer get(final Object candidate) {
-    EnumSet<Transformer> transoformers = EnumSet.allOf(Transformer.class);
-    transoformers.remove(NONE);
-    for (Transformer transformer : transoformers) {
+    for (Transformer transformer : transformers) {
       if (transformer.apply(candidate)) {
         return transformer;
       }

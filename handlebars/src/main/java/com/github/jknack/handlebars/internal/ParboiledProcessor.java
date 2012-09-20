@@ -20,15 +20,14 @@ import com.github.jknack.handlebars.Handlebars;
 /**
  * A simple facade for parser creation. This class was introduced in order to
  * remove dynamic creation of parboiled classes. In restricted environments like
- * Google App Engine, Parboiled isn't able to create a dynamic classes.
- * The hack consist in creating Parboiled classes at build time and replace this
- * class from final jar with one that if found in the resources directory and it
- * is added at build-time.
+ * Google App Engine, Parboiled isn't able to create dynamic classes.
+ * The hack consist in creates Parboiled classes at build time and add them to
+ * the final jar.
  *
  * @author edgar.espina
  * @since 0.4.1
  */
-public class ParboiledProcessor {
+class ParboiledProcessor {
 
   public static void main(final String[] args) throws IOException {
     System.out.println("Processing parboiled classess...");
