@@ -16,6 +16,7 @@ package com.github.jknack.handlebars;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -27,7 +28,10 @@ import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.util.component.AbstractLifeCycle.AbstractLifeCycleListener;
 import org.eclipse.jetty.util.component.LifeCycle;
+import org.eclipse.jetty.util.resource.Resource;
+import org.eclipse.jetty.webapp.Configuration;
 import org.eclipse.jetty.webapp.WebAppContext;
+import org.eclipse.jetty.webapp.WebXmlConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -235,6 +239,15 @@ public class HbsServer {
         "*" + suffix);
 
     root.setParentLoaderPriority(true);
+
+    // prevent jetty from loading the webapp web.xml
+    root.setConfigurations(new Configuration[] { new WebXmlConfiguration() {
+        @Override
+        protected Resource findWebXml(WebAppContext context)
+                throws IOException, MalformedURLException {
+            return null;
+        }
+    } });
 
     server.setHandler(root);
 
