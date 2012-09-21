@@ -68,7 +68,7 @@ public class ClassTemplateLoader extends TemplateLoader {
     if (input == null) {
       return null;
     }
-    return new InputStreamReader(input);
+    return new InputStreamReader(input, "UTF-8");
   }
 
 }

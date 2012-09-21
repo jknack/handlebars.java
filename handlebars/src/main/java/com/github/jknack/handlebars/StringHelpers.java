@@ -440,9 +440,10 @@ public enum StringHelpers implements Helper<Object> {
       }
       isTrue(value instanceof Boolean, "found '%s', expected 'boolean'",
           value);
-      return (String)
-      (value == Boolean.TRUE ? options.hash("yes", "yes")
-          : options.hash("no", "no"));
+      if (Boolean.TRUE.equals(value)) {
+        return options.hash("yes", "yes");
+      }
+      return options.hash("no", "no");
     }
   },
 
