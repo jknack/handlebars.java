@@ -58,13 +58,6 @@
     </repository>
   </distributionManagement>
 
-  <repositories>
-    <repository>
-      <id>parboiled</id>
-      <url>http://repo.spray.cc</url>
-    </repository>
-  </repositories>
-
   <dependencyManagement>
     <dependencies>
       <dependency>
@@ -83,7 +76,7 @@
       <dependency>
         <groupId>org.parboiled</groupId>
         <artifactId>parboiled-java</artifactId>
-        <version>1.1</version>
+        <version>1.1.1</version>
         <exclusions>
           <exclusion>
             <groupId>org.scala-lang</groupId>
