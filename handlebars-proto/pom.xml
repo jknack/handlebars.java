@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
   <parent>
     <groupId>com.github.jknack</groupId>
@@ -53,10 +54,51 @@
                 </filter>
               </filters>
               <transformers>
-                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                <transformer
+                  implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                   <mainClass>com.github.jknack.handlebars.HbsServer</mainClass>
                 </transformer>
               </transformers>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <!-- Launch4j -->
+      <plugin>
+        <groupId>com.akathist.maven.plugins.launch4j</groupId>
+        <artifactId>launch4j-maven-plugin</artifactId>
+        <version>1.5.1</version>
+        <executions>
+          <execution>
+            <id>l4j-clui</id>
+            <phase>package</phase>
+            <goals>
+              <goal>launch4j</goal>
+            </goals>
+            <configuration>
+              <headerType>console</headerType>
+              <outfile>target/handlebars.exe</outfile>
+              <jar>target/handlebars-proto-${project.version}.jar</jar>
+              <errTitle>Handlebars.java</errTitle>
+              <classPath>
+                <mainClass>com.github.jknack.handlebars.HbsServer</mainClass>
+                <addDependencies>false</addDependencies>
+              </classPath>
+              <jre>
+                <minVersion>1.6.0</minVersion>
+              </jre>
+              <versionInfo>
+                <fileVersion>0.5.4.0</fileVersion>
+                <txtFileVersion>${project.version}</txtFileVersion>
+                <fileDescription>Handlebars.java Server</fileDescription>
+                <copyright>Copyright (c) 2012 Edgar Espina</copyright>
+                <productVersion>0.5.4.0</productVersion>
+                <productName>Handlebars.java Server</productName>
+                <txtProductVersion>${project.version}</txtProductVersion>
+                <internalName>handlebars</internalName>
+                <originalFilename>handlebars.exe</originalFilename>
+              </versionInfo>
             </configuration>
           </execution>
         </executions>
