@@ -56,7 +56,7 @@
               <transformers>
                 <transformer
                   implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                  <mainClass>com.github.jknack.handlebars.HbsServer</mainClass>
+                  <mainClass>com.github.jknack.handlebars.server.HbsServer</mainClass>
                 </transformer>
               </transformers>
             </configuration>
@@ -82,7 +82,7 @@
               <jar>target/handlebars-proto-${project.version}.jar</jar>
               <errTitle>Handlebars.java</errTitle>
               <classPath>
-                <mainClass>com.github.jknack.handlebars.HbsServer</mainClass>
+                <mainClass>com.github.jknack.handlebars.server.HbsServer</mainClass>
                 <addDependencies>false</addDependencies>
               </classPath>
               <jre>
@@ -182,6 +182,12 @@
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-classic</artifactId>
       <scope>compile</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>args4j</groupId>
+      <artifactId>args4j</artifactId>
+      <version>2.0.16</version>
     </dependency>
 
     <!-- Test dependencies -->

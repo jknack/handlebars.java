@@ -11,7 +11,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.jknack.handlebars;
+package com.github.jknack.handlebars.server;
 
 import static org.apache.commons.io.FilenameUtils.removeExtension;
 
@@ -37,10 +37,16 @@ import org.yaml.snakeyaml.Yaml;
 
 import com.fasterxml.jackson.core.JsonParser.Feature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.jknack.handlebars.HbsServer.Option;
+import com.github.jknack.handlebars.Context;
+import com.github.jknack.handlebars.Handlebars;
+import com.github.jknack.handlebars.HandlebarsError;
+import com.github.jknack.handlebars.HandlebarsException;
+import com.github.jknack.handlebars.StringHelpers;
+import com.github.jknack.handlebars.Template;
 import com.github.jknack.handlebars.context.FieldValueResolver;
 import com.github.jknack.handlebars.context.JavaBeanValueResolver;
 import com.github.jknack.handlebars.context.MapValueResolver;
+import com.github.jknack.handlebars.server.HbsServer.Options;
 
 /**
  * Prepare, compile and merge handlebars templates.
@@ -78,18 +84,17 @@ public class HbsServlet extends HttpServlet {
   /**
    * The server options.
    */
-  private final Map<String, Option> options;
+  private final Options args;
 
   /**
    * Creates a new {@link HbsServlet}.
    *
    * @param handlebars The handlebars object.
-   * @param options The server options.
+   * @param args The server options.
    */
-  public HbsServlet(final Handlebars handlebars,
-      final Map<String, Option> options) {
+  public HbsServlet(final Handlebars handlebars, final Options args) {
     this.handlebars = handlebars;
-    this.options = options;
+    this.args = args;
 
     mapper.configure(Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
     mapper.configure(Feature.ALLOW_COMMENTS, true);
@@ -111,7 +116,7 @@ public class HbsServlet extends HttpServlet {
       writer = response.getWriter();
       String output = template.apply(model);
       writer.write(output);
-      response.setContentType(options.get("-content-type").getValue());
+      response.setContentType(args.contentType);
     } catch (HandlebarsException ex) {
       handlebarsError(ex, response);
     } catch (FileNotFoundException ex) {
@@ -246,17 +251,15 @@ public class HbsServlet extends HttpServlet {
     InputStream input = null;
     try {
       String absURI = uri;
-      String prefix = options.get("-prefix").getValue();
-      if (!"/".equals(prefix)) {
-        absURI = prefix + absURI;
+      if (!HbsServer.CONTEXT.equals(args.prefix)) {
+        absURI = args.prefix + absURI;
       }
       if (!absURI.startsWith("/")) {
         absURI = "/" + absURI;
       }
       input = getServletContext().getResourceAsStream(absURI);
       if (input == null) {
-        throw new FileNotFoundException(options.get("-dir").getValue()
-            + absURI);
+        throw new FileNotFoundException(args.dir + absURI);
       }
       return IOUtils.toString(input);
     } finally {
