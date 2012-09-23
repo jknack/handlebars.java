@@ -203,6 +203,18 @@ public class HbsServer {
     loader.setPrefix(new File(dir, prefix).getAbsolutePath());
     loader.setSuffix(suffix);
     Handlebars handlebars = new Handlebars(loader);
+
+    /**
+     * Helper wont work in the stand-alone version, so we add a default helper
+     * that render the plain text.
+     */
+    handlebars.registerHelper(Handlebars.HELPER_MISSING, new Helper<Object>() {
+      @Override
+      public CharSequence apply(final Object context, final Options options)
+          throws IOException {
+        return new Handlebars.SafeString(options.fn.text());
+      }
+    });
     handlebars.registerHelper("json", Jackson2Helper.INSTANCE);
     handlebars.registerHelper("md", new MarkdownHelper());
     // String helpers
@@ -243,7 +255,7 @@ public class HbsServer {
     // prevent jetty from loading the webapp web.xml
     root.setConfigurations(new Configuration[] { new WebXmlConfiguration() {
         @Override
-        protected Resource findWebXml(WebAppContext context)
+        protected Resource findWebXml(final WebAppContext context)
                 throws IOException, MalformedURLException {
             return null;
         }

@@ -15,7 +15,6 @@ package com.github.jknack.handlebars;
 
 import static org.apache.commons.lang3.Validate.notEmpty;
 import static org.apache.commons.lang3.Validate.notNull;
-import static org.parboiled.common.Preconditions.checkNotNull;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import java.io.IOException;
@@ -225,14 +224,19 @@ public class Handlebars {
   }
 
   /**
+   * The missing helper's name.
+   */
+  public static final String HELPER_MISSING = "helperMissing";
+
+  /**
    * The default start delimiter.
    */
-  private static final String DELIM_START = "{{";
+  public static final String DELIM_START = "{{";
 
   /**
    * The default end delimiter.
    */
-  private static final String DELIM_END = "}}";
+  public static final String DELIM_END = "}}";
 
   /**
    * NO CACHE.
@@ -284,9 +288,9 @@ public class Handlebars {
    */
   public Handlebars(final TemplateLoader loader, final TemplateCache cache) {
     this.loader =
-        checkNotNull(loader, "The template loader is required.");
+        notNull(loader, "The template loader is required.");
     this.cache =
-        checkNotNull(cache, "The template cache is required.");
+        notNull(cache, "The template cache is required.");
 
     registerBuiltinsHelpers(this);
   }
@@ -397,14 +401,14 @@ public class Handlebars {
   /**
    * Find a helper by it's name.
    *
-   * @param <H> The helper runtime type.
+   * @param <C> The helper runtime type.
    * @param name The helper's name. Required.
    * @return A helper or null if it's not found.
    */
   @SuppressWarnings("unchecked")
-  public <H> Helper<H> helper(final String name) {
-    checkNotNull(name, "A helper's name is required.");
-    return (Helper<H>) helpers.get(name);
+  public <C> Helper<C> helper(final String name) {
+    notEmpty(name, "A helper's name is required.");
+    return (Helper<C>) helpers.get(name);
   }
 
   /**
@@ -418,8 +422,8 @@ public class Handlebars {
   @SuppressWarnings("unchecked")
   public <H> Handlebars registerHelper(final String name,
       final Helper<H> helper) {
-    checkNotNull(name, "A helper's name is required.");
-    checkNotNull(helper, "A helper is required.");
+    notEmpty(name, "A helper's name is required.");
+    notNull(helper, "A helper is required.");
     helpers.put(name, (Helper<Object>) helper);
     return this;
   }

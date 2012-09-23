@@ -13,6 +13,8 @@
  */
 package com.github.jknack.handlebars.internal;
 
+import static org.apache.commons.lang3.StringUtils.join;
+import static org.apache.commons.lang3.StringUtils.split;
 import static org.apache.commons.lang3.Validate.notNull;
 
 import java.io.IOException;
@@ -92,7 +94,7 @@ abstract class BaseTemplate implements Template {
       String message =
           filename + ":" + line + ":" + column + ": "
               + reason + "\n";
-      message += "    " + evidence;
+      message += "    " + join(split(evidence, "\n"), "\n    ");
       HandlebarsError error =
           new HandlebarsError(filename, line, column, reason, evidence,
               message);
