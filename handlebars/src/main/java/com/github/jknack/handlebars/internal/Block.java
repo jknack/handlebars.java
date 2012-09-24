@@ -130,10 +130,10 @@ class Block extends HelperResolver {
         hname = WithHelper.NAME;
         currentScope = Context.newContext(context, childContext);
       }
-      // A built-in helper might be overrived it.
+      // A built-in helper might be override it.
       helper = handlebars.helper(hname);
     } else {
-      childContext = determineContext(context);
+      childContext = transform(determineContext(context));
     }
     DefaultOptions options =
         new DefaultOptions(handlebars, template, inverse, currentScope,

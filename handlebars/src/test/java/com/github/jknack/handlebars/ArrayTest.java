@@ -57,6 +57,16 @@ public class ArrayTest {
   }
 
   @Test
+  public void eachArray() throws IOException {
+    Handlebars handlebars = new Handlebars();
+    Template template =
+        handlebars.compile("Hello {{#each list}}{{this}}{{/each}}!");
+    Map<String, Object> context = new HashMap<String, Object>();
+    context.put("list", new Object[] {"w", "o", "r", "l", "d" });
+    assertEquals("Hello world!", template.apply(context));
+  }
+
+  @Test
   public void letterArray() throws IOException {
     Handlebars handlebars = new Handlebars();
     Template template =

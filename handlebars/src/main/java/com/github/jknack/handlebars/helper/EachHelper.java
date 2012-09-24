@@ -24,8 +24,12 @@
  */
 package com.github.jknack.handlebars.helper;
 
+import static org.apache.commons.lang3.Validate.isTrue;
+
 import java.io.IOException;
 import java.util.Iterator;
+
+import org.apache.commons.lang3.StringUtils;
 
 import com.github.jknack.handlebars.Context;
 import com.github.jknack.handlebars.Helper;
@@ -54,6 +58,11 @@ public class EachHelper implements Helper<Object> {
   @Override
   public CharSequence apply(final Object context, final Options options)
       throws IOException {
+    if (context == null) {
+      return StringUtils.EMPTY;
+    }
+    isTrue(context instanceof Iterable,
+        "found: '%s', expected '%s'", context, Iterable.class.getName());
     StringBuilder buffer = new StringBuilder();
     @SuppressWarnings("unchecked")
     Iterable<Object> elements = (Iterable<Object>) context;
