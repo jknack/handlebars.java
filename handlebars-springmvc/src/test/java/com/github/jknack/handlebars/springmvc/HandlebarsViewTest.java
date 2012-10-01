@@ -17,10 +17,13 @@
  */
 package com.github.jknack.handlebars.springmvc;
 
+import static org.easymock.EasyMock.capture;
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.isA;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
+import static org.junit.Assert.assertNotNull;
 
 import java.io.PrintWriter;
 import java.util.Map;
@@ -28,10 +31,12 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.easymock.Capture;
 import org.junit.Test;
 
+import com.github.jknack.handlebars.Context;
 import com.github.jknack.handlebars.Template;
-import com.github.jknack.handlebars.springmvc.HandlebarsView;
+import com.github.jknack.handlebars.context.MapValueResolver;
 
 /**
  * Unit test for {@link HandlebarsView}.
@@ -49,7 +54,8 @@ public class HandlebarsViewTest {
     PrintWriter writer = createMock(PrintWriter.class);
 
     Template template = createMock(Template.class);
-    template.apply(model, writer);
+    Capture<Context> context = new Capture<Context>();
+    template.apply(capture(context), isA(PrintWriter.class));
 
     HttpServletRequest request = createMock(HttpServletRequest.class);
 
@@ -59,8 +65,11 @@ public class HandlebarsViewTest {
     replay(template, model, request, response);
 
     HandlebarsView view = new HandlebarsView();
+    view.setValueResolver(MapValueResolver.INSTANCE);
     view.setTemplate(template);
     view.renderMergedTemplateModel(model, request, response);
+
+    assertNotNull(context.getValue());
 
     verify(template, model, request, response);
   }

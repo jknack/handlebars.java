@@ -13,6 +13,7 @@
  */
 package com.github.jknack.handlebars;
 
+import static org.apache.commons.lang3.Validate.notEmpty;
 import static org.parboiled.common.Preconditions.checkNotNull;
 
 import java.lang.reflect.Array;
@@ -141,10 +142,7 @@ public final class Context {
      * @return This builder.
      */
     public Builder resolver(final ValueResolver... resolvers) {
-      if (resolvers.length == 0) {
-        throw new IllegalArgumentException(
-            "At least one value-resolver must be present.");
-      }
+      notEmpty(resolvers, "At least one value-resolver must be present.");
       context.setResolver(new CompositeValueResolver(resolvers));
       return this;
     }

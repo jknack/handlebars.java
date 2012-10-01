@@ -13,6 +13,7 @@
  */
 package com.github.jknack.handlebars.springmvc;
 
+import static org.apache.commons.lang3.Validate.notEmpty;
 import static org.apache.commons.lang3.Validate.notNull;
 
 import java.io.IOException;
@@ -25,6 +26,9 @@ import org.springframework.web.servlet.view.AbstractUrlBasedView;
 
 import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.TemplateLoader;
+import com.github.jknack.handlebars.ValueResolver;
+import com.github.jknack.handlebars.context.JavaBeanValueResolver;
+import com.github.jknack.handlebars.context.MapValueResolver;
 
 /**
  * A Handlebars {@link ViewResolver view resolver}.
@@ -44,6 +48,12 @@ public class HandlebarsViewResolver extends AbstractTemplateViewResolver
    * The handlebars object.
    */
   private Handlebars handlebars;
+
+  /**
+   * The value's resolvers.
+   */
+  private ValueResolver[] valueResolvers = {MapValueResolver.INSTANCE,
+      JavaBeanValueResolver.INSTANCE };
 
   /**
    * Creates a new {@link HandlebarsViewResolver}.
@@ -89,6 +99,7 @@ public class HandlebarsViewResolver extends AbstractTemplateViewResolver
         - getSuffix().length());
     // Compile the template.
     view.setTemplate(handlebars.compile(URI.create(url)));
+    view.setValueResolver(valueResolvers);
     return view;
   }
 
@@ -115,4 +126,13 @@ public class HandlebarsViewResolver extends AbstractTemplateViewResolver
     templateLoader.setSuffix(getSuffix());
   }
 
+  /**
+   * Set the value resolvers.
+   *
+   * @param valueResolvers The value resolvers. Required.
+   */
+  public void setValueResolvers(final ValueResolver... valueResolvers) {
+    this.valueResolvers = notEmpty(valueResolvers,
+        "At least one value-resolver must be present.");
+  }
 }

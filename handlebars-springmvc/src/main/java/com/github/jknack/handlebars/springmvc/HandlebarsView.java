@@ -1,14 +1,10 @@
 /**
  * Copyright (c) 2012 Edgar Espina
- *
  * This file is part of Handlebars.java.
- *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * http://www.apache.org/licenses/LICENSE-2.0
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,15 +13,19 @@
  */
 package com.github.jknack.handlebars.springmvc;
 
+import static org.apache.commons.lang3.Validate.notEmpty;
+import static org.apache.commons.lang3.Validate.notNull;
+
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.springframework.util.Assert;
 import org.springframework.web.servlet.view.AbstractTemplateView;
 
+import com.github.jknack.handlebars.Context;
 import com.github.jknack.handlebars.Template;
+import com.github.jknack.handlebars.ValueResolver;
 
 /**
  * A handlebars view implementation.
@@ -41,13 +41,21 @@ public class HandlebarsView extends AbstractTemplateView {
   private Template template;
 
   /**
+   * The value's resolvers.
+   */
+  private ValueResolver[] valueResolvers;
+
+  /**
    * Merge model into the view. {@inheritDoc}
    */
   @Override
   protected void renderMergedTemplateModel(final Map<String, Object> model,
       final HttpServletRequest request, final HttpServletResponse response)
       throws Exception {
-    template.apply(model, response.getWriter());
+    Context context = Context.newBuilder(model)
+      .resolver(valueResolvers)
+      .build();
+    template.apply(context, response.getWriter());
   }
 
   /**
@@ -56,7 +64,16 @@ public class HandlebarsView extends AbstractTemplateView {
    * @param template The compiled template. Required.
    */
   void setTemplate(final Template template) {
-    Assert.notNull(template, "A handlebars template is required.");
-    this.template = template;
+    this.template = notNull(template, "A handlebars template is required.");
+  }
+
+  /**
+   * Set the value resolvers.
+   *
+   * @param valueResolvers The value resolvers. Required.
+   */
+  void setValueResolver(final ValueResolver... valueResolvers) {
+    this.valueResolvers = notEmpty(valueResolvers,
+        "At least one value-resolver must be present.");
   }
 }
