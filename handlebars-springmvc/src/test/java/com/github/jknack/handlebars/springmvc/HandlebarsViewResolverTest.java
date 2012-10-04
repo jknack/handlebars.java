@@ -23,9 +23,11 @@ import static org.junit.Assert.assertEquals;
 import java.net.URI;
 
 import org.junit.Test;
+import org.springframework.context.ApplicationContext;
 
 import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Template;
+import com.github.jknack.handlebars.TemplateLoader;
 import com.github.jknack.handlebars.context.JavaBeanValueResolver;
 import com.github.jknack.handlebars.context.MapValueResolver;
 
@@ -39,9 +41,11 @@ public class HandlebarsViewResolverTest {
 
   @Test
   public void configureNoDash() throws Exception {
+    final TemplateLoader templateLoader = createMock(TemplateLoader.class);
+
     Template template = createMock(Template.class);
 
-    Handlebars handlebars = createMock(Handlebars.class);
+    final Handlebars handlebars = createMock(Handlebars.class);
     expect(handlebars.compile(URI.create("home"))).andReturn(template);
 
     HandlebarsView view = createMock(HandlebarsView.class);
@@ -52,20 +56,39 @@ public class HandlebarsViewResolverTest {
         JavaBeanValueResolver.INSTANCE);
     expectLastCall();
 
-    replay(handlebars, view, template);
+    replay(handlebars, view, template, templateLoader);
 
     HandlebarsViewResolver viewResolver =
-        new HandlebarsViewResolver(handlebars);
+        new HandlebarsViewResolver() {
+          @Override
+          protected Handlebars createHandlebars(
+              final TemplateLoader templateLoader) {
+            return handlebars;
+          }
+
+          @Override
+          protected boolean isContextRequired() {
+            return false;
+          }
+
+          @Override
+          protected TemplateLoader createTemplateLoader(
+              final ApplicationContext context) {
+            return templateLoader;
+          }
+        };
+    viewResolver.afterPropertiesSet();
     viewResolver.configure(view);
 
-    verify(handlebars, view, template);
+    verify(handlebars, view, template, templateLoader);
   }
 
   @Test
   public void configureWithDash() throws Exception {
+    final TemplateLoader templateLoader = createMock(TemplateLoader.class);
     Template template = createMock(Template.class);
 
-    Handlebars handlebars = createMock(Handlebars.class);
+    final Handlebars handlebars = createMock(Handlebars.class);
     expect(handlebars.compile(URI.create("home"))).andReturn(template);
 
     HandlebarsView view = createMock(HandlebarsView.class);
@@ -76,20 +99,40 @@ public class HandlebarsViewResolverTest {
         JavaBeanValueResolver.INSTANCE);
     expectLastCall();
 
-    replay(handlebars, view, template);
+    replay(handlebars, view, template, templateLoader);
 
     HandlebarsViewResolver viewResolver =
-        new HandlebarsViewResolver(handlebars);
+        new HandlebarsViewResolver() {
+          @Override
+          protected Handlebars createHandlebars(
+              final TemplateLoader templateLoader) {
+            return handlebars;
+          }
+
+          @Override
+          protected boolean isContextRequired() {
+            return false;
+          }
+
+          @Override
+          protected TemplateLoader createTemplateLoader(
+              final ApplicationContext context) {
+            return templateLoader;
+          }
+        };
+    viewResolver.afterPropertiesSet();
     assertEquals(view, viewResolver.configure(view));
 
-    verify(handlebars, view, template);
+    verify(handlebars, view, template, templateLoader);
   }
 
   @Test
   public void valueResolvers() throws Exception {
+    final TemplateLoader templateLoader = createMock(TemplateLoader.class);
+
     Template template = createMock(Template.class);
 
-    Handlebars handlebars = createMock(Handlebars.class);
+    final Handlebars handlebars = createMock(Handlebars.class);
     expect(handlebars.compile(URI.create("home"))).andReturn(template);
 
     HandlebarsView view = createMock(HandlebarsView.class);
@@ -99,13 +142,31 @@ public class HandlebarsViewResolverTest {
     view.setValueResolver(MapValueResolver.INSTANCE);
     expectLastCall();
 
-    replay(handlebars, view, template);
+    replay(handlebars, view, template, templateLoader);
 
     HandlebarsViewResolver viewResolver =
-        new HandlebarsViewResolver(handlebars);
+        new HandlebarsViewResolver() {
+          @Override
+          protected Handlebars createHandlebars(
+              final TemplateLoader templateLoader) {
+            return handlebars;
+          }
+
+          @Override
+          protected boolean isContextRequired() {
+            return false;
+          }
+
+          @Override
+          protected TemplateLoader createTemplateLoader(
+              final ApplicationContext context) {
+            return templateLoader;
+          }
+        };
+    viewResolver.afterPropertiesSet();
     viewResolver.setValueResolvers(MapValueResolver.INSTANCE);
     assertEquals(view, viewResolver.configure(view));
 
-    verify(handlebars, view, template);
+    verify(handlebars, view, template, templateLoader);
   }
 }

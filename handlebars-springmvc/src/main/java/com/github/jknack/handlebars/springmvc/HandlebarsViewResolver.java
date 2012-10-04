@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.net.URI;
 
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.context.ApplicationContext;
 import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.view.AbstractTemplateViewResolver;
 import org.springframework.web.servlet.view.AbstractUrlBasedView;
@@ -58,21 +59,21 @@ public class HandlebarsViewResolver extends AbstractTemplateViewResolver
   /**
    * Creates a new {@link HandlebarsViewResolver}.
    *
-   * @param handlebars The handlebars object. Required.
+   * @param viewClass The view's class. Required.
    */
-  public HandlebarsViewResolver(final Handlebars handlebars) {
-    this();
-    this.handlebars = notNull(handlebars, "A handlebars object is required.");
+  public HandlebarsViewResolver(
+      final Class<? extends HandlebarsView> viewClass) {
+    setViewClass(viewClass);
+    setContentType(DEFAULT_CONTENT_TYPE);
+    setPrefix(TemplateLoader.DEFAULT_PREFIX);
+    setSuffix(TemplateLoader.DEFAULT_SUFFIX);
   }
 
   /**
    * Creates a new {@link HandlebarsViewResolver}.
    */
   public HandlebarsViewResolver() {
-    setViewClass(HandlebarsView.class);
-    setContentType(DEFAULT_CONTENT_TYPE);
-    setPrefix(TemplateLoader.DEFAULT_PREFIX);
-    setSuffix(TemplateLoader.DEFAULT_SUFFIX);
+    this(HandlebarsView.class);
   }
 
   /**
@@ -115,15 +116,61 @@ public class HandlebarsViewResolver extends AbstractTemplateViewResolver
 
   @Override
   public void afterPropertiesSet() throws Exception {
-    if (handlebars == null) {
-      // No handlebars instance was set, use default configuration.
-      handlebars =
-          new Handlebars(new SpringTemplateLoader(getApplicationContext()));
-    }
-    TemplateLoader templateLoader = handlebars.getTemplateLoader();
+    // Creates a new template loader.
+    TemplateLoader templateLoader =
+        createTemplateLoader(getApplicationContext());
+    // Creates a new handlebars object.
+    handlebars = notNull(createHandlebars(templateLoader),
+        "A handlebars object is required.");
+    configure(handlebars);
+  }
+
+  /**
+   * Callback method for configuring handlebars. This is a good place for
+   * registering helpers.
+   *
+   * @param handlebars A handlebars object. It is never null.
+   */
+  protected void configure(final Handlebars handlebars) {
+  }
+
+  /**
+   * Creates a new {@link Handlebars} object using the
+   * {@link SpringTemplateLoader}.
+   *
+   * @param templateLoader A template loader.
+   * @return A new handlebar's object.
+   */
+  protected Handlebars createHandlebars(final TemplateLoader templateLoader) {
+    return new Handlebars(templateLoader);
+  }
+
+  /**
+   * Creates a new template loader.
+   *
+   * @param context The application's context.
+   * @return A new template loader.
+   */
+  protected TemplateLoader
+      createTemplateLoader(final ApplicationContext context) {
+    TemplateLoader templateLoader = new SpringTemplateLoader(context);
     // Override prefix and suffix.
     templateLoader.setPrefix(getPrefix());
     templateLoader.setSuffix(getSuffix());
+    return templateLoader;
+  }
+
+  /**
+   * A handlebars instance.
+   *
+   * @return A handlebars instance.
+   */
+  public Handlebars getHandlebars() {
+    if (handlebars == null) {
+      throw new IllegalStateException(
+          "afterPropertiesSet() method hasn't been call it.");
+    }
+    return handlebars;
   }
 
   /**
