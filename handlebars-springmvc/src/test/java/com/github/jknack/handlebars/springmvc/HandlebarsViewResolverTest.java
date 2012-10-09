@@ -67,6 +67,10 @@ public class HandlebarsViewResolverTest {
           }
 
           @Override
+          protected void configure(final Handlebars handlebars) {
+          }
+
+          @Override
           protected boolean isContextRequired() {
             return false;
           }
@@ -110,6 +114,10 @@ public class HandlebarsViewResolverTest {
           }
 
           @Override
+          protected void configure(final Handlebars handlebars) {
+          }
+
+          @Override
           protected boolean isContextRequired() {
             return false;
           }
@@ -150,6 +158,10 @@ public class HandlebarsViewResolverTest {
           protected Handlebars createHandlebars(
               final TemplateLoader templateLoader) {
             return handlebars;
+          }
+
+          @Override
+          protected void configure(final Handlebars handlebars) {
           }
 
           @Override

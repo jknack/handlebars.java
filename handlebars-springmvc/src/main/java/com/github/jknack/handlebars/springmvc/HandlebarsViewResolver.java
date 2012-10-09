@@ -28,8 +28,6 @@ import org.springframework.web.servlet.view.AbstractUrlBasedView;
 import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.TemplateLoader;
 import com.github.jknack.handlebars.ValueResolver;
-import com.github.jknack.handlebars.context.JavaBeanValueResolver;
-import com.github.jknack.handlebars.context.MapValueResolver;
 
 /**
  * A Handlebars {@link ViewResolver view resolver}.
@@ -53,8 +51,7 @@ public class HandlebarsViewResolver extends AbstractTemplateViewResolver
   /**
    * The value's resolvers.
    */
-  private ValueResolver[] valueResolvers = {MapValueResolver.INSTANCE,
-      JavaBeanValueResolver.INSTANCE };
+  private ValueResolver[] valueResolvers = ValueResolver.VALUE_RESOLVERS;
 
   /**
    * Creates a new {@link HandlebarsViewResolver}.
@@ -132,6 +129,8 @@ public class HandlebarsViewResolver extends AbstractTemplateViewResolver
    * @param handlebars A handlebars object. It is never null.
    */
   protected void configure(final Handlebars handlebars) {
+    handlebars.registerHelper("message", new MessageSourceHelper(
+        getApplicationContext()));
   }
 
   /**

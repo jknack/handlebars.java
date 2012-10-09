@@ -24,9 +24,6 @@ import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.github.jknack.handlebars.context.JavaBeanValueResolver;
-import com.github.jknack.handlebars.context.MapValueResolver;
-
 /**
  * Mustache/Handlebars are contextual template engines. This class represent the
  * 'context stack' of a template.
@@ -160,8 +157,7 @@ public final class Context {
         } else {
           // Set default value resolvers: Java Bean like and Map resolvers.
           context.setResolver(
-              new CompositeValueResolver(MapValueResolver.INSTANCE,
-                  JavaBeanValueResolver.INSTANCE));
+              new CompositeValueResolver(ValueResolver.VALUE_RESOLVERS));
         }
         // Expand resolver to the extended context.
         if (context.extendedContext != null) {

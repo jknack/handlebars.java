@@ -13,6 +13,8 @@
  */
 package com.github.jknack.handlebars;
 
+import com.github.jknack.handlebars.context.JavaBeanValueResolver;
+import com.github.jknack.handlebars.context.MapValueResolver;
 
 /**
  * A hook interface for resolving values from the {@link Context context stack}.
@@ -21,6 +23,12 @@ package com.github.jknack.handlebars;
  * @since 0.1.1
  */
 public interface ValueResolver {
+
+  /**
+   * The default value resolvers.
+   */
+  ValueResolver[] VALUE_RESOLVERS = {MapValueResolver.INSTANCE,
+      JavaBeanValueResolver.INSTANCE };
 
   /**
    * A mark object.
