@@ -12,9 +12,9 @@ Handlebars provides the power necessary to let you build semantic templates effe
  In general, the syntax of **Handlebars** templates is a superset of [Mustache](http://mustache.github.com) templates. For basic syntax, check out the [Mustache manpage](http://mustache.github.com).
 
 ## Maven
- Development version: **0.5.5-SNAPSHOT**
+ Development version: **0.5.6-SNAPSHOT**
 
- Stable version: **0.5.4**
+ Stable version: **0.5.5**
 
 
 ```xml
@@ -520,7 +520,26 @@ Maven:
  </dependency>
 ```
 
-Checkout the HandlebarsViewResolver.
+Using value resolvers:
+
+```java
+ HandlebarsViewResolver viewResolver = ...;
+
+ viewResolver.setValueResolvers(...);
+```
+
+In addition, the HandlebarsViewResolver add a ```message``` helper that uses the Spring ```MessageSource``` class:
+
+```
+{{message "code" [arg]* [default="default message"]}}
+```
+
+where:
+* code: the message's code. Required.
+* arg:  the message's argument. Optional.
+* default: the default's message. Optional.
+
+Checkout the [HandlebarsViewResolver](https://github.com/jknack/handlebars.java/blob/develop/handlebars-springmvc/src/main/java/com/github/jknack/handlebars/springmvc/HandlebarsViewResolver.java).
 
 # Architecture
  * Handlebars.java follows the JavaScript API with some minors exceptions due to the nature of the Java language.
