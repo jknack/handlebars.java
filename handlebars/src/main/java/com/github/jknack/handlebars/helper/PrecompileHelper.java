@@ -63,7 +63,7 @@ public final class PrecompileHelper implements Helper<String> {
     /**
      * Wrap a pre-compiled function as a anonymous and auto-executable function.
      */
-    DEFAULT {
+    ANONYMOUS {
       @Override
       public void header(final String name, final StringBuilder buffer) {
         buffer.append("(function() {");
@@ -94,7 +94,7 @@ public final class PrecompileHelper implements Helper<String> {
     /**
      * Dont wrap anything.
      */
-    SIMPLE {
+    NONE {
       @Override
       public void header(final String name, final StringBuilder buffer) {
       }
@@ -194,7 +194,7 @@ public final class PrecompileHelper implements Helper<String> {
   public CharSequence apply(final String path, final Options options)
       throws IOException {
     notEmpty(path, "found: '%s', expected 'template path'", path);
-    String wrapperName = options.hash("wrapper", "default");
+    String wrapperName = options.hash("wrapper", "anonymous");
     final JsWrapper wrapper = JsWrapper.wrapper(wrapperName);
     notNull(wrapper, "found '%s', expected: '%s'",
         wrapperName,

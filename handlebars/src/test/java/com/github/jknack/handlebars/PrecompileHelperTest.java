@@ -45,7 +45,7 @@ public class PrecompileHelperTest {
 
   @Parameters
   public static Collection<Object[]> data() {
-    return Arrays.asList(new Object[] {"default" }, new Object[] {"simple" },
+    return Arrays.asList(new Object[] {"anonymous" }, new Object[] {"none" },
         new Object[] {"amd" });
   }
 }
