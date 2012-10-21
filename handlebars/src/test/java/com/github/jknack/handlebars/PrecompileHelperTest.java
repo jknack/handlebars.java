@@ -14,7 +14,7 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
 @RunWith(Parameterized.class)
-public class PrecompiledHelperTest {
+public class PrecompileHelperTest {
 
   TemplateLoader loader = new MapTemplateLoader()
       .define("input", "Hi {{this}}!");
@@ -23,15 +23,15 @@ public class PrecompiledHelperTest {
 
   private String wrapper;
 
-  public PrecompiledHelperTest(final String wrapper) {
+  public PrecompileHelperTest(final String wrapper) {
     this.wrapper = wrapper;
   }
 
   @Test
-  public void precompiled() throws IOException {
+  public void precompile() throws IOException {
     String js =
         handlebars.compile(
-            "{{precompiled \"input\" wrapper=\"" + wrapper + "\"}}").apply(
+            "{{precompile \"input\" wrapper=\"" + wrapper + "\"}}").apply(
             "Handlebar.js");
 
     InputStream in =

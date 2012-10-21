@@ -51,7 +51,7 @@ import com.github.jknack.handlebars.TemplateLoader;
  * @author edgar.espina
  * @since 0.6.0
  */
-public final class PrecompiledHelper implements Helper<String> {
+public final class PrecompileHelper implements Helper<String> {
 
   /**
    * Wrap the precompiled function.
@@ -177,17 +177,17 @@ public final class PrecompiledHelper implements Helper<String> {
   /**
    * The default helper's name.
    */
-  public static final String NAME = "precompiled";
+  public static final String NAME = "precompile";
 
   /**
    * The default and shared instance.
    */
-  public static final Helper<String> INSTANCE = new PrecompiledHelper();
+  public static final Helper<String> INSTANCE = new PrecompileHelper();
 
   /**
    * Not allowed.
    */
-  private PrecompiledHelper() {
+  private PrecompileHelper() {
   }
 
   @Override
