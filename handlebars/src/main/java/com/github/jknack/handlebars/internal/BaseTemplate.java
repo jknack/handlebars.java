@@ -22,13 +22,13 @@ import java.io.InputStream;
 import java.io.Writer;
 
 import org.mozilla.javascript.Scriptable;
-import org.mozilla.javascript.tools.shell.Global;
+import org.mozilla.javascript.ScriptableObject;
+import org.mozilla.javascript.tools.ToolErrorReporter;
 
 import com.github.jknack.handlebars.Context;
 import com.github.jknack.handlebars.HandlebarsError;
 import com.github.jknack.handlebars.HandlebarsException;
 import com.github.jknack.handlebars.Template;
-import com.github.jknack.handlebars.internal.RhinoExecutor.JsTask;
 
 /**
  * Base class for {@link Template}.
@@ -64,18 +64,14 @@ abstract class BaseTemplate implements Template {
   private String javaScript;
 
   /**
-   * The handlebars.js file.
-   */
-  private static String handlebarsScript;
-
-  /**
    * Handlerbars.js version.
    */
   private static final String HBS_FILE = "/handlebars-1.0.rc.1.js";
 
-  static {
-    handlebarsScript = handlebarsScript(HBS_FILE);
-  }
+  /**
+   * A shared scope with Handlebars.js objects.
+   */
+  private static ScriptableObject sharedScope;
 
   /**
    * Remove the child template.
@@ -190,27 +186,70 @@ abstract class BaseTemplate implements Template {
   public String toJavaScript() throws IOException {
     synchronized (JS_LOCK) {
       if (javaScript == null) {
-        javaScript = RhinoExecutor.execute(new JsTask<String>() {
-          @Override
-          public String run(final Global global,
-              final org.mozilla.javascript.Context context,
-              final Scriptable scope) throws IOException {
+        org.mozilla.javascript.Context ctx = null;
+        try {
+          ctx = newContext();
 
-            // Load handlebars.js
-            context.evaluateString(scope, handlebarsScript, HBS_FILE, 1, null);
+          Scriptable scope = newScope(ctx);
+          scope.put("template", scope, text());
 
-            scope.put("template", scope, text());
+          String js = "Handlebars.precompile(template);";
+          Object precompiled = ctx.evaluateString(scope, js, filename, 1,
+              null);
 
-            String js = "Handlebars.precompile(template)";
-            Object precompiled = context.evaluateString(scope, js, filename, 1,
-                null);
-
-            return (String) precompiled;
+          javaScript = (String) precompiled;
+        } finally {
+          if (ctx != null) {
+            org.mozilla.javascript.Context.exit();
           }
-        });
+        }
       }
       return javaScript;
     }
+  }
+
+  /**
+   * Creates a new Rhino Context.
+   *
+   * @return A Rhino Context.
+   */
+  private org.mozilla.javascript.Context newContext() {
+    org.mozilla.javascript.Context ctx = org.mozilla.javascript.Context.enter();
+    ctx.setOptimizationLevel(-1);
+    ctx.setErrorReporter(new ToolErrorReporter(false));
+    ctx.setLanguageVersion(org.mozilla.javascript.Context.VERSION_1_8);
+    return ctx;
+  }
+
+  /**
+   * Creates a new scope where handlebars.js is present.
+   *
+   * @param ctx A rhino context.
+   * @return A new scope where handlebars.js is present.
+   */
+  private static Scriptable newScope(final org.mozilla.javascript.Context ctx) {
+    Scriptable sharedScope = sharedScope(ctx);
+    Scriptable scope = ctx.newObject(sharedScope);
+    scope.setParentScope(null);
+    scope.setPrototype(sharedScope);
+
+    return scope;
+  }
+
+  /**
+   * Creates a initialize the handlebars.js scope.
+   *
+   * @param ctx A rhino context.
+   * @return A handlebars.js scope. Shared between executions.
+   */
+  private static Scriptable
+      sharedScope(final org.mozilla.javascript.Context ctx) {
+    if (sharedScope == null) {
+      sharedScope = ctx.initStandardObjects();
+      ctx.evaluateString(sharedScope, handlebarsScript(HBS_FILE), HBS_FILE, 1,
+          null);
+    }
+    return sharedScope;
   }
 
   /**
