@@ -196,7 +196,7 @@ public final class Context {
   /**
    * The target value. Resolved as '.' or 'this' inside templates. Required.
    */
-  private final Object model;
+  private Object model;
 
   /**
    * A thread safe storage.
@@ -444,6 +444,25 @@ public final class Context {
   private void setResolver(final ValueResolver resolver) {
     this.resolver = resolver;
     extendedContext.resolver = resolver;
+  }
+
+  /**
+   * Destroy this context by cleaning up instance attributes.
+   */
+  public void destroy() {
+    model = null;
+    if (parent == null) {
+      // Root context are owner of the storage.
+      if (storage != null) {
+        storage.clear();
+      }
+    }
+    if (extendedContext != null) {
+      extendedContext.destroy();
+    }
+    parent = null;
+    resolver = null;
+    storage = null;
   }
 
   @Override

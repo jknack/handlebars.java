@@ -53,9 +53,13 @@ public class HandlebarsView extends AbstractTemplateView {
       final HttpServletRequest request, final HttpServletResponse response)
       throws Exception {
     Context context = Context.newBuilder(model)
-      .resolver(valueResolvers)
-      .build();
-    template.apply(context, response.getWriter());
+        .resolver(valueResolvers)
+        .build();
+    try {
+      template.apply(context, response.getWriter());
+    } finally {
+      context.destroy();
+    }
   }
 
   /**

@@ -109,8 +109,9 @@ abstract class BaseTemplate implements Template {
   public void apply(final Context context, final Writer writer)
       throws IOException {
     notNull(writer, "A writer is required.");
+    Context wrapped = wrap(context);
     try {
-      merge(wrap(context), writer);
+      merge(wrapped, writer);
     } catch (HandlebarsException ex) {
       throw ex;
     } catch (Exception ex) {
@@ -127,6 +128,10 @@ abstract class BaseTemplate implements Template {
       // Override the stack-trace
       hex.setStackTrace(ex.getStackTrace());
       throw hex;
+    } finally {
+      if (wrapped != context) {
+        wrapped.destroy();
+      }
     }
   }
 
