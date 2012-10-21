@@ -118,6 +118,7 @@ Additional options:
  * **log**
  * **block**
  * **partial**
+ * **precompile**
  * **embedded**
 
 ### with, each, if, unless:
@@ -141,6 +142,49 @@ Usage:
   {{/partial}}
 ```
 context: A string literal which define the region's name.
+
+### precompile
+ Precompile a Handlebars.java template to JavaScript using handlebars.js
+
+user.hbs
+
+```html
+Hello {{this}}!
+```
+
+home.hbs
+
+```html
+<script type="text/javascript">
+{{precompile "user"}}
+</script>
+```
+
+Output:
+```html
+<script type="text/javascript">
+(function() {
+  var template = Handlebars.template, templates = Handlebars.templates = Handlebars.templates || {};
+templates['user.hbs'] = template(function (Handlebars,depth0,helpers,partials,data) {
+  helpers = helpers || Handlebars.helpers;
+  var buffer = "", functionType="function", escapeExpression=this.escapeExpression;
+
+
+  buffer += "Hi ";
+  depth0 = typeof depth0 === functionType ? depth0() : depth0;
+  buffer += escapeExpression(depth0) + "!";
+  return buffer;});
+})();
+</script>
+```
+
+Usage:
+```
+{{precompile "template" [wrapper="anonymous, amd or none"]}}
+```
+context: A template name. Required.
+
+wrapper: One of "anonymous", "amd" or "none". Default is: "anonymous" 
 
 ### embedded
  The embedded helper allow you to "embedded" a handlebars template inside a ```<script>``` HTML tag:
@@ -352,6 +396,7 @@ In short from a helper you can throw an Exception and Handlebars.java will add t
         .combine(moreData)
         .build();
     template.apply(user);
+    context.destroy();
   }
  ```
  Where is the ```hookContextStack``` method? Well, that will depends on your application architecture.
@@ -562,12 +607,13 @@ Checkout the [HandlebarsViewResolver](https://github.com/jknack/handlebars.java/
  
  ```text
 +- org.apache.commons:commons-lang3:jar:3.1:compile
-+- org.parboiled:parboiled-java:jar:1.0.2:compile
-|  +- asm:asm:jar:3.3.1:compile
-|  +- asm:asm-util:jar:3.3.1:compile
-|  +- asm:asm-tree:jar:3.3.1:compile
-|  +- asm:asm-analysis:jar:3.3.1:compile
-|  \- org.parboiled:parboiled-core:jar:1.0.2:compile
++- org.parboiled:parboiled-java:jar:1.1.3:compile
+|  +- org.parboiled:parboiled-core:jar:1.1.3:compile
+|  +- org.ow2.asm:asm:jar:4.0:compile
+|  +- org.ow2.asm:asm-tree:jar:4.0:compile
+|  +- org.ow2.asm:asm-analysis:jar:4.0:compile
+|  \- org.ow2.asm:asm-util:jar:4.0:compile
++- org.mozilla:rhino:jar:1.7R4:compile
 +- org.slf4j:slf4j-api:jar:1.6.4:compile
  ```
 
