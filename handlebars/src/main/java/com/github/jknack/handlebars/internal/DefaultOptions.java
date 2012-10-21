@@ -58,6 +58,11 @@ class DefaultOptions extends Options {
     public void apply(final Object context, final Writer writer)
         throws IOException {
     }
+
+    @Override
+    public String toJavaScript() {
+      return "";
+    }
   };
 
   /**

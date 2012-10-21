@@ -70,4 +70,12 @@ public interface Template {
    * @return The raw text.
    */
   String text();
+
+  /**
+   * Return a pre-compiled JavaScript version of this template.
+   *
+   * @return A pre-compiled JavaScript version of this template.
+   * @throws IOException If compilation fails.
+   */
+  String toJavaScript() throws IOException;
 }

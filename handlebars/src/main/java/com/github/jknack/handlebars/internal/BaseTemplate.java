@@ -18,12 +18,17 @@ import static org.apache.commons.lang3.StringUtils.split;
 import static org.apache.commons.lang3.Validate.notNull;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.Writer;
+
+import org.mozilla.javascript.Scriptable;
+import org.mozilla.javascript.tools.shell.Global;
 
 import com.github.jknack.handlebars.Context;
 import com.github.jknack.handlebars.HandlebarsError;
 import com.github.jknack.handlebars.HandlebarsException;
 import com.github.jknack.handlebars.Template;
+import com.github.jknack.handlebars.internal.RhinoExecutor.JsTask;
 
 /**
  * Base class for {@link Template}.
@@ -47,6 +52,30 @@ abstract class BaseTemplate implements Template {
    * The file's name.
    */
   protected String filename;
+
+  /**
+   * A Handlebars.js lock.
+   */
+  private static final Object JS_LOCK = new Object();
+
+  /**
+   * A pre-compiled JavaScript function.
+   */
+  private String javaScript;
+
+  /**
+   * The handlebars.js file.
+   */
+  private static String handlebarsScript;
+
+  /**
+   * Handlerbars.js version.
+   */
+  private static final String HBS_FILE = "/handlebars-1.0.rc.1.js";
+
+  static {
+    handlebarsScript = handlebarsScript(HBS_FILE);
+  }
 
   /**
    * Remove the child template.
@@ -155,5 +184,60 @@ abstract class BaseTemplate implements Template {
     this.line = line;
     this.column = column;
     return this;
+  }
+
+  @Override
+  public String toJavaScript() throws IOException {
+    synchronized (JS_LOCK) {
+      if (javaScript == null) {
+        javaScript = RhinoExecutor.execute(new JsTask<String>() {
+          @Override
+          public String run(final Global global,
+              final org.mozilla.javascript.Context context,
+              final Scriptable scope) throws IOException {
+
+            // Load handlebars.js
+            context.evaluateString(scope, handlebarsScript, HBS_FILE, 1, null);
+
+            scope.put("template", scope, text());
+
+            String js = "Handlebars.precompile(template)";
+            Object precompiled = context.evaluateString(scope, js, filename, 1,
+                null);
+
+            return (String) precompiled;
+          }
+        });
+      }
+      return javaScript;
+    }
+  }
+
+  /**
+   * Load the handlebars.js file from the given location.
+   *
+   * @param location The handlebars.js location.
+   * @return The resource content.
+   */
+  private static String handlebarsScript(final String location) {
+    InputStream in = BaseTemplate.class.getResourceAsStream(location);
+    notNull(in, "Handlebars.js script not found at " + location);
+    try {
+      int ch = in.read();
+      StringBuilder script = new StringBuilder();
+      while (ch != -1) {
+        script.append((char) ch);
+        ch = in.read();
+      }
+      return script.toString();
+    } catch (IOException ex) {
+      throw new IllegalStateException("Unable to read file " + location);
+    } finally {
+      try {
+        in.close();
+      } catch (IOException ex) {
+        throw new IllegalStateException("Unable to close file " + location);
+      }
+    }
   }
 }

@@ -32,6 +32,7 @@ import com.github.jknack.handlebars.helper.EachPseudoVarHelper;
 import com.github.jknack.handlebars.helper.EmbeddedHelper;
 import com.github.jknack.handlebars.helper.IfHelper;
 import com.github.jknack.handlebars.helper.PartialHelper;
+import com.github.jknack.handlebars.helper.PrecompiledHelper;
 import com.github.jknack.handlebars.helper.UnlessHelper;
 import com.github.jknack.handlebars.helper.WithHelper;
 import com.github.jknack.handlebars.internal.ParserFactory;
@@ -567,6 +568,8 @@ public class Handlebars {
     handlebars.registerHelper(EmbeddedHelper.NAME, EmbeddedHelper.INSTANCE);
     handlebars.registerHelper(BlockHelper.NAME, BlockHelper.INSTANCE);
     handlebars.registerHelper(PartialHelper.NAME, PartialHelper.INSTANCE);
+    handlebars.registerHelper(PrecompiledHelper.NAME,
+        PrecompiledHelper.INSTANCE);
   }
 
 }

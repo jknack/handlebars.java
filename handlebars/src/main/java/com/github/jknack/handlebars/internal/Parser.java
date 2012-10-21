@@ -397,6 +397,7 @@ public class Parser extends BaseParser<BaseTemplate> {
 
   boolean add(final BaseTemplate template) {
     TemplateList sequence = (TemplateList) peek();
+    template.filename(filename);
     sequence.add(template);
     addToline(template);
     return true;

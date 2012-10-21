@@ -20,9 +20,8 @@ package com.github.jknack.handlebars;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
+import java.util.HashMap;
 import java.util.Map;
-
-import com.github.jknack.handlebars.TemplateLoader;
 
 /**
  * Template loader for testing.
@@ -36,6 +35,15 @@ public class MapTemplateLoader extends TemplateLoader {
 
   public MapTemplateLoader(final Map<String, String> map) {
     this.map = map;
+  }
+
+  public MapTemplateLoader() {
+    this(new HashMap<String, String>());
+  }
+
+  public MapTemplateLoader define(final String name, final String content) {
+    map.put(getPrefix() + name + getSuffix(), content);
+    return this;
   }
 
   @Override
