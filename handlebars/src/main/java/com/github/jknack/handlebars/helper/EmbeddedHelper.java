@@ -31,7 +31,7 @@
  */
 package com.github.jknack.handlebars.helper;
 
-import static org.apache.commons.lang3.Validate.isTrue;
+import static org.apache.commons.lang3.Validate.notEmpty;
 
 import java.io.IOException;
 import java.net.URI;
@@ -92,12 +92,12 @@ import com.github.jknack.handlebars.Template;
  * @author edgar.espina
  * @since 0.3.0
  */
-public class EmbeddedHelper implements Helper<Object> {
+public class EmbeddedHelper implements Helper<String> {
 
   /**
    * A singleton instance of this helper.
    */
-  public static final Helper<Object> INSTANCE = new EmbeddedHelper();
+  public static final Helper<String> INSTANCE = new EmbeddedHelper();
 
   /**
    * The helper's name.
@@ -105,13 +105,11 @@ public class EmbeddedHelper implements Helper<Object> {
   public static final String NAME = "embedded";
 
   @Override
-  public CharSequence apply(final Object context, final Options options)
+  public CharSequence apply(final String path, final Options options)
       throws IOException {
-    isTrue(context instanceof String, "found '%s', expected 'partial's name'",
-        context);
-
-    String path = (String) context;
-    String defaultId = path.replace('/', '-').replace('.', '-') + "-hbs";
+    notEmpty(path, "found '%s', expected 'partial's name'", path);
+    String suffix = options.handlebars.getTemplateLoader().getSuffix();
+    String defaultId = (path + suffix).replace('/', '-').replace('.', '-');
     String id = options.param(0, defaultId);
     Template template = options.handlebars.compile(URI.create(path));
     StringBuilder script = new StringBuilder();
