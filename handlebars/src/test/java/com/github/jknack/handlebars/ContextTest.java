@@ -22,12 +22,6 @@ import java.util.Map;
 
 import org.junit.Test;
 
-import com.github.jknack.handlebars.Context;
-import com.github.jknack.handlebars.Handlebars;
-import com.github.jknack.handlebars.Helper;
-import com.github.jknack.handlebars.Options;
-import com.github.jknack.handlebars.Template;
-
 /**
  * Unit test for {@link Context}.
  *
@@ -362,4 +356,21 @@ public class ContextTest {
         handlebars.compile("{{#inner}}{{this.name}}{{/inner}}").apply(context));
   }
 
+  @Test
+  public void cuurentScope() throws IOException {
+    Map<String, Object> child = new HashMap<String, Object>();
+
+    Map<String, Object> context = new HashMap<String, Object>();
+    context.put("value", "parent");
+    context.put("child", child);
+
+    Handlebars handlebars = new Handlebars();
+    // Don't expand the scope resolution over the context stack
+    assertEquals("", handlebars.compile("{{#child}}{{this.value}}{{/child}}")
+        .apply(context));
+
+    // Expand the scope resolution over the context stack
+    assertEquals("parent", handlebars.compile("{{#child}}{{value}}{{/child}}")
+        .apply(context));
+  }
 }

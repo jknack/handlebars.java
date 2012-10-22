@@ -332,8 +332,9 @@ public final class Context {
     if (value == null) {
       // No luck, check the extended context.
       value = get(extendedContext, key);
-      if (value == null) {
-        // No luck, check the parent context.
+      // No luck, but before checking at the parent scope we need to check for
+      // the 'this' qualifier. If present, no look up will be done.
+      if (value == null && !path[0].equals("this")) {
         value = get(parent, key);
       }
     }
@@ -385,7 +386,7 @@ public final class Context {
   private Object get(final String[] path) {
     Object current = model;
     // Resolve 'this' to the current model.
-    int start = path[0].startsWith("this") ? 1 : 0;
+    int start = path[0].equals("this") ? 1 : 0;
     for (int i = start; i < path.length - 1; i++) {
       current = resolve(current, path[i]);
       if (current == null) {
