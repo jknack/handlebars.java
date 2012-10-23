@@ -357,7 +357,7 @@ public class ContextTest {
   }
 
   @Test
-  public void cuurentScope() throws IOException {
+  public void currentScope() throws IOException {
     Map<String, Object> child = new HashMap<String, Object>();
 
     Map<String, Object> context = new HashMap<String, Object>();
