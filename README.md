@@ -92,14 +92,14 @@ list:
   - name: Handlebars.java rocks!
 ```
 
-Open a browser a type:
+### Open a browser a type:
 ```
 http://localhost:6780/home.hbs
 ```
 enjoy it!
 
 
-Additional options:
+### Additional options:
 
 * -dir: set the template directory
 * -prefix: set the template's prefix, default is /
@@ -107,6 +107,16 @@ Additional options:
 * -context: set the context's path, default is /
 * -port: set port number, default is 6780
 * -content-type: set the content-type header, default is text/html
+
+### Multiples data sources per template
+Sometimes you need or want to test multiples datasets over a single template, you can do that by setting a ```data``` parameter in the request URI.
+
+Example:
+
+```
+http://localhost:6780/home.hbs?data=mytestdata
+```
+Please note you don't have to specified the extension file.
 
 ## Helpers
 
