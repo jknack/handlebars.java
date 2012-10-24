@@ -31,6 +31,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.yaml.snakeyaml.Yaml;
@@ -148,7 +149,34 @@ public class HbsServlet extends HttpServlet {
     if (data == null) {
       data = yml(request);
     }
-    return data == null ? Collections.emptyMap() : data;
+    if (data == null) {
+      logger.error("file not found: {}.json", dataFile(request));
+      logger.error("file not found: {}.yml", dataFile(request));
+      return Collections.emptyMap();
+    }
+    return data;
+  }
+
+  /**
+   * Determines the data file to use from the requested URI or from the 'data'
+   * HTTP parameter.
+   *
+   * @param request The current request.
+   * @return The data file to use from the requested URI or from the 'data'
+   *         HTTP parameter.
+   */
+  private String dataFile(final HttpServletRequest request) {
+    String data = request.getParameter("data");
+    String uri = StringUtils.isEmpty(data)
+        ? request.getRequestURI().replace(request.getContextPath(), "")
+        : data;
+    if (!HbsServer.CONTEXT.equals(args.prefix)) {
+      uri = args.prefix + uri;
+    }
+    if (!uri.startsWith("/")) {
+      uri = "/" + uri;
+    }
+    return uri;
   }
 
   /**
@@ -213,7 +241,7 @@ public class HbsServlet extends HttpServlet {
    */
   private Object json(final HttpServletRequest request) throws IOException {
     try {
-      String json = read(removeExtension(requestURI(request)) + ".json");
+      String json = read(removeExtension(dataFile(request)) + ".json");
       if (json.trim().startsWith("[")) {
         return mapper.readValue(json, List.class);
       }
@@ -232,7 +260,7 @@ public class HbsServlet extends HttpServlet {
    */
   private Object yml(final HttpServletRequest request) throws IOException {
     try {
-      String yml = read(removeExtension(requestURI(request)) + ".yml");
+      String yml = read(removeExtension(dataFile(request)) + ".yml");
       Object data = yaml.load(yml);
       return data;
     } catch (FileNotFoundException ex) {
@@ -250,16 +278,9 @@ public class HbsServlet extends HttpServlet {
   private String read(final String uri) throws IOException {
     InputStream input = null;
     try {
-      String absURI = uri;
-      if (!HbsServer.CONTEXT.equals(args.prefix)) {
-        absURI = args.prefix + absURI;
-      }
-      if (!absURI.startsWith("/")) {
-        absURI = "/" + absURI;
-      }
-      input = getServletContext().getResourceAsStream(absURI);
+      input = getServletContext().getResourceAsStream(uri);
       if (input == null) {
-        throw new FileNotFoundException(args.dir + absURI);
+        throw new FileNotFoundException(args.dir + uri);
       }
       return IOUtils.toString(input);
     } finally {
