@@ -604,7 +604,41 @@ Checkout the [HandlebarsViewResolver](https://github.com/jknack/handlebars.java/
  * Handlebars.java is thread-safe.
 
 ## Differences between Handlebars.js and Handlebars.java
- * Paths aren't support in Handlebars.java and there isn't a plan for adding them.
+ * Handlebars.java scope resolution follows the Mustache Spec.
+
+Given:
+
+```json
+{
+  "value": "parent",
+  "child": {
+  }
+}
+```
+and
+
+```html
+Hello {{#child}}{{value}}{{/child}}
+```
+
+will be:
+
+```html
+Hello parent
+```
+
+Now, the same model and template with Handlebars.js is:
+
+```html
+Hello 
+```
+That is because Handlebars.js don't look in the context stack for missing attribute in the current scope (as the Mustache Spec says).
+
+Hopefully, you can turn-off the context stack lookup in Handlebars.java by qualifying the attribute with ```this.```:
+
+```html
+Hello {{#child}}{{this.value}}{{/child}}
+```
 
 ## Status
 ### Mustache Spec
