@@ -1,4 +1,5 @@
-[![Build Status](http://travis-ci.org/alexo/wro4j.png)](http://travis-ci.org/jknack/handlebars.java)
+[![Build Status](https://travis-ci.org/jknack/handlebars.java.png)](https://travis-ci.org/jknack/handlebars.java)
+
 
 Handlebars.java - Logic-less and semantic templates with Java
 ===============
