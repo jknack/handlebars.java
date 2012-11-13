@@ -19,6 +19,9 @@ import static org.apache.commons.lang3.Validate.notNull;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URI;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationContext;
@@ -27,6 +30,7 @@ import org.springframework.web.servlet.view.AbstractTemplateViewResolver;
 import org.springframework.web.servlet.view.AbstractUrlBasedView;
 
 import com.github.jknack.handlebars.Handlebars;
+import com.github.jknack.handlebars.Helper;
 import com.github.jknack.handlebars.TemplateLoader;
 import com.github.jknack.handlebars.ValueResolver;
 
@@ -58,6 +62,12 @@ public class HandlebarsViewResolver extends AbstractTemplateViewResolver
    * Fail on missing file. Default is: true.
    */
   private boolean failOnMissingFile = true;
+
+  /**
+   * The helper registry.
+   */
+  private final Map<String, Helper<?>> helpers =
+      new HashMap<String, Helper<?>>();
 
   /**
    * Creates a new {@link HandlebarsViewResolver}.
@@ -132,16 +142,14 @@ public class HandlebarsViewResolver extends AbstractTemplateViewResolver
     // Creates a new handlebars object.
     handlebars = notNull(createHandlebars(templateLoader),
         "A handlebars object is required.");
-    configure(handlebars);
-  }
+    // Copy all the helpers
+    for (Entry<String, Helper<?>> entry : helpers.entrySet()) {
+      handlebars.registerHelper(entry.getKey(), entry.getValue());
+    }
+    // clear the local helpers
+    helpers.clear();
 
-  /**
-   * Callback method for configuring handlebars. This is a good place for
-   * registering helpers.
-   *
-   * @param handlebars A handlebars object. It is never null.
-   */
-  protected void configure(final Handlebars handlebars) {
+    // Add a message source helper
     handlebars.registerHelper("message", new MessageSourceHelper(
         getApplicationContext()));
   }
@@ -163,8 +171,8 @@ public class HandlebarsViewResolver extends AbstractTemplateViewResolver
    * @param context The application's context.
    * @return A new template loader.
    */
-  protected TemplateLoader
-      createTemplateLoader(final ApplicationContext context) {
+  protected TemplateLoader createTemplateLoader(
+      final ApplicationContext context) {
     TemplateLoader templateLoader = new SpringTemplateLoader(context);
     // Override prefix and suffix.
     templateLoader.setPrefix(getPrefix());
@@ -203,5 +211,28 @@ public class HandlebarsViewResolver extends AbstractTemplateViewResolver
    */
   public void setFailOnMissingFile(final boolean failOnMissingFile) {
     this.failOnMissingFile = failOnMissingFile;
+  }
+
+  /**
+   * Register a Handlebars helper.
+   *
+   * @param name The helper's name. Required.
+   * @param helper The helper instance. Required.
+   * @return This view resolver.
+   */
+  public HandlebarsViewResolver registerHelper(final String name,
+      final Helper<?> helper) {
+    helpers.put(name, helper);
+    return this;
+  }
+
+  /**
+   * Set the helper registry.
+   *
+   * @param helpers The helper's registry. Required.
+   */
+  public void setHelpers(final Map<String, Helper<?>> helpers) {
+    this.helpers.clear();
+    this.helpers.putAll(helpers);
   }
 }
