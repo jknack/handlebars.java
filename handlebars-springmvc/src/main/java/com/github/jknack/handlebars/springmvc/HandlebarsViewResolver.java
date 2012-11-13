@@ -16,6 +16,7 @@ package com.github.jknack.handlebars.springmvc;
 import static org.apache.commons.lang3.Validate.notEmpty;
 import static org.apache.commons.lang3.Validate.notNull;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URI;
 
@@ -52,6 +53,11 @@ public class HandlebarsViewResolver extends AbstractTemplateViewResolver
    * The value's resolvers.
    */
   private ValueResolver[] valueResolvers = ValueResolver.VALUE_RESOLVERS;
+
+  /**
+   * Fail on missing file. Default is: true.
+   */
+  private boolean failOnMissingFile = true;
 
   /**
    * Creates a new {@link HandlebarsViewResolver}.
@@ -96,8 +102,15 @@ public class HandlebarsViewResolver extends AbstractTemplateViewResolver
     url = url.substring(getPrefix().length(), url.length()
         - getSuffix().length());
     // Compile the template.
-    view.setTemplate(handlebars.compile(URI.create(url)));
-    view.setValueResolver(valueResolvers);
+    try {
+      view.setTemplate(handlebars.compile(URI.create(url)));
+      view.setValueResolver(valueResolvers);
+    } catch (FileNotFoundException ex) {
+      if (failOnMissingFile) {
+        throw ex;
+      }
+      logger.debug("File not found: " + url);
+    }
     return view;
   }
 
@@ -180,5 +193,15 @@ public class HandlebarsViewResolver extends AbstractTemplateViewResolver
   public void setValueResolvers(final ValueResolver... valueResolvers) {
     this.valueResolvers = notEmpty(valueResolvers,
         "At least one value-resolver must be present.");
+  }
+
+  /**
+   * True, if the view resolver should fail on missing files. Default is: true.
+   *
+   * @param failOnMissingFile True, if the view resolver should fail on
+   *        missing files. Default is: true.
+   */
+  public void setFailOnMissingFile(final boolean failOnMissingFile) {
+    this.failOnMissingFile = failOnMissingFile;
   }
 }

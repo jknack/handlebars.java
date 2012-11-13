@@ -16,6 +16,7 @@ package com.github.jknack.handlebars.springmvc;
 import static org.apache.commons.lang3.Validate.notEmpty;
 import static org.apache.commons.lang3.Validate.notNull;
 
+import java.util.Locale;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -60,6 +61,11 @@ public class HandlebarsView extends AbstractTemplateView {
     } finally {
       context.destroy();
     }
+  }
+
+  @Override
+  public boolean checkResource(final Locale locale) throws Exception {
+    return template != null;
   }
 
   /**
