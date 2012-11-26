@@ -17,6 +17,7 @@
  */
 package com.github.jknack.handlebars.internal;
 
+import static org.apache.commons.lang3.StringUtils.defaultString;
 import static org.parboiled.common.Preconditions.checkNotNull;
 
 import java.io.IOException;
@@ -47,22 +48,34 @@ class Partial extends BaseTemplate {
   private String path;
 
   /**
+   * A partial context. Optional.
+   */
+  private String switchContext;
+
+  /**
    * Set the partial template.
    *
    * @param path The partial path.
    * @param template The template. Required.
+   * @param context An optional context. Optional.
    * @return This partial.
    */
-  public Partial template(final String path, final Template template) {
+  public Partial template(final String path, final Template template,
+      final String context) {
     this.path = checkNotNull(path, "The path is required.");
     this.template = checkNotNull(template, "The template is required.");
+    switchContext = defaultString(context, "this");
     return this;
   }
 
   @Override
-  public void merge(final Context scope, final Writer writer)
+  public void merge(final Context current, final Writer writer)
       throws IOException {
-    template.apply(scope, writer);
+    if (switchContext.equals("this")) {
+      template.apply(current, writer);
+    } else {
+      template.apply(current.get(switchContext), writer);
+    }
   }
 
   @Override

@@ -104,7 +104,7 @@ class Block extends HelperResolver {
 
   @SuppressWarnings("unchecked")
   @Override
-  public void merge(final Context context,
+  protected void merge(final Context context,
       final Writer writer) throws IOException {
     Helper<Object> helper = helper(name);
     BaseTemplate template = body;

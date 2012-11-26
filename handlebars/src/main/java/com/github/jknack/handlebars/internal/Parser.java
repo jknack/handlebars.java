@@ -431,9 +431,12 @@ public class Parser extends BaseParser<BaseTemplate> {
 
   Rule partial() throws IOException {
     final StringVar uriVar = new StringVar();
+    final StringVar partialContext = new StringVar();
     return Sequence(
         path(),
         uriVar.set(match()),
+        spacing(),
+        Optional(Sequence(qualifiedId(), partialContext.set(match()))),
         new Action<BaseTemplate>() {
           @Override
           public boolean run(final Context<BaseTemplate> context) {
@@ -460,7 +463,7 @@ public class Parser extends BaseParser<BaseTemplate> {
                 partial = new Partial();
                 partials.put(uri, partial);
                 Template template = parser.parse(input);
-                partial.template(uri, template);
+                partial.template(uri, template, partialContext.get());
                 stacktraceList.removeLast();
               } catch (IOException ex) {
                 noffset = uri.length();
