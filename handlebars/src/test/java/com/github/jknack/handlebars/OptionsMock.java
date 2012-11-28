@@ -6,11 +6,6 @@ import java.util.Map;
 import org.easymock.EasyMock;
 import org.powermock.api.easymock.PowerMock;
 
-import com.github.jknack.handlebars.Context;
-import com.github.jknack.handlebars.Handlebars;
-import com.github.jknack.handlebars.Options;
-import com.github.jknack.handlebars.Template;
-
 public class OptionsMock extends Options {
 
   private OptionsMock(final Handlebars handlebars, final Context context,
@@ -71,6 +66,11 @@ public class OptionsMock extends Options {
   }
 
   @Override
+  public <T> T get(final String name, final T defaultValue) {
+    return null;
+  }
+
+  @Override
   public Template partial(final String path) {
     return null;
   }
@@ -79,4 +79,12 @@ public class OptionsMock extends Options {
   public void partial(final String path, final Template partial) {
   }
 
+  @Override
+  public <T> T data(final String name) {
+    return null;
+  }
+
+  @Override
+  public void data(final String name, final Object value) {
+  }
 }

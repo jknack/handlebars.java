@@ -47,7 +47,8 @@ enum ParamType {
     boolean apply(final Object param) {
       if (param instanceof String) {
         String string = (String) param;
-        return string.startsWith("\"") && string.endsWith("\"");
+        return string.startsWith("\"") && string.endsWith("\"")
+            || string.startsWith("'") && string.endsWith("'");
       }
       return false;
     }

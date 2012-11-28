@@ -94,8 +94,9 @@ abstract class HelperResolver extends BaseTemplate {
     Object[] values = new Object[params.size() - 1];
     for (int i = 1; i < params.size(); i++) {
       Object value = params.get(i);
-      value = ParamType.parse(scope, value);
-      values[i - 1] = value;
+      Object resolved = ParamType.parse(scope, value);
+      values[i - 1] = resolved == null && handlebars.isStringParams()
+          ? value : resolved;
     }
     return values;
   }

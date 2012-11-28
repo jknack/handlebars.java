@@ -13,7 +13,7 @@
  */
 package com.github.jknack.handlebars;
 
-import static org.parboiled.common.Preconditions.checkNotNull;
+import static org.apache.commons.lang3.Validate.notNull;
 
 import java.io.IOException;
 import java.util.Map;
@@ -69,12 +69,12 @@ public abstract class Options {
   public Options(final Handlebars handlebars, final Context context,
       final Template fn, final Template inverse, final Object[] params,
       final Map<String, Object> hash) {
-    this.handlebars = checkNotNull(handlebars, "The handlebars is required.");
-    this.context = checkNotNull(context, "The context is required");
-    this.fn = checkNotNull(fn, "The template is required.");
-    this.inverse = checkNotNull(inverse, "The inverse template is required.");
-    this.params = checkNotNull(params, "The parameters are required.");
-    this.hash = checkNotNull(hash, "The hash are required.");
+    this.handlebars = notNull(handlebars, "The handlebars is required.");
+    this.context = notNull(context, "The context is required");
+    this.fn = notNull(fn, "The template is required.");
+    this.inverse = notNull(inverse, "The inverse template is required.");
+    this.params = notNull(params, "The parameters are required.");
+    this.hash = notNull(hash, "The hash are required.");
   }
 
   /**
@@ -191,6 +191,17 @@ public abstract class Options {
    *
    * @param <T> The runtime type.
    * @param name The property's name.
+   * @param defaultValue The default value to return if the attribute is not
+   *        present or if null.
+   * @return The associated value or <code>null</code> if it's not found.
+   */
+  public abstract <T> T get(String name, T defaultValue);
+
+  /**
+   * Look for a value in the context's stack.
+   *
+   * @param <T> The runtime type.
+   * @param name The property's name.
    * @return The associated value or <code>null</code> if it's not found.
    */
   public abstract <T> T get(String name);
@@ -280,4 +291,21 @@ public abstract class Options {
    *         context already.
    */
   public abstract Context wrap(Object model);
+
+  /**
+   * Read the attribute from the data storage.
+   *
+   * @param name The attribute's name.
+   * @param <T> Data type.
+   * @return The attribute value or null.
+   */
+  public abstract  <T> T data(final String name);
+
+  /**
+   * Set an attribute in the data storage.
+   *
+   * @param name The attribute's name. Required.
+   * @param value The attribute's value. Required.
+   */
+  public abstract void data(final String name, final Object value);
 }

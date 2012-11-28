@@ -14,6 +14,7 @@
 package com.github.jknack.handlebars;
 
 import static org.apache.commons.lang3.Validate.notEmpty;
+import static org.apache.commons.lang3.Validate.notNull;
 import static org.parboiled.common.Preconditions.checkNotNull;
 
 import java.lang.reflect.Array;
@@ -201,7 +202,7 @@ public final class Context {
   /**
    * A thread safe storage.
    */
-  private Map<String, Object> storage;
+  private Map<String, Object> data;
 
   /**
    * Additional, data can be stored here.
@@ -238,8 +239,8 @@ public final class Context {
     Context root = new Context(model);
     root.extendedContext = new Context(new HashMap<String, Object>());
     root.parent = null;
-    root.storage = new HashMap<String, Object>();
-    root.storage.put(PARTIALS, new HashMap<String, Template>());
+    root.data = new HashMap<String, Object>();
+    root.data.put(PARTIALS, new HashMap<String, Template>());
     return root;
   }
 
@@ -256,7 +257,7 @@ public final class Context {
     Context child = new Context(model);
     child.extendedContext = new Context(new HashMap<String, Object>());
     child.parent = parent;
-    child.storage = parent.storage;
+    child.data = parent.data;
     return child;
   }
 
@@ -285,13 +286,28 @@ public final class Context {
   }
 
   /**
-   * A contextual storage useful for saving values in a thread-safety way. The
-   * storage is cleaned up once a template has been rendered.
+   * Read the attribute from the data storage.
    *
-   * @return A contextual storage. Never null.
+   * @param name The attribute's name.
+   * @param <T> Data type.
+   * @return The attribute value or null.
    */
-  public Map<String, Object> storage() {
-    return storage;
+  @SuppressWarnings("unchecked")
+  public <T> T data(final String name) {
+    return (T) data.get(name);
+  }
+
+  /**
+   * Set an attribute in the data storage.
+   *
+   * @param name The attribute's name. Required.
+   * @param value The attribute's value. Required.
+   * @return This context.
+   */
+  public Context data(final String name, final Object value) {
+    notEmpty(name, "The attribute's name is required.");
+    data.put(name, value);
+    return this;
   }
 
   /**
@@ -313,7 +329,7 @@ public final class Context {
    * <li>Dotted names should be valid for Section tags.
    * <li>Dotted names that cannot be resolved should be considered falsey.
    * <li>Dotted Names - Context Precedence: Dotted names should be resolved
-   * against former resolutions.
+   *  against former resolutions.
    * </ul>
    *
    * @param key The object key.
@@ -337,6 +353,10 @@ public final class Context {
       if (value == null && !path[0].equals("this")) {
         value = get(parent, key);
       }
+      // See at the data context
+      if (value == null && data != null) {
+        value = data.get(key.startsWith("@") ? key.substring(1) : key);
+      }
     }
     return value == NULL ? null : value;
   }
@@ -359,10 +379,10 @@ public final class Context {
    * @return A path representation of the property (array based).
    */
   private String[] toPath(final String key) {
-    StringTokenizer tokenizer = new StringTokenizer(key, ".");
+    StringTokenizer tokenizer = new StringTokenizer(key, "./");
     int len = tokenizer.countTokens();
     if (len == 1) {
-      return new String[] {key.toString() };
+      return new String[]{key.toString() };
     }
     String[] path = new String[len];
     int i = 0;
@@ -453,9 +473,9 @@ public final class Context {
   public void destroy() {
     model = null;
     if (parent == null) {
-      // Root context are owner of the storage.
-      if (storage != null) {
-        storage.clear();
+      // Root context is the owner of the storage.
+      if (data != null) {
+        data.clear();
       }
     }
     if (extendedContext != null) {
@@ -463,7 +483,7 @@ public final class Context {
     }
     parent = null;
     resolver = null;
-    storage = null;
+    data = null;
   }
 
   @Override
@@ -479,7 +499,7 @@ public final class Context {
    * @return A new context builder.
    */
   public static Builder newBuilder(final Context parent, final Object model) {
-    checkNotNull(parent, "The parent context is required.");
+    notNull(parent, "The parent context is required.");
     return new Builder(parent, model);
   }
 

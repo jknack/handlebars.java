@@ -64,6 +64,10 @@ public class WithHelper implements Helper<Object> {
   @Override
   public CharSequence apply(final Object context, final Options options)
       throws IOException {
-    return options.fn(context);
+    if (context == null) {
+      return options.inverse(context);
+    } else {
+      return options.fn(context);
+    }
   }
 }

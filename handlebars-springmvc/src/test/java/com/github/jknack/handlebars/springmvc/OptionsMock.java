@@ -79,4 +79,17 @@ public class OptionsMock extends Options {
   public void partial(final String path, final Template partial) {
   }
 
+  @Override
+  public <T> T data(final String name) {
+    return null;
+  }
+
+  @Override
+  public void data(final String name, final Object value) {
+  }
+
+  @Override
+  public <T> T get(final String name, final T defaultValue) {
+    return null;
+  }
 }

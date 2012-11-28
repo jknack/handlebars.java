@@ -276,6 +276,11 @@ public class Handlebars {
   private final TemplateCache cache;
 
   /**
+   * If true, missing helper parameters will be resolve to their names.
+   */
+  private boolean stringParams;
+
+  /**
    * The helper registry.
    */
   private final Map<String, Helper<Object>> helpers =
@@ -294,6 +299,8 @@ public class Handlebars {
         notNull(cache, "The template cache is required.");
 
     registerBuiltinsHelpers(this);
+    // expose pseudo variables by default.
+    setExposePseudoVariables(true);
   }
 
   /**
@@ -452,6 +459,25 @@ public class Handlebars {
    */
   public TemplateLoader getTemplateLoader() {
     return loader;
+  }
+
+  /**
+   * If true, missing helper parameters will be resolve to their names.
+   *
+   * @return If true, missing helper parameters will be resolve to their names.
+   */
+  public boolean isStringParams() {
+    return stringParams;
+  }
+
+  /**
+   * If true, missing helper parameters will be resolve to their names.
+   *
+   * @param stringParams If true, missing helper parameters will be resolve to
+   *        their names.
+   */
+  public void setStringParams(final boolean stringParams) {
+    this.stringParams = stringParams;
   }
 
   /**

@@ -66,11 +66,6 @@ class DefaultOptions extends Options {
   };
 
   /**
-   * A thread safe storage.
-   */
-  private Map<String, Object> storage;
-
-  /**
    * Creates a new {@link DefaultOptions}.
    *
    * @param handlebars The {@link Handlebars} object. Required.
@@ -85,7 +80,6 @@ class DefaultOptions extends Options {
       final Map<String, Object> hash) {
     super(handlebars, context, fn, inverse == null ? EMPTY : inverse, params,
         hash);
-    storage = context.storage();
   }
 
   @Override
@@ -108,14 +102,16 @@ class DefaultOptions extends Options {
     return applyIfPossible(inverse, context);
   }
 
-  @SuppressWarnings("unchecked")
   @Override
   public <T> T get(final String name) {
+    return get(name, null);
+  }
+
+  @Override
+  public <T> T get(final String name, final T defaultValue) {
+    @SuppressWarnings("unchecked")
     T value = (T) context.get(name);
-    if (value == null) {
-      value = (T) storage.get(name);
-    }
-    return value;
+    return value == null ? defaultValue : value;
   }
 
   @Override
@@ -139,9 +135,6 @@ class DefaultOptions extends Options {
   private CharSequence applyIfPossible(final Template template,
       final Object context)
       throws IOException {
-    if (context == null) {
-      return "";
-    }
     return apply(template, context);
   }
 
@@ -177,7 +170,7 @@ class DefaultOptions extends Options {
    */
   @SuppressWarnings("unchecked")
   private Map<String, Template> partials() {
-    return (Map<String, Template>) storage.get(Context.PARTIALS);
+    return (Map<String, Template>) data(Context.PARTIALS);
   }
 
   /**
@@ -185,7 +178,15 @@ class DefaultOptions extends Options {
    */
   public void destroy() {
     hash.clear();
-    storage = null;
   }
 
+  @Override
+  public <T> T data(final String name) {
+    return context.data(name);
+  }
+
+  @Override
+  public void data(final String name, final Object value) {
+    context.data(name, value);
+  }
 }
