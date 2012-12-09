@@ -20,9 +20,11 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.parboiled.Action;
 import org.parboiled.BaseParser;
@@ -34,6 +36,7 @@ import org.parboiled.annotations.DontLabel;
 import org.parboiled.annotations.Label;
 import org.parboiled.annotations.MemoMismatches;
 import org.parboiled.buffers.InputBuffer;
+import org.parboiled.common.IntArrayStack;
 import org.parboiled.errors.ActionException;
 import org.parboiled.errors.InvalidInputError;
 import org.parboiled.errors.ParseError;
@@ -64,7 +67,13 @@ import com.github.jknack.handlebars.internal.Variable.Type;
  * @author edgar.espina
  * @since 0.1.0
  */
-public class Parser extends BaseParser<BaseTemplate> {
+public class Parser extends BaseParser<Object> {
+
+  static class Node {
+    public TemplateList sequence = new TemplateList();
+
+    public IntArrayStack spaces = new IntArrayStack();
+  }
 
   static class Token {
     public String text;
@@ -89,15 +98,15 @@ public class Parser extends BaseParser<BaseTemplate> {
    * @since 0.1.0
    */
   private static class SafeReportingParseRunner extends
-      ReportingParseRunner<BaseTemplate> {
+      ReportingParseRunner<Object> {
     public SafeReportingParseRunner(final Rule rule) {
       super(rule);
     }
 
     @Override
-    protected ParsingResult<BaseTemplate> runReportingMatch(
+    protected ParsingResult<Object> runReportingMatch(
         final InputBuffer inputBuffer, final int errorIndex) {
-      ParseRunner<BaseTemplate> reportingRunner =
+      ParseRunner<Object> reportingRunner =
           new SafeErrorReportingParseRunner(
               getRootMatcher(), errorIndex)
               .withParseErrors(getParseErrors())
@@ -111,7 +120,7 @@ public class Parser extends BaseParser<BaseTemplate> {
    * reporting.
    */
   private static class SafeErrorReportingParseRunner extends
-      AbstractParseRunner<BaseTemplate> implements MatchHandler {
+      AbstractParseRunner<Object> implements MatchHandler {
     private final IsSingleCharMatcherVisitor isSingleCharMatcherVisitor =
         new IsSingleCharMatcherVisitor();
     private final int errorIndex;
@@ -150,14 +159,14 @@ public class Parser extends BaseParser<BaseTemplate> {
     }
 
     @Override
-    public ParsingResult<BaseTemplate> run(final InputBuffer inputBuffer) {
+    public ParsingResult<Object> run(final InputBuffer inputBuffer) {
       checkArgNotNull(inputBuffer, "inputBuffer");
       resetValueStack();
       failedMatchers.clear();
       seeking = errorIndex > 0;
 
       // run without fast string matching to properly get to the error location
-      MatcherContext<BaseTemplate> rootContext =
+      MatcherContext<Object> rootContext =
           createRootContext(inputBuffer, this, false);
       boolean matched = match(rootContext);
       if (!matched) {
@@ -192,17 +201,17 @@ public class Parser extends BaseParser<BaseTemplate> {
 
   protected String endDelimiter;
 
-  protected final List<BaseTemplate> line = new LinkedList<BaseTemplate>();
-
-  protected final List<BaseTemplate> ignored = new LinkedList<BaseTemplate>();
-
-  protected boolean onlyWhites = true;
-
   protected final Handlebars handlebars;
 
   protected final Map<String, Partial> partials;
 
   protected final String filename;
+
+  protected Boolean hasTag;
+
+  protected StringBuilder line = new StringBuilder();
+
+  protected Set<Node> nodeLine = new LinkedHashSet<Parser.Node>();
 
   protected final LinkedList<Stacktrace> stacktraceList;
 
@@ -224,9 +233,9 @@ public class Parser extends BaseParser<BaseTemplate> {
 
   public Template parse(final String input) throws IOException {
     try {
-      ParseRunner<BaseTemplate> runner =
+      ParseRunner<Object> runner =
           new SafeReportingParseRunner(template());
-      ParsingResult<BaseTemplate> result = runner.run(input);
+      ParsingResult<Object> result = runner.run(input);
       if (result.hasErrors()) {
         ParseError error = result.parseErrors.get(0);
         HandlebarsError hbsError =
@@ -234,8 +243,9 @@ public class Parser extends BaseParser<BaseTemplate> {
                 stacktraceList);
         throw new HandlebarsException(hbsError);
       }
-      TemplateList sequence = (TemplateList) result.resultValue;
-      removeBlanks(sequence);
+      Node node = (Node) result.resultValue;
+      TemplateList sequence = node.sequence;
+      stripSpace(node);
       if (sequence.size() == 1) {
         return sequence.iterator().next();
       }
@@ -253,12 +263,13 @@ public class Parser extends BaseParser<BaseTemplate> {
   }
 
   Rule template() throws IOException {
-    return Sequence(body(), sync(), EOI);
+    // return Sequence(body(), sync(), EOI);
+    return Sequence(body(), EOI);
   }
 
   Rule body() throws IOException {
     return Sequence(
-        push(new TemplateList()),
+        push(new Node()),
         ZeroOrMore(
         FirstOf(
             space(),
@@ -277,12 +288,27 @@ public class Parser extends BaseParser<BaseTemplate> {
                     // {{{ }}}
                     Sequence('{', spacing(), tripleVar()),
                     // {{= }}
-                    Sequence('=', spacing(), delimiters()),
+                    Sequence('=', hasTag(true), spacing(), delimiters()),
                     // {{! }}
                     comment(),
                     Sequence(spacing(), var())
                 ))
         )));
+  }
+
+  boolean hasTag() {
+    return hasTag == null ? false : hasTag.booleanValue();
+  }
+
+  boolean hasTag(final boolean hasTag) {
+    if (this.hasTag != Boolean.FALSE) {
+      this.hasTag = hasTag;
+    }
+    return true;
+  }
+
+  void resetHasTag() {
+    hasTag = null;
   }
 
   Rule delimiters() {
@@ -295,9 +321,9 @@ public class Parser extends BaseParser<BaseTemplate> {
         spacing(),
         '=',
         endDelimiter(),
-        new Action<BaseTemplate>() {
+        new Action<Object>() {
           @Override
-          public boolean run(final Context<BaseTemplate> context) {
+          public boolean run(final Context<Object> context) {
             endDelimiter = newendDelimiter.get();
             startDelimiter = newstartDelimiter.get();
             if (startDelimiter.length() != endDelimiter.length()) {
@@ -306,7 +332,6 @@ public class Parser extends BaseParser<BaseTemplate> {
                   + startDelimiter + "'.length != '" + endDelimiter
                   + "'.length");
             }
-            onlyWhites = false;
             return true;
           }
         });
@@ -368,6 +393,7 @@ public class Parser extends BaseParser<BaseTemplate> {
         var.get().position(position()),
         qualifiedId(),
         var.get().text(match()),
+        hasTag(false),
         spacing(),
         reset(params),
         reset(hash),
@@ -387,36 +413,50 @@ public class Parser extends BaseParser<BaseTemplate> {
     return true;
   }
 
+  TemplateList templateList() {
+    return peekNode().sequence;
+  }
+
+  Node peekNode() {
+    return (Node) peek();
+  }
+
+  Node popNode() {
+    Node node = (Node) pop();
+    nodeLine.add(node);
+    return node;
+  }
+
   boolean add(final BaseTemplate template) {
-    TemplateList sequence = (TemplateList) peek();
+    TemplateList sequence = templateList();
     template.filename(filename);
     sequence.add(template);
-    addToline(template);
     return true;
   }
 
-  boolean addToline(final BaseTemplate template) {
-    line.add(template);
-    onlyWhites = onlyWhites && template instanceof Blank;
-    return true;
+  boolean add(final Text template) {
+    Node node = peekNode();
+    node.spaces.push(node.sequence.size());
+    line.append(template.text());
+    return add((BaseTemplate) template);
   }
 
-  Action<BaseTemplate> startDelimiter() {
-    return new Action<BaseTemplate>() {
+  Action<Object> startDelimiter() {
+    return new Action<Object>() {
       @Override
-      public boolean run(final Context<BaseTemplate> context) {
+      public boolean run(final Context<Object> context) {
         Matcher matcher = (Matcher) String(startDelimiter);
-        return matcher.match((MatcherContext<BaseTemplate>) context);
+        return matcher.match((MatcherContext<Object>) context);
       }
     };
   }
 
-  Action<BaseTemplate> endDelimiter() {
-    return new Action<BaseTemplate>() {
+  Action<Object> endDelimiter() {
+    return new Action<Object>() {
       @Override
-      public boolean run(final Context<BaseTemplate> context) {
+      public boolean run(final Context<Object> context) {
         Matcher matcher = (Matcher) String(endDelimiter);
-        return matcher.match((MatcherContext<BaseTemplate>) context);
+        return matcher.match((MatcherContext<Object>) context);
       }
     };
   }
@@ -429,9 +469,9 @@ public class Parser extends BaseParser<BaseTemplate> {
         uriVar.set(match()),
         spacing(),
         Optional(Sequence(qualifiedId(), partialContext.set(match()))),
-        new Action<BaseTemplate>() {
+        new Action<Object>() {
           @Override
-          public boolean run(final Context<BaseTemplate> context) {
+          public boolean run(final Context<Object> context) {
             String uri = uriVar.get();
             if (uri.startsWith("[") && uri.endsWith("]")) {
               uri = uri.substring(1, uri.length() - 1);
@@ -496,28 +536,28 @@ public class Parser extends BaseParser<BaseTemplate> {
             Sequence(startDelimiter(), spacing(), elseKey(), spacing(),
                 endDelimiter()),
             body(),
-            new Action<BaseTemplate>() {
+            new Action<Object>() {
               @Override
-              public boolean run(final Context<BaseTemplate> context) {
-                ValueStack<BaseTemplate> stack = context.getValueStack();
+              public boolean run(final Context<Object> context) {
+                ValueStack<Object> stack = context.getValueStack();
                 if (stack.size() > 1) {
-                  BaseTemplate body = pop();
+                  BaseTemplate body = popNode().sequence;
                   ((Block) section.get()).inverse(body);
                 }
-                return addToline(section.get());
+                return true;
               }
             }
         ),
         blockEnd(name),
-        new Action<BaseTemplate>() {
+        new Action<Object>() {
           @Override
-          public boolean run(final Context<BaseTemplate> context) {
-            ValueStack<BaseTemplate> stack = context.getValueStack();
+          public boolean run(final Context<Object> context) {
+            ValueStack<Object> stack = context.getValueStack();
             if (stack.size() > 1) {
-              BaseTemplate body = pop();
+              BaseTemplate body = popNode().sequence;
               ((Block) section.get()).body(body);
             }
-            return addToline(section.get());
+            return true;
           }
         }).label("block");
   }
@@ -533,6 +573,7 @@ public class Parser extends BaseParser<BaseTemplate> {
     return Sequence(
         name.get().position(position()),
         qualifiedId(), name.get().text(match()),
+        hasTag(true),
         spacing(),
         reset(params),
         reset(hash),
@@ -544,9 +585,9 @@ public class Parser extends BaseParser<BaseTemplate> {
   Rule blockEnd(final Var<Token> name) {
     return Sequence(
         startDelimiter(), '/', spacing(),
-        qualifiedId(), new Action<BaseTemplate>() {
+        qualifiedId(), new Action<Object>() {
           @Override
-          public boolean run(final Context<BaseTemplate> context) {
+          public boolean run(final Context<Object> context) {
             String endName = context.getMatch();
             boolean match = name.get().text.equals(endName);
             if (!match) {
@@ -558,7 +599,7 @@ public class Parser extends BaseParser<BaseTemplate> {
           }
         },
         spacing(),
-        endDelimiter());
+        endDelimiter(), hasTag(true));
   }
 
   @Label("parameter::hash")
@@ -571,9 +612,9 @@ public class Parser extends BaseParser<BaseTemplate> {
   Rule paramOrHash(final List<Object> params, final Map<String, Object> hash) {
     final Var<Object> var = new Var<Object>();
     return FirstOf(hash(hash), Sequence(param(var),
-        new Action<BaseTemplate>() {
+        new Action<Object>() {
           @Override
-          public boolean run(final Context<BaseTemplate> context) {
+          public boolean run(final Context<Object> context) {
             if (!hash.isEmpty()) {
               noffset = var.get().toString().length();
               throw new ActionException("'" + var.get()
@@ -616,7 +657,7 @@ public class Parser extends BaseParser<BaseTemplate> {
         FirstOf(
             String("\\\'"),
             Sequence(TestNot(AnyOf("'\r\n")), ANY))),
-            "'");
+        "'");
   }
 
   @Label("parameter::hash")
@@ -776,9 +817,9 @@ public class Parser extends BaseParser<BaseTemplate> {
 
   @Label("ignore")
   Rule space() {
-    return Sequence(spaceNoAction(), new Action<BaseTemplate>() {
+    return Sequence(OneOrMore(spaceNoAction()), new Action<Object>() {
       @Override
-      public boolean run(final Context<BaseTemplate> context) {
+      public boolean run(final Context<Object> context) {
         return add(new Blank(context.getMatch()));
       }
     });
@@ -791,61 +832,51 @@ public class Parser extends BaseParser<BaseTemplate> {
 
   @Label("ignore")
   Rule nl() {
-    return Sequence(nlNoAction(), new Action<BaseTemplate>() {
+    return Sequence(nlNoAction(), new Action<Object>() {
       @Override
-      public boolean run(final Context<BaseTemplate> context) {
-        return add(new Blank(context.getMatch()));
+      public boolean run(final Context<Object> context) {
+        add(new Blank(context.getMatch()));
+        stripSpace(peekNode());
+        return true;
       }
-    }, sync());
+    });
   }
 
-  boolean sync() {
-    List<BaseTemplate> currentLine = line;
-    if (!onlyWhites) {
-      boolean ignore = true;
-      for (BaseTemplate template : currentLine) {
-        Class<? extends BaseTemplate> type = template.getClass();
-        if (type == Text.class || type == Variable.class
-            || type == Partial.class) {
-          ignore = false;
-          break;
+  void stripSpace(final Node node) {
+    // strip space
+    String line = this.line.toString();
+    boolean emptyLine = line.trim().length() == 0;
+    nodeLine.add(node);
+    boolean hasTag = hasTag();
+    for (Node n : nodeLine) {
+      TemplateList tokens = n.sequence;
+      IntArrayStack spaces = n.spaces;
+      if (hasTag && emptyLine) {
+        while (spaces.size() > 0) {
+          tokens.remove(spaces.pop());
         }
-      }
-
-      if (ignore) {
-        for (BaseTemplate child : currentLine) {
-          if (child instanceof Blank) {
-            ignored.add(child);
-          }
-        }
+      } else {
+        spaces.clear();
       }
     }
-    onlyWhites = true;
-    currentLine.clear();
-    return true;
+    nodeLine.clear();
+    resetHasTag();
+    this.line.setLength(0);
   }
 
-  void removeBlanks(final BaseTemplate head) {
-    for (BaseTemplate blank : ignored) {
-      head.remove(blank);
-    }
-    line.clear();
-    ignored.clear();
+  @Override
+  public boolean push(final Object value) {
+    nodeLine.add((Node) value);
+    return super.push(value);
   }
 
   @DontLabel
   Rule comment() {
     return Sequence(
         '!',
+        hasTag(true),
         ZeroOrMore(TestNot(endDelimiter()), ANY),
-        endDelimiter(),
-        new Action<BaseTemplate>() {
-          @Override
-          public boolean run(final Context<BaseTemplate> context) {
-            onlyWhites = false;
-            return true;
-          }
-        });
+        endDelimiter());
   }
 
   @MemoMismatches

@@ -83,8 +83,4 @@ class Partial extends BaseTemplate {
     return "{{>" + path + "}}";
   }
 
-  @Override
-  public boolean remove(final Template child) {
-    return ((BaseTemplate) template).remove(child);
-  }
 }

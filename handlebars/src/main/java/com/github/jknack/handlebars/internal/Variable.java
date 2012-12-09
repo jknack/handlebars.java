@@ -27,7 +27,6 @@ import com.github.jknack.handlebars.Context;
 import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Helper;
 import com.github.jknack.handlebars.Lambda;
-import com.github.jknack.handlebars.Template;
 
 /**
  * The most basic tag type is the variable. A {{name}} tag in a basic template
@@ -187,7 +186,7 @@ class Variable extends HelperResolver {
       final Map<String, Object> hash) {
     super(handlebars);
     this.name = name.trim();
-    this.constant = value;
+    constant = value;
     this.type = type;
     params(params);
     hash(hash);
@@ -234,7 +233,7 @@ class Variable extends HelperResolver {
         writer.append(result);
       }
     } else {
-      Object value = this.constant == null ? scope.get(name) : this.constant;
+      Object value = constant == null ? scope.get(name) : constant;
       if (value != null) {
         if (value instanceof Lambda) {
           value =
@@ -270,11 +269,6 @@ class Variable extends HelperResolver {
     } else {
       return false;
     }
-  }
-
-  @Override
-  public boolean remove(final Template child) {
-    return false;
   }
 
   @Override

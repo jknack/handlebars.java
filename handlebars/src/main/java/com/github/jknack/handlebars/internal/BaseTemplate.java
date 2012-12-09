@@ -74,14 +74,6 @@ abstract class BaseTemplate implements Template {
   private static ScriptableObject sharedScope;
 
   /**
-   * Remove the child template.
-   *
-   * @param child The template to be removed.
-   * @return True, if the child was removed
-   */
-  public abstract boolean remove(Template child);
-
-  /**
    * {@inheritDoc}
    */
   @Override

@@ -163,11 +163,6 @@ class Block extends HelperResolver {
     return inverted;
   }
 
-  @Override
-  public boolean remove(final Template child) {
-    return body.remove(child);
-  }
-
   /**
    * Set the template body.
    *

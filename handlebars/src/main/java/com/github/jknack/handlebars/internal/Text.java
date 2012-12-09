@@ -23,7 +23,6 @@ import java.io.IOException;
 import java.io.Writer;
 
 import com.github.jknack.handlebars.Context;
-import com.github.jknack.handlebars.Template;
 
 /**
  * Plain text template.
@@ -58,8 +57,4 @@ class Text extends BaseTemplate {
     writer.append(text);
   }
 
-  @Override
-  public boolean remove(final Template child) {
-    return false;
-  }
 }

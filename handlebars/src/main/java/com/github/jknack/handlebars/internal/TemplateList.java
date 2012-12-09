@@ -24,7 +24,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import com.github.jknack.handlebars.Context;
-import com.github.jknack.handlebars.Template;
 
 /**
  * A list of templates.
@@ -84,16 +83,13 @@ class TemplateList extends BaseTemplate implements Iterable<BaseTemplate> {
     return nodes.iterator();
   }
 
-  @Override
-  public boolean remove(final Template child) {
-    boolean removed = nodes.remove(child);
-    if (!removed) {
-      Iterator<BaseTemplate> iterator = nodes.iterator();
-      while (!removed && iterator.hasNext()) {
-        removed = iterator.next().remove(child);
-      }
-    }
-    return removed;
+  /**
+   * Remove a node from the given position.
+   *
+   * @param idx The node's position.
+   */
+  public void remove(final int idx) {
+    nodes.remove(idx);
   }
 
   /**
