@@ -604,8 +604,8 @@ Checkout the [HandlebarsViewResolver](https://github.com/jknack/handlebars.java/
  * Helpers are type-safe.
  * Handlebars.java is thread-safe.
 
-## Differences between Handlebars.js and Handlebars.java
- * Handlebars.java scope resolution follows the Mustache Spec.
+## Differences between Handlebars.java and Handlebars.js
+ * Handlebars.java scope resolution follows the Mustache Spec. For example:
 
 Given:
 
@@ -641,12 +641,13 @@ Hopefully, you can turn-off the context stack lookup in Handlebars.java by quali
 Hello {{#child}}{{this.value}}{{/child}}
 ```
 
+## Differences between Handlebars.java and Mustache.js
+ * Handlebars.java will throw a ```java.io.FileNotFoundException``` if a partial cannot be loaded.
+
 ## Status
-### Mustache Spec
- * Passes 123 of 127 tests from the [Mustache Spec](https://github.com/mustache/spec).
- * The 4 missing tests are: "Standalone Line Endings", "Standalone Without Previous Line", "Standalone Without Newline", "Standalone Indentation" all them from partials.yml.
- * In short, partials works 100% if you ignore white spaces indentation.
- 
+### 100% Mustache Compliant
+ * Passes 123 of 123 tests from the [Mustache Spec](https://github.com/mustache/spec).
+
 ## Dependencies
  Handlebars.java depends on:
  
