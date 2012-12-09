@@ -13,6 +13,7 @@
  */
 package com.github.jknack.handlebars.internal;
 
+import static org.apache.commons.lang3.StringUtils.isEmpty;
 import static org.parboiled.common.Preconditions.checkArgNotNull;
 
 import java.io.IOException;
@@ -35,6 +36,7 @@ import org.parboiled.Rule;
 import org.parboiled.annotations.DontLabel;
 import org.parboiled.annotations.Label;
 import org.parboiled.annotations.MemoMismatches;
+import org.parboiled.buffers.DefaultInputBuffer;
 import org.parboiled.buffers.InputBuffer;
 import org.parboiled.common.IntArrayStack;
 import org.parboiled.errors.ActionException;
@@ -68,6 +70,27 @@ import com.github.jknack.handlebars.internal.Variable.Type;
  * @since 0.1.0
  */
 public class Parser extends BaseParser<Object> {
+
+  static class PartialInputBuffer {
+
+    public static InputBuffer build(final String input, final String indent) {
+      if (isEmpty(indent) || !isEmpty(indent.trim())) {
+        return new DefaultInputBuffer(input.toCharArray());
+      }
+      StringBuilder buffer = new StringBuilder(input.length() + indent.length());
+      buffer.append(indent);
+      int len = input.length();
+      for (int idx = 0; idx < len; idx++) {
+        char ch = input.charAt(idx);
+        buffer.append(ch);
+        if (ch == '\n' && idx < len - 1) {
+          buffer.append(indent);
+        }
+      }
+      return new DefaultInputBuffer(buffer.toString().toCharArray());
+    }
+
+  }
 
   static class Node {
     public TemplateList sequence = new TemplateList();
@@ -232,6 +255,10 @@ public class Parser extends BaseParser<Object> {
   }
 
   public Template parse(final String input) throws IOException {
+    return parse(new DefaultInputBuffer(input.toCharArray()));
+  }
+
+  public Template parse(final InputBuffer input) throws IOException {
     try {
       ParseRunner<Object> runner =
           new SafeReportingParseRunner(template());
@@ -466,6 +493,7 @@ public class Parser extends BaseParser<Object> {
     final StringVar partialContext = new StringVar();
     return Sequence(
         path(),
+        hasTag(true),
         uriVar.set(match()),
         spacing(),
         Optional(Sequence(qualifiedId(), partialContext.set(match()))),
@@ -497,7 +525,8 @@ public class Parser extends BaseParser<Object> {
                 // Avoid stack overflow exceptions
                 partial = new Partial();
                 partials.put(uri, partial);
-                Template template = parser.parse(input);
+                Template template = parser.parse(PartialInputBuffer.build(input,
+                    hasTag ? line.toString() : null));
                 partial.template(uri, template, partialContext.get());
                 stacktraceList.removeLast();
               } catch (IOException ex) {

@@ -49,7 +49,7 @@ public class PartialsTest extends SpecTest {
 
   @Override
   protected boolean skip(final Spec spec) {
-    List<Integer> skip = Arrays.asList(1, 6, 7, 8, 9);
+    List<Integer> skip = Arrays.asList(1);
     return skip.contains(spec.number());
   }
 

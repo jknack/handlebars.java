@@ -1,5 +1,4 @@
 
-
 <!-- base.hbs -->
 <html>
 <head>
@@ -9,7 +8,7 @@
 </head>
 <body>
   header
- ABOUT 
+  ABOUT
   footer
 </body>
 </html>

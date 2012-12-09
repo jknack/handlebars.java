@@ -44,42 +44,42 @@ tests:
 
   # Whitespace Sensitivity
 
-  - name: Surrounding Whitespace
+  - name: 4. Surrounding Whitespace
     desc: The greater-than operator should not alter surrounding whitespace.
     data: { }
     template: '| {{>partial}} |'
     partials: { partial: "\t|\t" }
     expected: "| \t|\t |"
 
-  - name: Inline Indentation
+  - name: 5. Inline Indentation
     desc: Whitespace should be left untouched.
     data: { data: '|' }
     template: "  {{data}}  {{> partial}}\n"
     partials: { partial: ">\n>" }
     expected: "  |  >\n>\n"
 
-  - name: Standalone Line Endings
+  - name: 6. Standalone Line Endings
     desc: '"\r\n" should be considered a newline for standalone tags.'
     data: { }
     template: "|\r\n{{>partial}}\r\n|"
     partials: { partial: ">" }
     expected: "|\r\n>|"
 
-  - name: Standalone Without Previous Line
+  - name: 7. Standalone Without Previous Line
     desc: Standalone tags should not require a newline to precede them.
     data: { }
     template: "  {{>partial}}\n>"
     partials: { partial: ">\n>"}
     expected: "  >\n  >>"
 
-  - name: Standalone Without Newline
+  - name: 8. Standalone Without Newline
     desc: Standalone tags should not require a newline to follow them.
     data: { }
     template: ">\n  {{>partial}}"
     partials: { partial: ">\n>" }
     expected: ">\n  >\n  >"
 
-  - name: Standalone Indentation
+  - name: 9. Standalone Indentation
     desc: Each line of the partial should be indented before rendering.
     data: { content: "<\n->" }
     template: |
@@ -101,7 +101,7 @@ tests:
 
   # Whitespace Insensitivity
 
-  - name: Padding Whitespace
+  - name: 10. Padding Whitespace
     desc: Superfluous in-tag whitespace should be ignored.
     data: { boolean: true }
     template: "|{{> partial }}|"

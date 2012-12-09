@@ -10,7 +10,6 @@
     This will be default content that appears in a
     deriving template if it does not declare a
     replacement for the "content" section.
-
   footer
 </body>
 </html>

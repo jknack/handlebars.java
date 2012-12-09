@@ -24,7 +24,7 @@ import org.junit.runners.Suite.SuiteClasses;
 @RunWith(Suite.class)
 @SuiteClasses({CommentsTest.class, DelimitersTest.class,
     InterpolationTest.class, InvertedTest.class, SectionsTest.class,
-    PartialsTest.class, PartialsNoSpecTest.class, LambdasTest.class })
+    PartialsTest.class, LambdasTest.class })
 public class SpecTests {
 
 }
