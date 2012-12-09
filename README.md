@@ -410,7 +410,7 @@ In short from a helper you can throw an Exception and Handlebars.java will add t
     context.destroy();
   }
  ```
- Where is the ```hookContextStack``` method? Well, that will depends on your application architecture.
+ Where is the ```hookContextStack``` method? Well, it depends on your application architecture.
 
 ### Using the ValueResolver
  By default, Handlebars.java use the JavaBean methods (i.e. public getXxx methods) and Map as value resolvers.
@@ -469,6 +469,32 @@ Context context = Context
       FieldValueResolver.INSTANCE)
   .build();
 ```
+
+### String form parameters
+ You can access to a parameter name if you set the: ```stringParams: true```. Example:
+ 
+```html
+{{sayHi this edgar}}
+```
+
+```java
+  Handlebars handlebars = new Handlebars();
+  handlebars.setStringParams(true);
+  
+  handlebars.registerHelper("sayHi", new Helper<Object>() {
+    public Object apply(Object context, Options options) {
+      return "Hello " + options.param(0) + "!";
+    }
+  });
+```
+
+results in:
+```
+Hello edgar!
+```
+ How it works? ```stringParams: true``` instruct Handlebars.java to resolve a parameter
+ to the his name if the value isn't present in the context stack.
+
 
 # Additional Helpers
 ## String Helpers
