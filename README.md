@@ -470,6 +470,20 @@ Context context = Context
   .build();
 ```
 
+### Helper Missing
+ By default, Handlebars.java throws an ```java.lang.IllegalArgumentException()``` if a helper cannot be resolved.
+ You can override the default behaviour by providing a ```helperMissing``` helper. Example:
+ 
+```java
+  handlebars.registerHelper(Handlebars.HELPER_MISSING, new Helper<Object>() {
+    @Override
+    public CharSequence apply(final Object context, final Options options) throws IOException {
+      return options.fn.text();
+    }
+  });
+```
+
+
 ### String form parameters
  You can access to a parameter name if you set the: ```stringParams: true```. Example:
  
@@ -623,7 +637,7 @@ where:
 
 Checkout the [HandlebarsViewResolver](https://github.com/jknack/handlebars.java/blob/develop/handlebars-springmvc/src/main/java/com/github/jknack/handlebars/springmvc/HandlebarsViewResolver.java).
 
-# Architecture
+# Architecture and API Design
  * Handlebars.java follows the JavaScript API with some minors exceptions due to the nature of the Java language.
  * The parser is built on top of [Parboiled] (https://github.com/sirthias/parboiled).
  * Data is provided as primitive types (int, boolean, double, etc.), strings, maps, list or JavaBeans objects.
@@ -631,7 +645,7 @@ Checkout the [HandlebarsViewResolver](https://github.com/jknack/handlebars.java/
  * Handlebars.java is thread-safe.
 
 ## Differences between Handlebars.java and Handlebars.js
- * Handlebars.java scope resolution follows the Mustache Spec. For example:
+ Handlebars.java scope resolution follows the Mustache Spec. For example:
 
 Given:
 
@@ -668,7 +682,7 @@ Hello {{#child}}{{this.value}}{{/child}}
 ```
 
 ## Differences between Handlebars.java and Mustache.js
- * Handlebars.java will throw a ```java.io.FileNotFoundException``` if a partial cannot be loaded.
+ * Handlebars.java throws a ```java.io.FileNotFoundException``` if a partial cannot be loaded.
 
 ## Status
 ### 100% Mustache Compliant
@@ -716,6 +730,9 @@ Hello {{#child}}{{this.value}}{{/child}}
 ## Credits
  * [Mathias](https://github.com/sirthias): For the [parboiled](https://github.com/sirthias/parboiled) PEG library
  * [Handlebars.js](https://github.com/wycats/handlebars.js/)
+
+## Author
+ Edgar Espina (@edgarespina)
 
 ## License
 [Apache License 2](http://www.apache.org/licenses/LICENSE-2.0.html)
