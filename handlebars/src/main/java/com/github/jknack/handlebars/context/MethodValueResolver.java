@@ -18,6 +18,8 @@
 package com.github.jknack.handlebars.context;
 
 import java.lang.reflect.Method;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 import com.github.jknack.handlebars.ValueResolver;
 
@@ -53,22 +55,39 @@ public class MethodValueResolver extends MemberValueResolver<Method> {
   }
 
   @Override
-  protected Method find(final Class<?> clazz, final String name) {
-    // Keep backing up the inheritance hierarchy.
-    Method[] methods = clazz.getDeclaredMethods();
-    for (Method method : methods) {
-      if (matches(method, name)) {
-        return method;
-      }
-    }
-    if (clazz.getSuperclass() != null) {
-      return find(clazz.getSuperclass(), name);
-    } else if (clazz.isInterface()) {
-      for (Class<?> superIfc : clazz.getInterfaces()) {
-        return find(superIfc, name);
-      }
-    }
-    return null;
+  protected Set<Method> members(final Class<?> clazz) {
+    Set<Method> members = new LinkedHashSet<Method>();
+    members(clazz, members);
+    return members;
   }
 
+  /**
+   * Collect all the method from the given class.
+   *
+   * @param clazz The base class.
+   * @param members The members result set.
+   */
+  protected void members(final Class<?> clazz, final Set<Method> members) {
+    if (clazz != Object.class) {
+      // Keep backing up the inheritance hierarchy.
+      Method[] methods = clazz.getDeclaredMethods();
+      for (Method method : methods) {
+        if (matches(method, memberName(method))) {
+          members.add(method);
+        }
+      }
+      if (clazz.getSuperclass() != null) {
+        members(clazz.getSuperclass(), members);
+      } else if (clazz.isInterface()) {
+        for (Class<?> superIfc : clazz.getInterfaces()) {
+          members(superIfc, members);
+        }
+      }
+    }
+  }
+
+  @Override
+  protected String memberName(final Method member) {
+    return member.getName();
+  }
 }

@@ -13,10 +13,17 @@
  */
 package com.github.jknack.handlebars.context;
 
+import static org.apache.commons.lang3.Validate.notNull;
+
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Member;
 import java.lang.reflect.Modifier;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.github.jknack.handlebars.ValueResolver;
@@ -71,7 +78,15 @@ public abstract class MemberValueResolver<M extends Member>
    * @param name The attribute's name.
    * @return A {@link Member} or null.
    */
-  protected abstract M find(Class<?> clazz, String name);
+  protected final M find(final Class<?> clazz, final String name) {
+    Set<M> members = membersFromCache(clazz);
+    for (M member : members) {
+      if (matches(member, name)) {
+        return member;
+      }
+    }
+    return null;
+  }
 
   /**
    * Invoke the member in the given context.
@@ -142,4 +157,53 @@ public abstract class MemberValueResolver<M extends Member>
     return context.getClass().getName() + "#" + name;
   }
 
+  /**
+   * List all the possible members for the given class.
+   *
+   * @param clazz The base class.
+   * @return All the possible members for the given class.
+   */
+  protected abstract Set<M> members(Class<?> clazz);
+
+  /**
+   * List all the possible members for the given class.
+   *
+   * @param clazz The base class.
+   * @return All the possible members for the given class.
+   */
+  protected Set<M> membersFromCache(final Class<?> clazz) {
+    String key = clazz.getName();
+    @SuppressWarnings("unchecked")
+    Set<M> members = (Set<M>) cache.get(key);
+    if (members == null) {
+      members = members(clazz);
+      cache.put(key, members);
+    }
+    return members;
+  }
+
+  @Override
+  public Set<Entry<String, Object>> propertySet(final Object context) {
+    notNull(context, "The context is required.");
+    if (context instanceof Map) {
+      return Collections.emptySet();
+    } else if (context instanceof Collection) {
+      return Collections.emptySet();
+    }
+    Set<M> members = membersFromCache(context.getClass());
+    Map<String, Object> propertySet = new LinkedHashMap<String, Object>();
+    for (M member : members) {
+      String name = memberName(member);
+      propertySet.put(name, resolve(context, name));
+    }
+    return propertySet.entrySet();
+  }
+
+  /**
+   * Get the name for the given member.
+   *
+   * @param member A class member.
+   * @return The member's name.
+   */
+  protected abstract String memberName(M member);
 }

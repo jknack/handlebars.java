@@ -17,6 +17,8 @@ import static org.apache.commons.lang3.Validate.notNull;
 
 import java.io.IOException;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 /**
  * Options available for {@link Helper#apply(Object, Options)}.
@@ -299,7 +301,7 @@ public abstract class Options {
    * @param <T> Data type.
    * @return The attribute value or null.
    */
-  public abstract  <T> T data(final String name);
+  public abstract <T> T data(final String name);
 
   /**
    * Set an attribute in the data storage.
@@ -308,4 +310,17 @@ public abstract class Options {
    * @param value The attribute's value. Required.
    */
   public abstract void data(final String name, final Object value);
+
+  /**
+   * List all the properties and their values for the given object.
+   *
+   * @param context The context object. Not null.
+   * @return All the properties and their values for the given object.
+   */
+  public Set<Entry<String, Object>> propertySet(final Object context) {
+    return this.context.propertySet(context instanceof Context
+        ? ((Context) context).model()
+        : context);
+  }
+
 }

@@ -24,10 +24,10 @@
  */
 package com.github.jknack.handlebars.helper;
 
-import static org.apache.commons.lang3.Validate.isTrue;
-
 import java.io.IOException;
 import java.util.Iterator;
+import java.util.Map.Entry;
+import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -55,21 +55,55 @@ public class EachHelper implements Helper<Object> {
    */
   public static final String NAME = "each";
 
+  @SuppressWarnings({"rawtypes", "unchecked" })
   @Override
   public CharSequence apply(final Object context, final Options options)
       throws IOException {
     if (context == null) {
       return StringUtils.EMPTY;
     }
-    isTrue(context instanceof Iterable,
-        "found: '%s', expected '%s'", context, Iterable.class.getName());
+    if (context instanceof Iterable) {
+      return iterableContext((Iterable) context, options);
+    }
+    return hashContext(context, options);
+  }
+
+  /**
+   * Iterate over a hash like object.
+   *
+   * @param context The context object.
+   * @param options The helper options.
+   * @return The string output.
+   * @throws IOException If something goes wrong.
+   */
+  private CharSequence hashContext(final Object context, final Options options)
+      throws IOException {
+    Set<Entry<String, Object>> propertySet = options.propertySet(context);
     StringBuilder buffer = new StringBuilder();
-    @SuppressWarnings("unchecked")
-    Iterable<Object> elements = (Iterable<Object>) context;
-    if (options.isEmpty(elements)) {
+    Context parent = options.wrap(context);
+    for (Entry<String, Object> entry : propertySet) {
+      Context current = Context.newContext(parent, entry.getValue())
+          .data("key", entry.getKey());
+      buffer.append(options.fn(current));
+    }
+    return buffer.toString();
+  }
+
+  /**
+   * Iterate over an iterable object.
+   *
+   * @param context The context object.
+   * @param options The helper options.
+   * @return The string output.
+   * @throws IOException If something goes wrong.
+   */
+  private CharSequence iterableContext(final Iterable<Object> context, final Options options)
+      throws IOException {
+    StringBuilder buffer = new StringBuilder();
+    if (options.isEmpty(context)) {
       buffer.append(options.inverse());
     } else {
-      Iterator<Object> iterator = elements.iterator();
+      Iterator<Object> iterator = context.iterator();
       int index = 0;
       while (iterator.hasNext()) {
         Context parent = options.wrap(context);

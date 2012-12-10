@@ -18,9 +18,13 @@ import static org.apache.commons.lang3.Validate.notNull;
 import static org.parboiled.common.Preconditions.checkNotNull;
 
 import java.lang.reflect.Array;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -35,8 +39,8 @@ import java.util.regex.Pattern;
  * <li>Failed context lookups should be considered falsy.
  * <li>Dotted names should be valid for Section tags.
  * <li>Dotted names that cannot be resolved should be considered falsy.
- * <li>Dotted Names - Context Precedence: Dotted names should be resolved
- * against former resolutions.
+ * <li>Dotted Names - Context Precedence: Dotted names should be resolved against former
+ * resolutions.
  * </ul>
  *
  * @author edgar.espina
@@ -95,6 +99,15 @@ public final class Context {
         }
       }
       return null;
+    }
+
+    @Override
+    public Set<Entry<String, Object>> propertySet(final Object context) {
+      Set<Entry<String, Object>> propertySet = new LinkedHashSet<Map.Entry<String, Object>>();
+      for (ValueResolver resolver : resolvers) {
+        propertySet.addAll(resolver.propertySet(context));
+      }
+      return propertySet;
     }
   }
 
@@ -340,6 +353,31 @@ public final class Context {
   }
 
   /**
+   * List all the properties and values for the given object.
+   *
+   * @param context The context object.
+   * @return All the properties and values for the given object.
+   */
+  public Set<Entry<String, Object>> propertySet(final Object context) {
+    if (context == null) {
+      return Collections.emptySet();
+    }
+    if (context instanceof Context) {
+      return resolver.propertySet(((Context) context).model);
+    }
+    return resolver.propertySet(context);
+  }
+
+  /**
+   * List all the properties and values of {@link #model()}.
+   *
+   * @return All the properties and values of {@link #model()}.
+   */
+  public Set<Entry<String, Object>> propertySet() {
+    return propertySet(model);
+  }
+
+  /**
    * Lookup the given key inside the context stack.
    * <ul>
    * <li>Objects and hashes should be pushed onto the context stack.
@@ -348,8 +386,8 @@ public final class Context {
    * <li>Failed context lookups should be considered falsey.
    * <li>Dotted names should be valid for Section tags.
    * <li>Dotted names that cannot be resolved should be considered falsey.
-   * <li>Dotted Names - Context Precedence: Dotted names should be resolved
-   *  against former resolutions.
+   * <li>Dotted Names - Context Precedence: Dotted names should be resolved against former
+   * resolutions.
    * </ul>
    *
    * @param key The object key.

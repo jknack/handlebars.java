@@ -13,7 +13,10 @@
  */
 package com.github.jknack.handlebars.context;
 
+import java.util.Collections;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 import com.github.jknack.handlebars.ValueResolver;
 
@@ -40,4 +43,12 @@ public enum MapValueResolver implements ValueResolver {
     return value == null ? UNRESOLVED : value;
   }
 
+  @SuppressWarnings({"unchecked", "rawtypes" })
+  @Override
+  public Set<Entry<String, Object>> propertySet(final Object context) {
+    if (context instanceof Map) {
+      return ((Map) context).entrySet();
+    }
+    return Collections.emptySet();
+  }
 }

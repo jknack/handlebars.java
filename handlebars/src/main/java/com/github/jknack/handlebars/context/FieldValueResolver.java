@@ -18,6 +18,8 @@
 package com.github.jknack.handlebars.context;
 
 import java.lang.reflect.Field;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 import com.github.jknack.handlebars.ValueResolver;
 
@@ -53,18 +55,23 @@ public class FieldValueResolver extends MemberValueResolver<Field> {
   }
 
   @Override
-  protected Field find(final Class<?> clazz, final String name) {
+  protected Set<Field> members(final Class<?> clazz) {
+    Set<Field> members = new LinkedHashSet<Field>();
     Class<?> targetClass = clazz;
     do {
       Field[] fields = targetClass.getDeclaredFields();
       for (Field field : fields) {
-        if (matches(field, name)) {
-          return field;
+        if (matches(field, memberName(field))) {
+          members.add(field);
         }
       }
       targetClass = targetClass.getSuperclass();
     } while (targetClass != null && targetClass != Object.class);
-    return null;
+    return members;
   }
 
+  @Override
+  protected String memberName(final Field member) {
+    return member.getName();
+  }
 }

@@ -31,6 +31,47 @@ public class BlockHelperMissingTest extends HbsJsSpec {
   }
 
   @Test
+  public void eachWithHash() throws IOException {
+    String string = "{{#each goodbyes}}{{@key}}. {{text}}! {{/each}}cruel {{world}}!";
+    Object hash = $("goodbyes", $("<b>#1</b>", $("text", "goodbye"), "2", $("text", "GOODBYE")),
+        "world", "world");
+    shouldCompileTo(string, hash, "&lt;b&gt;#1&lt;/b&gt;. goodbye! 2. GOODBYE! cruel world!");
+  }
+
+  @Test
+  @SuppressWarnings("unused")
+  public void eachWithJavaBean() throws IOException {
+    String string = "{{#each goodbyes}}{{@key}}. {{text}}! {{/each}}cruel {{world}}!";
+    Object hash = new Object() {
+      public Object getGoodbyes() {
+        return new Object() {
+          public Object getB1() {
+            return new Object() {
+              public String getText() {
+                return "goodbye";
+              }
+            };
+          }
+
+          public Object get2() {
+            return new Object() {
+              public String getText() {
+                return "GOODBYE";
+              }
+            };
+          }
+        };
+      }
+
+      public String getWorld() {
+        return "world";
+      }
+    };
+
+    shouldCompileTo(string, hash, "b1. goodbye! 2. GOODBYE! cruel world!");
+  }
+
+  @Test
   public void with() throws IOException {
     String string = "{{#with person}}{{first}} {{last}}{{/with}}";
     shouldCompileTo(string, "{person: {first: Alan, last: Johnson}}", "Alan Johnson");
@@ -465,8 +506,10 @@ public class BlockHelperMissingTest extends HbsJsSpec {
       }
     });
 
-    assertEquals("STOP ME FROM READING HACKER NEWS I need-a dad.joke wot",
-        compile("{{#with dale}}{{#tomdale ../need dad.joke}}wot{{/tomdale}}{{/with}}", helpers, true).apply(
+    assertEquals(
+        "STOP ME FROM READING HACKER NEWS I need-a dad.joke wot",
+        compile("{{#with dale}}{{#tomdale ../need dad.joke}}wot{{/tomdale}}{{/with}}", helpers,
+            true).apply(
             $("dale", $, "need", "need-a")));
   }
 }
