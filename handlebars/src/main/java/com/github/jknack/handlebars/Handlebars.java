@@ -28,7 +28,6 @@ import org.slf4j.Logger;
 
 import com.github.jknack.handlebars.helper.BlockHelper;
 import com.github.jknack.handlebars.helper.EachHelper;
-import com.github.jknack.handlebars.helper.EachPseudoVarHelper;
 import com.github.jknack.handlebars.helper.EmbeddedHelper;
 import com.github.jknack.handlebars.helper.IfHelper;
 import com.github.jknack.handlebars.helper.PartialHelper;
@@ -299,8 +298,6 @@ public class Handlebars {
         notNull(cache, "The template cache is required.");
 
     registerBuiltinsHelpers(this);
-    // expose pseudo variables by default.
-    setExposePseudoVariables(true);
   }
 
   /**
@@ -433,22 +430,6 @@ public class Handlebars {
     notEmpty(name, "A helper's name is required.");
     notNull(helper, "A helper is required.");
     helpers.put(name, (Helper<Object>) helper);
-    return this;
-  }
-
-  /**
-   * Indicates if Handlebars should publish pseudo variables.
-   *
-   * @param exposePseudoVariables True if Handlebars should add pseudo variables
-   *        like: <code>@index, @first, @last, @odd, @even</code> useful for
-   *        index base objects. Default is: false.
-   * @return This handlebars.
-   */
-  public Handlebars setExposePseudoVariables(
-      final boolean exposePseudoVariables) {
-    if (exposePseudoVariables) {
-      registerHelper(EachHelper.NAME, EachPseudoVarHelper.INSTANCE);
-    }
     return this;
   }
 

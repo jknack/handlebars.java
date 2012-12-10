@@ -45,6 +45,26 @@ import java.util.regex.Pattern;
 public final class Context {
 
   /**
+   * Handlebars and Mustache path separator.
+   */
+  private static final String PATH_SEPARATOR = "./";
+
+  /**
+   * Handlebars 'parent' reference.
+   */
+  private static final String PARENT = "../";
+
+  /**
+   * Handlebars 'this' reference.
+   */
+  private static final String THIS = "this";
+
+  /**
+   * The mustache 'this' reference.
+   */
+  private static final String MUSTACHE_THIS = ".";
+
+  /**
    * A composite value resolver. It delegate the value resolution.
    *
    * @author edgar.espina
@@ -337,11 +357,11 @@ public final class Context {
    *         value is found.
    */
   public Object get(final String key) {
-    if (".".equals(key) || "this".equals(key)) {
+    if (MUSTACHE_THIS.equals(key) || THIS.equals(key)) {
       return model;
     }
-    if (key.startsWith("../")) {
-      return parent == null ? null : parent.get(key.substring("../".length()));
+    if (key.startsWith(PARENT)) {
+      return parent == null ? null : parent.get(key.substring(PARENT.length()));
     }
     String[] path = toPath(key);
     Object value = get(path);
@@ -350,7 +370,7 @@ public final class Context {
       value = get(extendedContext, key);
       // No luck, but before checking at the parent scope we need to check for
       // the 'this' qualifier. If present, no look up will be done.
-      if (value == null && !path[0].equals("this")) {
+      if (value == null && !path[0].equals(THIS)) {
         value = get(parent, key);
       }
       // See at the data context
@@ -379,7 +399,7 @@ public final class Context {
    * @return A path representation of the property (array based).
    */
   private String[] toPath(final String key) {
-    StringTokenizer tokenizer = new StringTokenizer(key, "./");
+    StringTokenizer tokenizer = new StringTokenizer(key, PATH_SEPARATOR);
     int len = tokenizer.countTokens();
     if (len == 1) {
       return new String[]{key.toString() };
@@ -406,7 +426,7 @@ public final class Context {
   private Object get(final String[] path) {
     Object current = model;
     // Resolve 'this' to the current model.
-    int start = path[0].equals("this") ? 1 : 0;
+    int start = path[0].equals(THIS) ? 1 : 0;
     for (int i = start; i < path.length - 1; i++) {
       current = resolve(current, path[i]);
       if (current == null) {
@@ -424,7 +444,7 @@ public final class Context {
   }
 
   /**
-   * Do the actual lookup of an unqualify property name.
+   * Do the actual lookup of an unqualified property name.
    *
    * @param current The target object.
    * @param expression The access expression.

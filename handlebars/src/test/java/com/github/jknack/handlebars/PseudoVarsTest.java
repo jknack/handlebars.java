@@ -10,8 +10,6 @@ import java.util.Map;
 
 import org.junit.Test;
 
-import com.github.jknack.handlebars.Handlebars;
-
 /**
  * Unit test for pseudo-vars.
  *
@@ -24,8 +22,7 @@ public class PseudoVarsTest {
   public void list() throws IOException {
     String input =
         "{{#list}}i={{@index}}\neven={{@even}}\nodd={{@odd}}\nfirst={{@first}}\nlast={{@last}}\n{{/list}}";
-    Handlebars handlebars = new Handlebars()
-        .setExposePseudoVariables(true);
+    Handlebars handlebars = new Handlebars();
 
     assertEquals("i=0\n" +
         "even=even\n" +
@@ -54,8 +51,7 @@ public class PseudoVarsTest {
   public void lostParent$51() throws IOException {
     String input =
         "{{#parent}}{{#list}}{{@index}}. {{name}} {{/list}}{{/parent}}";
-    Handlebars handlebars = new Handlebars()
-        .setExposePseudoVariables(true);
+    Handlebars handlebars = new Handlebars();
 
     Map<String, Object> parent = new HashMap<String, Object>();
     parent.put("name", "px");

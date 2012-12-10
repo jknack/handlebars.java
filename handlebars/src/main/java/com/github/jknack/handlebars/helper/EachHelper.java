@@ -72,8 +72,19 @@ public class EachHelper implements Helper<Object> {
       Iterator<Object> iterator = elements.iterator();
       int index = 0;
       while (iterator.hasNext()) {
-        buffer
-            .append(options.fn(next(options.wrap(context), iterator, index++)));
+        Context parent = options.wrap(context);
+        Object element = iterator.next();
+        boolean first = index == 0;
+        boolean even = index % 2 == 0;
+        boolean last = !iterator.hasNext();
+        Context current = Context.newContext(parent, element)
+            .data("index", index)
+            .data("first", first ? "first" : "")
+            .data("last", last ? "last" : "")
+            .data("odd", even ? "" : "odd")
+            .data("even", even ? "even" : "");
+        buffer.append(options.fn(current));
+        index++;
       }
     }
     return buffer.toString();
