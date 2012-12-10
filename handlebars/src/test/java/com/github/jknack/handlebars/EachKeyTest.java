@@ -18,6 +18,7 @@
 package com.github.jknack.handlebars;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.util.LinkedHashMap;
@@ -25,10 +26,28 @@ import java.util.Map;
 
 import org.junit.Test;
 
-import com.github.jknack.handlebars.custom.Blog;
 
 public class EachKeyTest {
 
+  public static class Blog {
+
+    private String title;
+
+    private String body;
+
+    public Blog(final String title, final String body) {
+      this.title = title;
+      this.body = body;
+    }
+
+    public String getTitle() {
+      return title;
+    }
+
+    public String getBody() {
+      return body;
+    }
+  }
   @Test
   public void eachKeyWithString() throws IOException {
     Handlebars handlebars = new Handlebars();
@@ -51,7 +70,10 @@ public class EachKeyTest {
 
     Template template = handlebars.compile("{{#each this}}{{@key}}: {{this}} {{/each}}");
     Blog blog = new Blog("Handlebars.java", "...");
-    assertEquals("body: ... comments: [] title: Handlebars.java ", template.apply(blog));
+    String expected1 = "body: ... title: Handlebars.java ";
+    String expected2 = "title: Handlebars.java body: ... ";
+    String result = template.apply(blog);
+    assertTrue(result.equals(expected1) || result.equals(expected2));
   }
 
   @Test
