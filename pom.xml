@@ -83,7 +83,7 @@
       <dependency>
         <groupId>org.parboiled</groupId>
         <artifactId>parboiled-java</artifactId>
-        <version>1.1.3</version>
+        <version>${parboiled-version}</version>
       </dependency>
 
       <!-- Logging System -->
@@ -356,5 +356,6 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <jackson2-version>2.0.5</jackson2-version>
     <jackson-version>1.9.9</jackson-version>
+    <parboiled-version>1.1.4</parboiled-version>
   </properties>
 </project>
