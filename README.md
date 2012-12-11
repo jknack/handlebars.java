@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/jknack/handlebars.java.png)](https://travis-ci.org/jknack/handlebars.java)
+[![Build Status](https://secure.travis-ci.org/jknack/handlebars.java.png?branch=develop)](https://travis-ci.org/jknack/handlebars.java)
 
 
 Handlebars.java - Logic-less and semantic templates with Java
