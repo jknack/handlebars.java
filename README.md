@@ -35,10 +35,63 @@ Template template = handlebars.compile("Hello {{this}}!");
 
 System.out.println(template.apply("Handlebars.java"));
 ```
+
 Output:
 ```
 Hello Handlebars.java!
 ```
+
+### Loading templates
+Templates are loaded using the ```TemplateLoader``` class. Handlebars.java provides three implementations of a ```TemplateLodaer```:
+ * ClassTemplateLoader (default)
+ * FileTemplateLoader
+ * SpringTemplateLoader (see the [handlebars-springmvc](https://github.com/jknack/handlebars.java/tree/develop/handlebars-springmvc) module)
+
+This example load ```mytemplate.hbs``` from the root of the classpath:
+
+mytemplate.hbs:
+```
+Hello {{this}}!
+```
+
+```java
+Handlebars handlebars = new Handlebars();
+
+Template template = handlebars.compile(URI.create("mytemplate"));
+
+System.out.println(template.apply("Handlebars.java"));
+```
+
+Output:
+```
+Hello Handlebars.java!
+```
+
+You can specicy a different ```TemplateLoader``` by:
+
+```java
+TemplateLoader loader = ...;
+Handlebars handlebars = new Handlebars(loader);
+```
+
+#### Templates prefix and suffix
+A ```TemplateLoader``` provides two important properties:
+ * ```prefix```: useful for setting a default prefix where templates are stored.
+ * ```suffix```: useful for setting a default suffix or file extension for your templates. Default is: ```.hbs```
+
+Example:
+```java
+TemplateLoader loader = new ClassTemplateLoader();
+loader.setPrefix("/templates");
+loader.setSuffix(".html");
+Handlebars handlebars = new Handlebars(loader);
+
+Template template = handlebars.compile(URI.create("mytemplate"));
+
+System.out.println(template.apply("Handlebars.java"));
+```
+
+Handlebars.java will resolve ```mytemplate``` to ```/templates/mytemplate.html``` and load it.
 
 ## The Handlebars.java Server
 The handlebars.java server is small application where you can write Mustache/Handlebars template and merge them with data.
