@@ -738,20 +738,25 @@ Hello {{#child}}{{this.value}}{{/child}}
  * Handlebars.java throws a ```java.io.FileNotFoundException``` if a partial cannot be loaded.
 
 ## Status
-### 100% Mustache Compliant
+### Mustache Compliant
  * Passes 123 of 123 tests from the [Mustache Spec](https://github.com/mustache/spec).
+ * Tests can be found here [comments.yml](https://github.com/jknack/handlebars.java/blob/develop/handlebars/src/test/java/specs/CommentsTest.java), [delimiters.yml](https://github.com/jknack/handlebars.java/blob/develop/handlebars/src/test/java/specs/DelimitersTest.java), [interpolation.yml](https://github.com/jknack/handlebars.java/blob/develop/handlebars/src/test/java/specs/InterpolationTest.java), [inverted.yml](https://github.com/jknack/handlebars.java/blob/develop/handlebars/src/test/java/specs/InvertedTest.java), [lambdas.yml](https://github.com/jknack/handlebars.java/blob/develop/handlebars/src/test/java/specs/LambdasTest.java), [partials.yml](https://github.com/jknack/handlebars.java/blob/develop/handlebars/src/test/java/specs/PartialsTest.java), [sections.yml](https://github.com/jknack/handlebars.java/blob/develop/handlebars/src/test/java/specs/SectionsTest.java)
 
+### Handlebars.js Compliant
+  * Passes all the [Handlebars.js tests](https://github.com/wycats/handlebars.js/blob/master/spec/qunit_spec.js)
+  * Tests can be found here [basic context](https://github.com/jknack/handlebars.java/blob/develop/handlebars/src/test/java/hbs/js/BasicContextTest.java), [string literals](https://github.com/jknack/handlebars.java/blob/develop/handlebars/src/test/java/hbs/js/StringLiteralParametersTest.java), [inverted sections](https://github.com/jknack/handlebars.java/blob/develop/handlebars/src/test/java/hbs/js/InvertedSectionTest.java), [blocks](https://github.com/jknack/handlebars.java/blob/develop/handlebars/src/test/java/hbs/js/BlockTest.java), [block helper missing](https://github.com/jknack/handlebars.java/blob/develop/handlebars/src/test/java/hbs/js/BlockHelperMissingTest.java), [helper hash](https://github.com/jknack/handlebars.java/blob/develop/handlebars/src/test/java/hbs/js/HelperHashTest.java), [partials](https://github.com/jknack/handlebars.java/blob/develop/handlebars/src/test/java/hbs/js/PartialsTest.java)
+  
 ## Dependencies
  Handlebars.java depends on:
  
  ```text
 +- org.apache.commons:commons-lang3:jar:3.1:compile
-+- org.parboiled:parboiled-java:jar:1.1.3:compile
-|  +- org.parboiled:parboiled-core:jar:1.1.3:compile
-|  +- org.ow2.asm:asm:jar:4.0:compile
-|  +- org.ow2.asm:asm-tree:jar:4.0:compile
-|  +- org.ow2.asm:asm-analysis:jar:4.0:compile
-|  \- org.ow2.asm:asm-util:jar:4.0:compile
++- org.parboiled:parboiled-java:jar:1.1.4:compile
++- org.parboiled:parboiled-core:jar:1.1.4:compile
++- org.ow2.asm:asm:jar:4.1:compile
++- org.ow2.asm:asm-tree:jar:4.1:compile
++- org.ow2.asm:asm-analysis:jar:4.1:compile
+\- org.ow2.asm:asm-util:jar:4.1:compile
 +- org.mozilla:rhino:jar:1.7R4:compile
 +- org.slf4j:slf4j-api:jar:1.6.4:compile
  ```
