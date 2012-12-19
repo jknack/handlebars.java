@@ -67,8 +67,12 @@ public class BlockHelperMissingTest extends HbsJsSpec {
         return "world";
       }
     };
-
-    shouldCompileTo(string, hash, "b1. goodbye! 2. GOODBYE! cruel world!");
+    try {
+      shouldCompileTo(string, hash, "b1. goodbye! 2. GOODBYE! cruel world!");
+    } catch (Throwable ex) {
+      // on jdk7 property order differ from jdk6
+      shouldCompileTo(string, hash, "2. GOODBYE! b1. goodbye! cruel world!");
+    }
   }
 
   @Test
