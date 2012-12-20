@@ -241,6 +241,13 @@ templates['user.hbs'] = template(function (Handlebars,depth0,helpers,partials,da
 })();
 </script>
 ```
+You can access to the precompiled template by:
+
+```js
+var template = Handlebars.templates['user.hbs']
+```
+
+For more information have a look at [Precompiling Templates](https://github.com/wycats/handlebars.js/) documentation
 
 Usage:
 ```
