@@ -25,10 +25,6 @@ import java.util.Map;
 
 import org.junit.Test;
 
-import com.github.jknack.handlebars.Handlebars;
-import com.github.jknack.handlebars.HandlebarsException;
-import com.github.jknack.handlebars.Template;
-
 /**
  * Demostrate error reporting. It isn't a test.
  *
@@ -40,6 +36,7 @@ public class ParsingErrorTest {
   Map<String, String> source =
       $("/inbox/inbox.hbs", "{{value")
           .$("/block.hbs", "{{#block}}{{/nan}}")
+          .$("/delim.hbs", "{{=<% %>=}} <%Hello")
           .$("/default.hbs", "{{> missingPartial}}")
           .$("/partial.hbs", "{{#value}}")
           .$("/invalidChar.hbs", "\n{{tag message.from \\\"user\\\"}}\n")
@@ -50,7 +47,7 @@ public class ParsingErrorTest {
           .$("/unbalancedDelim.hbs", "{{=<% >=}}")
           .$("/partialName.hbs", "{{> /user}}")
           .$("/partialName2.hbs", "{{> /layout/base}}")
-          .$("/paramOrder.hbs", "{{f param hash=1 param}}")
+          .$("/paramOrder.hbs", "{{f param hashx=1 param}}")
           .$("/idx1.hbs", "{{list[0]}}")
           .$("/idx2.hbs", "{{list.[0}}")
           .$("/idx3.hbs", "{{list.[]}}")
@@ -89,6 +86,11 @@ public class ParsingErrorTest {
   @Test(expected = HandlebarsException.class)
   public void unbalancedDelim() throws IOException {
     parse("unbalancedDelim");
+  }
+
+  @Test(expected = HandlebarsException.class)
+  public void delim() throws IOException {
+    parse("delim");
   }
 
   @Test(expected = HandlebarsException.class)

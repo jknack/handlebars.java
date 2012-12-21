@@ -80,15 +80,19 @@ public abstract class TemplateLoader {
    */
   public String loadAsString(final URI uri) throws IOException {
     Reader reader = new BufferedReader(load(uri));
+    final int bufferSize = 1024;
     try {
-      StringBuilder buffer = new StringBuilder(1024 * 4);
-      int ch;
-      while ((ch = reader.read()) != -1) {
-        buffer.append((char) ch);
+      char[] cbuf = new char[bufferSize];
+      StringBuilder sb = new StringBuilder(bufferSize);
+      int len;
+      while ((len = reader.read(cbuf, 0, bufferSize)) != -1) {
+        sb.append(cbuf, 0, len);
       }
-      return buffer.toString();
+      return sb.toString();
     } finally {
-      reader.close();
+      if (reader != null) {
+        reader.close();
+      }
     }
   }
 

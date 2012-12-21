@@ -25,6 +25,7 @@ import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.parboiled.Action;
@@ -136,6 +137,7 @@ public class Parser extends BaseParser<Object> {
               .withValueStack(getValueStack());
       return reportingRunner.run(inputBuffer);
     }
+
   }
 
   /**
@@ -224,11 +226,15 @@ public class Parser extends BaseParser<Object> {
 
   protected String endDelimiter;
 
-  protected final Handlebars handlebars;
+  private String startDelimiterBack;
 
-  protected final Map<String, Partial> partials;
+  private String endDelimiterBack;
 
-  protected final String filename;
+  protected Handlebars handlebars;
+
+  protected Map<String, Partial> partials;
+
+  protected String filename;
 
   protected Boolean hasTag;
 
@@ -236,9 +242,11 @@ public class Parser extends BaseParser<Object> {
 
   protected Set<Node> nodeLine = new LinkedHashSet<Parser.Node>();
 
-  protected final LinkedList<Stacktrace> stacktraceList;
+  protected LinkedList<Stacktrace> stacktraceList;
 
   protected int noffset = 0;
+
+  private boolean rootParser;
 
   Parser(final Handlebars handlebars, final String filename,
       final Map<String, Partial> partials, final String startDelimiter,
@@ -249,8 +257,11 @@ public class Parser extends BaseParser<Object> {
             filename);
     this.partials =
         partials == null ? new HashMap<String, Partial>() : partials;
+    rootParser = partials == null;
     this.startDelimiter = startDelimiter;
     this.endDelimiter = endDelimiter;
+    startDelimiterBack = startDelimiter;
+    endDelimiterBack = endDelimiter;
     stacktraceList = stacktrace;
   }
 
@@ -261,7 +272,21 @@ public class Parser extends BaseParser<Object> {
   public Template parse(final InputBuffer input) throws IOException {
     try {
       ParseRunner<Object> runner =
-          new SafeReportingParseRunner(template());
+          new SafeReportingParseRunner(template()) {
+            @Override
+            protected void resetValueStack() {
+              startDelimiter = startDelimiterBack;
+              endDelimiter = endDelimiterBack;
+              hasTag = null;
+              line.setLength(0);
+              noffset = 0;
+              if (rootParser) {
+                partials.clear();
+                stacktraceList.clear();
+              }
+              super.resetValueStack();
+            }
+          };
       ParsingResult<Object> result = runner.run(input);
       if (result.hasErrors()) {
         ParseError error = result.parseErrors.get(0);
@@ -286,6 +311,22 @@ public class Parser extends BaseParser<Object> {
           new HandlebarsException(cause.getMessage(), cause);
       hex.setStackTrace(ex.getStackTrace());
       throw hex;
+    } finally {
+      endDelimiter = null;
+      endDelimiterBack = null;
+      filename = null;
+      handlebars = null;
+      hasTag = null;
+      line = null;
+      nodeLine.clear();
+      nodeLine = null;
+      if (rootParser) {
+        partials.clear();
+        stacktraceList.clear();
+      }
+      partials = null;
+      stacktraceList = null;
+      startDelimiter = null;
     }
   }
 
@@ -381,7 +422,7 @@ public class Parser extends BaseParser<Object> {
             TestNot(startDelimiter()),
             TestNot(spaceNoAction()),
             TestNot(nlNoAction()),
-            ANY),
+            ANY.label("text")),
         add(new Text(match())));
   }
 
@@ -508,8 +549,7 @@ public class Parser extends BaseParser<Object> {
             if (uri.startsWith("/")) {
               noffset = uri.length();
               throw new ActionException(
-                  "found: '" + loader.resolve(uri)
-                      + "', partial shouldn't start with '/'");
+                  "found: '/', partial shouldn't start with '/'");
             }
             Partial partial = partials.get(uri);
             if (partial == null) {
@@ -646,8 +686,10 @@ public class Parser extends BaseParser<Object> {
           public boolean run(final Context<Object> context) {
             if (!hash.isEmpty()) {
               noffset = var.get().toString().length();
-              throw new ActionException("'" + var.get()
-                  + "' is out of order, a 'hash' was found previously");
+              Entry<String, Object> firstHash = hash.entrySet().iterator().next();
+              throw new ActionException("parameter is out of order, "
+                  + "a '" + firstHash.getKey() + "=" + firstHash.getValue()
+                  + "' was found previously");
             }
             return true;
           }
@@ -675,7 +717,7 @@ public class Parser extends BaseParser<Object> {
         ZeroOrMore(
         FirstOf(
             String("\\\""),
-            Sequence(TestNot(AnyOf("\"\r\n")), ANY))),
+            Sequence(TestNot(AnyOf("\"\r\n")), ANY.label("text")))),
         '"');
   }
 
@@ -685,7 +727,7 @@ public class Parser extends BaseParser<Object> {
         ZeroOrMore(
         FirstOf(
             String("\\\'"),
-            Sequence(TestNot(AnyOf("'\r\n")), ANY))),
+            Sequence(TestNot(AnyOf("'\r\n")), ANY.label("text")))),
         "'");
   }
 
@@ -771,7 +813,7 @@ public class Parser extends BaseParser<Object> {
 
   @MemoMismatches
   Rule idx() {
-    return OneOrMore(TestNot("]"), ANY);
+    return OneOrMore(TestNot("]"), TestNot(startDelimiter()), TestNot(endDelimiter()), ANY);
   }
 
   @MemoMismatches

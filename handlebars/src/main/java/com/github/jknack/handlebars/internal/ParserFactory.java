@@ -61,7 +61,7 @@ public class ParserFactory {
    * @param stacktrace The stack-trace.
    * @return A new {@link Parser}.
    */
-  public static Parser create(final Handlebars handlebars,
+  static Parser create(final Handlebars handlebars,
       final String filename, final Map<String, Partial> partials,
       final String startDelimiter,
       final String endDelimiter,
