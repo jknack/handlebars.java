@@ -43,7 +43,7 @@ public class ParsingErrorTest {
           .$("/root.hbs", "{{> p1}}")
           .$("/p1.hbs", "{{value")
           .$("/deep.hbs", "{{> deep1}}")
-          .$("/deep1.hbs", "{{> deep2")
+          .$("/deep1.hbs", " {{> deep2")
           .$("/unbalancedDelim.hbs", "{{=<% >=}}")
           .$("/partialName.hbs", "{{> /user}}")
           .$("/partialName2.hbs", "{{> /layout/base}}")
@@ -51,7 +51,9 @@ public class ParsingErrorTest {
           .$("/idx1.hbs", "{{list[0]}}")
           .$("/idx2.hbs", "{{list.[0}}")
           .$("/idx3.hbs", "{{list.[]}}")
-          .$("/idx4.hbs", "{{list.[}}");
+          .$("/idx4.hbs", "{{list.[}}")
+          .$("/home.hbs", "{{>stackoverflow}}")
+          .$("/stackoverflow.hbs", "{{>home}}");
 
   @Test(expected = HandlebarsException.class)
   public void correctPath() throws IOException {
@@ -126,6 +128,11 @@ public class ParsingErrorTest {
   @Test(expected = HandlebarsException.class)
   public void idx4() throws IOException {
     parse("idx4");
+  }
+
+  @Test(expected = HandlebarsException.class)
+  public void stackoverflow() throws IOException {
+    parse("stackoverflow");
   }
 
   private Object parse(final String uri) throws IOException {

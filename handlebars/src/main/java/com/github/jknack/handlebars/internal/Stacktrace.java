@@ -41,16 +41,24 @@ class Stacktrace {
   private final String filename;
 
   /**
+   * The partial's name.
+   */
+  private final String partial;
+
+  /**
    * Creates a new {@link Stacktrace}.
    *
    * @param line The line number.
    * @param column The column number.
+   * @param partial The partial's name.
    * @param filename The file's name.
    */
   public Stacktrace(final int line, final int column,
+      final String partial,
       final String filename) {
     this.line = line;
     this.column = column;
+    this.partial = partial;
     this.filename = filename;
   }
 
@@ -99,6 +107,15 @@ class Stacktrace {
    */
   public String getFilename() {
     return filename;
+  }
+
+  /**
+   * The partial's name.
+   *
+   * @return The partial's name.
+   */
+  public String getPartial() {
+    return partial;
   }
 
   @Override

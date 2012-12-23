@@ -19,6 +19,7 @@ import static org.parboiled.common.Preconditions.checkArgNotNull;
 import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -290,6 +291,7 @@ public class Parser extends BaseParser<Object> {
       ParsingResult<Object> result = runner.run(input);
       if (result.hasErrors()) {
         ParseError error = result.parseErrors.get(0);
+        Collections.reverse(stacktraceList);
         HandlebarsError hbsError =
             ErrorFormatter.printParseError(filename, error, noffset,
                 stacktraceList);
@@ -331,7 +333,6 @@ public class Parser extends BaseParser<Object> {
   }
 
   Rule template() throws IOException {
-    // return Sequence(body(), sync(), EOI);
     return Sequence(body(), EOI);
   }
 
@@ -529,6 +530,15 @@ public class Parser extends BaseParser<Object> {
     };
   }
 
+  boolean isInStack(final List<Stacktrace> stacktrace, final String filename) {
+    for (Stacktrace st : stacktrace) {
+      if (st.getFilename().equals(filename)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   Rule partial() throws IOException {
     final StringVar uriVar = new StringVar();
     final StringVar partialContext = new StringVar();
@@ -551,27 +561,32 @@ public class Parser extends BaseParser<Object> {
               throw new ActionException(
                   "found: '/', partial shouldn't start with '/'");
             }
-            Partial partial = partials.get(uri);
+            String partialPath = loader.resolve(uri);
+            if (isInStack(stacktraceList, partialPath)) {
+              noffset = uri.length();
+              throw new ActionException("a cycle was detected, partial '" + partialPath + "' was loaded previously");
+            }
+            Partial partial = partials.get(partialPath);
             if (partial == null) {
               try {
                 Position pos = context.getPosition();
                 Stacktrace stacktrace =
-                    new Stacktrace(pos.line, pos.column, filename);
-                stacktraceList.addFirst(stacktrace);
+                    new Stacktrace(pos.line, pos.column, uri, filename);
+                stacktraceList.addLast(stacktrace);
                 String input = loader.loadAsString(URI.create(uri));
                 Parser parser =
                     ParserFactory.create(handlebars, uri, partials,
                         startDelimiter, endDelimiter, stacktraceList);
                 // Avoid stack overflow exceptions
                 partial = new Partial();
-                partials.put(uri, partial);
+                partials.put(partialPath, partial);
                 Template template = parser.parse(PartialInputBuffer.build(input,
                     hasTag ? line.toString() : null));
                 partial.template(uri, template, partialContext.get());
                 stacktraceList.removeLast();
               } catch (IOException ex) {
                 noffset = uri.length();
-                throw new ActionException("The partial '" + loader.resolve(uri)
+                throw new ActionException("The partial '" + partialPath
                     + "' could not be found", ex);
               }
             }
