@@ -421,7 +421,6 @@ public class Parser extends BaseParser<Object> {
     return Sequence(
         OneOrMore(
             TestNot(startDelimiter()),
-            TestNot(spaceNoAction()),
             TestNot(nlNoAction()),
             ANY.label("text")),
         add(new Text(match())));
@@ -945,9 +944,13 @@ public class Parser extends BaseParser<Object> {
         spaces.clear();
       }
     }
+    resetLineTrack();
+  }
+
+  private void resetLineTrack() {
     nodeLine.clear();
     resetHasTag();
-    this.line.setLength(0);
+    line.setLength(0);
   }
 
   @Override
