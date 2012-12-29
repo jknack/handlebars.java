@@ -22,6 +22,7 @@ import java.io.PrintWriter;
 import java.io.Writer;
 import java.net.URI;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -36,6 +37,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.yaml.snakeyaml.Yaml;
 
+import com.fasterxml.jackson.core.JsonLocation;
+import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonParser.Feature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.jknack.handlebars.Context;
@@ -120,9 +123,11 @@ public class HbsServlet extends HttpServlet {
       response.setContentType(args.contentType);
     } catch (HandlebarsException ex) {
       handlebarsError(ex, response);
+    } catch (JsonParseException ex) {
+      logger.error("Unexpected error", ex);
+      jsonError(ex, request, response);
     } catch (FileNotFoundException ex) {
-      response.sendError(HttpServletResponse.SC_NOT_FOUND,
-          "NOT FOUND: " + ex.getMessage());
+      response.sendError(HttpServletResponse.SC_NOT_FOUND);
     } catch (IOException ex) {
       logger.error("Unexpected error", ex);
       throw ex;
@@ -203,12 +208,6 @@ public class HbsServlet extends HttpServlet {
       final HttpServletResponse response) throws IOException {
 
     HandlebarsError error = ex.getError();
-    Handlebars handlebars = new Handlebars();
-    StringHelpers.register(handlebars);
-
-    Template template =
-        handlebars.compile(URI.create("/error-pages/error"));
-
     int firstLine = 1;
     if (error != null) {
       if (ex.getCause() != null) {
@@ -217,14 +216,89 @@ public class HbsServlet extends HttpServlet {
         firstLine = Math.max(1, error.line - 1);
       }
     }
+    fancyError(ex, firstLine, "Xml", response);
+  }
+
+  /**
+   * Deal with a {@link HandlebarsException}.
+   *
+   * @param ex The handlebars exception.
+   * @param request The http request.
+   * @param response The http response.
+   * @throws IOException If something goes wrong.
+   */
+  private void jsonError(final JsonParseException ex, final HttpServletRequest request,
+      final HttpServletResponse response) throws IOException {
+
+    Map<String, Object> root = new HashMap<String, Object>();
+    Map<String, Object> error = new HashMap<String, Object>();
+    String filename = removeExtension(dataFile(request)) + ".json";
+    JsonLocation location = ex.getLocation();
+    String reason = ex.getMessage();
+    int atIdx = reason.lastIndexOf(" at ");
+    if (atIdx > 0) {
+      reason = reason.substring(0, atIdx);
+    }
+    error.put("filename", filename);
+    error.put("line", location.getLineNr());
+    error.put("column", location.getColumnNr());
+    error.put("reason", reason);
+    error.put("type", "JSON error");
+    String json = read(filename);
+    StringBuilder evidence = new StringBuilder();
+    int i = (int) location.getCharOffset();
+    int nl = 0;
+    while (i >= 0 && nl < 2) {
+      char ch = json.charAt(i);
+      if (ch == '\n') {
+        nl++;
+      }
+      evidence.insert(0, ch);
+      i--;
+    }
+    i = (int) location.getCharOffset() + 1;
+    nl = 0;
+    while (i < json.length() && nl < 2) {
+      char ch = json.charAt(i);
+      if (ch == '\n') {
+        nl++;
+      }
+      evidence.append(ch);
+      i++;
+    }
+    error.put("evidence", evidence);
+
+    root.put("error", error);
+    int firstLine = Math.max(1, ex.getLocation().getLineNr() - 1);
+    fancyError(root, firstLine, "JScript", response);
+  }
+
+  /**
+   * Deal with a fancy errors.
+   *
+   * @param error An error.
+   * @param firstLine The first line to report.
+   * @param lang The lang to use.
+   * @param response The http response.
+   * @throws IOException If something goes wrong.
+   */
+  private void fancyError(final Object error, final int firstLine, final String lang,
+      final HttpServletResponse response) throws IOException {
+
+    Handlebars handlebars = new Handlebars();
+    StringHelpers.register(handlebars);
+
+    Template template =
+        handlebars.compile(URI.create("/error-pages/error"));
+
     PrintWriter writer = null;
     writer = response.getWriter();
     template.apply(
         Context
-            .newBuilder(ex)
+            .newBuilder(error)
             .resolver(MapValueResolver.INSTANCE, FieldValueResolver.INSTANCE,
                 JavaBeanValueResolver.INSTANCE)
-            .combine("lang", "Xml")
+            .combine("lang", lang)
             .combine("version", HbsServer.version)
             .combine("firstLine", firstLine).build()
         , writer);

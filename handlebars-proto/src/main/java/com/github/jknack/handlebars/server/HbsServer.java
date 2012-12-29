@@ -16,11 +16,15 @@ package com.github.jknack.handlebars.server;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Writer;
 import java.net.MalformedURLException;
 import java.util.Properties;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.io.IOUtils;
 import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.handler.ErrorHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.util.component.AbstractLifeCycle.AbstractLifeCycleListener;
 import org.eclipse.jetty.util.component.LifeCycle;
@@ -138,7 +142,7 @@ public class HbsServer {
     if (!args.dir.exists()) {
       System.out.println("File not found: " + args.dir);
     }
-    logger.info("Welcome to the Handlebars.java server");
+    logger.info("Welcome to the Handlebars.java server v" + version);
 
     TemplateLoader loader = new FileTemplateLoader(args.dir);
     loader.setPrefix(new File(args.dir, args.prefix).getAbsolutePath());
@@ -172,7 +176,7 @@ public class HbsServer {
         try {
           server.stop();
         } catch (Exception ex) {
-          logger.info("Enable to stop server", ex);
+          logger.info("Cann't stop the server", ex);
         }
       }
     }));
@@ -181,7 +185,7 @@ public class HbsServer {
       @Override
       public void lifeCycleStarted(final LifeCycle event) {
         logger.info("Open a browser and type:");
-        logger.info("  http://localhost:{}{}/[page]{}", new Object[] {
+        logger.info("  http://localhost:{}{}/[page]{}", new Object[]{
             args.port,
             args.contextPath.equals(CONTEXT) ? "" : args.contextPath,
             args.suffix });
@@ -189,6 +193,47 @@ public class HbsServer {
     });
 
     WebAppContext root = new WebAppContext();
+    ErrorHandler errorHandler = new ErrorHandler() {
+      @Override
+      protected void writeErrorPageHead(final HttpServletRequest request, final Writer writer,
+          final int code, final String message) throws IOException {
+        writer
+            .write("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=ISO-8859-1\"/>\n");
+        writer.write("<title>{{");
+        writer.write(Integer.toString(code));
+        writer.write("}}");
+        writer.write("</title>\n");
+        writer.write("<style>body{font-family: monospace;}</style>");
+      }
+
+      @Override
+      protected void writeErrorPageMessage(final HttpServletRequest request, final Writer writer,
+          final int code,
+          final String message, final String uri) throws IOException {
+        writer.write("<div align=\"center\">");
+        writer
+            .write("<p><span style=\"font-size: 48px;\">{{</span><span style=\"font-size: 36px; color:#999;\">");
+        writer.write(Integer.toString(code));
+        writer.write("</span><span style=\"font-size: 48px;\">}}</span></p>");
+        writer.write("</h2>\n<p>Problem accessing ");
+        write(writer, uri);
+        writer.write(". Reason:\n<pre>    ");
+        write(writer, message);
+        writer.write("</pre></p>");
+        writer.write("</div>");
+        writer.write("<hr />");
+      }
+
+      @Override
+      protected void writeErrorPageBody(final HttpServletRequest request, final Writer writer,
+          final int code,
+          final String message, final boolean showStacks) throws IOException {
+        String uri = request.getRequestURI();
+
+        writeErrorPageMessage(request, writer, code, message, uri);
+      }
+    };
+    root.setErrorHandler(errorHandler);
     root.setContextPath(args.contextPath);
     root.setResourceBase(args.dir.getAbsolutePath());
     root.addServlet(new ServletHolder(new HbsServlet(handlebars, args)),
@@ -197,7 +242,7 @@ public class HbsServer {
     root.setParentLoaderPriority(true);
 
     // prevent jetty from loading the webapp web.xml
-    root.setConfigurations(new Configuration[] {new WebXmlConfiguration() {
+    root.setConfigurations(new Configuration[]{new WebXmlConfiguration() {
       @Override
       protected Resource findWebXml(final WebAppContext context)
           throws IOException, MalformedURLException {
