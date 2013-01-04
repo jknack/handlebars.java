@@ -198,6 +198,10 @@
         <artifactId>maven-surefire-plugin</artifactId>
         <version>2.12.3</version>
         <configuration>
+          <includes>
+            <include>**/*Test.java</include>
+            <include>**/Issue*.java</include>
+          </includes>
           <excludes>
             <exclude>**/*BenchTest.java</exclude>
           </excludes>
