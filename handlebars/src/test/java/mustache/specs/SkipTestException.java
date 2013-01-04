@@ -15,20 +15,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package specs;
+package mustache.specs;
 
-import java.util.Collection;
+import org.junit.internal.AssumptionViolatedException;
 
-import org.junit.runners.Parameterized.Parameters;
+public class SkipTestException extends AssumptionViolatedException {
 
-public class InterpolationTest extends SpecTest {
-
-  public InterpolationTest(final Spec spec) {
-    super(spec);
+  public SkipTestException(final String assumption) {
+    super(assumption);
   }
 
-  @Parameters
-  public static Collection<Object[]> data() {
-    return data("interpolation.yml");
-  }
+  /**
+   * Default uid.
+   */
+  private static final long serialVersionUID = 1L;
 }

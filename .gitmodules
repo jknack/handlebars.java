@@ -1,0 +1,3 @@
+[submodule "handlebars/src/test/resources/mustache"]
+	path = handlebars/src/test/resources/mustache
+	url = https://github.com/mustache/spec.git

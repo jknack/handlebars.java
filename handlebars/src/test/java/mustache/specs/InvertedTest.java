@@ -15,8 +15,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package specs;
+package mustache.specs;
 
+import java.io.IOException;
 import java.util.Collection;
 
 import org.junit.runners.Parameterized.Parameters;
@@ -28,7 +29,7 @@ public class InvertedTest extends SpecTest {
   }
 
   @Parameters
-  public static Collection<Object[]> data() {
+  public static Collection<Object[]> data() throws IOException {
     return data("inverted.yml");
   }
 }

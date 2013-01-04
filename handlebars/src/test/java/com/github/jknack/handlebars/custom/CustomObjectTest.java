@@ -17,12 +17,14 @@
  */
 package com.github.jknack.handlebars.custom;
 
+import java.io.IOException;
 import java.util.Collection;
+
+import mustache.specs.Spec;
+import mustache.specs.SpecTest;
 
 import org.junit.runners.Parameterized.Parameters;
 
-import specs.Spec;
-import specs.SpecTest;
 
 public class CustomObjectTest extends SpecTest {
 
@@ -31,7 +33,7 @@ public class CustomObjectTest extends SpecTest {
   }
 
   @Parameters
-  public static Collection<Object[]> data() {
+  public static Collection<Object[]> data() throws IOException {
     return data(CustomObjectTest.class, "customObjects.yml");
   }
 

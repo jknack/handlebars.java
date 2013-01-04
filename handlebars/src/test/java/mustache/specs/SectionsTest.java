@@ -15,16 +15,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package specs;
+package mustache.specs;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+import java.io.IOException;
+import java.util.Collection;
 
-@RunWith(Suite.class)
-@SuiteClasses({CommentsTest.class, DelimitersTest.class,
-    InterpolationTest.class, InvertedTest.class, SectionsTest.class,
-    PartialsTest.class, LambdasTest.class })
-public class SpecTests {
+import org.junit.runners.Parameterized.Parameters;
 
+public class SectionsTest extends SpecTest {
+
+  public SectionsTest(final Spec spec) {
+    super(spec);
+  }
+
+  @Parameters
+  public static Collection<Object[]> data() throws IOException {
+    return data("sections.yml");
+  }
 }

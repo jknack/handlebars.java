@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package specs;
+package mustache.specs;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;

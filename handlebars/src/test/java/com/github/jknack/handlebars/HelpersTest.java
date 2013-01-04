@@ -23,14 +23,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import mustache.specs.Spec;
+import mustache.specs.SpecTest;
+
 import org.junit.runners.Parameterized.Parameters;
 
-import com.github.jknack.handlebars.Handlebars;
-import com.github.jknack.handlebars.Helper;
-import com.github.jknack.handlebars.Options;
-
-import specs.Spec;
-import specs.SpecTest;
 
 public class HelpersTest extends SpecTest {
 
@@ -108,7 +105,7 @@ public class HelpersTest extends SpecTest {
   }
 
   @Parameters
-  public static Collection<Object[]> data() {
+  public static Collection<Object[]> data() throws IOException {
     return data(HelpersTest.class, "helpers.yml");
   }
 }

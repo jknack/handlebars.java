@@ -27,7 +27,6 @@ import java.net.URI;
 import org.junit.Test;
 
 import com.github.jknack.handlebars.TemplateLoader;
-import com.github.jknack.handlebars.io.ClassTemplateLoader;
 
 /**
  * Unit test for {@link ClassTemplateLoader}.
@@ -48,7 +47,7 @@ public class ClasspathLocatorTest {
   public void subFolder() throws IOException {
     TemplateLoader locator = new ClassTemplateLoader();
     locator.setSuffix(".yml");
-    Reader reader = locator.load(URI.create("specs/comments"));
+    Reader reader = locator.load(URI.create("mustache/specs/comments"));
     assertNotNull(reader);
   }
 
@@ -56,7 +55,7 @@ public class ClasspathLocatorTest {
   public void subFolderwithDashAtBeginning() throws IOException {
     TemplateLoader locator = new ClassTemplateLoader();
     locator.setSuffix(".yml");
-    Reader reader = locator.load(URI.create("/specs/comments"));
+    Reader reader = locator.load(URI.create("/mustache/specs/comments"));
     assertNotNull(reader);
   }
 
@@ -68,14 +67,14 @@ public class ClasspathLocatorTest {
 
   @Test
   public void setBasePath() throws IOException {
-    TemplateLoader locator = new ClassTemplateLoader("/specs", ".yml");
+    TemplateLoader locator = new ClassTemplateLoader("/mustache/specs", ".yml");
     Reader reader = locator.load(URI.create("comments"));
     assertNotNull(reader);
   }
 
   @Test
   public void setBasePathWithDashDash() throws IOException {
-    TemplateLoader locator = new ClassTemplateLoader("/specs/", ".yml");
+    TemplateLoader locator = new ClassTemplateLoader("/mustache/specs/", ".yml");
     Reader reader = locator.load(URI.create("comments"));
     assertNotNull(reader);
   }

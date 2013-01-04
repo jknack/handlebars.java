@@ -15,20 +15,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package specs;
+package mustache.specs;
 
+import java.io.IOException;
 import java.util.Collection;
 
 import org.junit.runners.Parameterized.Parameters;
 
-public class CommentsTest extends SpecTest {
+public class DelimitersTest extends SpecTest {
 
-  public CommentsTest(final Spec spec) {
+  public DelimitersTest(final Spec spec) {
     super(spec);
   }
 
   @Parameters
-  public static Collection<Object[]> data() {
-    return data("comments.yml");
+  public static Collection<Object[]> data() throws IOException {
+    return data("delimiters.yml");
   }
+
 }

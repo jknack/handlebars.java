@@ -15,20 +15,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package specs;
+package mustache.specs;
 
+import java.io.IOException;
 import java.util.Collection;
 
 import org.junit.runners.Parameterized.Parameters;
 
-public class SectionsTest extends SpecTest {
+public class InterpolationTest extends SpecTest {
 
-  public SectionsTest(final Spec spec) {
+  public InterpolationTest(final Spec spec) {
     super(spec);
   }
 
   @Parameters
-  public static Collection<Object[]> data() {
-    return data("sections.yml");
+  public static Collection<Object[]> data() throws IOException {
+    return data("interpolation.yml");
   }
 }

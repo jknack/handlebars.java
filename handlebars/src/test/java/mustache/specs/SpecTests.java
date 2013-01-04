@@ -15,18 +15,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package specs;
+package mustache.specs;
 
-import org.junit.internal.AssumptionViolatedException;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
+import org.junit.runners.Suite.SuiteClasses;
 
-public class SkipTestException extends AssumptionViolatedException {
+@RunWith(Suite.class)
+@SuiteClasses({CommentsTest.class, DelimitersTest.class,
+    InterpolationTest.class, InvertedTest.class, SectionsTest.class,
+    PartialsTest.class, LambdasTest.class })
+public class SpecTests {
 
-  public SkipTestException(final String assumption) {
-    super(assumption);
-  }
-
-  /**
-   * Default uid.
-   */
-  private static final long serialVersionUID = 1L;
 }

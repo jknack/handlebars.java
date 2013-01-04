@@ -15,10 +15,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package specs;
+package mustache.specs;
 
 import static org.junit.Assert.assertEquals;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
@@ -26,6 +27,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.io.FileUtils;
 import org.junit.Before;
 import org.junit.ComparisonFailure;
 import org.junit.Test;
@@ -82,7 +84,7 @@ public abstract class SpecTest {
     }
   }
 
-  public static Collection<Object[]> data(final String filename) {
+  public static Collection<Object[]> data(final String filename) throws IOException {
     return data(SpecTest.class, filename);
   }
 
@@ -92,25 +94,26 @@ public abstract class SpecTest {
 
   @SuppressWarnings("unchecked")
   public static Collection<Object[]> data(final Class<?> loader,
-      final String filename) {
+      final String filename) throws IOException {
     Constructor constructor = new Constructor();
     constructor.addTypeDescription(new TypeDescription(Blog.class, "!blog"));
     constructor.addTypeDescription(new TypeDescription(Comment.class,
         "!comment"));
+    constructor.addTypeDescription(new TypeDescription(Map.class,
+        "!code"));
 
     Yaml yaml = new Yaml(constructor);
 
     String location = path(loader) + filename;
-    Map<String, Object> data =
-        (Map<String, Object>) yaml.load(
-            SpecTest.class.getResourceAsStream(location));
+    String input = FileUtils.readFileToString(new File("src/test/resources", location));
+    Map<String, Object> data = (Map<String, Object>) yaml.load(input);
     List<Map<String, Object>> tests =
         (List<Map<String, Object>>) data.get("tests");
     int number = 0;
     Collection<Object[]> dataset = new ArrayList<Object[]>();
     for (Map<String, Object> test : tests) {
       test.put("number", number++);
-      dataset.add(new Object[] {new Spec(test) });
+      dataset.add(new Object[]{new Spec(test) });
     }
     return dataset;
   }
@@ -153,7 +156,7 @@ public abstract class SpecTest {
       assertEquals(expected, output);
       report.append("OUTPUT:");
       report.append(output);
-    } catch(HandlebarsException ex) {
+    } catch (HandlebarsException ex) {
       Handlebars.error(ex.getMessage());
     } catch (ComparisonFailure ex) {
       report.append("FOUND:");

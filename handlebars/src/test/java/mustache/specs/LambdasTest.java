@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package specs;
+package mustache.specs;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -144,7 +144,7 @@ public class LambdasTest extends SpecTest {
   }
 
   @Parameters
-  public static Collection<Object[]> data() {
-    return data("lambdas.yml");
+  public static Collection<Object[]> data() throws IOException {
+    return data("~lambdas.yml");
   }
 }

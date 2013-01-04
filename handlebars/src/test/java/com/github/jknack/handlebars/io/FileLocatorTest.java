@@ -28,8 +28,6 @@ import java.net.URI;
 import org.junit.Test;
 
 import com.github.jknack.handlebars.TemplateLoader;
-import com.github.jknack.handlebars.io.ClassTemplateLoader;
-import com.github.jknack.handlebars.io.FileTemplateLoader;
 
 /**
  * Unit test for {@link ClassTemplateLoader}.
@@ -51,7 +49,7 @@ public class FileLocatorTest {
   public void subFolder() throws IOException {
     TemplateLoader locator =
         new FileTemplateLoader(new File("src/test/resources"), ".yml");
-    Reader reader = locator.load(URI.create("specs/comments"));
+    Reader reader = locator.load(URI.create("mustache/specs/comments"));
     assertNotNull(reader);
   }
 
@@ -59,7 +57,7 @@ public class FileLocatorTest {
   public void subFolderwithDashAtBeginning() throws IOException {
     TemplateLoader locator =
         new FileTemplateLoader(new File("src/test/resources"), ".yml");
-    Reader reader = locator.load(URI.create("/specs/comments"));
+    Reader reader = locator.load(URI.create("mustache/specs/comments"));
     assertNotNull(reader);
   }
 
@@ -73,7 +71,7 @@ public class FileLocatorTest {
   @Test
   public void setBasePath() throws IOException {
     TemplateLoader locator =
-        new FileTemplateLoader(new File("src/test/resources/specs"), ".yml");
+        new FileTemplateLoader(new File("src/test/resources/mustache/specs"), ".yml");
     Reader reader = locator.load(URI.create("comments"));
     assertNotNull(reader);
   }
@@ -81,7 +79,7 @@ public class FileLocatorTest {
   @Test
   public void setBasePathWithDash() throws IOException {
     TemplateLoader locator =
-        new FileTemplateLoader(new File("src/test/resources/specs/"), ".yml");
+        new FileTemplateLoader(new File("src/test/resources/mustache/specs/"), ".yml");
     Reader reader = locator.load(URI.create("comments"));
     assertNotNull(reader);
   }
