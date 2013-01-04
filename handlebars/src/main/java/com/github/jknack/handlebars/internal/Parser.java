@@ -61,6 +61,7 @@ import org.parboiled.support.Var;
 import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.HandlebarsError;
 import com.github.jknack.handlebars.HandlebarsException;
+import com.github.jknack.handlebars.Helper;
 import com.github.jknack.handlebars.Template;
 import com.github.jknack.handlebars.TemplateLoader;
 import com.github.jknack.handlebars.internal.Variable.Type;
@@ -456,9 +457,11 @@ public class Parser extends BaseParser<Object> {
     final List<Object> params = new ArrayList<Object>();
     final Map<String, Object> hash = new LinkedHashMap<String, Object>();
     final Var<Token> var = new Var<Token>();
+    final Var<Integer> varIdx = new Var<Integer>();
     return Sequence(
         var.set(new Token()),
         var.get().position(position()),
+        varIdx.set(currentIndex()),
         qualifiedId(),
         var.get().text(match()),
         hasTag(false),
@@ -466,6 +469,22 @@ public class Parser extends BaseParser<Object> {
         reset(params),
         reset(hash),
         paramOrHashList(params, hash),
+        new Action<Object>() {
+          @Override
+          public boolean run(final Context<Object> context) {
+            String helperName = var.get().text;
+            Helper<Object> helper = handlebars.helper(helperName);
+            if (helper == null && (params.size() > 0 || hash.size() > 0)) {
+              Helper<Object> helperMissing =
+                  handlebars.helper(Handlebars.HELPER_MISSING);
+              if (helperMissing == null) {
+                noffset = currentIndex() - varIdx.get();
+                throw new ActionException("could not find helper: '" + helperName + "'");
+              }
+            }
+            return true;
+          }
+        },
         add(new Variable(handlebars, var.get().text, type, params, hash)
             .filename(filename).position(var.get().position.line,
                 var.get().position.column)));
@@ -563,7 +582,8 @@ public class Parser extends BaseParser<Object> {
             String partialPath = loader.resolve(uri);
             if (!handlebars.allowInfiniteLoops() && isInStack(stacktraceList, partialPath)) {
               noffset = uri.length();
-              throw new ActionException("an infinite loop was detected, partial '" + partialPath + "' was loaded previously");
+              throw new ActionException("an infinite loop was detected, partial '" + partialPath
+                  + "' was loaded previously");
             }
             Partial partial = partials.get(partialPath);
             if (partial == null) {
@@ -653,15 +673,33 @@ public class Parser extends BaseParser<Object> {
   @Label("start-block")
   Rule blockStart(final Var<Token> name, final List<Object> params,
       final Map<String, Object> hash) {
+    final Var<Integer> nameIdx = new Var<Integer>();
     return Sequence(
         name.get().position(position()),
+        nameIdx.set(currentIndex()),
         qualifiedId(), name.get().text(match()),
         hasTag(true),
         spacing(),
         reset(params),
         reset(hash),
         paramOrHashList(params, hash),
-        endDelimiter());
+        endDelimiter(),
+        new Action<Object>() {
+          @Override
+          public boolean run(final Context<Object> context) {
+            String helperName = name.get().text;
+            Helper<Object> helper = handlebars.helper(helperName);
+            if (helper == null && (params.size() > 0 || hash.size() > 0)) {
+              Helper<Object> helperMissing =
+                  handlebars.helper(Handlebars.HELPER_MISSING);
+              if (helperMissing == null) {
+                noffset = currentIndex() - nameIdx.get();
+                throw new ActionException("could not find helper: '" + helperName + "'");
+              }
+            }
+            return true;
+          }
+        });
   }
 
   @Label("end-block")

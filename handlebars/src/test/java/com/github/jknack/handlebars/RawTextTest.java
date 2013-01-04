@@ -25,10 +25,6 @@ import java.io.StringReader;
 
 import org.junit.Test;
 
-import com.github.jknack.handlebars.Handlebars;
-import com.github.jknack.handlebars.Template;
-import com.github.jknack.handlebars.TemplateLoader;
-
 /**
  * Unit test for {@link Template#text()}
  *
@@ -112,8 +108,8 @@ public class RawTextTest {
   @Test
   public void helper() throws IOException {
     Handlebars handlebars = new Handlebars();
-    Template template = handlebars.compile("hello {{dateFormat context arg0 hash=hash0}}!");
-    assertEquals("hello {{dateFormat context arg0 hash=hash0}}!", template.text());
+    Template template = handlebars.compile("hello {{with context arg0 hash=hash0}}!");
+    assertEquals("hello {{with context arg0 hash=hash0}}!", template.text());
   }
 
   @Test

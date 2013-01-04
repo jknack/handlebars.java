@@ -25,12 +25,6 @@ import java.util.Map;
 
 import org.junit.Test;
 
-import com.github.jknack.handlebars.Handlebars;
-import com.github.jknack.handlebars.HandlebarsException;
-import com.github.jknack.handlebars.Helper;
-import com.github.jknack.handlebars.Options;
-import com.github.jknack.handlebars.Template;
-
 /**
  * Demostrate error reporting. It isn't a test.
  *
@@ -43,6 +37,7 @@ public class HelperErrorTest {
       $("/helper.hbs", "\n{{#block}} {{/block}}")
           .$("/embedded.hbs", "\n{{#embedded}} {{/embedded}}")
           .$("/basic.hbs", "\n{{basic}}")
+          .$("/notfoundblock.hbs", "\n{{#notfound hash=x}}{{/notfound}}")
           .$("/notfound.hbs", "\n{{notfound hash=x}}");
 
   @Test(expected = HandlebarsException.class)
@@ -53,6 +48,11 @@ public class HelperErrorTest {
   @Test(expected = HandlebarsException.class)
   public void notfound() throws IOException {
     parse("notfound");
+  }
+
+  @Test(expected = HandlebarsException.class)
+  public void notfoundblock() throws IOException {
+    parse("notfoundblock");
   }
 
   @Test(expected = HandlebarsException.class)
