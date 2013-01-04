@@ -23,6 +23,7 @@ import java.util.List;
 
 import org.junit.runners.Parameterized.Parameters;
 
+import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.TemplateNotFoundTest;
 
 /**
@@ -51,6 +52,12 @@ public class PartialsTest extends SpecTest {
   protected boolean skip(final Spec spec) {
     List<Integer> skip = Arrays.asList(1);
     return skip.contains(spec.number());
+  }
+
+  @Override
+  protected Handlebars configure(final Handlebars handlebars) {
+    handlebars.setAllowInifiteLoops(true);
+    return super.configure(handlebars);
   }
 
   @Parameters

@@ -16,6 +16,7 @@ public class Issue95 {
     TemplateLoader loader = new ClassTemplateLoader("/issue95");
 
     Handlebars handlebars = new Handlebars(loader);
+    handlebars.setAllowInifiteLoops(true);
     Template template = handlebars.compile(URI.create("hbs/start"));
     assertNotNull(template);
   }

@@ -39,8 +39,8 @@ import com.github.jknack.handlebars.io.ClassTemplateLoader;
 
 /**
  * <p>
- * Handlebars provides the power necessary to let you build semantic templates
- * effectively with no frustration.
+ * Handlebars provides the power necessary to let you build semantic templates effectively with no
+ * frustration.
  * </p>
  * <p>
  * Usage:
@@ -286,6 +286,12 @@ public class Handlebars {
       new HashMap<String, Helper<Object>>();
 
   /**
+   * If true, templates will be able to call him self directly or indirectly. Use with caution.
+   * Default is: false.
+   */
+  private boolean allowInfiniteLoops;
+
+  /**
    * Creates a new {@link Handlebars}.
    *
    * @param loader The template loader. Required.
@@ -447,7 +453,7 @@ public class Handlebars {
    *
    * @return If true, missing helper parameters will be resolve to their names.
    */
-  public boolean isStringParams() {
+  public boolean allowStringParams() {
     return stringParams;
   }
 
@@ -459,6 +465,28 @@ public class Handlebars {
    */
   public void setStringParams(final boolean stringParams) {
     this.stringParams = stringParams;
+  }
+
+  /**
+   * If true, templates will be able to call him self directly or indirectly. Use with caution.
+   * Default is: false.
+   *
+   * @return If true, templates will be able to call him self directly or indirectly. Use with
+   *         caution. Default is: false.
+   */
+  public boolean allowInfiniteLoops() {
+    return allowInfiniteLoops;
+  }
+
+  /**
+   * If true, templates will be able to call him self directly or indirectly. Use with caution.
+   * Default is: false.
+   *
+   * @param allowInfiniteLoops If true, templates will be able to call him self directly or
+   *        indirectly.
+   */
+  public void setAllowInifiteLoops(final boolean allowInfiniteLoops) {
+    this.allowInfiniteLoops = allowInfiniteLoops;
   }
 
   /**

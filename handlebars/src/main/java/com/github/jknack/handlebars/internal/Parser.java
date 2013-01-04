@@ -535,7 +535,7 @@ public class Parser extends BaseParser<Object> {
         return true;
       }
     }
-    return false;
+    return this.filename.equals(filename);
   }
 
   Rule partial() throws IOException {
@@ -561,9 +561,9 @@ public class Parser extends BaseParser<Object> {
                   "found: '/', partial shouldn't start with '/'");
             }
             String partialPath = loader.resolve(uri);
-            if (isInStack(stacktraceList, partialPath)) {
+            if (!handlebars.allowInfiniteLoops() && isInStack(stacktraceList, partialPath)) {
               noffset = uri.length();
-              throw new ActionException("a cycle was detected, partial '" + partialPath + "' was loaded previously");
+              throw new ActionException("an infinite loop was detected, partial '" + partialPath + "' was loaded previously");
             }
             Partial partial = partials.get(partialPath);
             if (partial == null) {
