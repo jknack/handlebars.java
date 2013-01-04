@@ -280,7 +280,7 @@ public abstract class Options {
    * @return False if its argument is false, null or empty list/array (a "falsy"
    *         value).
    */
-  public final boolean isEmpty(final Object value) {
+  public final boolean isFalsy(final Object value) {
     return Handlebars.Utils.isEmpty(value);
   }
 

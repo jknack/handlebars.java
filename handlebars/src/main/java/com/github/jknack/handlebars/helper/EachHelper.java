@@ -100,7 +100,7 @@ public class EachHelper implements Helper<Object> {
   private CharSequence iterableContext(final Iterable<Object> context, final Options options)
       throws IOException {
     StringBuilder buffer = new StringBuilder();
-    if (options.isEmpty(context)) {
+    if (options.isFalsy(context)) {
       buffer.append(options.inverse());
     } else {
       Iterator<Object> iterator = context.iterator();

@@ -45,7 +45,7 @@ public class HelpersTest extends SpecTest {
       public CharSequence apply(final List<Object> list, final Options options)
           throws IOException {
         String text = "";
-        if (options.isEmpty(list)) {
+        if (options.isFalsy(list)) {
           return text;
         }
 

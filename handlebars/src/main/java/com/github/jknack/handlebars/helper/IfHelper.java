@@ -59,7 +59,7 @@ public class IfHelper implements Helper<Object> {
   @Override
   public CharSequence apply(final Object context, final Options options)
       throws IOException {
-    if (options.isEmpty(context)) {
+    if (options.isFalsy(context)) {
       return options.inverse();
     } else {
       return options.fn();
