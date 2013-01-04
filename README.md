@@ -543,7 +543,6 @@ Context context = Context
   });
 ```
 
-
 ### String form parameters
  You can access to a parameter name if you set the: ```stringParams: true```. Example:
  
@@ -569,6 +568,9 @@ Hello edgar!
  How it works? ```stringParams: true``` instruct Handlebars.java to resolve a parameter
  to the his name if the value isn't present in the context stack.
 
+### Allow Infite loops
+ By default, Handlebars.java don't allow a partial to call him self directly or indirectly.
+ You can change this by setting the: ```Handlebars.setAllowInifiteLoops``` to ```true```, just avoid ```StackOverflowError```.
 
 # Additional Helpers
 ## String Helpers
