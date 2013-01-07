@@ -267,12 +267,12 @@ public class Handlebars {
   /**
    * The template loader. Required.
    */
-  private final TemplateLoader loader;
+  private TemplateLoader loader;
 
   /**
    * The template cache. Required.
    */
-  private final TemplateCache cache;
+  private TemplateCache cache;
 
   /**
    * If true, missing helper parameters will be resolve to their names.
@@ -291,6 +291,11 @@ public class Handlebars {
    */
   private boolean allowInfiniteLoops;
 
+  {
+    // make sure default helpers are registered
+    registerBuiltinsHelpers(this);
+  }
+
   /**
    * Creates a new {@link Handlebars}.
    *
@@ -298,12 +303,8 @@ public class Handlebars {
    * @param cache The template cache. Required.
    */
   public Handlebars(final TemplateLoader loader, final TemplateCache cache) {
-    this.loader =
-        notNull(loader, "The template loader is required.");
-    this.cache =
-        notNull(cache, "The template cache is required.");
-
-    registerBuiltinsHelpers(this);
+    with(loader);
+    with(cache);
   }
 
   /**
@@ -390,8 +391,8 @@ public class Handlebars {
       final String startDelimiter, final String endDelimiter)
       throws IOException {
     notNull(input, "The input text is required.");
-    checkDelimiter(startDelimiter, "start");
-    checkDelimiter(endDelimiter, "end");
+    notEmpty(startDelimiter, "The start delimiter is required.");
+    notEmpty(endDelimiter, "The end delimiter is required.");
 
     String key =
         filename + "@" + startDelimiter + input.hashCode() + endDelimiter;
@@ -490,6 +491,28 @@ public class Handlebars {
   }
 
   /**
+   * Set a new {@link TemplateLoader}. Default is: {@link ClassTemplateLoader}.
+   *
+   * @param loader The template loader. Required.
+   * @return This handlebars object.
+   */
+  public Handlebars with(final TemplateLoader loader) {
+    this.loader = notNull(loader, "The template loader is required.");
+    return this;
+  }
+
+  /**
+   * Set a new {@link TemplateCache}.
+   *
+   * @param cache The template cache. Required.
+   * @return This handlebars object.
+   */
+  public Handlebars with(final TemplateCache cache) {
+    this.cache = notNull(cache, "The template loader is required.");
+    return this;
+  }
+
+  /**
    * Log the given message and format the message within the args.
    *
    * @param message The log's message.
@@ -576,18 +599,6 @@ public class Handlebars {
    */
   public static void error(final String message) {
     logger.error(message);
-  }
-
-  /**
-   * Check if the given delimiters aren't empty.
-   *
-   * @param delimiter The delimiter.
-   * @param type The delimiter's type.
-   */
-  private static void checkDelimiter(final String delimiter,
-      final String type) {
-    notNull(delimiter, "The %s delimiter is required.", type);
-    notEmpty(delimiter, "The %s delimiter is required.", type);
   }
 
   /**
