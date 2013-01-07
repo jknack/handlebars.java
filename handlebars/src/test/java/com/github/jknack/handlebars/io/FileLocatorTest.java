@@ -30,7 +30,7 @@ import org.junit.Test;
 import com.github.jknack.handlebars.TemplateLoader;
 
 /**
- * Unit test for {@link ClassTemplateLoader}.
+ * Unit test for {@link ClassPathTemplateLoader}.
  *
  * @author edgar.espina
  * @since 0.1.0

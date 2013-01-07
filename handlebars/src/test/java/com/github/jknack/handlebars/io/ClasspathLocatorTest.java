@@ -29,7 +29,7 @@ import org.junit.Test;
 import com.github.jknack.handlebars.TemplateLoader;
 
 /**
- * Unit test for {@link ClassTemplateLoader}.
+ * Unit test for {@link ClassPathTemplateLoader}.
  *
  * @author edgar.espina
  * @since 0.1.0
@@ -38,14 +38,14 @@ public class ClasspathLocatorTest {
 
   @Test
   public void locate() throws IOException {
-    TemplateLoader locator = new ClassTemplateLoader();
+    TemplateLoader locator = new ClassPathTemplateLoader();
     Reader reader = locator.load(URI.create("template"));
     assertNotNull(reader);
   }
 
   @Test
   public void subFolder() throws IOException {
-    TemplateLoader locator = new ClassTemplateLoader();
+    TemplateLoader locator = new ClassPathTemplateLoader();
     locator.setSuffix(".yml");
     Reader reader = locator.load(URI.create("mustache/specs/comments"));
     assertNotNull(reader);
@@ -53,7 +53,7 @@ public class ClasspathLocatorTest {
 
   @Test
   public void subFolderwithDashAtBeginning() throws IOException {
-    TemplateLoader locator = new ClassTemplateLoader();
+    TemplateLoader locator = new ClassPathTemplateLoader();
     locator.setSuffix(".yml");
     Reader reader = locator.load(URI.create("/mustache/specs/comments"));
     assertNotNull(reader);
@@ -61,20 +61,20 @@ public class ClasspathLocatorTest {
 
   @Test(expected = FileNotFoundException.class)
   public void failLocate() throws IOException {
-    TemplateLoader locator = new ClassTemplateLoader();
+    TemplateLoader locator = new ClassPathTemplateLoader();
     locator.load(URI.create("notExist"));
   }
 
   @Test
   public void setBasePath() throws IOException {
-    TemplateLoader locator = new ClassTemplateLoader("/mustache/specs", ".yml");
+    TemplateLoader locator = new ClassPathTemplateLoader("/mustache/specs", ".yml");
     Reader reader = locator.load(URI.create("comments"));
     assertNotNull(reader);
   }
 
   @Test
   public void setBasePathWithDashDash() throws IOException {
-    TemplateLoader locator = new ClassTemplateLoader("/mustache/specs/", ".yml");
+    TemplateLoader locator = new ClassPathTemplateLoader("/mustache/specs/", ".yml");
     Reader reader = locator.load(URI.create("comments"));
     assertNotNull(reader);
   }

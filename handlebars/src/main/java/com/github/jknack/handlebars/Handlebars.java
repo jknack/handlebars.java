@@ -35,7 +35,7 @@ import com.github.jknack.handlebars.helper.PrecompileHelper;
 import com.github.jknack.handlebars.helper.UnlessHelper;
 import com.github.jknack.handlebars.helper.WithHelper;
 import com.github.jknack.handlebars.internal.ParserFactory;
-import com.github.jknack.handlebars.io.ClassTemplateLoader;
+import com.github.jknack.handlebars.io.ClassPathTemplateLoader;
 
 /**
  * <p>
@@ -317,11 +317,11 @@ public class Handlebars {
   }
 
   /**
-   * Creates a new {@link Handlebars} with a {@link ClassTemplateLoader} and no
+   * Creates a new {@link Handlebars} with a {@link ClassPathTemplateLoader} and no
    * cache.
    */
   public Handlebars() {
-    this(new ClassTemplateLoader(), NO_CACHE);
+    this(new ClassPathTemplateLoader(), NO_CACHE);
   }
 
   /**
@@ -491,7 +491,7 @@ public class Handlebars {
   }
 
   /**
-   * Set a new {@link TemplateLoader}. Default is: {@link ClassTemplateLoader}.
+   * Set a new {@link TemplateLoader}. Default is: {@link ClassPathTemplateLoader}.
    *
    * @param loader The template loader. Required.
    * @return This handlebars object.

@@ -43,7 +43,7 @@ Hello Handlebars.java!
 
 ### Loading templates
 Templates are loaded using the ```TemplateLoader``` class. Handlebars.java provides three implementations of a ```TemplateLodaer```:
- * ClassTemplateLoader (default)
+ * ClassPathTemplateLoader (default)
  * FileTemplateLoader
  * SpringTemplateLoader (see the [handlebars-springmvc](https://github.com/jknack/handlebars.java/tree/develop/handlebars-springmvc) module)
 
@@ -81,7 +81,7 @@ A ```TemplateLoader``` provides two important properties:
 
 Example:
 ```java
-TemplateLoader loader = new ClassTemplateLoader();
+TemplateLoader loader = new ClassPathTemplateLoader();
 loader.setPrefix("/templates");
 loader.setSuffix(".html");
 Handlebars handlebars = new Handlebars(loader);

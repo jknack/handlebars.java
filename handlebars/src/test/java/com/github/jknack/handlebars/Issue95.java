@@ -7,13 +7,13 @@ import java.net.URI;
 
 import org.junit.Test;
 
-import com.github.jknack.handlebars.io.ClassTemplateLoader;
+import com.github.jknack.handlebars.io.ClassPathTemplateLoader;
 
 public class Issue95 {
 
   @Test
   public void issue95() throws IOException {
-    TemplateLoader loader = new ClassTemplateLoader("/issue95");
+    TemplateLoader loader = new ClassPathTemplateLoader("/issue95");
 
     Handlebars handlebars = new Handlebars(loader);
     handlebars.setAllowInifiteLoops(true);

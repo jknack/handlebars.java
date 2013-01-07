@@ -33,13 +33,13 @@ import org.junit.runners.Parameterized.Parameters;
 import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.HandlebarsException;
 import com.github.jknack.handlebars.Template;
-import com.github.jknack.handlebars.io.ClassTemplateLoader;
+import com.github.jknack.handlebars.io.ClassPathTemplateLoader;
 
 @RunWith(Parameterized.class)
 public class InheritanceTest {
 
   static Handlebars handlebars =
-      new Handlebars(new ClassTemplateLoader("/inheritance"));
+      new Handlebars(new ClassPathTemplateLoader("/inheritance"));
 
   private String name;
 
