@@ -466,12 +466,11 @@ public enum StringHelpers implements Helper<Object> {
     };
 
     @Override
-    public CharSequence apply(final Object context, final Options options)
+    public CharSequence apply(final Object value, final Options options)
         throws IOException {
-      if (context == null) {
-        return null;
-      }
-      Date date = (Date) context;
+      isTrue(value instanceof Date, "found '%s', expected 'date'", value);
+
+      Date date = (Date) value;
       final DateFormat dateFormat;
       Object pattern = options.param(0, "medium");
       String localeStr = options.param(1, Locale.getDefault().toString());
