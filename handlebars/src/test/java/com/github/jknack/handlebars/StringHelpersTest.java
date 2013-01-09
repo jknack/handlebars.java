@@ -1,21 +1,21 @@
 package com.github.jknack.handlebars;
 
-import static com.github.jknack.handlebars.StringHelpers.ABBREVIATE;
-import static com.github.jknack.handlebars.StringHelpers.CAPITALIZE;
-import static com.github.jknack.handlebars.StringHelpers.CAPITALIZE_FIRST;
-import static com.github.jknack.handlebars.StringHelpers.CENTER;
-import static com.github.jknack.handlebars.StringHelpers.CUT;
-import static com.github.jknack.handlebars.StringHelpers.DEFAULT;
-import static com.github.jknack.handlebars.StringHelpers.JOIN;
-import static com.github.jknack.handlebars.StringHelpers.LJUST;
-import static com.github.jknack.handlebars.StringHelpers.LOWER;
-import static com.github.jknack.handlebars.StringHelpers.RJUST;
-import static com.github.jknack.handlebars.StringHelpers.SLUGIFY;
-import static com.github.jknack.handlebars.StringHelpers.STRING_FORMAT;
-import static com.github.jknack.handlebars.StringHelpers.STRIP_TAGS;
-import static com.github.jknack.handlebars.StringHelpers.UPPER;
-import static com.github.jknack.handlebars.StringHelpers.WORD_WRAP;
-import static com.github.jknack.handlebars.StringHelpers.YESNO;
+import static com.github.jknack.handlebars.StringHelpers.abbreviate;
+import static com.github.jknack.handlebars.StringHelpers.capitalize;
+import static com.github.jknack.handlebars.StringHelpers.capitalizeFirst;
+import static com.github.jknack.handlebars.StringHelpers.center;
+import static com.github.jknack.handlebars.StringHelpers.cut;
+import static com.github.jknack.handlebars.StringHelpers.defaultIfEmpty;
+import static com.github.jknack.handlebars.StringHelpers.join;
+import static com.github.jknack.handlebars.StringHelpers.ljust;
+import static com.github.jknack.handlebars.StringHelpers.lower;
+import static com.github.jknack.handlebars.StringHelpers.rjust;
+import static com.github.jknack.handlebars.StringHelpers.slugify;
+import static com.github.jknack.handlebars.StringHelpers.stringFormat;
+import static com.github.jknack.handlebars.StringHelpers.stripTags;
+import static com.github.jknack.handlebars.StringHelpers.upper;
+import static com.github.jknack.handlebars.StringHelpers.wordWrap;
+import static com.github.jknack.handlebars.StringHelpers.yesno;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
@@ -33,10 +33,6 @@ import org.powermock.api.easymock.PowerMock;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import com.github.jknack.handlebars.Context;
-import com.github.jknack.handlebars.Options;
-import com.github.jknack.handlebars.StringHelpers;
-
 /**
  * Unit test for {@link StringHelpers}.
  *
@@ -53,9 +49,9 @@ public class StringHelpersTest {
 
     replay(options);
 
-    assertEquals("capitalizeFirst", CAPITALIZE_FIRST.helperName());
+    assertEquals("capitalizeFirst", capitalizeFirst.name());
     assertEquals("Handlebars.java",
-        CAPITALIZE_FIRST.apply("handlebars.java", options));
+        capitalizeFirst.apply("handlebars.java", options));
 
     verify(options);
   }
@@ -68,9 +64,9 @@ public class StringHelpersTest {
 
     replay(options);
 
-    assertEquals("center", CENTER.helperName());
+    assertEquals("center", center.name());
     assertEquals("  Handlebars.java  ",
-        CENTER.apply("Handlebars.java", options));
+        center.apply("Handlebars.java", options));
 
     verify(options);
   }
@@ -83,9 +79,9 @@ public class StringHelpersTest {
 
     replay(options);
 
-    assertEquals("center", CENTER.helperName());
+    assertEquals("center", center.name());
     assertEquals("**Handlebars.java**",
-        CENTER.apply("Handlebars.java", options));
+        center.apply("Handlebars.java", options));
 
     verify(options);
   }
@@ -97,9 +93,9 @@ public class StringHelpersTest {
 
     replay(options);
 
-    assertEquals("cut", CUT.helperName());
+    assertEquals("cut", cut.name());
     assertEquals("handlebars.java",
-        CUT.apply("handle bars .  java", options));
+        cut.apply("handle bars .  java", options));
 
     verify(options);
   }
@@ -111,9 +107,9 @@ public class StringHelpersTest {
 
     replay(options);
 
-    assertEquals("cut", CUT.helperName());
+    assertEquals("cut", cut.name());
     assertEquals("handlebars.java",
-        CUT.apply("handle*bars*.**java", options));
+        cut.apply("handle*bars*.**java", options));
 
     verify(options);
   }
@@ -125,16 +121,16 @@ public class StringHelpersTest {
 
     replay(options);
 
-    assertEquals("default", DEFAULT.helperName());
+    assertEquals("defaultIfEmpty", defaultIfEmpty.name());
     assertEquals("handlebars.java",
-        DEFAULT.apply(null, options));
+        defaultIfEmpty.apply(null, options));
     assertEquals("handlebars.java",
-        DEFAULT.apply(false, options));
+        defaultIfEmpty.apply(false, options));
     assertEquals("handlebars.java",
-        DEFAULT.apply(Collections.emptyList(), options));
+        defaultIfEmpty.apply(Collections.emptyList(), options));
 
     assertEquals("something",
-        DEFAULT.apply("something", options));
+        defaultIfEmpty.apply("something", options));
 
     verify(options);
   }
@@ -148,15 +144,15 @@ public class StringHelpersTest {
 
     replay(options);
 
-    assertEquals("join", JOIN.helperName());
+    assertEquals("join", join.name());
     assertEquals("6, 7, 8",
-        JOIN.apply(Arrays.asList("6", "7", "8"), options));
+        join.apply(Arrays.asList("6", "7", "8"), options));
     assertEquals("6, 7, 8",
-        JOIN.apply(new Object[] {"6", "7", "8" }, options));
+        join.apply(new Object[] {"6", "7", "8" }, options));
 
     assertEquals(null,
-        JOIN.apply("Not an array or iterable", options));
-    assertEquals(null, JOIN.apply(null, options));
+        join.apply("Not an array or iterable", options));
+    assertEquals(null, join.apply(null, options));
 
     verify(options);
   }
@@ -171,7 +167,7 @@ public class StringHelpersTest {
     replay(options);
 
     assertEquals("<6, 7, 8>",
-        JOIN.apply(Arrays.asList("6", "7", "8"), options));
+        join.apply(Arrays.asList("6", "7", "8"), options));
 
     verify(options);
   }
@@ -184,9 +180,9 @@ public class StringHelpersTest {
 
     replay(options);
 
-    assertEquals("ljust", LJUST.helperName());
+    assertEquals("ljust", ljust.name());
     assertEquals("Handlebars.java     ",
-        LJUST.apply("Handlebars.java", options));
+        ljust.apply("Handlebars.java", options));
 
     verify(options);
   }
@@ -199,9 +195,9 @@ public class StringHelpersTest {
 
     replay(options);
 
-    assertEquals("ljust", LJUST.helperName());
+    assertEquals("ljust", ljust.name());
     assertEquals("Handlebars.java++",
-        LJUST.apply("Handlebars.java", options));
+        ljust.apply("Handlebars.java", options));
 
     verify(options);
   }
@@ -214,9 +210,9 @@ public class StringHelpersTest {
 
     replay(options);
 
-    assertEquals("rjust", RJUST.helperName());
+    assertEquals("rjust", rjust.name());
     assertEquals("     Handlebars.java",
-        RJUST.apply("Handlebars.java", options));
+        rjust.apply("Handlebars.java", options));
 
     verify(options);
   }
@@ -229,9 +225,9 @@ public class StringHelpersTest {
 
     replay(options);
 
-    assertEquals("rjust", RJUST.helperName());
+    assertEquals("rjust", rjust.name());
     assertEquals("++Handlebars.java",
-        RJUST.apply("Handlebars.java", options));
+        rjust.apply("Handlebars.java", options));
 
     verify(options);
   }
@@ -242,9 +238,9 @@ public class StringHelpersTest {
 
     replay(options);
 
-    assertEquals("lower", LOWER.helperName());
+    assertEquals("lower", lower.name());
     assertEquals("handlebars.java",
-        LOWER.apply("Handlebars.java", options));
+        lower.apply("Handlebars.java", options));
 
     verify(options);
   }
@@ -255,9 +251,9 @@ public class StringHelpersTest {
 
     replay(options);
 
-    assertEquals("upper", UPPER.helperName());
+    assertEquals("upper", upper.name());
     assertEquals("HANDLEBARS.JAVA",
-        UPPER.apply("Handlebars.java", options));
+        upper.apply("Handlebars.java", options));
 
     verify(options);
   }
@@ -268,9 +264,9 @@ public class StringHelpersTest {
 
     replay(options);
 
-    assertEquals("slugify", SLUGIFY.helperName());
+    assertEquals("slugify", slugify.name());
     assertEquals("joel-is-a-slug",
-        SLUGIFY.apply("  Joel is a slug  ", options));
+        slugify.apply("  Joel is a slug  ", options));
 
     verify(options);
   }
@@ -281,10 +277,10 @@ public class StringHelpersTest {
         OptionsMock.options(new Object[] {"handlebars.java" },
             new HashMap<String, Object>());
 
-    assertEquals("stringFormat", STRING_FORMAT.helperName());
+    assertEquals("stringFormat", stringFormat.name());
 
     assertEquals("Hello handlebars.java!",
-        STRING_FORMAT.apply("Hello %s!", options));
+        stringFormat.apply("Hello %s!", options));
   }
 
   @Test
@@ -293,10 +289,10 @@ public class StringHelpersTest {
         OptionsMock.options(new Object[] {10.0 / 3.0 },
             new HashMap<String, Object>());
 
-    assertEquals("stringFormat", STRING_FORMAT.helperName());
+    assertEquals("stringFormat", stringFormat.name());
 
     assertEquals("10 / 3 = 3.33",
-        STRING_FORMAT.apply("10 / 3 = %.2f", options));
+        stringFormat.apply("10 / 3 = %.2f", options));
   }
 
   @Test
@@ -305,9 +301,9 @@ public class StringHelpersTest {
 
     replay(options);
 
-    assertEquals("stripTags", STRIP_TAGS.helperName());
+    assertEquals("stripTags", stripTags.name());
     assertEquals("Joel is a slug",
-        STRIP_TAGS.apply("<b>Joel</b> <button>is</button> a <span>slug</span>",
+        stripTags.apply("<b>Joel</b> <button>is</button> a <span>slug</span>",
             options));
 
     verify(options);
@@ -319,9 +315,9 @@ public class StringHelpersTest {
 
     replay(options);
 
-    assertEquals("stripTags", STRIP_TAGS.helperName());
+    assertEquals("stripTags", stripTags.name());
     assertEquals("Joel\nis a slug",
-        STRIP_TAGS.apply(
+        stripTags.apply(
             "<b>Joel</b>\n<button>is<\n/button> a <span>slug</span>",
             options));
 
@@ -336,13 +332,13 @@ public class StringHelpersTest {
 
     replay(options);
 
-    assertEquals("capitalize", CAPITALIZE.helperName());
+    assertEquals("capitalize", capitalize.name());
 
     assertEquals("Handlebars Java",
-        CAPITALIZE.apply("handlebars java", options));
+        capitalize.apply("handlebars java", options));
 
     assertEquals("Handlebars Java",
-        CAPITALIZE.apply("HAndleBars JAVA", options));
+        capitalize.apply("HAndleBars JAVA", options));
 
     verify(options);
   }
@@ -354,10 +350,10 @@ public class StringHelpersTest {
 
     replay(options);
 
-    assertEquals("abbreviate", ABBREVIATE.helperName());
+    assertEquals("abbreviate", abbreviate.name());
 
     assertEquals("Handlebars...",
-        ABBREVIATE.apply("Handlebars.java", options));
+        abbreviate.apply("Handlebars.java", options));
 
     verify(options);
   }
@@ -369,11 +365,11 @@ public class StringHelpersTest {
 
     replay(options);
 
-    assertEquals("wordWrap", WORD_WRAP.helperName());
+    assertEquals("wordWrap", wordWrap.name());
 
     assertEquals("Joel" + SystemUtils.LINE_SEPARATOR + "is a"
             + SystemUtils.LINE_SEPARATOR + "slug",
-            WORD_WRAP.apply("Joel is a slug", options));
+            wordWrap.apply("Joel is a slug", options));
 
     verify(options);
   }
@@ -387,11 +383,11 @@ public class StringHelpersTest {
 
     replay(options);
 
-    assertEquals("yesno", YESNO.helperName());
+    assertEquals("yesno", yesno.name());
 
-    assertEquals("yes", YESNO.apply(true, options));
-    assertEquals("no", YESNO.apply(false, options));
-    assertEquals("maybe", YESNO.apply(null, options));
+    assertEquals("yes", yesno.apply(true, options));
+    assertEquals("no", yesno.apply(false, options));
+    assertEquals("maybe", yesno.apply(null, options));
 
     verify(options);
   }
@@ -405,11 +401,11 @@ public class StringHelpersTest {
 
     replay(options);
 
-    assertEquals("yesno", YESNO.helperName());
+    assertEquals("yesno", yesno.name());
 
-    assertEquals("yea", YESNO.apply(true, options));
-    assertEquals("nop", YESNO.apply(false, options));
-    assertEquals("whatever", YESNO.apply(null, options));
+    assertEquals("yea", yesno.apply(true, options));
+    assertEquals("nop", yesno.apply(false, options));
+    assertEquals("whatever", yesno.apply(null, options));
 
     verify(options);
   }

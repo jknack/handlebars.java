@@ -153,14 +153,14 @@ public class Handlebars {
       if (value instanceof Collection) {
         return ((Collection) value).size() == 0;
       }
-      if (value.getClass().isArray()) {
-        return Array.getLength(value) == 0;
-      }
       if (value instanceof Iterable) {
         return !((Iterable) value).iterator().hasNext();
       }
       if (value instanceof Boolean) {
         return !((Boolean) value).booleanValue();
+      }
+      if (value.getClass().isArray()) {
+        return Array.getLength(value) == 0;
       }
       return false;
     }

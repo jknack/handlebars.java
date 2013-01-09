@@ -48,7 +48,7 @@ public enum StringHelpers implements Helper<Object> {
    *
    * If value is "handlebars.java", the output will be "Handlebars.java".
    */
-  CAPITALIZE_FIRST {
+  capitalizeFirst {
     @Override
     public CharSequence apply(final Object value, final Options options)
         throws IOException {
@@ -56,10 +56,6 @@ public enum StringHelpers implements Helper<Object> {
       return StringUtils.capitalize(value.toString());
     }
 
-    @Override
-    public String helperName() {
-      return "capitalizeFirst";
-    }
   },
 
   /**
@@ -72,7 +68,7 @@ public enum StringHelpers implements Helper<Object> {
    *
    * If value is "Handlebars.java", the output will be "  Handlebars.java  ".
    */
-  CENTER {
+  center {
     @Override
     public CharSequence apply(final Object value, final Options options)
         throws IOException {
@@ -94,7 +90,7 @@ public enum StringHelpers implements Helper<Object> {
    *
    * If value is "String with spaces", the output will be "Stringwithspaces".
    */
-  CUT {
+  cut {
     @Override
     public CharSequence apply(final Object value, final Options options)
         throws IOException {
@@ -110,11 +106,11 @@ public enum StringHelpers implements Helper<Object> {
    * For example:
    *
    * <pre>
-   * {{default value ["nothing"] }}
+   * {{defaultIfEmpty value ["nothing"] }}
    * If value is "" (the empty string), the output will be nothing.
    * </pre>
    */
-  DEFAULT {
+  defaultIfEmpty {
     @Override
     public CharSequence apply(final Object value, final Options options)
         throws IOException {
@@ -136,7 +132,7 @@ public enum StringHelpers implements Helper<Object> {
    * If value is the list ['a', 'b', 'c'], the output will be the string
    * "a // b // c".
    */
-  JOIN {
+  join {
     @SuppressWarnings("rawtypes")
     @Override
     public CharSequence apply(final Object context, final Options options)
@@ -173,7 +169,7 @@ public enum StringHelpers implements Helper<Object> {
    *
    * If value is Handlebars.java, the output will be "Handlebars.java     ".
    */
-  LJUST {
+  ljust {
     @Override
     public CharSequence apply(final Object value, final Options options)
         throws IOException {
@@ -196,7 +192,7 @@ public enum StringHelpers implements Helper<Object> {
    *
    * If value is Handlebars.java, the output will be "     Handlebars.java".
    */
-  RJUST {
+  rjust {
     @Override
     public CharSequence apply(final Object value, final Options options)
         throws IOException {
@@ -218,7 +214,7 @@ public enum StringHelpers implements Helper<Object> {
    *
    * If value is 'Still MAD At Yoko', the output will be 'still mad at yoko'.
    */
-  LOWER {
+  lower {
     @Override
     public CharSequence apply(final Object value, final Options options)
         throws IOException {
@@ -237,7 +233,7 @@ public enum StringHelpers implements Helper<Object> {
    *
    * If value is 'Hello', the output will be 'HELLO'.
    */
-  UPPER {
+  upper {
     @Override
     public CharSequence apply(final Object value, final Options options)
         throws IOException {
@@ -258,7 +254,7 @@ public enum StringHelpers implements Helper<Object> {
    *
    * If value is "Joel is a slug", the output will be "joel-is-a-slug".
    */
-  SLUGIFY {
+  slugify {
     @Override
     public CharSequence apply(final Object context, final Options options)
         throws IOException {
@@ -293,7 +289,7 @@ public enum StringHelpers implements Helper<Object> {
    *
    * @see String#format(String, Object...)
    */
-  STRING_FORMAT {
+  stringFormat {
     @Override
     public CharSequence apply(final Object context, final Options options)
         throws IOException {
@@ -303,10 +299,6 @@ public enum StringHelpers implements Helper<Object> {
       return String.format(format, options.params);
     }
 
-    @Override
-    public String helperName() {
-      return "stringFormat";
-    }
   },
 
   /**
@@ -317,7 +309,7 @@ public enum StringHelpers implements Helper<Object> {
    * {{stripTags value}}
    * </pre>
    */
-  STRIP_TAGS {
+  stripTags {
 
     /**
      * The HTML tag pattern.
@@ -334,10 +326,6 @@ public enum StringHelpers implements Helper<Object> {
       return matcher.replaceAll("");
     }
 
-    @Override
-    public String helperName() {
-      return "stripTags";
-    }
   },
 
   /**
@@ -350,7 +338,7 @@ public enum StringHelpers implements Helper<Object> {
    *
    * If value is "my first post", the output will be "My First Post".
    */
-  CAPITALIZE {
+  capitalize {
     @Override
     public CharSequence apply(final Object context, final Options options)
         throws IOException {
@@ -376,7 +364,7 @@ public enum StringHelpers implements Helper<Object> {
    *
    * If value is "Handlebars rocks", the output will be "Handlebars...".
    */
-  ABBREVIATE {
+  abbreviate {
     @Override
     public CharSequence apply(final Object context, final Options options)
         throws IOException {
@@ -405,7 +393,7 @@ public enum StringHelpers implements Helper<Object> {
    * slug
    * </pre>
    */
-  WORD_WRAP {
+  wordWrap {
     @Override
     public CharSequence apply(final Object context, final Options options)
         throws IOException {
@@ -416,10 +404,6 @@ public enum StringHelpers implements Helper<Object> {
       return WordUtils.wrap((String) context, length);
     }
 
-    @Override
-    public String helperName() {
-      return "wordWrap";
-    }
   },
 
   /**
@@ -431,7 +415,7 @@ public enum StringHelpers implements Helper<Object> {
    * {{yesno value [yes="yes"] [no="no"] maybe=["maybe"] }}
    * </pre>
    */
-  YESNO {
+  yesno {
     @Override
     public CharSequence apply(final Object value, final Options options)
         throws IOException {
@@ -466,7 +450,7 @@ public enum StringHelpers implements Helper<Object> {
    * </ul>
    * Otherwise, the default formatter will be used.
    */
-  DATE_FORMAT {
+  dateFormat {
     /**
      * The default date styles.
      */
@@ -501,20 +485,7 @@ public enum StringHelpers implements Helper<Object> {
       return dateFormat.format(date);
     }
 
-    @Override
-    public String helperName() {
-      return "dateFormat";
-    }
   };
-
-  /**
-   * Return the helper's name.
-   *
-   * @return The helper's name.
-   */
-  public String helperName() {
-    return name().toLowerCase().replace("_", "");
-  }
 
   /**
    * Regiter all the text helpers.
@@ -525,7 +496,7 @@ public enum StringHelpers implements Helper<Object> {
     notNull(handlebars, "A handlebars object is required.");
     StringHelpers[] helpers = values();
     for (StringHelpers helper : helpers) {
-      handlebars.registerHelper(helper.helperName(), helper);
+      handlebars.registerHelper(helper.name(), helper);
     }
   }
 }

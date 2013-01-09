@@ -31,7 +31,7 @@ public class DateFormatTest extends AbstractTest {
   @Override
   protected Handlebars newHandlebars() {
     Handlebars handlebars = new Handlebars();
-    handlebars.registerHelper(StringHelpers.DATE_FORMAT.helperName(), StringHelpers.DATE_FORMAT);
+    handlebars.registerHelper(StringHelpers.dateFormat.name(), StringHelpers.dateFormat);
     return handlebars;
   }
 
