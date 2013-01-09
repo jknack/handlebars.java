@@ -1,4 +1,4 @@
-package hbs.js;
+package handlebarsjs.spec;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -8,10 +8,11 @@ import java.io.IOException;
 
 import org.junit.Test;
 
+import com.github.jknack.handlebars.AbstractTest;
 import com.github.jknack.handlebars.HandlebarsError;
 import com.github.jknack.handlebars.HandlebarsException;
 
-public class PartialsTest extends HbsJsSpec {
+public class PartialsTest extends AbstractTest {
 
   @Test
   public void basicPartials() throws IOException {

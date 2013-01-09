@@ -17,11 +17,7 @@
  */
 package com.github.jknack.handlebars;
 
-import static com.github.jknack.handlebars.Literals.$;
-
 import java.io.IOException;
-import java.net.URI;
-import java.util.Map;
 
 import org.junit.Test;
 
@@ -31,29 +27,29 @@ import org.junit.Test;
  * @author edgar.espina
  * @since 0.2.1
  */
-public class ParsingErrorTest {
+public class ParsingErrorTest extends AbstractTest {
 
-  Map<String, String> source =
-      $("/inbox/inbox.hbs", "{{value")
-          .$("/block.hbs", "{{#block}}{{/nan}}")
-          .$("/delim.hbs", "{{=<% %>=}} <%Hello")
-          .$("/default.hbs", "{{> missingPartial}}")
-          .$("/partial.hbs", "{{#value}}")
-          .$("/invalidChar.hbs", "\n{{tag message.from \\\"user\\\"}}\n")
-          .$("/root.hbs", "{{> p1}}")
-          .$("/p1.hbs", "{{value")
-          .$("/deep.hbs", "{{> deep1}}")
-          .$("/deep1.hbs", " {{> deep2")
-          .$("/unbalancedDelim.hbs", "{{=<% >=}}")
-          .$("/partialName.hbs", "{{> /user}}")
-          .$("/partialName2.hbs", "{{> /layout/base}}")
-          .$("/paramOrder.hbs", "{{f param hashx=1 param}}")
-          .$("/idx1.hbs", "{{list[0]}}")
-          .$("/idx2.hbs", "{{list.[0}}")
-          .$("/idx3.hbs", "{{list.[]}}")
-          .$("/idx4.hbs", "{{list.[}}")
-          .$("/home.hbs", "{{>stackoverflow}}")
-          .$("/stackoverflow.hbs", "{{>home}}");
+  Hash source =
+      $("/inbox/inbox.hbs", "{{value",
+          "/block.hbs", "{{#block}}{{/nan}}",
+          "/delim.hbs", "{{=<% %>=}} <%Hello",
+          "/default.hbs", "{{> missingPartial}}",
+          "/partial.hbs", "{{#value}}",
+          "/invalidChar.hbs", "\n{{tag message.from \\\"user\\\"}}\n",
+          "/root.hbs", "{{> p1}}",
+          "/p1.hbs", "{{value",
+          "/deep.hbs", "{{> deep1}}",
+          "/deep1.hbs", " {{> deep2",
+          "/unbalancedDelim.hbs", "{{=<% >=}}",
+          "/partialName.hbs", "{{> /user}}",
+          "/partialName2.hbs", "{{> /layout/base}}",
+          "/paramOrder.hbs", "{{f param hashx=1 param}}",
+          "/idx1.hbs", "{{list[0]}}",
+          "/idx2.hbs", "{{list.[0}}",
+          "/idx3.hbs", "{{list.[]}}",
+          "/idx4.hbs", "{{list.[}}",
+          "/home.hbs", "{{>stackoverflow}}",
+          "/stackoverflow.hbs", "{{>home}}");
 
   @Test(expected = HandlebarsException.class)
   public void correctPath() throws IOException {
@@ -137,9 +133,8 @@ public class ParsingErrorTest {
 
   private Object parse(final String uri) throws IOException {
     try {
-      Handlebars handlebars = new Handlebars(new MapTemplateLoader(source));
-      Template compile = handlebars.compile(URI.create(uri));
-      System.out.println(compile);
+      Template compiled = compile((String)source.get("/" + uri + ".hbs"));
+      System.out.println(compiled);
       throw new IllegalStateException("An error is expected");
     } catch (HandlebarsException ex) {
       Handlebars.log(ex.getMessage());

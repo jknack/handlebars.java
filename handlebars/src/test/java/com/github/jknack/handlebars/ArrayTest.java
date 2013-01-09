@@ -13,15 +13,11 @@
  */
 package com.github.jknack.handlebars;
 
-import static org.junit.Assert.assertEquals;
-
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.junit.Test;
 
-public class ArrayTest {
+public class ArrayTest extends AbstractTest {
 
   private static class Letter {
     private char letter;
@@ -38,42 +34,26 @@ public class ArrayTest {
 
   @Test
   public void stringArray() throws IOException {
-    Handlebars handlebars = new Handlebars();
-    Template template =
-        handlebars.compile("Hello {{#list}}{{this}}{{/list}}!");
-    Map<String, Object> context = new HashMap<String, Object>();
-    context.put("list", new String[] {"w", "o", "r", "l", "d" });
-    assertEquals("Hello world!", template.apply(context));
+    Hash hash = $("list", new String[]{"w", "o", "r", "l", "d" });
+    shouldCompileTo("Hello {{#list}}{{this}}{{/list}}!", hash, "Hello world!");
   }
 
   @Test
   public void objectArray() throws IOException {
-    Handlebars handlebars = new Handlebars();
-    Template template =
-        handlebars.compile("Hello {{#list}}{{this}}{{/list}}!");
-    Map<String, Object> context = new HashMap<String, Object>();
-    context.put("list", new Object[] {"w", "o", "r", "l", "d" });
-    assertEquals("Hello world!", template.apply(context));
+    Hash hash = $("list", new Object[]{"w", "o", "r", "l", "d" });
+    shouldCompileTo("Hello {{#list}}{{this}}{{/list}}!", hash, "Hello world!");
   }
 
   @Test
   public void eachArray() throws IOException {
-    Handlebars handlebars = new Handlebars();
-    Template template =
-        handlebars.compile("Hello {{#each list}}{{this}}{{/each}}!");
-    Map<String, Object> context = new HashMap<String, Object>();
-    context.put("list", new Object[] {"w", "o", "r", "l", "d" });
-    assertEquals("Hello world!", template.apply(context));
+    Hash hash = $("list", new Object[]{"w", "o", "r", "l", "d" });
+    shouldCompileTo("Hello {{#each list}}{{this}}{{/each}}!", hash, "Hello world!");
   }
 
   @Test
   public void letterArray() throws IOException {
-    Handlebars handlebars = new Handlebars();
-    Template template =
-        handlebars.compile("Hello {{#list}}{{this}}{{/list}}!");
-    Map<String, Object> context = new HashMap<String, Object>();
-    context.put("list", new Letter[] {new Letter('w'), new Letter('o'),
+    Hash hash = $("list", new Letter[]{new Letter('w'), new Letter('o'),
         new Letter('r'), new Letter('l'), new Letter('d') });
-    assertEquals("Hello world!", template.apply(context));
+    shouldCompileTo("Hello {{#list}}{{this}}{{/list}}!", hash, "Hello world!");
   }
 }

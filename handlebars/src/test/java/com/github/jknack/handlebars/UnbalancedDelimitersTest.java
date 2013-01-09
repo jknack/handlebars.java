@@ -21,13 +21,10 @@ import java.io.IOException;
 
 import org.junit.Test;
 
-import com.github.jknack.handlebars.Handlebars;
-import com.github.jknack.handlebars.HandlebarsException;
-
 public class UnbalancedDelimitersTest {
 
   @Test(expected = HandlebarsException.class)
-  public void defaultFormat() throws IOException {
+  public void unbalancedDelimiters() throws IOException {
       Handlebars handlebars = new Handlebars();
       handlebars.compile("{{=<% >=}}");
   }

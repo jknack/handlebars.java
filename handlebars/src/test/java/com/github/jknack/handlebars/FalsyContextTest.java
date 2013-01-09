@@ -17,50 +17,36 @@
  */
 package com.github.jknack.handlebars;
 
-import static org.junit.Assert.assertEquals;
-
 import java.io.IOException;
 import java.util.Collections;
 
 import org.junit.Test;
 
-import com.github.jknack.handlebars.Handlebars;
-import com.github.jknack.handlebars.Template;
-
-public class FalsyContextTest {
+public class FalsyContextTest extends AbstractTest {
 
   @Test
   public void nullContext() throws IOException {
-    Handlebars handlebars = new Handlebars();
-    Template template = handlebars.compile("Hello {{world}}!");
-    assertEquals("Hello !", template.apply(null));
+    shouldCompileTo("Hello {{world}}!", null, "Hello !");
   }
 
   @Test
   public void emptyContext() throws IOException {
-    Handlebars handlebars = new Handlebars();
-    Template template = handlebars.compile("Hello {{world}}!");
-    assertEquals("Hello !", template.apply(new Object()));
+    shouldCompileTo("Hello {{world}}!", new Object(), "Hello !");
   }
 
   @Test
   public void emptyMapContext() throws IOException {
-    Handlebars handlebars = new Handlebars();
-    Template template = handlebars.compile("Hello {{world}}!");
-    assertEquals("Hello !", template.apply(Collections.emptyMap()));
+    shouldCompileTo("Hello {{world}}!", Collections.emptyMap(), "Hello !");
   }
 
   @Test
   public void emptyList() throws IOException {
-    Handlebars handlebars = new Handlebars();
-    Template template = handlebars.compile("Hello {{world}}!");
-    assertEquals("Hello !", template.apply(Collections.emptyList()));
+    shouldCompileTo("Hello {{world}}!", Collections.emptyList(), "Hello !");
   }
 
   @Test
   public void anyContext() throws IOException {
-    Handlebars handlebars = new Handlebars();
-    Template template = handlebars.compile("Hello {{world}}!");
-    assertEquals("Hello !", template.apply(true));
+    shouldCompileTo("Hello {{world}}!", true, "Hello !");
+    shouldCompileTo("Hello {{world}}!", 13.4, "Hello !");
   }
 }

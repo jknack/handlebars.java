@@ -19,66 +19,58 @@ import java.io.IOException;
 
 import org.junit.Test;
 
-import com.github.jknack.handlebars.Handlebars;
-import com.github.jknack.handlebars.Helper;
-import com.github.jknack.handlebars.Options;
-
-public class ParamHashTest {
+public class ParamHashTest extends AbstractTest {
 
   @Test
   public void truthParam() throws IOException {
-    Handlebars handlebars = new Handlebars();
-    handlebars.registerHelper("helper", new Helper<Object>() {
+    Hash helpers = $("helper", new Helper<Object>() {
       @Override
       public CharSequence apply(final Object context, final Options options)
           throws IOException {
         assertEquals(true, options.param(0));
-        return null;
+        return "ok";
       }
     });
-    handlebars.compile("{{helper . true}}").apply(new Object());
+    shouldCompileTo("{{helper . true}}", new Object(), helpers, "ok");
   }
 
   @Test
   public void falsyParam() throws IOException {
-    Handlebars handlebars = new Handlebars();
-    handlebars.registerHelper("helper", new Helper<Object>() {
+    Hash helpers = $("helper", new Helper<Object>() {
       @Override
       public CharSequence apply(final Object context, final Options options)
           throws IOException {
         assertEquals(false, options.param(0));
-        return null;
+        return "ok";
       }
     });
-    handlebars.compile("{{helper . false}}").apply(new Object());
+    shouldCompileTo("{{helper . false}}", new Object(), helpers, "ok");
   }
 
   @Test
   public void truthHash() throws IOException {
-    Handlebars handlebars = new Handlebars();
-    handlebars.registerHelper("helper", new Helper<Object>() {
+    Hash helpers = $("helper", new Helper<Object>() {
       @Override
       public CharSequence apply(final Object context, final Options options)
           throws IOException {
         assertEquals(true, options.hash("b"));
-        return null;
+        return "ok";
       }
     });
-    handlebars.compile("{{helper . b=true}}").apply(new Object());
+    shouldCompileTo("{{helper . b=true}}", new Object(), helpers, "ok");
   }
 
   @Test
   public void falsyHash() throws IOException {
-    Handlebars handlebars = new Handlebars();
-    handlebars.registerHelper("helper", new Helper<Object>() {
+    Hash helpers = $("helper", new Helper<Object>() {
       @Override
       public CharSequence apply(final Object context, final Options options)
           throws IOException {
         assertEquals(false, options.hash("b"));
-        return null;
+        return "ok";
       }
     });
-    handlebars.compile("{{helper . b=false}}").apply(new Object());
+    shouldCompileTo("{{helper . b=false}}", new Object(), helpers, "ok");
   }
 
 }

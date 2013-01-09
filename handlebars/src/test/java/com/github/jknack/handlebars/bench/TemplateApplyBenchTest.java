@@ -9,14 +9,14 @@ import java.util.Map;
 
 import org.junit.Test;
 
+import com.github.jknack.handlebars.AbstractTest;
 import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Lambda;
-import com.github.jknack.handlebars.Literals;
 import com.github.jknack.handlebars.MapTemplateLoader;
 import com.github.jknack.handlebars.Template;
 import com.github.jknack.handlebars.bench.Bench.Unit;
 
-public class TemplateApplyBenchTest {
+public class TemplateApplyBenchTest extends AbstractTest {
 
   @Test
   public void helloWorld() throws IOException {
@@ -92,11 +92,11 @@ public class TemplateApplyBenchTest {
     final String template = "{{#each names}}{{name}}{{/each}}";
     final Handlebars handlebars = new Handlebars();
     final Map<String, Object> context = new HashMap<String, Object>();
-    List<Map<String, String>> names = new ArrayList<Map<String, String>>();
-    names.add(Literals.$("name", "Moe"));
-    names.add(Literals.$("name", "Larry"));
-    names.add(Literals.$("name", "Curly"));
-    names.add(Literals.$("name", "Shemp"));
+    List<Object> names = new ArrayList<Object>();
+    names.add($("name", "Moe"));
+    names.add($("name", "Larry"));
+    names.add($("name", "Curly"));
+    names.add($("name", "Shemp"));
     context.put("names", names);
 
     final Template t = handlebars.compile(template);
@@ -132,11 +132,10 @@ public class TemplateApplyBenchTest {
         return "Colors";
       }
     });
-    List<Map<String, String>> items = new ArrayList<Map<String, String>>();
-    items.add(Literals.$("name", "red").$("current", "yes").$("url", "#Red"));
-    items
-        .add(Literals.$("name", "green").$("current", "no").$("url", "#Green"));
-    items.add(Literals.$("name", "blue").$("current", "no").$("url", "#Blue"));
+    List<Object> items = new ArrayList<Object>();
+    items.add($("name", "red").$("current", "yes").$("url", "#Red"));
+    items.add($("name", "green").$("current", "no").$("url", "#Green"));
+    items.add($("name", "blue").$("current", "no").$("url", "#Blue"));
     context.put("items", items);
 
     new Bench().run(new Unit() {
@@ -200,10 +199,10 @@ public class TemplateApplyBenchTest {
     final Handlebars handlebars =
         new Handlebars(new MapTemplateLoader(templates));
 
-    List<Map<String, String>> peeps = new ArrayList<Map<String, String>>();
-    peeps.add(Literals.$("name", "Moe").$("count", "15"));
-    peeps.add(Literals.$("name", "Larry").$("count", "5"));
-    peeps.add(Literals.$("name", "Curly").$("count", "1"));
+    List<Object> peeps = new ArrayList<Object>();
+    peeps.add($("name", "Moe").$("count", "15"));
+    peeps.add($("name", "Larry").$("count", "5"));
+    peeps.add($("name", "Curly").$("count", "1"));
     final Map<String, Object> context = new HashMap<String, Object>();
     context.put("peeps", peeps);
 

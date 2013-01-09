@@ -1,4 +1,4 @@
-package hbs.js;
+package com.github.jknack.handlebars;
 
 import static org.junit.Assert.assertEquals;
 
@@ -8,13 +8,7 @@ import java.util.Map.Entry;
 
 import org.yaml.snakeyaml.Yaml;
 
-import com.github.jknack.handlebars.Handlebars;
-import com.github.jknack.handlebars.Helper;
-import com.github.jknack.handlebars.MapTemplateLoader;
-import com.github.jknack.handlebars.Options;
-import com.github.jknack.handlebars.Template;
-
-public class HbsJsSpec {
+public class AbstractTest {
 
   @SuppressWarnings("serial")
   public static class Hash extends LinkedHashMap<String, Object> {
@@ -25,52 +19,61 @@ public class HbsJsSpec {
     }
   }
 
-  public static void shouldCompileTo(final String template, final String data,
+  public void shouldCompileTo(final String template, final String data,
       final String expected) throws IOException {
     shouldCompileTo(template, data, expected, "");
   }
 
-  public static void shouldCompileTo(final String template, final Object data,
+  public void shouldCompileTo(final String template, final Object data,
       final String expected) throws IOException {
     shouldCompileTo(template, data, expected, "");
   }
 
-  public static void shouldCompileTo(final String template, final String context,
+  public void shouldCompileTo(final String template, final String context,
       final String expected, final String message) throws IOException {
-    shouldCompileTo(template, new Yaml().load(context), expected, message);
+    Object deserializedContext = context;
+    if (deserializedContext != null) {
+      deserializedContext = new Yaml().load(context);
+    }
+    shouldCompileTo(template, deserializedContext, expected, message);
   }
 
-  public static void shouldCompileTo(final String template, final Object context,
+  public void shouldCompileTo(final String template, final Object context,
       final String expected, final String message) throws IOException {
     shouldCompileTo(template, context, new Hash(), expected, message);
   }
 
-  public static void shouldCompileTo(final String template, final Object context,
+  public void shouldCompileTo(final String template, final Object context,
       final Hash helpers, final String expected) throws IOException {
     shouldCompileTo(template, context, helpers, expected, "");
   }
 
-  public static void shouldCompileTo(final String template, final String context,
+  public void shouldCompileTo(final String template, final String context,
       final Hash helpers, final String expected) throws IOException {
     shouldCompileTo(template, new Yaml().load(context), helpers, expected, "");
   }
 
-  public static void shouldCompileTo(final String template, final String context,
+  public void shouldCompileTo(final String template, final String context,
       final Hash helpers, final String expected, final String message) throws IOException {
     shouldCompileTo(template, new Yaml().load(context), helpers, expected, message);
   }
 
-  public static void shouldCompileTo(final String template, final Object context,
+  public void shouldCompileTo(final String template, final Object context,
       final Hash helpers, final String expected, final String message) throws IOException {
     shouldCompileTo(template, context, helpers, new Hash(), expected, message);
   }
 
-  public static void shouldCompileToWithPartials(final String template, final Object context,
+  public void shouldCompileToWithPartials(final String template, final Object context,
+      final Hash partials, final String expected) throws IOException {
+    shouldCompileTo(template, context, new Hash(), partials, expected, "");
+  }
+
+  public void shouldCompileToWithPartials(final String template, final Object context,
       final Hash partials, final String expected, final String message) throws IOException {
     shouldCompileTo(template, context, new Hash(), partials, expected, message);
   }
 
-  public static void shouldCompileTo(final String template, final Object context,
+  public void shouldCompileTo(final String template, final Object context,
       final Hash helpers, final Hash partials, final String expected, final String message)
       throws IOException {
     Template t = compile(template, helpers, partials);
@@ -78,32 +81,33 @@ public class HbsJsSpec {
     assertEquals("'" + expected + "' should === '" + result + "': " + message, expected, result);
   }
 
-  public static Template compile(final String template) throws IOException {
+  public Template compile(final String template) throws IOException {
     return compile(template, new Hash());
   }
 
-  public static Template compile(final String template, final Hash helpers)
+  public Template compile(final String template, final Hash helpers)
       throws IOException {
     return compile(template, helpers, new Hash(), false);
   }
 
-  public static Template compile(final String template, final Hash helpers, final boolean stringParams)
+  public Template compile(final String template, final Hash helpers, final boolean stringParams)
       throws IOException {
     return compile(template, helpers, new Hash(), stringParams);
   }
 
-  public static Template compile(final String template, final Hash helpers, final Hash partials)
+  public Template compile(final String template, final Hash helpers, final Hash partials)
       throws IOException {
     return compile(template, helpers, partials, false);
   }
 
-  public static Template compile(final String template, final Hash helpers, final Hash partials, final boolean stringParams)
+  public Template compile(final String template, final Hash helpers, final Hash partials,
+      final boolean stringParams)
       throws IOException {
     MapTemplateLoader loader = new MapTemplateLoader();
     for (Entry<String, Object> entry : partials.entrySet()) {
       loader.define(entry.getKey(), (String) entry.getValue());
     }
-    Handlebars handlebars = new Handlebars(loader);
+    Handlebars handlebars = newHandlebars().with(loader);
     handlebars.setStringParams(stringParams);
 
     for (Entry<String, Object> entry : helpers.entrySet()) {
@@ -125,6 +129,10 @@ public class HbsJsSpec {
     return t;
   }
 
+  protected Handlebars newHandlebars() {
+    return new Handlebars();
+  }
+
   public static final Object $ = new Object();
 
   public static Hash $(final Object... attributes) {
@@ -134,5 +142,4 @@ public class HbsJsSpec {
     }
     return model;
   }
-
 }

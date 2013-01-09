@@ -1,14 +1,15 @@
-package hbs.js;
+package handlebarsjs.spec;
 
 import java.io.IOException;
 
 import org.junit.Test;
 
+import com.github.jknack.handlebars.AbstractTest;
 import com.github.jknack.handlebars.HandlebarsException;
 import com.github.jknack.handlebars.Helper;
 import com.github.jknack.handlebars.Options;
 
-public class StringLiteralParametersTest extends HbsJsSpec {
+public class StringLiteralParametersTest extends AbstractTest {
 
   @Test
   public void simpleLiteralWork() throws IOException {

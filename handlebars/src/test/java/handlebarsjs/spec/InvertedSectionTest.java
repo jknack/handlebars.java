@@ -1,10 +1,12 @@
-package hbs.js;
+package handlebarsjs.spec;
 
 import java.io.IOException;
 
 import org.junit.Test;
 
-public class InvertedSectionTest extends HbsJsSpec {
+import com.github.jknack.handlebars.AbstractTest;
+
+public class InvertedSectionTest extends AbstractTest {
 
   @Test
   public void invertedSectionsWithUnsetValue() throws IOException {

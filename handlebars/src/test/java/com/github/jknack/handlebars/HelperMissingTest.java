@@ -1,12 +1,10 @@
 package com.github.jknack.handlebars;
 
-import static org.junit.Assert.assertEquals;
-
 import java.io.IOException;
 
 import org.junit.Test;
 
-public class HelperMissingTest {
+public class HelperMissingTest extends AbstractTest {
 
   /**
    * Mustache fallback.
@@ -15,8 +13,7 @@ public class HelperMissingTest {
    */
   @Test
   public void helperMissingOk() throws IOException {
-    Handlebars handlebars = new Handlebars();
-    assertEquals("", handlebars.compile("{{missing}}").apply(new Object()));
+    shouldCompileTo("{{missing}}", new Object(), "");
   }
 
   /**
@@ -26,11 +23,7 @@ public class HelperMissingTest {
    */
   @Test
   public void blockHelperMissingOk() throws IOException {
-    Handlebars handlebars = new Handlebars();
-    assertEquals("",
-        handlebars.compile(
-            "{{#missing}}This is a mustache fallback{{/missing}}")
-            .apply(new Object()));
+    shouldCompileTo("{{#missing}}This is a mustache fallback{{/missing}}", new Object(), "");
   }
 
   /**
@@ -40,45 +33,36 @@ public class HelperMissingTest {
    */
   @Test(expected = HandlebarsException.class)
   public void helperMissingFail() throws IOException {
-    Handlebars handlebars = new Handlebars();
-    assertEquals("", handlebars.compile("{{missing x}}").apply(new Object()));
+    shouldCompileTo("{{missing x}}", new Object(), "must fail");
   }
 
   @Test(expected = HandlebarsException.class)
   public void blockHelperMissingFail() throws IOException {
-    Handlebars handlebars = new Handlebars();
-    assertEquals("",
-        handlebars.compile(
-            "{{#missing x}}This is a mustache fallback{{/missing}}")
-            .apply(new Object()));
+    shouldCompileTo("{{#missing x}}This is a mustache fallback{{/missing}}", new Object(),
+        "must fail");
   }
 
   @Test
   public void helperMissingOverride() throws IOException {
-    Handlebars handlebars = new Handlebars();
-    handlebars.registerHelper(Handlebars.HELPER_MISSING, new Helper<Object>() {
+    Hash helpers = $(Handlebars.HELPER_MISSING, new Helper<Object>() {
       @Override
       public CharSequence apply(final Object context, final Options options)
           throws IOException {
         return options.fn.text();
       }
     });
-    assertEquals("{{missing x}}",
-        handlebars.compile("{{missing x}}").apply(new Object()));
+    shouldCompileTo("{{missing x}}", new Object(), helpers, "{{missing x}}");
   }
 
   @Test
   public void blockHelperMissingOverride() throws IOException {
-    Handlebars handlebars = new Handlebars();
-    handlebars.registerHelper(Handlebars.HELPER_MISSING, new Helper<Object>() {
+    Hash helpers = $(Handlebars.HELPER_MISSING, new Helper<Object>() {
       @Override
       public CharSequence apply(final Object context, final Options options)
           throws IOException {
         return options.fn.text();
       }
     });
-    assertEquals("Raw display",
-        handlebars.compile("{{#missing x}}Raw display{{/missing}}")
-            .apply(new Object()));
+    shouldCompileTo("{{#missing x}}Raw display{{/missing}}", new Object(), helpers, "Raw display");
   }
 }

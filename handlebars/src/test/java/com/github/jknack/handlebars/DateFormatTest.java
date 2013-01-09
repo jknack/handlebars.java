@@ -17,8 +17,6 @@
  */
 package com.github.jknack.handlebars;
 
-import static org.junit.Assert.assertEquals;
-
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -26,20 +24,15 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
-import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.github.jknack.handlebars.Handlebars;
-import com.github.jknack.handlebars.StringHelpers;
-import com.github.jknack.handlebars.Template;
+public class DateFormatTest extends AbstractTest {
 
-public class DateFormatTest {
-
-  private static Handlebars handlebars = new Handlebars();
-
-  @BeforeClass
-  public static void setup() {
-    StringHelpers.register(handlebars);
+  @Override
+  protected Handlebars newHandlebars() {
+    Handlebars handlebars = new Handlebars();
+    handlebars.registerHelper(StringHelpers.DATE_FORMAT.helperName(), StringHelpers.DATE_FORMAT);
+    return handlebars;
   }
 
   @Test
@@ -48,8 +41,7 @@ public class DateFormatTest {
     String expected =
         DateFormat.getDateInstance(DateFormat.DEFAULT, Locale.getDefault())
             .format(date);
-    Template template = handlebars.compile("{{dateFormat this}}");
-    assertEquals(expected, template.apply(date));
+    shouldCompileTo("{{dateFormat this}}", date, expected);
   }
 
   @Test
@@ -58,8 +50,7 @@ public class DateFormatTest {
     String expected =
         DateFormat.getDateInstance(DateFormat.FULL, Locale.getDefault())
             .format(date);
-    Template template = handlebars.compile("{{dateFormat this \"full\"}}");
-    assertEquals(expected, template.apply(date));
+    shouldCompileTo("{{dateFormat this \"full\"}}", date, expected);
   }
 
   @Test
@@ -68,8 +59,7 @@ public class DateFormatTest {
     String expected =
         DateFormat.getDateInstance(DateFormat.LONG, Locale.getDefault())
             .format(date);
-    Template template = handlebars.compile("{{dateFormat this \"long\"}}");
-    assertEquals(expected, template.apply(date));
+    shouldCompileTo("{{dateFormat this \"long\"}}", date, expected);
   }
 
   @Test
@@ -78,8 +68,7 @@ public class DateFormatTest {
     String expected =
         DateFormat.getDateInstance(DateFormat.MEDIUM, Locale.getDefault())
             .format(date);
-    Template template = handlebars.compile("{{dateFormat this \"medium\"}}");
-    assertEquals(expected, template.apply(date));
+    shouldCompileTo("{{dateFormat this \"medium\"}}", date, expected);
   }
 
   @Test
@@ -88,8 +77,7 @@ public class DateFormatTest {
     String expected =
         DateFormat.getDateInstance(DateFormat.SHORT, Locale.getDefault())
             .format(date);
-    Template template = handlebars.compile("{{dateFormat this \"short\"}}");
-    assertEquals(expected, template.apply(date));
+    shouldCompileTo("{{dateFormat this \"short\"}}", date, expected);
   }
 
   @Test
@@ -97,9 +85,7 @@ public class DateFormatTest {
     Date date = date(19, 6, 2012);
     String expected =
         new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(date);
-    Template template =
-        handlebars.compile("{{dateFormat this \"dd/MM/yyyy\"}}");
-    assertEquals(expected, template.apply(date));
+    shouldCompileTo("{{dateFormat this \"dd/MM/yyyy\"}}", date, expected);
   }
 
   @Test
@@ -108,9 +94,7 @@ public class DateFormatTest {
     String expected =
         DateFormat.getDateInstance(DateFormat.SHORT, Locale.FRENCH)
             .format(date);
-    Template template =
-        handlebars.compile("{{dateFormat this \"short\" \"fr\"}}");
-    assertEquals(expected, template.apply(date));
+    shouldCompileTo("{{dateFormat this \"short\" \"fr\"}}", date, expected);
   }
 
   public static Date date(final int day, final int month, final int year) {

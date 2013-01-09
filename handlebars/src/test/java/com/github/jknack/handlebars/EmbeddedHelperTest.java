@@ -17,19 +17,11 @@
  */
 package com.github.jknack.handlebars;
 
-import static org.junit.Assert.assertEquals;
-
 import java.io.IOException;
-import java.io.Reader;
-import java.io.StringReader;
 
 import org.junit.Test;
 
-import com.github.jknack.handlebars.Handlebars;
-import com.github.jknack.handlebars.Template;
-import com.github.jknack.handlebars.TemplateLoader;
-
-public class EmbeddedHelperTest {
+public class EmbeddedHelperTest extends AbstractTest {
 
   @Test
   public void embedded() throws IOException {
@@ -50,8 +42,11 @@ public class EmbeddedHelperTest {
     input += "...\n";
     input += "</html>";
 
-    Template template = new Handlebars(new StringTemplateLoader()).compile(input);
-    assertEquals(expected, template.apply(null));
+    Hash partials = $("user", "<tr>\n" +
+        "  <td>{{firstName}}</td>\n" +
+        "  <td>{{lastName}}</td>\n" +
+        "</tr>");
+    shouldCompileToWithPartials(input, $, partials, expected);
   }
 
   @Test
@@ -73,21 +68,12 @@ public class EmbeddedHelperTest {
     input += "...\n";
     input += "</html>";
 
-    Template template = new Handlebars(new StringTemplateLoader()).compile(input);
-    assertEquals(expected, template.apply(null));
+    Hash partials = $("user", "<tr>\n" +
+        "  <td>{{firstName}}</td>\n" +
+        "  <td>{{lastName}}</td>\n" +
+        "</tr>");
+    shouldCompileToWithPartials(input, $, partials, expected);
+
   }
 
-  static class StringTemplateLoader extends TemplateLoader {
-    protected Reader read(String location) throws IOException {
-      System.out.println(location);
-      if (location.equals("/user.hbs")) {
-        return new StringReader(
-          "<tr>\n" +
-          "  <td>{{firstName}}</td>\n" +
-          "  <td>{{lastName}}</td>\n" +
-          "</tr>");
-       }
-       return null;
-    }
-  }
 }

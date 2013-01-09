@@ -20,8 +20,6 @@ package com.github.jknack.handlebars;
 import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
-import java.io.Reader;
-import java.io.StringReader;
 
 import org.junit.Test;
 
@@ -31,92 +29,70 @@ import org.junit.Test;
  * @author edgar.espina
  * @since 0.1.0
  */
-public class RawTextTest {
+public class RawTextTest extends AbstractTest {
 
   @Test
   public void plainText() throws IOException {
-    Handlebars handlebars = new Handlebars();
-    Template template = handlebars.compile("Plain Text!");
-    assertEquals("Plain Text!", template.text());
+    assertEquals("Plain Text!", compile("Plain Text!").text());
   }
 
   @Test
   public void var() throws IOException {
-    Handlebars handlebars = new Handlebars();
-    Template template = handlebars.compile("hello {{var}}!");
-    assertEquals("hello {{var}}!", template.text());
+    assertEquals("hello {{var}}!", compile("hello {{var}}!").text());
   }
 
   @Test
   public void varAmp() throws IOException {
-    Handlebars handlebars = new Handlebars();
-    Template template = handlebars.compile("hello {{& var}}!");
-    assertEquals("hello {{&var}}!", template.text());
+    assertEquals("hello {{&var}}!", compile("hello {{& var}}!").text());
   }
 
   @Test
   public void var3() throws IOException {
-    Handlebars handlebars = new Handlebars();
-    Template template = handlebars.compile("hello {{{ var }}}!");
-    assertEquals("hello {{{var}}}!", template.text());
+    assertEquals("hello {{{var}}}!", compile("hello {{{ var }}}!").text());
   }
 
   @Test
   public void emptySection() throws IOException {
-    Handlebars handlebars = new Handlebars();
-    Template template = handlebars.compile("hello {{#section}} {{/section}}!");
-    assertEquals("hello {{#section}} {{/section}}!", template.text());
+    assertEquals("hello {{#section}} {{/section}}!", compile("hello {{#section}} {{/section}}!")
+        .text());
   }
 
   @Test
   public void section() throws IOException {
-    Handlebars handlebars = new Handlebars();
-    Template template =
-        handlebars.compile("hello {{#section}} hello {{var}}! {{/section}}!");
-    assertEquals("hello {{#section}} hello {{var}}! {{/section}}!",
-        template.text());
+    assertEquals("hello {{#section}} hello {{/section}}!",
+        compile("hello {{#section}} hello {{/section}}!").text());
   }
 
   @Test
   public void invertedEmptySection() throws IOException {
-    Handlebars handlebars = new Handlebars();
-    Template template = handlebars.compile("hello {{^section}} {{/section}}!");
-    assertEquals("hello {{^section}} {{/section}}!", template.text());
+    assertEquals("hello {{^section}} {{/section}}!", compile("hello {{^section}} {{/section}}!")
+        .text());
   }
 
   @Test
   public void invertedSection() throws IOException {
-    Handlebars handlebars = new Handlebars();
-    Template template =
-        handlebars.compile("hello {{^section}} hello {{var}}! {{/section}}!");
     assertEquals("hello {{^section}} hello {{var}}! {{/section}}!",
-        template.text());
+        compile("hello {{^section}} hello {{var}}! {{/section}}!")
+            .text());
   }
 
   @Test
   public void partial() throws IOException {
-    Handlebars handlebars = new Handlebars(new TemplateLoader() {
-      @Override
-      protected Reader read(final String location) throws IOException {
-        return new StringReader("user.hbs");
-      }
-    });
-    Template template = handlebars.compile("hello {{> user }}!");
-    assertEquals("hello {{>user}}!", template.text());
+    assertEquals("hello {{>user}}!", compile("hello {{>user}}!", $(), $("user", "{{user}}"))
+        .text());
   }
 
   @Test
   public void helper() throws IOException {
-    Handlebars handlebars = new Handlebars();
-    Template template = handlebars.compile("hello {{with context arg0 hash=hash0}}!");
-    assertEquals("hello {{with context arg0 hash=hash0}}!", template.text());
+    assertEquals("hello {{with context arg0 hash=hash0}}!",
+        compile("hello {{with context arg0 hash=hash0}}!")
+            .text());
   }
 
   @Test
   public void blockHelper() throws IOException {
-    Handlebars handlebars = new Handlebars();
-    Template template =
-        handlebars.compile("hello {{#with context arg0 hash=hash}}hah{{/with}}!");
-    assertEquals("hello {{#with context arg0 hash=hash}}hah{{/with}}!", template.text());
+    assertEquals("hello {{#with context arg0 hash=hash0}}hah{{/with}}!",
+        compile("hello {{#with context arg0 hash=hash0}}hah{{/with}}!")
+            .text());
   }
 }

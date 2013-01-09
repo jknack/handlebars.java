@@ -1,10 +1,12 @@
-package hbs.js;
+package handlebarsjs.spec;
 
 import java.io.IOException;
 
 import org.junit.Test;
 
-public class HelperHashTest extends HbsJsSpec {
+import com.github.jknack.handlebars.AbstractTest;
+
+public class HelperHashTest extends AbstractTest {
 
   @Test
   public void providingHelperHash() throws IOException {

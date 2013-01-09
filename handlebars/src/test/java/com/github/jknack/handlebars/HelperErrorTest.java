@@ -17,11 +17,7 @@
  */
 package com.github.jknack.handlebars;
 
-import static com.github.jknack.handlebars.Literals.$;
-
 import java.io.IOException;
-import java.net.URI;
-import java.util.Map;
 
 import org.junit.Test;
 
@@ -31,14 +27,15 @@ import org.junit.Test;
  * @author edgar.espina
  * @since 0.2.1
  */
-public class HelperErrorTest {
+public class HelperErrorTest extends AbstractTest {
 
-  Map<String, String> source =
-      $("/helper.hbs", "\n{{#block}} {{/block}}")
-          .$("/embedded.hbs", "\n{{#embedded}} {{/embedded}}")
-          .$("/basic.hbs", "\n{{basic}}")
-          .$("/notfoundblock.hbs", "\n{{#notfound hash=x}}{{/notfound}}")
-          .$("/notfound.hbs", "\n{{notfound hash=x}}");
+  Hash source = $(
+      "helper", "\n{{#block}} {{/block}}",
+      "embedded", "\n{{#embedded}} {{/embedded}}",
+      "basic", "\n{{basic}}",
+      "notfoundblock", "\n{{#notfound hash=x}}{{/notfound}}",
+      "notfound", "\n{{notfound hash=x}}"
+      );
 
   @Test(expected = HandlebarsException.class)
   public void block() throws IOException {
@@ -67,16 +64,14 @@ public class HelperErrorTest {
 
   private Object parse(final String uri) throws IOException {
     try {
-      Handlebars handlebars = new Handlebars(new MapTemplateLoader(source));
-      handlebars.registerHelper("basic", new Helper<Object>() {
+      Hash helpers = $("basic", new Helper<Object>() {
         @Override
         public CharSequence apply(final Object context, final Options options)
             throws IOException {
           throw new IllegalArgumentException("missing parameter: '0'.");
         }
       });
-      Template compile = handlebars.compile(URI.create(uri));
-      compile.apply(null);
+      shouldCompileTo((String) source.get(uri), $, helpers, "must fail");
       throw new IllegalStateException("An error is expected");
     } catch (HandlebarsException ex) {
       Handlebars.log(ex.getMessage());

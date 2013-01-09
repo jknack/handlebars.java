@@ -17,7 +17,6 @@
  */
 package com.github.jknack.handlebars;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
@@ -26,8 +25,7 @@ import java.util.Map;
 
 import org.junit.Test;
 
-
-public class EachKeyTest {
+public class EachKeyTest extends AbstractTest {
 
   public static class Blog {
 
@@ -48,42 +46,33 @@ public class EachKeyTest {
       return body;
     }
   }
+
   @Test
   public void eachKeyWithString() throws IOException {
-    Handlebars handlebars = new Handlebars();
-
-    Template template = handlebars.compile("{{#each this}}{{@key}} {{/each}}");
-    assertEquals("empty bytes ", template.apply("String"));
+    shouldCompileTo("{{#each this}}{{@key}} {{/each}}", "String", "empty bytes ");
   }
 
   @Test
   public void eachKeyWithInt() throws IOException {
-    Handlebars handlebars = new Handlebars();
-
-    Template template = handlebars.compile("{{#each this}}{{@key}} {{/each}}");
-    assertEquals("", template.apply(7));
+    shouldCompileTo("{{#each this}}{{@key}} {{/each}}", 7, "");
   }
 
   @Test
   public void eachKeyWithJavaBean() throws IOException {
-    Handlebars handlebars = new Handlebars();
-
-    Template template = handlebars.compile("{{#each this}}{{@key}}: {{this}} {{/each}}");
     Blog blog = new Blog("Handlebars.java", "...");
+    String result = compile("{{#each this}}{{@key}}: {{this}} {{/each}}").apply(blog);
+
     String expected1 = "body: ... title: Handlebars.java ";
     String expected2 = "title: Handlebars.java body: ... ";
-    String result = template.apply(blog);
     assertTrue(result.equals(expected1) || result.equals(expected2));
   }
 
   @Test
   public void eachKeyWithHash() throws IOException {
-    Handlebars handlebars = new Handlebars();
-
-    Template template = handlebars.compile("{{#each this}}{{@key}}: {{this}} {{/each}}");
     Map<String, Object> hash = new LinkedHashMap<String, Object>();
     hash.put("body", "...");
     hash.put("title", "Handlebars.java");
-    assertEquals("body: ... title: Handlebars.java ", template.apply(hash));
+    shouldCompileTo("{{#each this}}{{@key}}: {{this}} {{/each}}", hash,
+        "body: ... title: Handlebars.java ");
   }
 }

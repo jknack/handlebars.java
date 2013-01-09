@@ -25,10 +25,6 @@ import java.util.Map;
 
 import org.junit.Test;
 
-import com.github.jknack.handlebars.Handlebars;
-import com.github.jknack.handlebars.HandlebarsException;
-import com.github.jknack.handlebars.Template;
-
 public class PropertyAccessTest {
 
   @Test
@@ -72,7 +68,7 @@ public class PropertyAccessTest {
     context.put("list", new ArrayList<String>(Arrays.asList("s1", "s2")));
     try {
       assertEquals("s2", template.apply(context));
-      fail("An " + ArrayIndexOutOfBoundsException.class.getName()
+      fail("An " + IndexOutOfBoundsException.class.getName()
           + " is expected.");
     } catch (HandlebarsException ex) {
       assertTrue(ex.getCause() instanceof IndexOutOfBoundsException);

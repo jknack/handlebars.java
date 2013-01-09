@@ -19,20 +19,19 @@ package com.github.jknack.handlebars;
 
 import static org.junit.Assert.assertEquals;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.util.Arrays;
 import java.util.Collection;
 
+import org.apache.commons.io.FileUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
-import com.github.jknack.handlebars.Handlebars;
-import com.github.jknack.handlebars.HandlebarsException;
-import com.github.jknack.handlebars.Template;
 import com.github.jknack.handlebars.io.ClassPathTemplateLoader;
 
 @RunWith(Parameterized.class)
@@ -53,9 +52,8 @@ public class InheritanceTest {
 
       Template template = handlebars.compile(URI.create(name));
       CharSequence result = template.apply(new Object());
-      String expected =
-          toString(getClass().getResourceAsStream(
-              "/inheritance/" + name + ".expected"));
+      String expected = FileUtils.readFileToString(new File("src/test/resources/inheritance/"
+          + name + ".expected"));
       assertEquals(expected, result);
     } catch (HandlebarsException ex) {
       Handlebars.error(ex.getMessage());
@@ -66,8 +64,8 @@ public class InheritanceTest {
   @Parameters
   public static Collection<Object[]> data() {
     Collection<Object[]> data =
-        Arrays.asList(new Object[] {"home" }, new Object[] {"about" },
-            new Object[] {"base" });
+        Arrays.asList(new Object[]{"home" }, new Object[]{"about" },
+            new Object[]{"base" });
     return data;
   }
 

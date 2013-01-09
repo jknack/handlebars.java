@@ -13,36 +13,61 @@
  */
 package com.github.jknack.handlebars;
 
-import static org.junit.Assert.assertEquals;
+import static java.util.Arrays.asList;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Collections;
 
 import org.junit.Test;
 
-import com.github.jknack.handlebars.Handlebars;
-import com.github.jknack.handlebars.Template;
-
-public class IfBlockTest {
+public class IfBlockTest extends AbstractTest {
 
   @Test
-  public void ifElse() throws IOException {
-    Handlebars handlebars = new Handlebars();
-    Template template =
-        handlebars.compile("{{#if value}}true{{else}}false{{/if}}");
-    Map<String, Object> context = new HashMap<String, Object>();
-    context.put("value", "");
-    assertEquals("false", template.apply(context));
+  public void truthy() throws IOException {
+    // string
+    shouldCompileTo("{{#if value}}true{{else}}false{{/if}}", $("value", "x"), "true");
+    shouldCompileTo("{{#value}}true{{^}}false{{/value}}", $("value", "x"), "true");
+    shouldCompileTo("{{^value}}false{{/value}}", $("value", "x"), "");
+
+    // object value
+    shouldCompileTo("{{#if value}}true{{else}}false{{/if}}", $("value", $), "true");
+    shouldCompileTo("{{#value}}true{{^}}false{{/value}}", $("value", $), "true");
+    shouldCompileTo("{{^value}}false{{/value}}", $("value", $), "");
+
+    // true
+    shouldCompileTo("{{#if value}}true{{else}}false{{/if}}", $("value", true), "true");
+    shouldCompileTo("{{#value}}true{{^}}false{{/value}}", $("value", true), "true");
+    shouldCompileTo("{{^value}}false{{/value}}", $("value", true), "");
+
+    // empty list
+    shouldCompileTo("{{#if value}}true{{else}}false{{/if}}", $("value", asList("0")), "true");
+    shouldCompileTo("{{#value}}true{{^}}false{{/value}}", $("value", asList("0")), "true");
+    shouldCompileTo("{{^value}}false{{/value}}", $("value", asList(0)), "");
   }
 
   @Test
-  public void ifAlternativeElse() throws IOException {
-    Handlebars handlebars = new Handlebars();
-    Template template =
-        handlebars.compile("{{#if value}}true{{^}}false{{/if}}");
-    Map<String, Object> context = new HashMap<String, Object>();
-    context.put("value", "");
-    assertEquals("false", template.apply(context));
+  public void falsy() throws IOException {
+    // empty string
+    shouldCompileTo("{{#if value}}true{{else}}false{{/if}}", $("value", ""), "false");
+    shouldCompileTo("{{#value}}true{{^}}false{{/value}}", $("value", ""), "false");
+    shouldCompileTo("{{^value}}false{{/value}}", $("value", ""), "false");
+
+    // null value
+    shouldCompileTo("{{#if value}}true{{else}}false{{/if}}", $("value", null), "false");
+    shouldCompileTo("{{#value}}true{{^}}false{{/value}}", $("value", null), "false");
+    shouldCompileTo("{{^value}}false{{/value}}", $("value", null), "false");
+
+    // false
+    shouldCompileTo("{{#if value}}true{{else}}false{{/if}}", $("value", false), "false");
+    shouldCompileTo("{{#value}}true{{^}}false{{/value}}", $("value", false), "false");
+    shouldCompileTo("{{^value}}false{{/value}}", $("value", false), "false");
+
+    // empty list
+    shouldCompileTo("{{#if value}}true{{else}}false{{/if}}", $("value", Collections.emptyList()),
+        "false");
+    shouldCompileTo("{{#value}}true{{^}}false{{/value}}", $("value", Collections.emptyList()),
+        "false");
+    shouldCompileTo("{{^value}}false{{/value}}", $("value", Collections.emptyList()), "false");
   }
+
 }
