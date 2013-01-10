@@ -48,20 +48,40 @@ import com.github.jknack.handlebars.io.ClassPathTemplateLoader;
  * Handlebars provides the power necessary to let you build semantic templates effectively with no
  * frustration.
  * </p>
+ * <h2>
+ * Getting Started:</h2>
+ *
+ * <pre>
+ * Handlebars handlebars = new Handlebars();
+ * Template template = handlebars.compile("Hello {{this}}!");
+ * System.out.println(template.apply("Handlebars.java"));
+ * </pre>
+ *
+ * <h2>Loading templates</h2> Templates are loaded using the ```TemplateLoader``` class.
+ * Handlebars.java provides three implementations of a ```TemplateLodaer```:
+ * <ul>
+ * <li>ClassPathTemplateLoader (default)</li>
+ * <li>FileTemplateLoader</li>
+ * <li>SpringTemplateLoader (available at the handlebars-springmvc module)</li>
+ * </ul>
+ *
  * <p>
- * Usage:
+ * This example load <code>mytemplate.hbs</code> from the root of the classpath:
  * </p>
  *
  * <pre>
  * Handlebars handlebars = new Handlebars();
  *
- * Template template = handlebars.compile(&quot;Hello {{name}}!&quot;);
+ * Template template = handlebars.compile(URI.create("mytemplate"));
  *
- * Person person = new Person(&quot;John&quot;, &quot;Doe&quot;);
+ * System.out.println(template.apply("Handlebars.java"));
+ * </pre>
  *
- * String output = template.apply(person);
+ * <p>You can specicy a different ```TemplateLoader``` by:</p>
  *
- * assertEquals(&quot;Hello John!&quot;, output);
+ * <pre>
+ * TemplateLoader loader = ...;
+ * Handlebars handlebars = new Handlebars(loader);
  * </pre>
  *
  * @author edgar.espina
@@ -438,11 +458,13 @@ public class Handlebars {
    * @return This handlebars.
    */
   @SuppressWarnings("unchecked")
-  public <H> Handlebars registerHelper(final String name,
-      final Helper<H> helper) {
+  public <H> Handlebars registerHelper(final String name, final Helper<H> helper) {
     notEmpty(name, "A helper's name is required.");
     notNull(helper, "A helper is required.");
-    helpers.put(name, (Helper<Object>) helper);
+    Helper<Object> oldHelper = helpers.put(name, (Helper<Object>) helper);
+    if (oldHelper != null) {
+      warn("Helper '%s': %s has been replaced by %s", name, oldHelper, helper);
+    }
     return this;
   }
 

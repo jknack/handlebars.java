@@ -23,8 +23,37 @@ import java.io.Reader;
 import java.net.URI;
 
 /**
- * Locate resource in a resource repository like: classpath, filesystem,
- * network, web context.
+ * <p>
+ * Strategy interface for loading resources (i.e class path or file system resources)
+ * </p>
+ * <h3>Templates prefix and suffix</h3>
+ * <p>
+ * A <code>TemplateLoader</code> provides two important properties:
+ * </p>
+ * <ul>
+ * <li>prefix: useful for setting a default prefix where templates are stored.</li>
+ * <li>suffix: useful for setting a default suffix or file extension for your templates. Default is:
+ * <code>'.hbs'</code></li>
+ * </ul>
+ * <p>
+ * Usage:
+ * </p>
+ *
+ * <pre>
+ * TemplateLoader loader = new ClassPathTemplateLoader();
+ * loader.setPrefix("/templates");
+ * loader.setSuffix(".html");
+ * Handlebars handlebars = new Handlebars(loader);
+ *
+ * Template template = handlebars.compile(URI.create("mytemplate"));
+ *
+ * System.out.println(template.apply("Handlebars.java"));
+ * </pre>
+ *
+ * <p>
+ * The template loader resolve <code>mytemplate</code> to <code>/templates/mytemplate.html</code>
+ * and load it.
+ * </p>
  *
  * @author edgar.espina
  * @since 0.1.0
