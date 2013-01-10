@@ -19,7 +19,9 @@ import static org.apache.commons.lang3.Validate.notNull;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -66,8 +68,12 @@ public class HandlebarsViewResolver extends AbstractTemplateViewResolver
   /**
    * The helper registry.
    */
-  private final Map<String, Helper<?>> helpers =
-      new HashMap<String, Helper<?>>();
+  private Map<String, Helper<?>> helpers = new HashMap<String, Helper<?>>();
+
+  /**
+   * The helper source list.
+   */
+  private List<Object> helperSources = new ArrayList<Object>();
 
   /**
    * Creates a new {@link HandlebarsViewResolver}.
@@ -146,8 +152,19 @@ public class HandlebarsViewResolver extends AbstractTemplateViewResolver
     for (Entry<String, Helper<?>> entry : helpers.entrySet()) {
       handlebars.registerHelper(entry.getKey(), entry.getValue());
     }
+    // copy helper sources
+    for (Object helperSource : helperSources) {
+      if (helperSource instanceof Class) {
+        handlebars.registerHelpers((Class<?>) helperSource);
+      } else {
+        handlebars.registerHelpers(helperSource);
+      }
+    }
     // clear the local helpers
     helpers.clear();
+    helpers = null;
+    helperSources.clear();
+    helperSources = null;
 
     // Add a message source helper
     handlebars.registerHelper("message", new MessageSourceHelper(
@@ -155,8 +172,7 @@ public class HandlebarsViewResolver extends AbstractTemplateViewResolver
   }
 
   /**
-   * Creates a new {@link Handlebars} object using the
-   * {@link SpringTemplateLoader}.
+   * Creates a new {@link Handlebars} object using the {@link SpringTemplateLoader}.
    *
    * @param templateLoader A template loader.
    * @return A new handlebar's object.
@@ -227,12 +243,68 @@ public class HandlebarsViewResolver extends AbstractTemplateViewResolver
   }
 
   /**
-   * Set the helper registry.
+   * <p>
+   * Register all the helper methods for the given helper source.
+   * </p>
+   * <p>
+   * A helper method looks like:
+   * </p>
    *
-   * @param helpers The helper's registry. Required.
+   * <pre>
+   * public static? CharSequence methodName(context?, parameter*, options?) {
+   * }
+   * </pre>
+   *
+   * Where:
+   * <ul>
+   * <li>A method can/can't be static</li>
+   * <li>The method's name became the helper's name</li>
+   * <li>Context, parameters and options are all optionals</li>
+   * <li>If context and options are present they must be the first and last arguments
+   * of the method</li>
+   * </ul>
+   *
+   * Instance and static mehtods will be registered as helpers.
+   *
+   * @param helperSource The helper source. Required.
+   * @return This handlebars object.
    */
-  public void setHelpers(final Map<String, Helper<?>> helpers) {
-    this.helpers.clear();
-    this.helpers.putAll(helpers);
+  public HandlebarsViewResolver registerHelpers(final Object helperSource) {
+    notNull(helperSource, "The helper source is required.");
+    helperSources.add(helperSource);
+    return this;
+  }
+
+  /**
+   * <p>
+   * Register all the helper methods for the given helper source.
+   * </p>
+   * <p>
+   * A helper method looks like:
+   * </p>
+   *
+   * <pre>
+   * public static? CharSequence methodName(context?, parameter*, options?) {
+   * }
+   * </pre>
+   *
+   * Where:
+   * <ul>
+   * <li>A method can/can't be static</li>
+   * <li>The method's name became the helper's name</li>
+   * <li>Context, parameters and options are all optionals</li>
+   * <li>If context and options are present they must be the first and last arguments
+   * of the method</li>
+   * </ul>
+   *
+   * Only static mehtods will be registered as helpers.
+   *
+   * @param helperSource The helper source. Required.
+   * @return This handlebars object.
+   */
+  public HandlebarsViewResolver registerHelpers(final Class<?> helperSource) {
+    notNull(helperSource, "The helper source is required.");
+    helperSources.add(helperSource);
+    return this;
   }
 }

@@ -300,6 +300,10 @@ context: A template name. Required.
 
 ### Registering Helpers
 
+There are two ways of registering helpers.
+
+#### Using the ```Helper``` interface
+ 
 ```java
 handlebars.registerHelper("blog", new Helper<Blog>() {
   public CharSequence apply(Blog blog, Options options) {
@@ -319,6 +323,53 @@ handlebars.registerHelper("blog-list", new Helper<List<Blog>>() {
   }
 });
 ```
+
+#### Using a ```HelperSource```
+A helper source is any class with public methods returning an instance of a ```CharSequence```.
+
+```java
+  public static? CharSequence methodName(context?, parameter*, options?) {
+  }
+```
+
+Where: 
+
+* A method can/can't be static
+* The method's name became the helper's name
+* Context, parameters and options are all optionals
+* If context and options are present they must be the **first** and **last** arguments of the method
+
+All these are valid definitions of helper methods:
+
+```java
+public class HelperSource {
+  public String blog(Blog blog, Options options) {
+    return options.fn(blog);
+  }
+
+  public static String now() {
+    return new Date().toString();
+  }
+
+  public String render(Blog context, String param0, int param1, boolean param2, Options options) {
+    return ...
+  }
+}
+
+...
+
+handlebars.registerHelpers(new HelperSource());
+
+```
+
+Or, if you prefer static methods only:
+
+
+```java
+handlebars.registerHelpers(HelperSource.class);
+
+```
+
 
 ### Helper Options
 

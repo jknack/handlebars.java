@@ -182,7 +182,7 @@ public abstract class Options {
   @SuppressWarnings("unchecked")
   public final <T> T param(final int index, final T defaultValue) {
     T value = null;
-    if (index < params.length) {
+    if (index >= 0 && index < params.length) {
       value = (T) params[index];
     }
     return value == null ? defaultValue : value;

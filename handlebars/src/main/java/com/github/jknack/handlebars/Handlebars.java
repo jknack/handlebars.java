@@ -13,16 +13,21 @@
  */
 package com.github.jknack.handlebars;
 
+import static org.apache.commons.lang3.Validate.isTrue;
 import static org.apache.commons.lang3.Validate.notEmpty;
 import static org.apache.commons.lang3.Validate.notNull;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import java.io.IOException;
 import java.lang.reflect.Array;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.net.URI;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import org.slf4j.Logger;
 
@@ -30,6 +35,7 @@ import com.github.jknack.handlebars.helper.BlockHelper;
 import com.github.jknack.handlebars.helper.EachHelper;
 import com.github.jknack.handlebars.helper.EmbeddedHelper;
 import com.github.jknack.handlebars.helper.IfHelper;
+import com.github.jknack.handlebars.helper.MethodHelper;
 import com.github.jknack.handlebars.helper.PartialHelper;
 import com.github.jknack.handlebars.helper.PrecompileHelper;
 import com.github.jknack.handlebars.helper.UnlessHelper;
@@ -438,6 +444,101 @@ public class Handlebars {
     notNull(helper, "A helper is required.");
     helpers.put(name, (Helper<Object>) helper);
     return this;
+  }
+
+  /**
+   * <p>
+   * Register all the helper methods for the given helper source.
+   * </p>
+   * <p>
+   * A helper method looks like:
+   * </p>
+   *
+   * <pre>
+   * public static? CharSequence methodName(context?, parameter*, options?) {
+   * }
+   * </pre>
+   *
+   * Where:
+   * <ul>
+   * <li>A method can/can't be static</li>
+   * <li>The method's name became the helper's name</li>
+   * <li>Context, parameters and options are all optionals</li>
+   * <li>If context and options are present they must be the first and last arguments of
+   * the method</li>
+   * </ul>
+   *
+   * Instance and static mehtods will be registered as helpers.
+   *
+   * @param helperSource The helper source. Required.
+   * @return This handlebars object.
+   */
+  public Handlebars registerHelpers(final Object helperSource) {
+    notNull(helperSource, "The helper source is required.");
+    registerDynamicHelper(helperSource, helperSource.getClass());
+    return this;
+  }
+
+  /**
+   * <p>
+   * Register all the helper methods for the given helper source.
+   * </p>
+   * <p>
+   * A helper method looks like:
+   * </p>
+   *
+   * <pre>
+   * public static? CharSequence methodName(context?, parameter*, options?) {
+   * }
+   * </pre>
+   *
+   * Where:
+   * <ul>
+   * <li>A method can/can't be static</li>
+   * <li>The method's name became the helper's name</li>
+   * <li>Context, parameters and options are all optionals</li>
+   * <li>If context and options are present they must be the first and last arguments of
+   * the method</li>
+   * </ul>
+   *
+   * Only static mehtods will be registered as helpers.
+   *
+   * @param helperSource The helper source. Required.
+   * @return This handlebars object.
+   */
+  public Handlebars registerHelpers(final Class<?> helperSource) {
+    notNull(helperSource, "The helper source is required.");
+    registerDynamicHelper(null, helperSource);
+    return this;
+  }
+
+  /**
+   * <p>
+   * Register all the helper methods for the given helper source.
+   * </p>
+   *
+   * @param source The helper source.
+   * @param clazz The helper source class.
+   */
+  private void registerDynamicHelper(final Object source, final Class<?> clazz) {
+    int size = helpers.size();
+    if (clazz != Object.class) {
+      Set<String> overloaded = new HashSet<String>();
+      // Keep backing up the inheritance hierarchy.
+      Method[] methods = clazz.getDeclaredMethods();
+      for (Method method : methods) {
+        boolean isPublic = Modifier.isPublic(method.getModifiers());
+        String helperName = method.getName();
+        if (isPublic && CharSequence.class.isAssignableFrom(method.getReturnType())) {
+          boolean isStatic = Modifier.isStatic(method.getModifiers());
+          if (source != null || isStatic) {
+            isTrue(overloaded.add(helperName), "name conflict found: " + helperName);
+            registerHelper(helperName, new MethodHelper(method, source));
+          }
+        }
+      }
+    }
+    isTrue(size != helpers.size(), "No helper method was found in: " + clazz.getName());
   }
 
   /**
