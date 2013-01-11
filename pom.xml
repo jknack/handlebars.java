@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.github.jknack</groupId>
@@ -262,18 +263,6 @@
         </executions>
       </plugin>
 
-      <!-- Release plugin -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-release-plugin</artifactId>
-        <version>2.3.2</version>
-        <configuration>
-          <mavenExecutorId>forked-path</mavenExecutorId>
-          <useReleaseProfile>false</useReleaseProfile>
-          <arguments>-Psonatype-oss-release</arguments>
-        </configuration>
-      </plugin>
-
     </plugins>
   </build>
 
@@ -301,6 +290,36 @@
       <id>sonatype-oss-release</id>
       <build>
         <plugins>
+          <!-- This is a workaround to get submodules working with the maven release plugin -->
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>exec-maven-plugin</artifactId>
+            <version>1.2.1</version>
+            <executions>
+              <execution>
+                <phase>initialize</phase>
+                <id>invoke build</id>
+                <goals>
+                  <goal>exec</goal>
+                </goals>
+              </execution>
+            </executions>
+            <configuration>
+              <executable>git</executable>
+              <arguments>
+                <argument>submodule</argument>
+                <argument>update</argument>
+                <argument>--init</argument>
+                <argument>--recursive</argument>
+              </arguments>
+              <successCodes>
+                <successCode>0</successCode>
+                <!-- git submodule fails in child projects, just ignore the error and continue -->
+                <successCode>1</successCode>
+              </successCodes>
+            </configuration>
+          </plugin>
+
           <!-- Source -->
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
@@ -345,6 +364,21 @@
                 </goals>
               </execution>
             </executions>
+          </plugin>
+
+          <!-- Release plugin -->
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-release-plugin</artifactId>
+            <version>2.3.2</version>
+            <configuration>
+              <mavenExecutorId>forked-path</mavenExecutorId>
+              <useReleaseProfile>false</useReleaseProfile>
+              <arguments>-Psonatype-oss-release</arguments>
+              <autoVersionSubmodules>true</autoVersionSubmodules>
+              <tagNameFormat>v@{project.version}</tagNameFormat>
+              <scmCommentPrefix>release</scmCommentPrefix>
+            </configuration>
           </plugin>
         </plugins>
       </build>
