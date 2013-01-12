@@ -70,7 +70,7 @@
         <executions>
           <execution>
             <id>l4j-clui</id>
-            <phase>package</phase>
+            <phase>none</phase>
             <goals>
               <goal>launch4j</goal>
             </goals>
