@@ -683,6 +683,7 @@ public class Parser extends BaseParser<Object> {
         reset(params),
         reset(hash),
         paramOrHashList(params, hash),
+        spacing(),
         endDelimiter(),
         new Action<Object>() {
           @Override
