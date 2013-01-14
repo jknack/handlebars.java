@@ -21,6 +21,8 @@ import java.io.IOException;
 
 import org.junit.Test;
 
+import com.github.jknack.handlebars.internal.AbstractOptions;
+
 /**
  * Demostrate error reporting. It isn't a test.
  *

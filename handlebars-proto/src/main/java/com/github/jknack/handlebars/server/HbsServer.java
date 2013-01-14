@@ -158,7 +158,7 @@ public class HbsServer {
       public CharSequence apply(final Object context,
           final com.github.jknack.handlebars.Options options)
           throws IOException {
-        return new Handlebars.SafeString(options.fn.text());
+        return new Handlebars.SafeString(options.getFn().text());
       }
     });
     handlebars.registerHelper("json", Jackson2Helper.INSTANCE);

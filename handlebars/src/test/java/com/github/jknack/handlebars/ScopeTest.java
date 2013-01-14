@@ -4,6 +4,8 @@ import java.io.IOException;
 
 import org.junit.Test;
 
+import com.github.jknack.handlebars.internal.AbstractOptions;
+
 public class ScopeTest extends AbstractTest {
 
   @Test

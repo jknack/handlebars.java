@@ -8,10 +8,10 @@ import org.powermock.api.easymock.PowerMock;
 
 import com.github.jknack.handlebars.Context;
 import com.github.jknack.handlebars.Handlebars;
-import com.github.jknack.handlebars.Options;
 import com.github.jknack.handlebars.Template;
+import com.github.jknack.handlebars.internal.AbstractOptions;
 
-public class OptionsMock extends Options {
+public class OptionsMock extends AbstractOptions {
 
   private OptionsMock(final Handlebars handlebars, final Context context,
       final Template fn,
@@ -20,7 +20,7 @@ public class OptionsMock extends Options {
     super(handlebars, context, fn, inverse, params, hash);
   }
 
-  public static Options options(final Object[] params,
+  public static AbstractOptions options(final Object[] params,
       final Map<String, Object> hash) {
     Handlebars handlebars = EasyMock.createMock(Handlebars.class);
     Context context = PowerMock.createMock(Context.class);
@@ -92,4 +92,19 @@ public class OptionsMock extends Options {
   public <T> T get(final String name, final T defaultValue) {
     return null;
   }
+
+@Override
+public Handlebars getHandlebars() {
+	return super.handlebars;
+}
+
+@Override
+public Template getFn() {
+	return super.fn;
+}
+
+@Override
+public Map<String, Object> getHash() {
+	return super.hash;
+}
 }

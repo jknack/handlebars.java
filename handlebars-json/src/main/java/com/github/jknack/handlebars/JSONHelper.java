@@ -23,6 +23,8 @@ import java.util.Map;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.ObjectWriter;
 
+import com.github.jknack.handlebars.internal.AbstractOptions;
+
 /**
  * A Jackson 1.x helper.
  * <p>

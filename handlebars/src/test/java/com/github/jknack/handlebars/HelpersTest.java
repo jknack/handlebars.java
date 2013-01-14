@@ -28,6 +28,8 @@ import mustache.specs.SpecTest;
 
 import org.junit.runners.Parameterized.Parameters;
 
+import com.github.jknack.handlebars.internal.AbstractOptions;
+
 
 public class HelpersTest extends SpecTest {
 
@@ -92,7 +94,7 @@ public class HelpersTest extends SpecTest {
               throws IOException {
             StringBuilder classes = new StringBuilder();
             String sep = " ";
-            for (Entry<String, Object> entry : options.hash.entrySet()) {
+            for (Entry<String, Object> entry : options.getHash().entrySet()) {
               classes.append(entry.getKey()).append("=\"")
                   .append(entry.getValue()).append("\"").append(sep);
             }

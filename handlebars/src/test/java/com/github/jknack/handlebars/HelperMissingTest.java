@@ -4,6 +4,8 @@ import java.io.IOException;
 
 import org.junit.Test;
 
+import com.github.jknack.handlebars.internal.AbstractOptions;
+
 public class HelperMissingTest extends AbstractTest {
 
   /**
@@ -48,7 +50,7 @@ public class HelperMissingTest extends AbstractTest {
       @Override
       public CharSequence apply(final Object context, final Options options)
           throws IOException {
-        return options.fn.text();
+        return options.getFn().text();
       }
     });
     shouldCompileTo("{{missing x}}", new Object(), helpers, "{{missing x}}");
@@ -60,7 +62,7 @@ public class HelperMissingTest extends AbstractTest {
       @Override
       public CharSequence apply(final Object context, final Options options)
           throws IOException {
-        return options.fn.text();
+        return options.getFn().text();
       }
     });
     shouldCompileTo("{{#missing x}}Raw display{{/missing}}", new Object(), helpers, "Raw display");

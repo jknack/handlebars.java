@@ -27,6 +27,8 @@ import java.util.Locale;
 
 import org.apache.commons.lang3.LocaleUtils;
 
+import com.github.jknack.handlebars.internal.AbstractOptions;
+
 /**
  * Handlebars helper for the Humanize library.
  *
@@ -293,7 +295,7 @@ public enum HumanizeHelper implements Helper<Object> {
         throws IOException {
       isTrue(value instanceof String, "found '%s', expected: 'string'", value);
       return Humanize.pluralize((String) value, resolveLocale(options))
-          .render(options.params);
+          .render(options.getParams());
     }
   },
 

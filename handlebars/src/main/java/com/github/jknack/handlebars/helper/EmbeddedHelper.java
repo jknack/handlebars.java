@@ -40,6 +40,7 @@ import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Helper;
 import com.github.jknack.handlebars.Options;
 import com.github.jknack.handlebars.Template;
+import com.github.jknack.handlebars.internal.AbstractOptions;
 
 /**
  * Given:
@@ -108,10 +109,10 @@ public class EmbeddedHelper implements Helper<String> {
   public CharSequence apply(final String path, final Options options)
       throws IOException {
     notEmpty(path, "found '%s', expected 'partial's name'", path);
-    String suffix = options.handlebars.getTemplateLoader().getSuffix();
+    String suffix = options.getHandlebars().getTemplateLoader().getSuffix();
     String defaultId = (path + suffix).replace('/', '-').replace('.', '-');
     String id = options.param(0, defaultId);
-    Template template = options.handlebars.compile(URI.create(path));
+    Template template = options.getHandlebars().compile(URI.create(path));
     StringBuilder script = new StringBuilder();
     script.append("<script id=\"").append(id)
         .append("\" type=\"text/x-handlebars\">\n");

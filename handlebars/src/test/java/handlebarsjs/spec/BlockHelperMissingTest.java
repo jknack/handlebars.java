@@ -119,7 +119,7 @@ public class BlockHelperMissingTest extends AbstractTest {
     Hash helpers = $("let", new Helper<Object>() {
       @Override
       public CharSequence apply(final Object context, final Options options) throws IOException {
-        for (Entry<String, Object> entry : options.hash.entrySet()) {
+        for (Entry<String, Object> entry : options.getHash().entrySet()) {
           options.data(entry.getKey(), entry.getValue());
         }
         return options.fn(context);
@@ -149,7 +149,7 @@ public class BlockHelperMissingTest extends AbstractTest {
     Hash helpers = $("let", new Helper<Object>() {
       @Override
       public CharSequence apply(final Object context, final Options options) throws IOException {
-        for (Entry<String, Object> entry : options.hash.entrySet()) {
+        for (Entry<String, Object> entry : options.getHash().entrySet()) {
           options.data(entry.getKey(), entry.getValue());
         }
         return options.fn(context);

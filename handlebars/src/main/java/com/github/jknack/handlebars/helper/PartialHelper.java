@@ -64,7 +64,7 @@ public class PartialHelper implements Helper<Object> {
     isTrue(context instanceof String, "found '%s', expected 'partial's name'",
         context);
 
-    options.partial((String) context, options.fn);
+    options.partial((String) context, options.getFn());
     return null;
   }
 }

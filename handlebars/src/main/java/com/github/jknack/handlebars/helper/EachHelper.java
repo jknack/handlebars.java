@@ -34,6 +34,7 @@ import org.apache.commons.lang3.StringUtils;
 import com.github.jknack.handlebars.Context;
 import com.github.jknack.handlebars.Helper;
 import com.github.jknack.handlebars.Options;
+import com.github.jknack.handlebars.internal.AbstractOptions;
 
 /**
  * You can iterate over a list using the built-in each helper. Inside the
