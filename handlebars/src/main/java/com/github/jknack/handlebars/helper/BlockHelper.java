@@ -40,6 +40,7 @@ import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Helper;
 import com.github.jknack.handlebars.Options;
 import com.github.jknack.handlebars.Template;
+import com.github.jknack.handlebars.internal.AbstractOptions;
 
 /**
  * The block helper will replace its section with the partial of the
@@ -70,12 +71,12 @@ public class BlockHelper implements Helper<Object> {
     Template template = options.partial(path);
     if (template == null) {
       try {
-        template = options.handlebars.compile(URI.create(path));
+        template = options.getHandlebars().compile(URI.create(path));
         options.partial(path, template);
       } catch (IOException ex) {
         // partial not found
         Handlebars.debug(ex.getMessage());
-        template = options.fn;
+        template = options.getFn();
       }
     }
     CharSequence result = options.apply(template);

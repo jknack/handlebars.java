@@ -30,6 +30,8 @@ import org.apache.commons.lang3.LocaleUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.text.WordUtils;
 
+import com.github.jknack.handlebars.internal.AbstractOptions;
+
 /**
  * Commons string function helpers.
  *
@@ -296,7 +298,7 @@ public enum StringHelpers implements Helper<Object> {
       isTrue(context instanceof String, "found '%s', expected 'string'",
           context);
       String format = (String) context;
-      return String.format(format, options.params);
+      return String.format(format, options.getParams());
     }
 
   },

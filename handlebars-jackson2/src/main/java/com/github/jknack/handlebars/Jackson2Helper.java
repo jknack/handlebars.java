@@ -22,6 +22,7 @@ import java.util.Map;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
+import com.github.jknack.handlebars.internal.AbstractOptions;
 
 /**
  * A Jackson 2.x helper.

@@ -30,8 +30,8 @@ import org.junit.runners.Parameterized.Parameters;
 
 import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Helper;
-import com.github.jknack.handlebars.Options;
 import com.github.jknack.handlebars.Template;
+import com.github.jknack.handlebars.internal.AbstractOptions;
 
 @RunWith(Parameterized.class)
 public class ScalarContextTest {
@@ -77,7 +77,7 @@ public class ScalarContextTest {
       @Override
       public CharSequence apply(final String context, final Options options)
           throws IOException {
-        return (CharSequence) options.hash.get("q");
+        return (CharSequence) options.getHash().get("q");
       }
     });
     Template template = handlebars.compile("{{{quote q=\"2\\\"secs\"}}}");

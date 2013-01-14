@@ -86,8 +86,8 @@ public class BlockTest extends AbstractTest {
     Hash helpers = $("link", new Helper<Object>() {
       @Override
       public CharSequence apply(final Object prefix, final Options options) throws IOException {
-        Object url = options.context.get("url");
-        Object text = options.context.get("text");
+        Object url = options.get("url");
+        Object text = options.get("text");
         return "<a href='" + prefix + "/" + url + "'>" + text + "</a>";
       }
     });
@@ -120,8 +120,8 @@ public class BlockTest extends AbstractTest {
     Hash helpers = $("link", new Helper<Object>() {
       @Override
       public CharSequence apply(final Object prefix, final Options options) throws IOException {
-        Object url = options.context.get("url");
-        Object text = options.context.get("text");
+        Object url = options.get("url");
+        Object text = options.get("text");
         return "<a href='" + prefix + "/" + url + "'>" + text + "</a>";
       }
     });

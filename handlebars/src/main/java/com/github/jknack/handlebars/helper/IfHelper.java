@@ -35,6 +35,7 @@ import java.io.IOException;
 
 import com.github.jknack.handlebars.Helper;
 import com.github.jknack.handlebars.Options;
+import com.github.jknack.handlebars.internal.AbstractOptions;
 
 /**
  * You can use the if helper to conditionally render a block. If its argument

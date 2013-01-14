@@ -200,7 +200,7 @@ public final class PrecompileHelper implements Helper<String> {
         wrapperName,
         StringUtils.join(JsWrapper.values(), ", ").toLowerCase());
 
-    Handlebars handlebars = options.handlebars;
+    Handlebars handlebars = options.getHandlebars();
     final TemplateLoader loader = handlebars.getTemplateLoader();
     String name = path + loader.getSuffix();
     Template template = handlebars.compile(URI.create(path));

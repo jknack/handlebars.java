@@ -19,10 +19,10 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import org.springframework.context.MessageSource;
 
 import com.github.jknack.handlebars.Context;
-import com.github.jknack.handlebars.Options;
+import com.github.jknack.handlebars.internal.AbstractOptions;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({Options.class, MessageSourceHelper.class, Context.class })
+@PrepareForTest({AbstractOptions.class, MessageSourceHelper.class, Context.class })
 public class MessageSourceHelperTest {
 
   @Test(expected = NullPointerException.class)
@@ -42,7 +42,7 @@ public class MessageSourceHelperTest {
     Map<String, Object> hash = createMock(Map.class);
     expect(hash.get("default")).andReturn(defaultMessage);
 
-    Options options = OptionsMock.options(params, hash);
+    AbstractOptions options = OptionsMock.options(params, hash);
 
     MessageSource messageSource = createMock(MessageSource.class);
     expect(messageSource.getMessage(eq(code), eq(params), eq(defaultMessage),
@@ -69,7 +69,7 @@ public class MessageSourceHelperTest {
     Map<String, Object> hash = createMock(Map.class);
     expect(hash.get("default")).andReturn(defaultMessage);
 
-    Options options = OptionsMock.options(params, hash);
+    AbstractOptions options = OptionsMock.options(params, hash);
 
     MessageSource messageSource = createMock(MessageSource.class);
     expect(messageSource.getMessage(eq(code), eq(params), eq(defaultMessage),
@@ -96,7 +96,7 @@ public class MessageSourceHelperTest {
     Map<String, Object> hash = createMock(Map.class);
     expect(hash.get("default")).andReturn(defaultMessage);
 
-    Options options = OptionsMock.options(params, hash);
+    AbstractOptions options = OptionsMock.options(params, hash);
 
     MessageSource messageSource = createMock(MessageSource.class);
     expect(messageSource.getMessage(eq(code), eq(params), eq(defaultMessage),

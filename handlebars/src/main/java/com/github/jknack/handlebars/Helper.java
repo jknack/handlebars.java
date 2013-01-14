@@ -19,6 +19,8 @@ package com.github.jknack.handlebars;
 
 import java.io.IOException;
 
+import com.github.jknack.handlebars.internal.AbstractOptions;
+
 /**
  * Handlebars helpers can be accessed from any context in a template. You can
  * register a helper with the {@link Handlebars#registerHelper(String, Helper)}

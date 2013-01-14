@@ -8,6 +8,8 @@ import java.util.Map.Entry;
 
 import org.yaml.snakeyaml.Yaml;
 
+import com.github.jknack.handlebars.internal.AbstractOptions;
+
 public class AbstractTest {
 
   @SuppressWarnings("serial")
