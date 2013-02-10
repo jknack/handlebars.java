@@ -19,7 +19,9 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import org.springframework.context.MessageSource;
 
 import com.github.jknack.handlebars.Context;
+import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Options;
+import com.github.jknack.handlebars.Template;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({Options.class, MessageSourceHelper.class, Context.class })
@@ -42,7 +44,14 @@ public class MessageSourceHelperTest {
     Map<String, Object> hash = createMock(Map.class);
     expect(hash.get("default")).andReturn(defaultMessage);
 
-    Options options = OptionsMock.options(params, hash);
+    Handlebars hbs = createMock(Handlebars.class);
+    Context ctx = createMock(Context.class);
+    Template fn = createMock(Template.class);
+
+    Options options = new Options.Builder(hbs, ctx, fn)
+        .setParams(params)
+        .setHash(hash)
+        .build();
 
     MessageSource messageSource = createMock(MessageSource.class);
     expect(messageSource.getMessage(eq(code), eq(params), eq(defaultMessage),
@@ -64,12 +73,19 @@ public class MessageSourceHelperTest {
     String defaultMessage = null;
 
     // Options
-    Object[] params = {1, 2, 3};
+    Object[] params = {1, 2, 3 };
     @SuppressWarnings("unchecked")
     Map<String, Object> hash = createMock(Map.class);
     expect(hash.get("default")).andReturn(defaultMessage);
 
-    Options options = OptionsMock.options(params, hash);
+    Handlebars hbs = createMock(Handlebars.class);
+    Context ctx = createMock(Context.class);
+    Template fn = createMock(Template.class);
+
+    Options options = new Options.Builder(hbs, ctx, fn)
+        .setParams(params)
+        .setHash(hash)
+        .build();
 
     MessageSource messageSource = createMock(MessageSource.class);
     expect(messageSource.getMessage(eq(code), eq(params), eq(defaultMessage),
@@ -91,12 +107,19 @@ public class MessageSourceHelperTest {
     String defaultMessage = "Aca viene el 3";
 
     // Options
-    Object[] params = {1, 2, 3};
+    Object[] params = {1, 2, 3 };
     @SuppressWarnings("unchecked")
     Map<String, Object> hash = createMock(Map.class);
     expect(hash.get("default")).andReturn(defaultMessage);
 
-    Options options = OptionsMock.options(params, hash);
+    Handlebars hbs = createMock(Handlebars.class);
+    Context ctx = createMock(Context.class);
+    Template fn = createMock(Template.class);
+
+    Options options = new Options.Builder(hbs, ctx, fn)
+        .setParams(params)
+        .setHash(hash)
+        .build();
 
     MessageSource messageSource = createMock(MessageSource.class);
     expect(messageSource.getMessage(eq(code), eq(params), eq(defaultMessage),

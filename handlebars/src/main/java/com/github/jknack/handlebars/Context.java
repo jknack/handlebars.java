@@ -46,7 +46,7 @@ import java.util.regex.Pattern;
  * @author edgar.espina
  * @since 0.1.0
  */
-public final class Context {
+public class Context {
 
   /**
    * Handlebars and Mustache path separator.
@@ -253,7 +253,7 @@ public final class Context {
    * @param model The target value. Resolved as '.' or 'this' inside
    *        templates. Required.
    */
-  private Context(final Object model) {
+  protected Context(final Object model) {
     if (model instanceof Context) {
       throw new IllegalArgumentException("Invalid model type:"
           + model.getClass().getName());

@@ -29,6 +29,41 @@ import java.io.Writer;
 public interface Template {
 
   /**
+   * An empty template implementation.
+   */
+  Template EMPTY = new Template() {
+    @Override
+    public String text() {
+      return "";
+    }
+
+    @Override
+    public String apply(final Object context) throws IOException {
+      return "";
+    }
+
+    @Override
+    public String apply(final Context context) throws IOException {
+      return "";
+    }
+
+    @Override
+    public void apply(final Context context, final Writer writer)
+        throws IOException {
+    }
+
+    @Override
+    public void apply(final Object context, final Writer writer)
+        throws IOException {
+    }
+
+    @Override
+    public String toJavaScript() {
+      return "";
+    }
+  };
+
+  /**
    * Merge the template tree using the given context.
    *
    * @param context The context object. May be null.

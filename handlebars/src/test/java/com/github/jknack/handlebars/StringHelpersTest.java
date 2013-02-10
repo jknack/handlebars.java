@@ -16,6 +16,7 @@ import static com.github.jknack.handlebars.StringHelpers.stripTags;
 import static com.github.jknack.handlebars.StringHelpers.upper;
 import static com.github.jknack.handlebars.StringHelpers.wordWrap;
 import static com.github.jknack.handlebars.StringHelpers.yesno;
+import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
@@ -24,14 +25,9 @@ import static org.junit.Assert.assertEquals;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 
 import org.apache.commons.lang3.SystemUtils;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.powermock.api.easymock.PowerMock;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 
 /**
  * Unit test for {@link StringHelpers}.
@@ -39,13 +35,11 @@ import org.powermock.modules.junit4.PowerMockRunner;
  * @author edgar.espina
  * @since 0.2.2
  */
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({Options.class, StringHelpers.class, Context.class })
 public class StringHelpersTest {
 
   @Test
   public void capFirst() throws IOException {
-    Options options = PowerMock.createMock(Options.class);
+    Options options = createMock(Options.class);
 
     replay(options);
 
@@ -58,7 +52,7 @@ public class StringHelpersTest {
 
   @Test
   public void center() throws IOException {
-    Options options = PowerMock.createMock(Options.class);
+    Options options = createMock(Options.class);
     expect(options.hash("size")).andReturn(19);
     expect(options.hash("pad", " ")).andReturn(null);
 
@@ -73,7 +67,7 @@ public class StringHelpersTest {
 
   @Test
   public void centerWithPad() throws IOException {
-    Options options = PowerMock.createMock(Options.class);
+    Options options = createMock(Options.class);
     expect(options.hash("size")).andReturn(19);
     expect(options.hash("pad", " ")).andReturn("*");
 
@@ -88,7 +82,7 @@ public class StringHelpersTest {
 
   @Test
   public void cut() throws IOException {
-    Options options = PowerMock.createMock(Options.class);
+    Options options = createMock(Options.class);
     expect(options.param(0, " ")).andReturn(" ");
 
     replay(options);
@@ -102,7 +96,7 @@ public class StringHelpersTest {
 
   @Test
   public void cutNoWhitespace() throws IOException {
-    Options options = PowerMock.createMock(Options.class);
+    Options options = createMock(Options.class);
     expect(options.param(0, " ")).andReturn("*");
 
     replay(options);
@@ -116,7 +110,7 @@ public class StringHelpersTest {
 
   @Test
   public void defaultStr() throws IOException {
-    Options options = PowerMock.createMock(Options.class);
+    Options options = createMock(Options.class);
     expect(options.param(0, "")).andReturn("handlebars.java").anyTimes();
 
     replay(options);
@@ -137,7 +131,7 @@ public class StringHelpersTest {
 
   @Test
   public void join() throws IOException {
-    Options options = PowerMock.createMock(Options.class);
+    Options options = createMock(Options.class);
     expect(options.param(0, null)).andReturn(", ").anyTimes();
     expect(options.hash("prefix", "")).andReturn("").anyTimes();
     expect(options.hash("suffix", "")).andReturn("").anyTimes();
@@ -159,7 +153,7 @@ public class StringHelpersTest {
 
   @Test
   public void joinWithPrefixAndSuffix() throws IOException {
-    Options options = PowerMock.createMock(Options.class);
+    Options options = createMock(Options.class);
     expect(options.param(0, null)).andReturn(", ");
     expect(options.hash("prefix", "")).andReturn("<");
     expect(options.hash("suffix", "")).andReturn(">");
@@ -174,7 +168,7 @@ public class StringHelpersTest {
 
   @Test
   public void ljust() throws IOException {
-    Options options = PowerMock.createMock(Options.class);
+    Options options = createMock(Options.class);
     expect(options.hash("size")).andReturn(20);
     expect(options.hash("pad", " ")).andReturn(null);
 
@@ -189,7 +183,7 @@ public class StringHelpersTest {
 
   @Test
   public void ljustWithPad() throws IOException {
-    Options options = PowerMock.createMock(Options.class);
+    Options options = createMock(Options.class);
     expect(options.hash("size")).andReturn(17);
     expect(options.hash("pad", " ")).andReturn("+");
 
@@ -204,7 +198,7 @@ public class StringHelpersTest {
 
   @Test
   public void rjust() throws IOException {
-    Options options = PowerMock.createMock(Options.class);
+    Options options = createMock(Options.class);
     expect(options.hash("size")).andReturn(20);
     expect(options.hash("pad", " ")).andReturn(null);
 
@@ -219,7 +213,7 @@ public class StringHelpersTest {
 
   @Test
   public void rjustWithPad() throws IOException {
-    Options options = PowerMock.createMock(Options.class);
+    Options options = createMock(Options.class);
     expect(options.hash("size")).andReturn(17);
     expect(options.hash("pad", " ")).andReturn("+");
 
@@ -234,7 +228,7 @@ public class StringHelpersTest {
 
   @Test
   public void lower() throws IOException {
-    Options options = PowerMock.createMock(Options.class);
+    Options options = createMock(Options.class);
 
     replay(options);
 
@@ -247,7 +241,7 @@ public class StringHelpersTest {
 
   @Test
   public void upper() throws IOException {
-    Options options = PowerMock.createMock(Options.class);
+    Options options = createMock(Options.class);
 
     replay(options);
 
@@ -260,7 +254,7 @@ public class StringHelpersTest {
 
   @Test
   public void slugify() throws IOException {
-    Options options = PowerMock.createMock(Options.class);
+    Options options = createMock(Options.class);
 
     replay(options);
 
@@ -273,9 +267,13 @@ public class StringHelpersTest {
 
   @Test
   public void stringFormat() throws IOException {
-    Options options =
-        OptionsMock.options(new Object[] {"handlebars.java" },
-            new HashMap<String, Object>());
+    Handlebars hbs = createMock(Handlebars.class);
+    Context ctx = createMock(Context.class);
+    Template fn = createMock(Template.class);
+
+    Options options = new Options.Builder(hbs, ctx, fn)
+        .setParams(new Object[] {"handlebars.java" })
+        .build();
 
     assertEquals("stringFormat", stringFormat.name());
 
@@ -285,9 +283,13 @@ public class StringHelpersTest {
 
   @Test
   public void stringDecimalFormat() throws IOException {
-    Options options =
-        OptionsMock.options(new Object[] {10.0 / 3.0 },
-            new HashMap<String, Object>());
+    Handlebars hbs = createMock(Handlebars.class);
+    Context ctx = createMock(Context.class);
+    Template fn = createMock(Template.class);
+
+    Options options = new Options.Builder(hbs, ctx, fn)
+        .setParams(new Object[] {10.0 / 3.0 })
+        .build();
 
     assertEquals("stringFormat", stringFormat.name());
 
@@ -297,7 +299,7 @@ public class StringHelpersTest {
 
   @Test
   public void stripTags() throws IOException {
-    Options options = PowerMock.createMock(Options.class);
+    Options options = createMock(Options.class);
 
     replay(options);
 
@@ -311,7 +313,7 @@ public class StringHelpersTest {
 
   @Test
   public void stripTagsMultiLine() throws IOException {
-    Options options = PowerMock.createMock(Options.class);
+    Options options = createMock(Options.class);
 
     replay(options);
 
@@ -326,7 +328,7 @@ public class StringHelpersTest {
 
   @Test
   public void capitalize() throws IOException {
-    Options options = PowerMock.createMock(Options.class);
+    Options options = createMock(Options.class);
     expect(options.hash("fully", false)).andReturn(false);
     expect(options.hash("fully", false)).andReturn(true);
 
@@ -345,7 +347,7 @@ public class StringHelpersTest {
 
   @Test
   public void abbreviate() throws IOException {
-    Options options = PowerMock.createMock(Options.class);
+    Options options = createMock(Options.class);
     expect(options.param(0, null)).andReturn(13);
 
     replay(options);
@@ -360,7 +362,7 @@ public class StringHelpersTest {
 
   @Test
   public void wordWrap() throws IOException {
-    Options options = PowerMock.createMock(Options.class);
+    Options options = createMock(Options.class);
     expect(options.param(0, null)).andReturn(5);
 
     replay(options);
@@ -376,7 +378,7 @@ public class StringHelpersTest {
 
   @Test
   public void yesno() throws IOException {
-    Options options = PowerMock.createMock(Options.class);
+    Options options = createMock(Options.class);
     expect(options.hash("yes", "yes")).andReturn("yes");
     expect(options.hash("no", "no")).andReturn("no");
     expect(options.hash("maybe", "maybe")).andReturn("maybe");
@@ -394,7 +396,7 @@ public class StringHelpersTest {
 
   @Test
   public void yesnoCustom() throws IOException {
-    Options options = PowerMock.createMock(Options.class);
+    Options options = createMock(Options.class);
     expect(options.hash("yes", "yes")).andReturn("yea");
     expect(options.hash("no", "no")).andReturn("nop");
     expect(options.hash("maybe", "maybe")).andReturn("whatever");

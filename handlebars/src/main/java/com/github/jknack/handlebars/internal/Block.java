@@ -28,6 +28,7 @@ import com.github.jknack.handlebars.Context;
 import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Helper;
 import com.github.jknack.handlebars.Lambda;
+import com.github.jknack.handlebars.Options;
 import com.github.jknack.handlebars.Template;
 import com.github.jknack.handlebars.helper.EachHelper;
 import com.github.jknack.handlebars.helper.IfHelper;
@@ -104,8 +105,7 @@ class Block extends HelperResolver {
 
   @SuppressWarnings("unchecked")
   @Override
-  protected void merge(final Context context,
-      final Writer writer) throws IOException {
+  protected void merge(final Context context, final Writer writer) throws IOException {
     Helper<Object> helper = helper(name);
     BaseTemplate template = body;
     final Object childContext;
@@ -135,14 +135,15 @@ class Block extends HelperResolver {
     } else {
       childContext = transform(determineContext(context));
     }
-    DefaultOptions options =
-        new DefaultOptions(handlebars, template, inverse, currentScope,
-            params(currentScope), hash(context));
+    Options options = new Options.Builder(handlebars, currentScope, template)
+        .setInverse(inverse == null ? Template.EMPTY : inverse)
+        .setParams(params(currentScope))
+        .setHash(hash(context))
+        .build();
     CharSequence result = helper.apply(childContext, options);
     if (result != null) {
       writer.append(result);
     }
-    options.destroy();
   }
 
   /**

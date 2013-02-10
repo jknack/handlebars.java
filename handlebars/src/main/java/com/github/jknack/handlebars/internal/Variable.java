@@ -27,6 +27,7 @@ import com.github.jknack.handlebars.Context;
 import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Helper;
 import com.github.jknack.handlebars.Lambda;
+import com.github.jknack.handlebars.Options;
 
 /**
  * The most basic tag type is the variable. A {{name}} tag in a basic template
@@ -223,9 +224,10 @@ class Variable extends HelperResolver {
     Helper<Object> helper = helper(name);
     if (helper != null) {
       Object context = determineContext(scope);
-      DefaultOptions options =
-          new DefaultOptions(handlebars, this, null, scope, params(scope),
-              hash(scope));
+      Options options = new Options.Builder(handlebars, scope, this)
+          .setParams(params(scope))
+          .setHash(hash(scope))
+          .build();
       CharSequence result = helper.apply(context, options);
       if (escape(result)) {
         writer.append(Handlebars.Utils.escapeExpression(result));

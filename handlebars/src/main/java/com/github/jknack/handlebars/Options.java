@@ -16,17 +16,134 @@ package com.github.jknack.handlebars;
 import static org.apache.commons.lang3.Validate.notNull;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
 /**
  * Options available for {@link Helper#apply(Object, Options)}.
+ * Usage:
+ *
+ * <pre>
+ *   Options options = new Options.Builder(handlebars, context, fn)
+ *      .build();
+ * </pre>
+ *
+ * Optionally you can set parameters and hash table:
+ *
+ * <pre>
+ *   Options options = new Options.Builder(handlebars, context, fn)
+ *      .setParams(new Object[] {})
+ *      .setHash(hash)
+ *      .build();
+ * </pre>
  *
  * @author edgar.espina
  * @since 0.1.0
  */
-public abstract class Options {
+public class Options {
+
+  /**
+   * An {@link Options} builder.
+   *
+   * @author edgar.espina
+   * @since 0.9.0
+   */
+  public static class Builder {
+    /**
+     * The {@link Handlebars} object. Not null.
+     */
+    private Handlebars handlebars;
+
+    /**
+     * The current context. Not null.
+     */
+    private Context context;
+
+    /**
+     * The current template. Not null.
+     */
+    private Template fn;
+
+    /**
+     * The current inverse template. Not null.
+     */
+    private Template inverse = Template.EMPTY;
+
+    /**
+     * The parameters. Not null.
+     */
+    private Object[] params = {};
+
+    /**
+     * The hash options. Not null.
+     */
+    private Map<String, Object> hash = Collections.emptyMap();
+
+    /**
+     * Creates a new {@link Builder}.
+     *
+     * @param handlebars A handlebars object. Required.
+     * @param context A context object. Required.
+     * @param fn A template object. Required.
+     */
+    public Builder(final Handlebars handlebars, final Context context, final Template fn) {
+      this.handlebars = notNull(handlebars, "The handlebars is required.");
+      this.context = notNull(context, "The context is required.");
+      this.fn = notNull(fn, "The fn template is required.");
+    }
+
+    /**
+     * Build a new {@link Options} object.
+     *
+     * @return A new {@link Options} object.
+     */
+    public Options build() {
+      Options options = new Options(handlebars, context, fn, inverse, params, hash);
+      // clear out references
+      handlebars = null;
+      context = null;
+      fn = null;
+      inverse = null;
+      params = null;
+      hash = null;
+      return options;
+    }
+
+    /**
+     * Set the options hash.
+     *
+     * @param hash A hash table. Required.
+     * @return This builder.
+     */
+    public Builder setHash(final Map<String, Object> hash) {
+      this.hash = notNull(hash, "The hash is required.");
+      return this;
+    }
+
+    /**
+     * Set the inverse template.
+     *
+     * @param inverse Inverse template. Required.
+     * @return This builder.
+     */
+    public Builder setInverse(final Template inverse) {
+      this.inverse = notNull(inverse, "The inverse is required.");
+      return this;
+    }
+
+    /**
+     * Set the options parameters.
+     *
+     * @param params A parameters list. Required.
+     * @return This builder.
+     */
+    public Builder setParams(final Object[] params) {
+      this.params = notNull(params, "The params is required.");
+      return this;
+    }
+  }
 
   /**
    * The {@link Handlebars} object. Not null.
@@ -85,7 +202,9 @@ public abstract class Options {
    * @return The resulting text.
    * @throws IOException If a resource cannot be loaded.
    */
-  public abstract CharSequence fn() throws IOException;
+  public CharSequence fn() throws IOException {
+    return fn(context);
+  }
 
   /**
    * Apply the {@link #fn} template using the provided context.
@@ -94,7 +213,9 @@ public abstract class Options {
    * @return The resulting text.
    * @throws IOException If a resource cannot be loaded.
    */
-  public abstract CharSequence fn(Object context) throws IOException;
+  public CharSequence fn(final Object context) throws IOException {
+    return apply(fn, context);
+  }
 
   /**
    * Apply the {@link #inverse} template using the default context.
@@ -102,7 +223,9 @@ public abstract class Options {
    * @return The resulting text.
    * @throws IOException If a resource cannot be loaded.
    */
-  public abstract CharSequence inverse() throws IOException;
+  public CharSequence inverse() throws IOException {
+    return inverse(context);
+  }
 
   /**
    * Apply the {@link #inverse} template using the provided context.
@@ -111,7 +234,9 @@ public abstract class Options {
    * @return The resulting text.
    * @throws IOException If a resource cannot be loaded.
    */
-  public abstract CharSequence inverse(Object context) throws IOException;
+  public CharSequence inverse(final Object context) throws IOException {
+    return apply(inverse, context);
+  }
 
   /**
    * Apply the given template to the provided context. The context stack is
@@ -122,8 +247,9 @@ public abstract class Options {
    * @return The resulting text.
    * @throws IOException If a resource cannot be loaded.
    */
-  public abstract CharSequence apply(final Template template,
-      final Object context) throws IOException;
+  public CharSequence apply(final Template template, final Object context) throws IOException {
+    return template.apply(wrap(context));
+  }
 
   /**
    * Apply the given template to the default context. The context stack is
@@ -133,8 +259,9 @@ public abstract class Options {
    * @return The resulting text.
    * @throws IOException If a resource cannot be loaded.
    */
-  public abstract CharSequence apply(final Template template)
-      throws IOException;
+  public CharSequence apply(final Template template) throws IOException {
+    return apply(template, context);
+  }
 
   /**
    * <p>
@@ -155,7 +282,7 @@ public abstract class Options {
    * @return The paramater's value.
    */
   @SuppressWarnings("unchecked")
-  public final <T> T param(final int index) {
+  public <T> T param(final int index) {
     return (T) params[index];
   }
 
@@ -180,7 +307,7 @@ public abstract class Options {
    * @return The paramater's value.
    */
   @SuppressWarnings("unchecked")
-  public final <T> T param(final int index, final T defaultValue) {
+  public <T> T param(final int index, final T defaultValue) {
     T value = null;
     if (index >= 0 && index < params.length) {
       value = (T) params[index];
@@ -197,7 +324,11 @@ public abstract class Options {
    *        present or if null.
    * @return The associated value or <code>null</code> if it's not found.
    */
-  public abstract <T> T get(String name, T defaultValue);
+  public <T> T get(final String name, final T defaultValue) {
+    @SuppressWarnings("unchecked")
+    T value = (T) context.get(name);
+    return value == null ? defaultValue : value;
+  }
 
   /**
    * Look for a value in the context's stack.
@@ -206,7 +337,9 @@ public abstract class Options {
    * @param name The property's name.
    * @return The associated value or <code>null</code> if it's not found.
    */
-  public abstract <T> T get(String name);
+  public <T> T get(final String name) {
+    return get(name, null);
+  }
 
   /**
    * Return a previously registered partial in the current execution context.
@@ -215,7 +348,9 @@ public abstract class Options {
    * @return A previously registered partial in the current execution context.
    *         Or <code> null</code> if not found.
    */
-  public abstract Template partial(String path);
+  public Template partial(final String path) {
+    return partials().get(path);
+  }
 
   /**
    * Store a partial in the current execution context.
@@ -223,7 +358,9 @@ public abstract class Options {
    * @param path The partial's path. Required.
    * @param partial The partial template. Required.
    */
-  public abstract void partial(String path, Template partial);
+  public void partial(final String path, final Template partial) {
+    partials().put(path, partial);
+  }
 
   /**
    * <p>
@@ -243,7 +380,7 @@ public abstract class Options {
    * @param name The hash's name.
    * @return The hash value or null.
    */
-  public final <T> T hash(final String name) {
+  public <T> T hash(final String name) {
     return hash(name, null);
   }
 
@@ -267,7 +404,7 @@ public abstract class Options {
    * @return The hash value or null.
    */
   @SuppressWarnings("unchecked")
-  public final <T> T hash(final String name, final Object defaultValue) {
+  public <T> T hash(final String name, final Object defaultValue) {
     Object value = hash.get(name);
     return (T) (value == null ? defaultValue : value);
   }
@@ -280,7 +417,7 @@ public abstract class Options {
    * @return False if its argument is false, null or empty list/array (a "falsy"
    *         value).
    */
-  public final boolean isFalsy(final Object value) {
+  public boolean isFalsy(final Object value) {
     return Handlebars.Utils.isEmpty(value);
   }
 
@@ -292,7 +429,18 @@ public abstract class Options {
    * @return A context representing the model or the same model if it's a
    *         context already.
    */
-  public abstract Context wrap(Object model);
+  public Context wrap(final Object model) {
+    if (model == context) {
+      return context;
+    }
+    if (model == context.model()) {
+      return context;
+    }
+    if (model instanceof Context) {
+      return (Context) model;
+    }
+    return Context.newContext(context, model);
+  }
 
   /**
    * Read the attribute from the data storage.
@@ -301,7 +449,9 @@ public abstract class Options {
    * @param <T> Data type.
    * @return The attribute value or null.
    */
-  public abstract <T> T data(final String name);
+  public <T> T data(final String name) {
+    return context.data(name);
+  }
 
   /**
    * Set an attribute in the data storage.
@@ -309,7 +459,9 @@ public abstract class Options {
    * @param name The attribute's name. Required.
    * @param value The attribute's value. Required.
    */
-  public abstract void data(final String name, final Object value);
+  public void data(final String name, final Object value) {
+    context.data(name, value);
+  }
 
   /**
    * List all the properties and their values for the given object.
@@ -321,6 +473,16 @@ public abstract class Options {
     return this.context.propertySet(context instanceof Context
         ? ((Context) context).model()
         : context);
+  }
+
+  /**
+   * Return the partials storage.
+   *
+   * @return The partials storage.
+   */
+  @SuppressWarnings("unchecked")
+  private Map<String, Template> partials() {
+    return (Map<String, Template>) data(Context.PARTIALS);
   }
 
 }
