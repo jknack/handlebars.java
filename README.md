@@ -184,6 +184,7 @@ Please note you don't have to specified the extension file.
  * **partial**
  * **precompile**
  * **embedded**
+ * **i18n** and **i18nJs** 
 
 ### with, each, if, unless:
  See the [built-in helper documentation](http://handlebarsjs.com/block_helpers.html).
@@ -297,6 +298,66 @@ Usage:
 {{embedded "template"}}
 ```
 context: A template name. Required.
+
+### i18n
+ A helper built on top of a {@link ResourceBundle}. A {@link ResourceBundle} is the most well known mechanism for internationalization (i18n) in Java.
+
+Usage:
+
+```html
+{{i18n "hello"}}
+```
+This require a ```messages.properties``` in the root of classpath.
+
+Using a locale:
+
+```html
+{{i18n "hello" locale="es_AR"}}
+```
+
+This require a ```messages_es_AR.properties``` in the root of classpath.
+
+Using a different bundle:
+
+```html
+{{i18n "hello" bundle="myMessages"}}
+```
+This require a ```myMessages.properties``` in the root of classpath.
+
+Using a message format:
+
+```html
+{{i18n "hello" "Handlebars.java"}}
+```
+
+Where ```hello``` is ```Hola {0}!```, results in ```Hola Handlebars.java!```.
+
+### i18nJs
+ Translate a ```ResourceBundle``` into JavaScript code. The generated code assume you have the [I18n](https://github.com/fnando/i18n-js) in your application.
+
+Usage:
+
+```
+{{i18nJs [locale] [bundle=messages]}}
+```
+
+If locale argument is present it will translate that locale to JavaScript. Otherwise, the default locale.
+
+The generated code looks like:
+
+```javascript
+<script type="text/javascript">
+  I18n.defaultLocale = 'es_AR';
+  I18n.locale = 'es_AR';
+  I18n.translations = I18n.translations || {};
+  // Spanish (Argentina)
+  I18n.translations['es_AR'] = {
+    "hello": "Hi {{arg0}}!"
+  }
+</script>
+```
+
+Finally, it converts message patterns like: ```Hi {0}``` into ```Hi {{arg0}}```. This make possible to the [I18n](https://github.com/fnando/i18n-js) JS library to interpolate variables.
 
 ### Registering Helpers
 
