@@ -590,7 +590,7 @@ In short from a helper you can throw an Exception and Handlebars.java will add t
  You can choose a different value resolver. This section describe how to do it.
  
 #### The JavaBeanValueResolver
- Resolves a value as public method prefixed with "get"
+ Resolves values from public methods prefixed with "get/is"
 
 ```java
 Context context = Context
@@ -600,7 +600,7 @@ Context context = Context
 ```
 
 #### The FieldValueResolver
- Resolves a value as no-static field.
+ Resolves values from  no-static fields.
 
 ```java
 Context context = Context
@@ -610,7 +610,7 @@ Context context = Context
 ```
 
 #### The MapValueResolver
- It resolve values as map key.
+ Resolves values from a ```java.util.Map``` objects.
 
 ```java
 Context context = Context
@@ -620,7 +620,7 @@ Context context = Context
 ```
 
 #### The MethodValueResolver
- Resolves a value as public method.
+ Resolves values from public methods.
 
 ```java
 Context context = Context
@@ -630,7 +630,7 @@ Context context = Context
 ```
 
 #### The JsonNodeValueResolver
- Resolves a value from ```JsonNode``` objects.
+ Resolves values from ```JsonNode``` objects.
 
 ```java
 Context context = Context
@@ -642,7 +642,6 @@ Context context = Context
 Available in [Jackson 1.x](https://github.com/jknack/handlebars.java/tree/master/handlebars-json) and [Jackson 2.x](https://github.com/jknack/handlebars.java/tree/master/handlebars-jackson2) modules.
 
 #### Using multiples value resolvers
- Finally, you can merge multiples value resolvers
 
 ```java
 Context context = Context
@@ -650,14 +649,14 @@ Context context = Context
   .resolver(
       MapValueResolver.INSTANCE,
       JavaBeanValueResolver.INSTANCE,
-      FieldValueResolver.INSTANCE)
-  .build();
+      FieldValueResolver.INSTANCE
+  ).build();
 ```
 
 ### Helper Missing
  By default, Handlebars.java throws an ```java.lang.IllegalArgumentException()``` if a helper cannot be resolved.
  You can override the default behaviour by providing a ```helperMissing``` helper. Example:
- 
+
 ```java
   handlebars.registerHelper(Handlebars.HELPER_MISSING, new Helper<Object>() {
     @Override
@@ -690,10 +689,10 @@ results in:
 Hello edgar!
 ```
  How it works? ```stringParams: true``` instruct Handlebars.java to resolve a parameter
- to the his name if the value isn't present in the context stack.
+ to his name if the value isn't present in the context stack.
 
 ### Allow Infite loops
- By default, Handlebars.java don't allow a partial to call him self directly or indirectly.
+ By default, Handlebars.java don't allow a partial to call him self (directly or indirectly).
  You can change this by setting the: ```Handlebars.setAllowInifiteLoops``` to ```true```, just avoid ```StackOverflowError```.
 
 # Additional Helpers
