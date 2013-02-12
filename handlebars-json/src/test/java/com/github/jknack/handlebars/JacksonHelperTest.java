@@ -24,17 +24,17 @@ import org.junit.Test;
 import com.github.jknack.handlebars.Blog.Views.Public;
 
 /**
- * Unit test for {@link JSONHelper}.
+ * Unit test for {@link JacksonHelper}.
  *
  * @author edgar.espina
  * @since 0.1.0
  */
-public class JSONHelperTest {
+public class JacksonHelperTest {
 
   @Test
   public void toJSON() throws IOException {
     Handlebars handlebars = new Handlebars();
-    handlebars.registerHelper("@json", JSONHelper.INSTANCE);
+    handlebars.registerHelper("@json", JacksonHelper.INSTANCE);
 
     Template template = handlebars.compile("{{@json this}}");
 
@@ -48,7 +48,7 @@ public class JSONHelperTest {
   public void toJSONViewInclusive() throws IOException {
     Handlebars handlebars = new Handlebars();
 
-    handlebars.registerHelper("@json", JSONHelper.INSTANCE);
+    handlebars.registerHelper("@json", JacksonHelper.INSTANCE);
 
     Template template =
         handlebars
@@ -67,7 +67,7 @@ public class JSONHelperTest {
     ObjectMapper mapper = new ObjectMapper();
     mapper.configure(Feature.DEFAULT_VIEW_INCLUSION, false);
 
-    handlebars.registerHelper("@json", new JSONHelper(mapper));
+    handlebars.registerHelper("@json", new JacksonHelper(mapper));
 
     Template template =
         handlebars
@@ -86,7 +86,7 @@ public class JSONHelperTest {
     mapper.configure(Feature.DEFAULT_VIEW_INCLUSION, false);
 
     handlebars.registerHelper("@json",
-        new JSONHelper(mapper).viewAlias("myView", Public.class));
+        new JacksonHelper(mapper).viewAlias("myView", Public.class));
 
     Template template =
         handlebars
@@ -104,7 +104,7 @@ public class JSONHelperTest {
     ObjectMapper mapper = new ObjectMapper();
     mapper.configure(Feature.DEFAULT_VIEW_INCLUSION, false);
 
-    handlebars.registerHelper("@json", new JSONHelper(mapper));
+    handlebars.registerHelper("@json", new JacksonHelper(mapper));
 
     Template template =
         handlebars

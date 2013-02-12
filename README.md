@@ -718,7 +718,7 @@ Maven:
 Usage:
 
 ```java
- handlebars.registerHelper("json", new JacksonHelper());
+ handlebars.registerHelper("json", JacksonHelper.INSTANCE);
 ```
 ```
  {{json context [view="foo.MyFullyQualifiedClassName"]}}

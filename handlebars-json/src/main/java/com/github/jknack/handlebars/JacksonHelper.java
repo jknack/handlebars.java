@@ -32,7 +32,7 @@ import org.codehaus.jackson.map.ObjectWriter;
  * <pre>
  *  Handlebars hbs = new Handlebars();
  *
- *  hbs.registerHelper("json", JSONHelper.INSTANCE);
+ *  hbs.registerHelper("json", JacksonHelper.INSTANCE);
  *
  *  ...
  *
@@ -45,7 +45,7 @@ import org.codehaus.jackson.map.ObjectWriter;
  * <pre>
  *  Handlebars hbs = new Handlebars();
  *
- *  hbs.registerHelper("json", JSONHelper.INSTANCE);
+ *  hbs.registerHelper("json", JacksonHelper.INSTANCE);
  *
  *  ...
  *
@@ -61,7 +61,7 @@ import org.codehaus.jackson.map.ObjectWriter;
  *
  *  Handlebars hbs = new Handlebars();
  *
- *  hbs.registerHelper("json", JSONHelper.INSTANCE
+ *  hbs.registerHelper("json", JacksonHelper.INSTANCE
  *    .viewAlias("myView", foo.MyView.class));
  *
  *  ...
@@ -73,12 +73,12 @@ import org.codehaus.jackson.map.ObjectWriter;
  * @author edgar.espina
  * @since 0.4.0
  */
-public class JSONHelper implements Helper<Object> {
+public class JacksonHelper implements Helper<Object> {
 
   /**
-   * A singleton version of {@link JSONHelper}.
+   * A singleton version of {@link JacksonHelper}.
    */
-  public static final Helper<Object> INSTANCE = new JSONHelper();
+  public static final Helper<Object> INSTANCE = new JacksonHelper();
 
   /**
    * The JSON parser.
@@ -91,18 +91,18 @@ public class JSONHelper implements Helper<Object> {
   private final Map<String, Class<?>> alias = new HashMap<String, Class<?>>();
 
   /**
-   * Creates a new {@link JSONHelper}.
+   * Creates a new {@link JacksonHelper}.
    *
    * @param objectMapper The object's mapper. Required.
    */
-  public JSONHelper(final ObjectMapper objectMapper) {
+  public JacksonHelper(final ObjectMapper objectMapper) {
     mapper = notNull(objectMapper, "The object mapper is required.");
   }
 
   /**
-   * Creates a new {@link JSONHelper}.
+   * Creates a new {@link JacksonHelper}.
    */
-  private JSONHelper() {
+  private JacksonHelper() {
     this(new ObjectMapper());
   }
 
@@ -137,7 +137,7 @@ public class JSONHelper implements Helper<Object> {
    * @param viewClass The view class. Required.
    * @return This helper.
    */
-  public JSONHelper viewAlias(final String alias, final Class<?> viewClass) {
+  public JacksonHelper viewAlias(final String alias, final Class<?> viewClass) {
     this.alias.put(notEmpty(alias, "A view alias is required."),
         notNull(viewClass, "A view class is required."));
     return this;
