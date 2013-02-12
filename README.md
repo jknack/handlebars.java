@@ -629,6 +629,18 @@ Context context = Context
   .build();
 ```
 
+#### The JsonNodeValueResolver
+ Resolves a value from ```JsonNode``` objects.
+
+```java
+Context context = Context
+  .newBuilder(model)
+  .resolver(JsonNodeValueResolver.INSTANCE)
+  .build();
+```
+
+Available in [Jackson 1.x](https://github.com/jknack/handlebars.java/tree/master/handlebars-json) and [Jackson 2.x](https://github.com/jknack/handlebars.java/tree/master/handlebars-jackson2) modules.
+
 #### Using multiples value resolvers
  Finally, you can merge multiples value resolvers
 
@@ -707,7 +719,7 @@ Maven:
 Usage:
 
 ```java
- handlebars.registerHelper("json", new JSONHelper());
+ handlebars.registerHelper("json", new JacksonHelper());
 ```
 ```
  {{json context [view="foo.MyFullyQualifiedClassName"]}}
@@ -715,7 +727,7 @@ Usage:
 
 Alternative:
 ```java
- handlebars.registerHelper("json", new JSONHelper().viewAlias("myView",
+ handlebars.registerHelper("json", new JacksonHelper().viewAlias("myView",
    foo.MyFullyQualifiedClassName.class);
 ```
 ```
@@ -737,7 +749,7 @@ Maven:
  </dependency>
 ```
 
-Similar to Jackson1.x, except for the name of the helper: ```Jackson2Helper```
+Same as Jackson1.x, except for the name of the helper: ```Jackson2Helper```
 
 ## Markdown
 

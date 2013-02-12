@@ -115,6 +115,11 @@ public class Parser extends BaseParser<Object> {
       this.position = position;
       return true;
     }
+
+    @Override
+    public String toString() {
+      return text;
+    }
   }
 
   /**
@@ -651,7 +656,37 @@ public class Parser extends BaseParser<Object> {
               }
             }
         ),
-        blockEnd(name),
+        FirstOf(
+            blockEnd(name),
+            // handle block-end error
+            Sequence(EOI, new Action<Object>() {
+              @Override
+              public boolean run(final Context<Object> context) {
+                String found = "eof";
+                noffset = 1;
+                throw new ActionException(String.format("found: '%s', expected: '%s/%s%s'", found,
+                    startDelimiter, name.get(), endDelimiter));
+              }
+            }),
+            // '{{/' error
+            Sequence(startDelimiter(), '/', new Action<Object>() {
+              @Override
+              public boolean run(final Context<Object> context) {
+                String found = context.getMatch();
+                throw new ActionException(String.format("found: '%s', expected: '%s%s'", found,
+                    name.get(), endDelimiter));
+              }
+            }),
+            // '{{' error
+            Sequence(startDelimiter(), new Action<Object>() {
+              @Override
+              public boolean run(final Context<Object> context) {
+                String found = context.getMatch();
+                throw new ActionException(String.format("found: '%s', expected: '/%s%s'", found,
+                    name.get(), endDelimiter));
+              }
+            })
+        ),
         new Action<Object>() {
           @Override
           public boolean run(final Context<Object> context) {
