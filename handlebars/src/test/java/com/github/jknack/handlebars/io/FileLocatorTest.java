@@ -43,6 +43,7 @@ public class FileLocatorTest {
         new FileTemplateLoader(new File("src/test/resources"));
     Reader reader = locator.load(URI.create("template"));
     assertNotNull(reader);
+    reader.close();
   }
 
   @Test
@@ -51,6 +52,7 @@ public class FileLocatorTest {
         new FileTemplateLoader(new File("src/test/resources"), ".yml");
     Reader reader = locator.load(URI.create("mustache/specs/comments"));
     assertNotNull(reader);
+    reader.close();
   }
 
   @Test
@@ -59,6 +61,7 @@ public class FileLocatorTest {
         new FileTemplateLoader(new File("src/test/resources"), ".yml");
     Reader reader = locator.load(URI.create("mustache/specs/comments"));
     assertNotNull(reader);
+    reader.close();
   }
 
   @Test(expected = FileNotFoundException.class)
@@ -74,6 +77,7 @@ public class FileLocatorTest {
         new FileTemplateLoader(new File("src/test/resources/mustache/specs"), ".yml");
     Reader reader = locator.load(URI.create("comments"));
     assertNotNull(reader);
+    reader.close();
   }
 
   @Test
@@ -82,6 +86,7 @@ public class FileLocatorTest {
         new FileTemplateLoader(new File("src/test/resources/mustache/specs/"), ".yml");
     Reader reader = locator.load(URI.create("comments"));
     assertNotNull(reader);
+    reader.close();
   }
 
 }

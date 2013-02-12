@@ -41,6 +41,7 @@ public class ClasspathLocatorTest {
     TemplateLoader locator = new ClassPathTemplateLoader();
     Reader reader = locator.load(URI.create("template"));
     assertNotNull(reader);
+    reader.close();
   }
 
   @Test
@@ -49,6 +50,7 @@ public class ClasspathLocatorTest {
     locator.setSuffix(".yml");
     Reader reader = locator.load(URI.create("mustache/specs/comments"));
     assertNotNull(reader);
+    reader.close();
   }
 
   @Test
@@ -57,6 +59,7 @@ public class ClasspathLocatorTest {
     locator.setSuffix(".yml");
     Reader reader = locator.load(URI.create("/mustache/specs/comments"));
     assertNotNull(reader);
+    reader.close();
   }
 
   @Test(expected = FileNotFoundException.class)
@@ -70,6 +73,7 @@ public class ClasspathLocatorTest {
     TemplateLoader locator = new ClassPathTemplateLoader("/mustache/specs", ".yml");
     Reader reader = locator.load(URI.create("comments"));
     assertNotNull(reader);
+    reader.close();
   }
 
   @Test
@@ -77,5 +81,6 @@ public class ClasspathLocatorTest {
     TemplateLoader locator = new ClassPathTemplateLoader("/mustache/specs/", ".yml");
     Reader reader = locator.load(URI.create("comments"));
     assertNotNull(reader);
+    reader.close();
   }
 }

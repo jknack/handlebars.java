@@ -124,16 +124,4 @@ public class EachHelper implements Helper<Object> {
     return buffer.toString();
   }
 
-  /**
-   * Retrieve the next element available.
-   *
-   * @param parent The parent context.
-   * @param iterator The element iterator.
-   * @param index The nth position of this element. Zero base.
-   * @return The next element available.
-   */
-  protected Object next(final Context parent, final Iterator<Object> iterator,
-      final int index) {
-    return iterator.next();
-  }
 }

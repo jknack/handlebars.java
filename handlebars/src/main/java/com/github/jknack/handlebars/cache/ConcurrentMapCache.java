@@ -17,6 +17,8 @@
  */
 package com.github.jknack.handlebars.cache;
 
+import static org.apache.commons.lang3.Validate.notNull;
+
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -30,11 +32,6 @@ import com.github.jknack.handlebars.TemplateCache;
  * @since 0.1.0
  */
 public class ConcurrentMapCache implements TemplateCache {
-
-  /**
-   * NULL object.
-   */
-  private static final Object NULL = new Object();
 
   /**
    * The object storage.
@@ -54,12 +51,13 @@ public class ConcurrentMapCache implements TemplateCache {
 
   @Override
   public Template get(final Object key) {
-    Template value = this.store.get(key);
-    return value == NULL ? null : value;
+    return store.get(key);
   }
 
   @Override
   public void put(final Object key, final Template template) {
+    notNull(key, "The key is required.");
+    notNull(template, "The template is required.");
     store.put(key, template);
   }
 
