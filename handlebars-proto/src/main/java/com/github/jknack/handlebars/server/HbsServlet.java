@@ -150,13 +150,17 @@ public class HbsServlet extends HttpServlet {
    * @throws IOException If something goes wrong.
    */
   private Object model(final HttpServletRequest request) throws IOException {
-    Object data = json(request);
+    String jsonFilename = jsonFilename(request);
+    String ymlFilename = ymlFilename(request);
+
+    Object data = json(jsonFilename);
     if (data == null) {
-      data = yml(request);
+      data = yml(ymlFilename);
     }
     if (data == null) {
-      logger.error("file not found: {}.json", dataFile(request));
-      logger.error("file not found: {}.yml", dataFile(request));
+      String errorMessage = "file not found: {}";
+      logger.error(errorMessage, jsonFilename);
+      logger.error(errorMessage, ymlFilename);
       return Collections.emptyMap();
     }
     return data;
@@ -232,7 +236,7 @@ public class HbsServlet extends HttpServlet {
 
     Map<String, Object> root = new HashMap<String, Object>();
     Map<String, Object> error = new HashMap<String, Object>();
-    String filename = removeExtension(dataFile(request)) + ".json";
+    String filename = jsonFilename(request);
     JsonLocation location = ex.getLocation();
     String reason = ex.getMessage();
     int atIdx = reason.lastIndexOf(" at ");
@@ -309,13 +313,13 @@ public class HbsServlet extends HttpServlet {
   /**
    * Try to load a <code>json</code> file that matches the given request.
    *
-   * @param request The requested object.
    * @return The associated data.
    * @throws IOException If the file isn't found.
+   * @param filename
    */
-  private Object json(final HttpServletRequest request) throws IOException {
+  private Object json(String filename) throws IOException {
     try {
-      String json = read(removeExtension(dataFile(request)) + ".json");
+      String json = read(filename);
       if (json.trim().startsWith("[")) {
         return mapper.readValue(json, List.class);
       }
@@ -328,18 +332,30 @@ public class HbsServlet extends HttpServlet {
   /**
    * Try to load a <code>yml</code> file that matches the given request.
    *
-   * @param request The requested object.
    * @return A yaml map.
    * @throws IOException If the file isn't found.
+   * @param filename
    */
-  private Object yml(final HttpServletRequest request) throws IOException {
+  private Object yml(String filename) throws IOException {
     try {
-      String yml = read(removeExtension(dataFile(request)) + ".yml");
+      String yml = read(filename);
       Object data = yaml.load(yml);
       return data;
     } catch (FileNotFoundException ex) {
       return null;
     }
+  }
+
+  private String jsonFilename(HttpServletRequest request) {
+    return dataFilename(request, ".json");
+  }
+
+  private String ymlFilename(HttpServletRequest request) {
+    return dataFilename(request, ".yml");
+  }
+
+  private String dataFilename(HttpServletRequest request, String extension) {
+    return removeExtension(dataFile(request)) + extension;
   }
 
   /**
