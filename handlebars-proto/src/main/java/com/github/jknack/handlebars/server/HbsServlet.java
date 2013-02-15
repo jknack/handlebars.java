@@ -315,9 +315,9 @@ public class HbsServlet extends HttpServlet {
    *
    * @return The associated data.
    * @throws IOException If the file isn't found.
-   * @param filename
+   * @param filename the filename to read
    */
-  private Object json(String filename) throws IOException {
+  private Object json(final String filename) throws IOException {
     try {
       String json = read(filename);
       if (json.trim().startsWith("[")) {
@@ -334,9 +334,9 @@ public class HbsServlet extends HttpServlet {
    *
    * @return A yaml map.
    * @throws IOException If the file isn't found.
-   * @param filename
+   * @param filename the filename to read
    */
-  private Object yml(String filename) throws IOException {
+  private Object yml(final String filename) throws IOException {
     try {
       String yml = read(filename);
       Object data = yaml.load(yml);
@@ -346,15 +346,31 @@ public class HbsServlet extends HttpServlet {
     }
   }
 
-  private String jsonFilename(HttpServletRequest request) {
+  /**
+   * Construct the filename to parse json data from.
+   * @param request the current request
+   * @return filename to load json from
+   */
+  private String jsonFilename(final HttpServletRequest request) {
     return dataFilename(request, ".json");
   }
 
-  private String ymlFilename(HttpServletRequest request) {
+  /**
+   * Construct the filename to parse yml data from.
+   * @param request the current request
+   * @return filename to load yml from
+   */
+  private String ymlFilename(final HttpServletRequest request) {
     return dataFilename(request, ".yml");
   }
 
-  private String dataFilename(HttpServletRequest request, String extension) {
+  /**
+   * Construct the filename to parse data from.
+   * @param request the current request
+   * @param extension the file extension to use, e.g. ".json"
+   * @return filename to load data from
+   */
+  private String dataFilename(final HttpServletRequest request, final String extension) {
     return removeExtension(dataFile(request)) + extension;
   }
 
