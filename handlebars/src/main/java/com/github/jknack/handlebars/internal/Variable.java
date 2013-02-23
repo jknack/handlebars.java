@@ -27,6 +27,7 @@ import com.github.jknack.handlebars.Context;
 import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Helper;
 import com.github.jknack.handlebars.Lambda;
+import com.github.jknack.handlebars.MissingValueResolver;
 import com.github.jknack.handlebars.Options;
 
 /**
@@ -158,6 +159,11 @@ class Variable extends HelperResolver {
   private final Object constant;
 
   /**
+   * The missing value resolver strategy.
+   */
+  private MissingValueResolver missingValueResolver;
+
+  /**
    * Creates a new {@link Variable}.
    *
    * @param handlebars The handlebars instance.
@@ -186,6 +192,7 @@ class Variable extends HelperResolver {
       final Object value, final Type type, final List<Object> params,
       final Map<String, Object> hash) {
     super(handlebars);
+    missingValueResolver = handlebars.getMissingValueResolver();
     this.name = name.trim();
     constant = value;
     this.type = type;
@@ -236,6 +243,9 @@ class Variable extends HelperResolver {
       }
     } else {
       Object value = constant == null ? scope.get(name) : constant;
+      if (value == null) {
+        value = missingValueResolver.resolve(scope.model(), name);
+      }
       if (value != null) {
         if (value instanceof Lambda) {
           value =

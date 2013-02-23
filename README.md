@@ -653,6 +653,19 @@ Context context = Context
   ).build();
 ```
 
+### Using a MissingValueResolver
+ A ```MissingValueResolver``` let you use default values for ```{{variable}}``` expressions resolved to ```null```.
+ 
+```java
+  MissingValueResolver missingValueResolver = new MissingValueResolver() {
+    public String resolve(Object context, String name) {
+      //return a default value or throw an exception
+      ...;
+    }
+  };
+  Handlebars handlebars = new Handlebars().with(missingValueResolver);
+```
+
 ### Helper Missing
  By default, Handlebars.java throws an ```java.lang.IllegalArgumentException()``` if a helper cannot be resolved.
  You can override the default behaviour by providing a ```helperMissing``` helper. Example:
