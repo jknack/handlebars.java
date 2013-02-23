@@ -78,7 +78,9 @@ import com.github.jknack.handlebars.io.ClassPathTemplateLoader;
  * System.out.println(template.apply("Handlebars.java"));
  * </pre>
  *
- * <p>You can specicy a different ```TemplateLoader``` by:</p>
+ * <p>
+ * You can specicy a different ```TemplateLoader``` by:
+ * </p>
  *
  * <pre>
  * TemplateLoader loader = ...;
@@ -317,6 +319,11 @@ public class Handlebars {
    * Default is: false.
    */
   private boolean allowInfiniteLoops;
+
+  /**
+   * The missing value resolver strategy.
+   */
+  private MissingValueResolver missingValueResolver = MissingValueResolver.NULL;
 
   {
     // make sure default helpers are registered
@@ -574,6 +581,15 @@ public class Handlebars {
   }
 
   /**
+   * The missing value resolver.
+   *
+   * @return The missing value resolver.
+   */
+  public MissingValueResolver getMissingValueResolver() {
+    return missingValueResolver;
+  }
+
+  /**
    * If true, missing helper parameters will be resolve to their names.
    *
    * @return If true, missing helper parameters will be resolve to their names.
@@ -633,6 +649,18 @@ public class Handlebars {
    */
   public Handlebars with(final TemplateCache cache) {
     this.cache = notNull(cache, "The template loader is required.");
+    return this;
+  }
+
+  /**
+   * Set a new {@link MissingValueResolver}.
+   *
+   * @param missingValueResolver The missing value resolver. Required.
+   * @return This handlebars object.
+   */
+  public Handlebars with(final MissingValueResolver missingValueResolver) {
+    this.missingValueResolver = notNull(missingValueResolver,
+        "The missing value resolver is required.");
     return this;
   }
 
