@@ -19,8 +19,8 @@ package com.github.jknack.handlebars;
 
 /**
  * <p>
- * A strategy for dealing with missing values in simple {{variable}} lookup. Useful for using
- * default values and debugging an object graph.
+ * A strategy for dealing with missing values in <code>{{variable}}</code> expression. Useful for
+ * using default values and debugging an object graph.
  * </p>
  * <p>
  * Usage:
@@ -35,9 +35,6 @@ package com.github.jknack.handlebars;
  *    };
  *    Handlebars handlebars = new Handlebars().with(missingValue);
  * </pre>
- * <p>
- * Please note this strategy is for {{variable}} expression only.
- * <p>
  *
  * @author edgar.espina
  * @since 0.9.0

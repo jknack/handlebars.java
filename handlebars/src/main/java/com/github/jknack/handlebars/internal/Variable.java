@@ -230,12 +230,11 @@ class Variable extends HelperResolver {
       throws IOException {
     Helper<Object> helper = helper(name);
     if (helper != null) {
-      Object context = determineContext(scope);
       Options options = new Options.Builder(handlebars, scope, this)
           .setParams(params(scope))
           .setHash(hash(scope))
           .build();
-      CharSequence result = helper.apply(context, options);
+      CharSequence result = helper.apply(determineContext(scope), options);
       if (escape(result)) {
         writer.append(Handlebars.Utils.escapeExpression(result));
       } else if (result != null) {
@@ -244,7 +243,7 @@ class Variable extends HelperResolver {
     } else {
       Object value = constant == null ? scope.get(name) : constant;
       if (value == null) {
-        value = missingValueResolver.resolve(scope.model(), name);
+        value = missingValueResolver.resolve(determineContext(scope), name);
       }
       if (value != null) {
         if (value instanceof Lambda) {
