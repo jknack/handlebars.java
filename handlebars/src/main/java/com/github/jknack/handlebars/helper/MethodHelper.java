@@ -88,7 +88,7 @@ public class MethodHelper implements Helper<Object> {
           arg = context;
         }
       }
-      if (arg == null) {
+      if (arg == null && context != null) {
         arg = options.param(pidx, null);
         if (arg == null) {
           if (paramType.isInstance(options)) {
