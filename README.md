@@ -13,9 +13,7 @@ Handlebars provides the power necessary to let you build semantic templates effe
  In general, the syntax of **Handlebars** templates is a superset of [Mustache](http://mustache.github.com) templates. For basic syntax, check out the [Mustache manpage](http://mustache.github.com).
 
 ## Maven
- Development version: **0.9.1-SNAPSHOT**
-
- Stable version: **0.9.0**
+#### Stable version: **0.9.0**
 
 
 ```xml
@@ -25,6 +23,10 @@ Handlebars provides the power necessary to let you build semantic templates effe
     <version>${handlebars-version}</version>
   </dependency>
 ```
+ 
+#### Development version: **0.9.1-SNAPSHOT**
+
+SNAPSHOT versions are NOT synchronized to Central. If you want to use a snapshot version you need to add the https://oss.sonatype.org/content/repositories/snapshots/ repository to your pom.xml.
 
 ## Hello Handlebars.java
 
