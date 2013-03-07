@@ -53,6 +53,16 @@ class Partial extends BaseTemplate {
   private String switchContext;
 
   /**
+   * The start delimiter.
+   */
+  private String startDelimiter;
+
+  /**
+   * The end delimiter.
+   */
+  private String endDelimiter;
+
+  /**
    * Set the partial template.
    *
    * @param path The partial path.
@@ -80,7 +90,50 @@ class Partial extends BaseTemplate {
 
   @Override
   public String text() {
-    return "{{>" + path + "}}";
+    return new StringBuilder(startDelimiter)
+      .append('>')
+      .append(path)
+      .append(endDelimiter)
+      .toString();
+  }
+
+  /**
+   * Set the end delimiter.
+   *
+   * @param endDelimiter The end delimiter.
+   * @return This section.
+   */
+  public Partial endDelimiter(final String endDelimiter) {
+    this.endDelimiter = endDelimiter;
+    return this;
+  }
+
+  /**
+   * Set the start delimiter.
+   *
+   * @param startDelimiter The start delimiter.
+   * @return This section.
+   */
+  public Partial startDelimiter(final String startDelimiter) {
+    this.startDelimiter = startDelimiter;
+    return this;
+  }
+  /**
+   * The start delimiter.
+   *
+   * @return The start delimiter.
+   */
+  public String startDelimiter() {
+    return startDelimiter;
+  }
+
+  /**
+   * The end delimiter.
+   *
+   * @return The end delimiter.
+   */
+  public String endDelimiter() {
+    return endDelimiter;
   }
 
 }

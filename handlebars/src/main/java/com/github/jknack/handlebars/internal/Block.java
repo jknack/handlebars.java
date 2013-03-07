@@ -240,7 +240,7 @@ class Block extends HelperResolver {
    */
   private String text(final boolean complete) {
     StringBuilder buffer = new StringBuilder();
-    buffer.append("{{").append(type).append(name);
+    buffer.append(startDelimiter).append(type).append(name);
     String params = paramsToString();
     if (params.length() > 0) {
       buffer.append(" ").append(params);
@@ -249,13 +249,13 @@ class Block extends HelperResolver {
     if (hash.length() > 0) {
       buffer.append(" ").append(hash);
     }
-    buffer.append("}}");
+    buffer.append(endDelimiter);
     if (complete) {
       buffer.append(body == null ? "" : body.text());
     } else {
       buffer.append("\n...\n");
     }
-    buffer.append("{{/").append(name).append("}}");
+    buffer.append(startDelimiter).append('/').append(name).append(endDelimiter);
     return buffer.toString();
   }
 
