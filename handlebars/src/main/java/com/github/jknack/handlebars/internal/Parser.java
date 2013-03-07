@@ -491,6 +491,7 @@ public class Parser extends BaseParser<Object> {
           }
         },
         add(new Variable(handlebars, var.get().text, type, params, hash)
+            .startDelimiter(startDelimiter).endDelimiter(endDelimiter)
             .filename(filename).position(var.get().position.line,
                 var.get().position.column)));
   }
@@ -602,7 +603,7 @@ public class Parser extends BaseParser<Object> {
                     ParserFactory.create(handlebars, uri, partials,
                         startDelimiter, endDelimiter, stacktraceList);
                 // Avoid stack overflow exceptions
-                partial = new Partial();
+                partial = new Partial().startDelimiter(startDelimiter).endDelimiter(endDelimiter);
                 partials.put(partialPath, partial);
                 Template template = parser.parse(PartialInputBuffer.build(input,
                     hasTag ? line.toString() : null));
