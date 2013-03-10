@@ -18,7 +18,8 @@
 package com.github.jknack.handlebars.internal;
 
 import static org.apache.commons.lang3.StringUtils.defaultString;
-import static org.parboiled.common.Preconditions.checkNotNull;
+import static org.apache.commons.lang3.Validate.notEmpty;
+import static org.apache.commons.lang3.Validate.notNull;
 
 import java.io.IOException;
 import java.io.Writer;
@@ -72,8 +73,8 @@ class Partial extends BaseTemplate {
    */
   public Partial template(final String path, final Template template,
       final String context) {
-    this.path = checkNotNull(path, "The path is required.");
-    this.template = checkNotNull(template, "The template is required.");
+    this.path = notEmpty(path, "The path is required.");
+    this.template = notNull(template, "The template is required.");
     switchContext = defaultString(context, "this");
     return this;
   }

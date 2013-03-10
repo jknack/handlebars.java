@@ -28,7 +28,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
+import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.ComparisonFailure;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -65,10 +67,26 @@ public abstract class SpecTest {
 
   }
 
+  private static long start;
+
+  private static long count;
+
   private Spec spec;
 
   public SpecTest(final Spec spec) {
     this.spec = spec;
+  }
+
+  @BeforeClass
+  public static void onStart() {
+    start = System.currentTimeMillis();
+  }
+
+  @AfterClass
+  public static void onFinish() {
+    long end = System.currentTimeMillis();
+    System.out.printf("Number of executions: %s\n", count);
+    System.out.printf("Total Time: %sms\n", end - start);
   }
 
   @Test
@@ -127,6 +145,7 @@ public abstract class SpecTest {
   }
 
   private void run(final Spec spec) throws IOException {
+    count++;
     Report report = new Report();
     report.header(80);
     report.append("* %s", spec.description());

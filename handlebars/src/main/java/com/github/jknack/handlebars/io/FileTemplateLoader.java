@@ -17,8 +17,8 @@
  */
 package com.github.jknack.handlebars.io;
 
-import static org.parboiled.common.Preconditions.checkArgument;
-import static org.parboiled.common.Preconditions.checkNotNull;
+import static org.apache.commons.lang3.Validate.isTrue;
+import static org.apache.commons.lang3.Validate.notNull;
 
 import java.io.File;
 import java.io.FileReader;
@@ -43,9 +43,9 @@ public class FileTemplateLoader extends TemplateLoader {
    * @param suffix The view suffix. Required.
    */
   public FileTemplateLoader(final File basedir, final String suffix) {
-    checkNotNull(basedir, "The base dir is required.");
-    checkArgument(basedir.exists(), "File not found: %s", basedir);
-    checkArgument(basedir.isDirectory(), "A directory is required: %s",
+    notNull(basedir, "The base dir is required.");
+    isTrue(basedir.exists(), "File not found: %s", basedir);
+    isTrue(basedir.isDirectory(), "A directory is required: %s",
         basedir);
     setPrefix(basedir.toString());
     setSuffix(suffix);

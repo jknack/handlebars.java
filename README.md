@@ -931,10 +931,7 @@ Hello {{#child}}{{this.value}}{{/child}}
  * [Try Handlebars.js](http://tryhandlebarsjs.com/)
  * [Mustache](mustache.github.com)
  * [Humanize](https://github.com/mfornos/humanize)
-
-## Credits
- * [Mathias](https://github.com/sirthias): For the [parboiled](https://github.com/sirthias/parboiled) PEG library
- * [Handlebars.js](https://github.com/wycats/handlebars.js/)
+ * [ANTLRv4](http://http://www.antlr.org/)
 
 ## Author
  Edgar Espina (@edgarespina)

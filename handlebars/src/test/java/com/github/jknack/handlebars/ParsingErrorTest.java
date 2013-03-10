@@ -17,6 +17,8 @@
  */
 package com.github.jknack.handlebars;
 
+import static org.junit.Assert.fail;
+
 import java.io.IOException;
 
 import org.junit.Test;
@@ -30,26 +32,27 @@ import org.junit.Test;
 public class ParsingErrorTest extends AbstractTest {
 
   Hash source =
-      $("/inbox/inbox.hbs", "{{value",
-          "/block.hbs", "{{#block}}{{/nan}}",
-          "/delim.hbs", "{{=<% %>=}} <%Hello",
-          "/default.hbs", "{{> missingPartial}}",
-          "/partial.hbs", "{{#value}}",
-          "/invalidChar.hbs", "\n{{tag message.from \\\"user\\\"}}\n",
-          "/root.hbs", "{{> p1}}",
-          "/p1.hbs", "{{value",
-          "/deep.hbs", "{{> deep1}}",
-          "/deep1.hbs", " {{> deep2",
-          "/unbalancedDelim.hbs", "{{=<% >=}}",
-          "/partialName.hbs", "{{> /user}}",
-          "/partialName2.hbs", "{{> /layout/base}}",
-          "/paramOrder.hbs", "{{f param hashx=1 param}}",
-          "/idx1.hbs", "{{list[0]}}",
-          "/idx2.hbs", "{{list.[0}}",
-          "/idx3.hbs", "{{list.[]}}",
-          "/idx4.hbs", "{{list.[}}",
-          "/home.hbs", "{{>stackoverflow}}",
-          "/stackoverflow.hbs", "{{>home}}");
+      $("inbox/inbox", "{{value",
+          "block", "{{#block}}{{/nan}}",
+          "iblock", "{{#block}}invalid block",
+          "delim", "{{=<% %>=}} <%Hello",
+          "default", "{{> missingPartial}}",
+          "partial", "{{#value}}",
+          "invalidChar", "\n{{tag message.from \\\"user\\\"}}\n",
+          "root", "{{> p1}}",
+          "p1", "{{value",
+          "deep", "{{> deep1}}",
+          "deep1", " {{> deep2",
+          "unbalancedDelim", "{{=<%%>=}}",
+          "partialName", "{{> /user}}",
+          "partialName2", "{{> /layout/base}}",
+          "paramOrder", "{{f param hashx=1 param}}",
+          "idx1", "{{list[0]}}",
+          "idx2", "{{list.[0}}",
+          "idx3", "{{list.[]}}",
+          "idx4", "{{list.[}}",
+          "home", "{{>stackoverflow}}",
+          "stackoverflow", "{{>home}}");
 
   @Test(expected = HandlebarsException.class)
   public void correctPath() throws IOException {
@@ -97,6 +100,36 @@ public class ParsingErrorTest extends AbstractTest {
   }
 
   @Test(expected = HandlebarsException.class)
+  public void iblock() throws IOException {
+    parse("iblock");
+  }
+
+  @Test(expected = HandlebarsException.class)
+  public void tvar() throws IOException {
+    parse("{{{tvar");
+  }
+
+  @Test(expected = HandlebarsException.class)
+  public void tvarDelim() throws IOException {
+    parse("{{=** **=}}**{tvar");
+  }
+
+  @Test(expected = HandlebarsException.class)
+  public void ampvar() throws IOException {
+    parse("{{&tvar");
+  }
+
+  @Test(expected = HandlebarsException.class)
+  public void ampvarDelim() throws IOException {
+    parse("{{=** **=}}**&tvar");
+  }
+
+  @Test(expected = HandlebarsException.class)
+  public void missingId() throws IOException {
+    parse("{{is");
+  }
+
+  @Test(expected = HandlebarsException.class)
   public void partialName() throws IOException {
     parse("partialName");
   }
@@ -131,11 +164,12 @@ public class ParsingErrorTest extends AbstractTest {
     parse("stackoverflow");
   }
 
-  private Object parse(final String uri) throws IOException {
+  private void parse(final String candidate) throws IOException {
     try {
-      Template compiled = compile((String)source.get("/" + uri + ".hbs"));
+      String input = (String) source.get(candidate);
+      Template compiled = compile(input == null ? candidate : input, $(), source);
       System.out.println(compiled);
-      throw new IllegalStateException("An error is expected");
+      fail("An error is expected");
     } catch (HandlebarsException ex) {
       Handlebars.log(ex.getMessage());
       throw ex;

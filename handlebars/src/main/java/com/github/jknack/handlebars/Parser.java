@@ -17,16 +17,19 @@
  */
 package com.github.jknack.handlebars;
 
-import java.io.IOException;
+/**
+ * The Handlebars Parser.
+ *
+ * @author edgar.espina
+ * @since 0.10.0
+ */
+public interface Parser {
 
-import org.junit.Test;
-
-public class UnbalancedDelimitersTest {
-
-  @Test(expected = HandlebarsException.class)
-  public void unbalancedDelimiters() throws IOException {
-      Handlebars handlebars = new Handlebars();
-      handlebars.compile("{{=<% >=}}");
-  }
-
+  /**
+   * Parse a handlebars input and return a {@link Template}.
+   *
+   * @param input The input to parse. Required.
+   * @return A new Handlebars template.
+   */
+  Template parse(String input);
 }
