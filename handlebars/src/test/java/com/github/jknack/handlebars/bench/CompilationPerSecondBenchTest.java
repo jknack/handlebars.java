@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.junit.Assume;
+import org.junit.Before;
 import org.junit.Test;
 
 import com.github.jknack.handlebars.Handlebars;
@@ -11,6 +13,11 @@ import com.github.jknack.handlebars.MapTemplateLoader;
 import com.github.jknack.handlebars.bench.Bench.Unit;
 
 public class CompilationPerSecondBenchTest {
+
+  @Before
+  public void setup() {
+    Assume.assumeTrue(Boolean.valueOf(System.getProperty("run.bench")));
+  }
 
   @Test
   public void helloWorld() throws IOException {
