@@ -12,13 +12,17 @@ public class HbsParserTest {
 
   @Test
   public void hello() {
-    printTokens = true;
     parse("Hello {{who}}\n!");
   }
 
   @Test
   public void text() {
     parse("Hello world!");
+  }
+
+  @Test
+  public void newlines() {
+    parse("Alan's\rTest");
   }
 
   @Test

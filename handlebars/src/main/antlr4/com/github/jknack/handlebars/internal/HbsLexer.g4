@@ -13,6 +13,21 @@ lexer grammar HbsLexer;
     this.end = end;
   }
 
+  private boolean consumeUntil(final String token) {
+    int offset = 0;
+    while(!isEOF(offset) && !ahead(token, offset) &&
+      !Character.isWhitespace(_input.LA(offset + 1))) {
+      offset+=1;
+    }
+    if (offset == 0) {
+      return false;
+    }
+    // Since we found the text, increase the CharStream's index.
+    _input.seek(_input.index() + offset - 1);
+    getInterpreter().setCharPositionInLine(_tokenStartCharPositionInLine + offset - 1);
+    return true;
+  }
+
   private boolean tryToken(final String text) {
     if (ahead(text)) {
       // Since we found the text, increase the CharStream's index.
@@ -23,11 +38,19 @@ lexer grammar HbsLexer;
     return false;
   }
 
+  private boolean isEOF(final int offset) {
+    return _input.LA(offset + 1) == EOF;
+  }
+
   private boolean ahead(final String text) {
+    return ahead(text, 0);
+  }
+
+  private boolean ahead(final String text, int offset) {
 
     // See if `text` is ahead in the CharStream.
     for (int i = 0; i < text.length(); i++) {
-      int ch = _input.LA(i + 1);
+      int ch = _input.LA(i + offset + 1);
       if (ch != text.charAt(i)) {
         // Nope, we didn't find `text`.
         return false;
@@ -37,6 +60,9 @@ lexer grammar HbsLexer;
     return true;
   }
 }
+
+TEXT
+  : {consumeUntil(start)}?.;
 
 START_COMMENT
   : {tryToken(start + "!")}? . -> pushMode(COMMENTS)
@@ -81,11 +107,9 @@ SPACE
 
 NL
  :
-  '\r'? '\n'
+   '\r'? '\n'
+ | '\r'
  ;
-
-TEXT
-  : {!tryToken(start)}?.;
 
 mode SET_DELIMS;
 

@@ -44,7 +44,7 @@ statement
   ;
 
 text
-  : TEXT+
+  : TEXT
   ;
 
 spaces
