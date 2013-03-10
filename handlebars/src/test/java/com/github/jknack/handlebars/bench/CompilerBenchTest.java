@@ -36,7 +36,7 @@ public class CompilerBenchTest {
         "{{name}}{{#each kids}}{{>recursion}}{{/each}}");
 
     handlebars = new Handlebars(new MapTemplateLoader(templates));
-    handlebars.setAllowInifiteLoops(true);
+    handlebars.setAllowInfiniteLoops(true);
   }
 
   @Test

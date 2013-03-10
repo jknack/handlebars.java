@@ -710,6 +710,10 @@ Hello edgar!
  By default, Handlebars.java don't allow a partial to call him self (directly or indirectly).
  You can change this by setting the: ```Handlebars.setAllowInifiteLoops``` to ```true```, just avoid ```StackOverflowError```.
 
+### Pretty Whitspaces
+ The Mustache Spec has some rules for removing spaces and new lines, by default, this feature is off.
+ You can turn on this by setting the: ```Handlebars.setPrettyWhitespaces``` to ```true```.
+
 # Additional Helpers
 ## String Helpers
  Functions like abbreviate, capitalize, join, dateFormat, yesno, etc., are available from [StringHelpers] (https://github.com/jknack/handlebars.java/blob/master/handlebars/src/main/java/com/github/jknack/handlebars/StringHelpers.java).

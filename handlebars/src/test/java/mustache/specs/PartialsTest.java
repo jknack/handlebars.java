@@ -57,7 +57,7 @@ public class PartialsTest extends SpecTest {
 
   @Override
   protected Handlebars configure(final Handlebars handlebars) {
-    handlebars.setAllowInifiteLoops(true);
+    handlebars.setAllowInfiniteLoops(true);
     return super.configure(handlebars);
   }
 

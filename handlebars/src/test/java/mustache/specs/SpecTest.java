@@ -161,9 +161,10 @@ public abstract class SpecTest {
     report.append("EXPECTED:");
     report.append(expected);
     long startCompile = System.currentTimeMillis();
-    Template template =
-        configure(new Handlebars(new SpecResourceLocator(spec))).compile(URI
-            .create("template"));
+    Handlebars handlebars = new Handlebars(new SpecResourceLocator(spec));
+    handlebars.setPrettyWhitespaces(true);
+    configure(handlebars);
+    Template template = handlebars.compile(URI.create("template"));
     long endCompile = System.currentTimeMillis();
     long startMerge = System.currentTimeMillis();
     CharSequence output = template.apply(data);

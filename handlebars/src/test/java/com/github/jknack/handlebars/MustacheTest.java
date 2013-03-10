@@ -14,6 +14,7 @@ public class MustacheTest {
   @Test
   public void demo() throws IOException {
     Handlebars handlebars = new Handlebars();
+    handlebars.setPrettyWhitespaces(true);
     Map<String, Object> hash = new HashMap<String, Object>();
     hash.put("name", "Chris");
     hash.put("value", 10000);

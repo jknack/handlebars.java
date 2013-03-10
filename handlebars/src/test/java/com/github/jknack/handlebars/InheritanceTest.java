@@ -40,6 +40,10 @@ public class InheritanceTest {
   static Handlebars handlebars =
       new Handlebars(new ClassPathTemplateLoader("/inheritance"));
 
+  static {
+    handlebars.setPrettyWhitespaces(true);
+  }
+
   private String name;
 
   public InheritanceTest(final String name) {
@@ -49,7 +53,6 @@ public class InheritanceTest {
   @Test
   public void inheritance() throws IOException {
     try {
-
       Template template = handlebars.compile(URI.create(name));
       CharSequence result = template.apply(new Object());
       String expected = FileUtils.readFileToString(new File("src/test/resources/inheritance/"

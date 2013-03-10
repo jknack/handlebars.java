@@ -79,7 +79,7 @@ import com.github.jknack.handlebars.io.ClassPathTemplateLoader;
  * </pre>
  *
  * <p>
- * You can specicy a different ```TemplateLoader``` by:
+ * You can specify a different ```TemplateLoader``` by:
  * </p>
  *
  * <pre>
@@ -309,6 +309,11 @@ public class Handlebars {
   private boolean stringParams;
 
   /**
+   * If true, unnecessary whitespace and new lines will be removed.
+   */
+  private boolean prettyWhitespaces;
+
+  /**
    * The helper registry.
    */
   private final Map<String, Helper<Object>> helpers =
@@ -497,12 +502,12 @@ public class Handlebars {
    * <ul>
    * <li>A method can/can't be static</li>
    * <li>The method's name became the helper's name</li>
-   * <li>Context, parameters and options are all optionals</li>
+   * <li>Context, parameters and options are all optional</li>
    * <li>If context and options are present they must be the first and last arguments of
    * the method</li>
    * </ul>
    *
-   * Instance and static mehtods will be registered as helpers.
+   * Instance and static methods will be registered as helpers.
    *
    * @param helperSource The helper source. Required.
    * @return This handlebars object.
@@ -530,12 +535,12 @@ public class Handlebars {
    * <ul>
    * <li>A method can/can't be static</li>
    * <li>The method's name became the helper's name</li>
-   * <li>Context, parameters and options are all optionals</li>
+   * <li>Context, parameters and options are all optional</li>
    * <li>If context and options are present they must be the first and last arguments of
    * the method</li>
    * </ul>
    *
-   * Only static mehtods will be registered as helpers.
+   * Only static methods will be registered as helpers.
    *
    * @param helperSource The helper source. Required.
    * @return This handlebars object.
@@ -603,6 +608,26 @@ public class Handlebars {
   }
 
   /**
+   * If true, unnecessary spaces and new lines will be removed from output. Default is: false.
+   *
+   * @return If true, unnecessary spaces and new lines will be removed from output. Default is:
+   *         false.
+   */
+  public boolean prettyWhitespaces() {
+    return prettyWhitespaces;
+  }
+
+  /**
+   * If true, unnecessary spaces and new lines will be removed from output. Default is: false.
+   *
+   * @param prettyWhitespaces If true, unnecessary spaces and new lines will be removed from output.
+   *        Default is: false.
+   */
+  public void setPrettyWhitespaces(final boolean prettyWhitespaces) {
+    this.prettyWhitespaces = prettyWhitespaces;
+  }
+
+  /**
    * If true, missing helper parameters will be resolve to their names.
    *
    * @param stringParams If true, missing helper parameters will be resolve to
@@ -630,7 +655,7 @@ public class Handlebars {
    * @param allowInfiniteLoops If true, templates will be able to call him self directly or
    *        indirectly.
    */
-  public void setAllowInifiteLoops(final boolean allowInfiniteLoops) {
+  public void setAllowInfiniteLoops(final boolean allowInfiniteLoops) {
     this.allowInfiniteLoops = allowInfiniteLoops;
   }
 
@@ -655,6 +680,7 @@ public class Handlebars {
     this.parserFactory = notNull(parserFactory, "A parserFactory is required.");
     return this;
   }
+
   /**
    * Set a new {@link TemplateCache}.
    *

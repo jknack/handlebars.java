@@ -495,7 +495,10 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<BaseTemplate> {
    * @return True, if tag instruction was processed.
    */
   private boolean hasTag() {
-    return hasTag == null ? false : hasTag.booleanValue();
+    if (handlebars.prettyWhitespaces()) {
+      return hasTag == null ? false : hasTag.booleanValue();
+    }
+    return false;
   }
 
   /**

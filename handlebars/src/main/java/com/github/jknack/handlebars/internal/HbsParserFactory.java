@@ -100,7 +100,11 @@ public class HbsParserFactory implements ParserFactory {
         parser.setErrorHandler(new HbsErrorStrategy());
         parser.getInterpreter().setPredictionMode(PredictionMode.SLL);
         ParseTree tree = parser.template();
-        new ParseTreeWalker().walk(new SpaceTrimmer(), tree);
+
+        if (handlebars.prettyWhitespaces()) {
+          // remove unnecessary spaces and new lines
+          new ParseTreeWalker().walk(new SpaceTrimmer(), tree);
+        }
 
         TemplateBuilder builder = new TemplateBuilder(handlebars, fname, partials, stacktrace) {
           @Override
