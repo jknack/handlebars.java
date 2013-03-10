@@ -51,7 +51,7 @@ class Block extends HelperResolver {
   /**
    * The body template.
    */
-  private BaseTemplate body;
+  private Template body;
 
   /**
    * The section's name.
@@ -81,7 +81,7 @@ class Block extends HelperResolver {
   /**
    * Inverse section for if/else clauses.
    */
-  private BaseTemplate inverse;
+  private Template inverse;
 
   /**
    * Creates a new {@link Block}.
@@ -106,8 +106,11 @@ class Block extends HelperResolver {
   @SuppressWarnings("unchecked")
   @Override
   protected void merge(final Context context, final Writer writer) throws IOException {
+    if (body == null) {
+      return;
+    }
     Helper<Object> helper = helper(name);
-    BaseTemplate template = body;
+    Template template = body;
     final Object childContext;
     Context currentScope = context;
     if (helper == null) {
@@ -170,7 +173,7 @@ class Block extends HelperResolver {
    * @param body The template body. Required.
    * @return This section.
    */
-  public Block body(final BaseTemplate body) {
+  public Block body(final Template body) {
     this.body = notNull(body, "The template's body is required.");
     return this;
   }
@@ -181,7 +184,7 @@ class Block extends HelperResolver {
    * @param inverse The inverse template. Required.
    * @return This section.
    */
-  public Template inverse(final BaseTemplate inverse) {
+  public Template inverse(final Template inverse) {
     this.inverse = notNull(inverse, "The inverse's template is required.");
     return this;
   }

@@ -19,11 +19,12 @@ package com.github.jknack.handlebars.internal;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 
 import com.github.jknack.handlebars.Context;
+import com.github.jknack.handlebars.Template;
 
 /**
  * A list of templates.
@@ -31,40 +32,28 @@ import com.github.jknack.handlebars.Context;
  * @author edgar.espina
  * @since 0.1.0
  */
-class TemplateList extends BaseTemplate implements Iterable<BaseTemplate> {
+class TemplateList extends BaseTemplate implements Iterable<Template> {
 
   /**
    * The list of child templates.
    */
-  private final List<BaseTemplate> nodes = new ArrayList<BaseTemplate>();
+  private final List<Template> nodes = new LinkedList<Template>();
 
   /**
    * Add a child template. Empty templates aren't added.
    *
-   * @param child The childe template.
+   * @param child The child template.
    * @return True, if the template was added.
    */
-  public boolean add(final BaseTemplate child) {
-    boolean add = true;
-    BaseTemplate candidate = child;
-    if (candidate instanceof TemplateList) {
-      TemplateList sequence = (TemplateList) candidate;
-      if (sequence.size() == 0) {
-        add = false;
-      } else if (sequence.size() == 1) {
-        candidate = sequence.iterator().next();
-      }
-    }
-    if (add) {
-      nodes.add(candidate);
-    }
-    return add;
+  public boolean add(final Template child) {
+    nodes.add(child);
+    return true;
   }
 
   @Override
   protected void merge(final Context context, final Writer writer)
       throws IOException {
-    for (BaseTemplate node : nodes) {
+    for (Template node : nodes) {
       node.apply(context, writer);
     }
   }
@@ -72,14 +61,14 @@ class TemplateList extends BaseTemplate implements Iterable<BaseTemplate> {
   @Override
   public String text() {
     StringBuilder buffer = new StringBuilder();
-    for (BaseTemplate node : nodes) {
+    for (Template node : nodes) {
       buffer.append(node.text());
     }
     return buffer.toString();
   }
 
   @Override
-  public Iterator<BaseTemplate> iterator() {
+  public Iterator<Template> iterator() {
     return nodes.iterator();
   }
 

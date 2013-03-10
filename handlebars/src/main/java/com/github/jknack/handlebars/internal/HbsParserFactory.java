@@ -114,7 +114,7 @@ public class HbsParserFactory implements ParserFactory {
             errorReporter.syntaxError(parser, offendingToken, line, column, message, null);
           }
         };
-        BaseTemplate template = builder.visit(tree);
+        Template template = builder.visit(tree);
         return template;
       }
     };

@@ -35,7 +35,7 @@ class Text extends BaseTemplate {
   /**
    * The plain text. Required.
    */
-  private final String text;
+  private String text;
 
   /**
    * Creates a new {@link Text}.
@@ -55,6 +55,17 @@ class Text extends BaseTemplate {
   protected void merge(final Context scope, final Writer writer)
       throws IOException {
     writer.append(text);
+  }
+
+  /**
+   * Append text.
+   *
+   * @param text The text to append.
+   * @return This object.
+   */
+  public Text append(final String text) {
+    this.text += text;
+    return this;
   }
 
 }
