@@ -17,7 +17,7 @@
  */
 package com.github.jknack.handlebars.io;
 
-import static org.parboiled.common.Preconditions.checkNotNull;
+import static org.apache.commons.lang3.Validate.notNull;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -54,8 +54,7 @@ public class ServletContextTemplateLoader extends TemplateLoader {
       final String prefix, final String suffix) {
     setPrefix(prefix);
     setSuffix(suffix);
-    this.servletContext =
-        checkNotNull(servletContext, "The servlet context is required.");
+    this.servletContext = notNull(servletContext, "The servlet context is required.");
   }
 
   /**

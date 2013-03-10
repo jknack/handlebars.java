@@ -15,7 +15,6 @@ package com.github.jknack.handlebars;
 
 import static org.apache.commons.lang3.Validate.notEmpty;
 import static org.apache.commons.lang3.Validate.notNull;
-import static org.parboiled.common.Preconditions.checkNotNull;
 
 import java.lang.reflect.Array;
 import java.util.Collections;
@@ -286,7 +285,7 @@ public class Context {
    * @return A child context.
    */
   private static Context child(final Context parent, final Object model) {
-    checkNotNull(parent, "A parent context is required.");
+    notNull(parent, "A parent context is required.");
     Context child = new Context(model);
     child.extendedContext = new Context(new HashMap<String, Object>());
     child.parent = parent;
@@ -302,7 +301,7 @@ public class Context {
    */
   @SuppressWarnings({"unchecked" })
   private void combine(final String name, final Object model) {
-    checkNotNull(name, "The variable's name is required.");
+    notEmpty(name, "The variable's name is required.");
     Map<String, Object> map = (Map<String, Object>) extendedContext.model;
     map.put(name, model);
   }

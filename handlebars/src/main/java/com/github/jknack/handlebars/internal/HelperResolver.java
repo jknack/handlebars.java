@@ -13,7 +13,7 @@
  */
 package com.github.jknack.handlebars.internal;
 
-import static org.parboiled.common.Preconditions.checkNotNull;
+import static org.apache.commons.lang3.Validate.notNull;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -61,8 +61,7 @@ abstract class HelperResolver extends BaseTemplate {
    * @param handlebars The handlebars object. Required.
    */
   public HelperResolver(final Handlebars handlebars) {
-    this.handlebars =
-        checkNotNull(handlebars, "A handlebars instance is required.");
+    this.handlebars = notNull(handlebars, "The handlebars can't be null.");
   }
 
   /**

@@ -56,16 +56,6 @@ class Variable extends HelperResolver {
      */
     TRIPLE_VAR {
       @Override
-      public String start(final String startDelimiter) {
-        return "{{{";
-      }
-
-      @Override
-      public String end(final String endDelimiter) {
-        return "}}}";
-      }
-
-      @Override
       public boolean escape() {
         return false;
       }
@@ -75,11 +65,6 @@ class Variable extends HelperResolver {
      * Dont escape a variable.
      */
     AMPERSAND_VAR {
-      @Override
-      public String start(final String startDelimiter) {
-        return startDelimiter + '&';
-      }
-
       @Override
       public boolean escape() {
         return false;
@@ -97,54 +82,12 @@ class Variable extends HelperResolver {
     };
 
     /**
-     * The start delimiter.
-     *
-     * @param startDelimiter The start delimiter used in parsing.
-     * @return The start delimiter.
-     */
-    public String start(final String startDelimiter) {
-      return startDelimiter;
-    }
-
-    /**
-     * The end delimiter.
-     *
-     * @param endDelimiter The end delimiter used in parsing.
-     * @return The end delimiter.
-     */
-    public String end(final String endDelimiter) {
-      return endDelimiter;
-    }
-
-    /**
      * Return true if the value must be escaped.
      *
      * @return True if the value must be escaped.
      */
     public abstract boolean escape();
 
-    /**
-     * Format the variable's name.
-     *
-     * @param name The variable's name.
-     * @param params The parameters.
-     * @param hash The hash.
-     * @param startDelimiter The start delimiter used in parsing.
-     * @param endDelimiter The end delimiter used in parsing.
-     * @return The variable's name with the start and end delimiters.
-     */
-    public String format(final String name, final String params,
-        final String hash, final String startDelimiter, final String endDelimiter) {
-      StringBuilder buffer = new StringBuilder();
-      buffer.append(start(startDelimiter)).append(name);
-      if (params.length() > 0) {
-        buffer.append(" ").append(params);
-      }
-      if (hash.length() > 0) {
-        buffer.append(" ").append(hash);
-      }
-      return buffer.append(end(endDelimiter)).toString();
-    }
   }
 
   /**
@@ -153,7 +96,7 @@ class Variable extends HelperResolver {
   private final String name;
 
   /**
-   * The variable's type. Required.
+   * The variable type.
    */
   private final Type type;
 
@@ -298,7 +241,17 @@ class Variable extends HelperResolver {
 
   @Override
   public String text() {
-    return type.format(name, paramsToString(), hashToString(), startDelimiter, endDelimiter);
+    StringBuilder buffer = new StringBuilder();
+    buffer.append(startDelimiter).append(name);
+    String params = paramsToString();
+    if (params.length() > 0) {
+      buffer.append(" ").append(params);
+    }
+    String hash = hashToString();
+    if (hash.length() > 0) {
+      buffer.append(" ").append(hash);
+    }
+    return buffer.append(endDelimiter).toString();
   }
 
   /**

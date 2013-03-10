@@ -18,58 +18,42 @@
   <build>
     <plugins>
       <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>exec-maven-plugin</artifactId>
-        <version>1.2.1</version>
+        <groupId>org.antlr</groupId>
+        <artifactId>antlr4-maven-plugin</artifactId>
+        <version>4.0</version>
+        <configuration>
+          <libDirectory>src/main/antlr4</libDirectory>
+          <outputDirectory>target/antlr4</outputDirectory>
+          <visitor>true</visitor>
+        </configuration>
         <executions>
           <execution>
-            <id>dump-parboiled-classes</id>
-            <phase>process-classes</phase>
             <goals>
-              <goal>exec</goal>
+              <goal>antlr4</goal>
             </goals>
-            <configuration>
-              <executable>java</executable>
-              <arguments>
-                <argument>-javaagent:../handlebars-parboiled-processor/target/handlebars-parboiled-processor-${project.version}.jar</argument>
-                <argument>-Doutput.dir=${project.build.outputDirectory}</argument>
-                <argument>-cp</argument>
-                <classpath />
-                <argument>com.github.jknack.handlebars.internal.ParboiledProcessor</argument>
-              </arguments>
-            </configuration>
           </execution>
+        </executions>
+      </plugin>
 
-          <!-- JavaC -->
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <version>1.7</version>
+        <executions>
           <execution>
-            <id>replace-parser-factory</id>
-            <phase>process-classes</phase>
+            <id>add-antlr-source</id>
+            <phase>generate-sources</phase>
             <goals>
-              <goal>exec</goal>
+              <goal>add-source</goal>
             </goals>
             <configuration>
-              <executable>javac</executable>
-              <arguments>
-                <argument>-d</argument>
-                <argument>${project.build.outputDirectory}</argument>
-                <argument>-source</argument>
-                <argument>1.6</argument>
-                <argument>-target</argument>
-                <argument>1.6</argument>
-                <argument>-classpath</argument>
-                <classpath />
-                <argument>${project.basedir}/src/main/resources/com/github/jknack/handlebars/internal/ParserFactory.java</argument>
-              </arguments>
+              <sources>
+                <source>src/main/antlr4</source>
+                <source>target/antlr4</source>
+              </sources>
             </configuration>
           </execution>
         </executions>
-        <dependencies>
-          <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>handlebars-parboiled-processor</artifactId>
-            <version>${project.version}</version>
-          </dependency>
-        </dependencies>
       </plugin>
 
       <plugin>
@@ -96,10 +80,17 @@
       <artifactId>commons-lang3</artifactId>
     </dependency>
 
-    <!-- Parboiled -->
+    <!-- ANTLRv4 -->
     <dependency>
-      <groupId>org.parboiled</groupId>
-      <artifactId>parboiled-java</artifactId>
+      <groupId>org.antlr</groupId>
+      <artifactId>antlr4-runtime</artifactId>
+      <version>4.0</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.abego.treelayout</groupId>
+          <artifactId>org.abego.treelayout.core</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
     <!-- Rhino -->

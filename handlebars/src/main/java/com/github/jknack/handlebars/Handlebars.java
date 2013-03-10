@@ -41,7 +41,7 @@ import com.github.jknack.handlebars.helper.PartialHelper;
 import com.github.jknack.handlebars.helper.PrecompileHelper;
 import com.github.jknack.handlebars.helper.UnlessHelper;
 import com.github.jknack.handlebars.helper.WithHelper;
-import com.github.jknack.handlebars.internal.ParserFactory;
+import com.github.jknack.handlebars.internal.HbsParserFactory;
 import com.github.jknack.handlebars.io.ClassPathTemplateLoader;
 
 /**
@@ -325,6 +325,11 @@ public class Handlebars {
    */
   private MissingValueResolver missingValueResolver = MissingValueResolver.NULL;
 
+  /**
+   * The parser factory. Required.
+   */
+  private ParserFactory parserFactory = new HbsParserFactory();
+
   {
     // make sure default helpers are registered
     registerBuiltinsHelpers(this);
@@ -435,9 +440,8 @@ public class Handlebars {
     Template template = cache.get(key);
     if (template == null) {
       debug("Key not found: %s", key);
-      template =
-          ParserFactory.create(this, filename, startDelimiter, endDelimiter)
-              .parse(input);
+      template = parserFactory.create(this, filename, startDelimiter, endDelimiter)
+          .parse(input);
       cache.put(key, template);
       debug("Key saved: %s", key);
     }
@@ -642,6 +646,16 @@ public class Handlebars {
   }
 
   /**
+   * Set a new {@link ParserFactory}.
+   *
+   * @param parserFactory A parser factory. Required.
+   * @return This handlebars object.
+   */
+  public Handlebars with(final ParserFactory parserFactory) {
+    this.parserFactory = notNull(parserFactory, "A parserFactory is required.");
+    return this;
+  }
+  /**
    * Set a new {@link TemplateCache}.
    *
    * @param cache The template cache. Required.
@@ -662,6 +676,15 @@ public class Handlebars {
     this.missingValueResolver = notNull(missingValueResolver,
         "The missing value resolver is required.");
     return this;
+  }
+
+  /**
+   * Return a parser factory.
+   *
+   * @return A parsert factory.
+   */
+  public ParserFactory getParserFactory() {
+    return parserFactory;
   }
 
   /**

@@ -17,7 +17,7 @@
  */
 package com.github.jknack.handlebars.internal;
 
-import static org.parboiled.common.Preconditions.checkNotNull;
+import static org.apache.commons.lang3.Validate.notNull;
 
 import java.io.IOException;
 import java.io.Writer;
@@ -96,7 +96,7 @@ class Block extends HelperResolver {
       final boolean inverted, final List<Object> params,
       final Map<String, Object> hash) {
     super(handlebars);
-    this.name = checkNotNull(name, "Section's name is required.");
+    this.name = notNull(name, "The name is required.");
     this.inverted = inverted;
     type = inverted ? "^" : "#";
     params(params);
@@ -171,7 +171,7 @@ class Block extends HelperResolver {
    * @return This section.
    */
   public Block body(final BaseTemplate body) {
-    this.body = checkNotNull(body, "The template's body is required.");
+    this.body = notNull(body, "The template's body is required.");
     return this;
   }
 
@@ -182,8 +182,7 @@ class Block extends HelperResolver {
    * @return This section.
    */
   public Template inverse(final BaseTemplate inverse) {
-    this.inverse =
-        checkNotNull(inverse, "The inverse template's body is required.");
+    this.inverse = notNull(inverse, "The inverse's template is required.");
     return this;
   }
 
