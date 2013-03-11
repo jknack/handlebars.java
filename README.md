@@ -361,6 +361,34 @@ The generated code looks like:
 
 Finally, it converts message patterns like: ```Hi {0}``` into ```Hi {{arg0}}```. This make possible to the [I18n](https://github.com/fnando/i18n-js) JS library to interpolate variables.
 
+### TypeSafe Templates
+ TypeSafe templates are created by extending the ```TypeSafeTemplate``` interface. For example:
+
+```java
+
+// 1
+public static interface UserTemplate extends TypeSafeTemplate<User> {
+
+  // 2
+  public UserTemplate setAge(int age);
+
+  public UserTemplate setRole(String role);
+
+}
+
+// 3
+UserTemplate userTmpl = handlebars.compile("{{name}} is {{age}} years old!")
+  .as(UserTemplate.class);
+
+userTmpl.setAge(32);
+
+assertEquals("Edgar is 32 years old!", userTmpl.apply(new User("Edgar")));
+```
+
+ 1. You extend the ```TypeSafeTemplate``` interface.
+ 2. You add all the set method you need. The set method can returns ```void``` or ```TypeSafeTemplate``` object.
+ 3. You create a new type safe template using the: ```as()``` method.
+
 ### Registering Helpers
 
 There are two ways of registering helpers.

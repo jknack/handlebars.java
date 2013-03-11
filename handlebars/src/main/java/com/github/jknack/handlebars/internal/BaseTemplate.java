@@ -15,12 +15,20 @@ package com.github.jknack.handlebars.internal;
 
 import static org.apache.commons.lang3.StringUtils.join;
 import static org.apache.commons.lang3.StringUtils.split;
+import static org.apache.commons.lang3.Validate.isTrue;
 import static org.apache.commons.lang3.Validate.notNull;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Writer;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.lang.reflect.Proxy;
+import java.util.HashMap;
+import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
 import org.mozilla.javascript.tools.ToolErrorReporter;
@@ -29,6 +37,7 @@ import com.github.jknack.handlebars.Context;
 import com.github.jknack.handlebars.HandlebarsError;
 import com.github.jknack.handlebars.HandlebarsException;
 import com.github.jknack.handlebars.Template;
+import com.github.jknack.handlebars.TypeSafeTemplate;
 
 /**
  * Base class for {@link Template}.
@@ -177,6 +186,69 @@ abstract class BaseTemplate implements Template {
     this.line = line;
     this.column = column;
     return this;
+  }
+
+  @Override
+  public <T, S extends TypeSafeTemplate<T>> S as(final Class<S> rootType) {
+    notNull(rootType, "The rootType can't be null.");
+    isTrue(rootType.isInterface(), "Not an interface: %s", rootType.getName());
+    @SuppressWarnings("unchecked")
+    S template = (S) newTypeSafeTemplate(rootType, this);
+    return template;
+  }
+
+  @Override
+  public <T> TypeSafeTemplate<T> as() {
+    @SuppressWarnings("unchecked")
+    TypeSafeTemplate<T> template = (TypeSafeTemplate<T>) newTypeSafeTemplate(
+        TypeSafeTemplate.class, this);
+    return template;
+  }
+
+  /**
+   * Creates a new {@link TypeSafeTemplate}.
+   *
+   * @param rootType The target type.
+   * @param template The target template.
+   * @return A new {@link TypeSafeTemplate}.
+   */
+  private static Object newTypeSafeTemplate(final Class<?> rootType, final Template template) {
+    return Proxy.newProxyInstance(template.getClass().getClassLoader(), new Class[]{rootType },
+        new InvocationHandler() {
+          private Map<String, Object> attributes = new HashMap<String, Object>();
+
+          @Override
+          public Object invoke(final Object proxy, final Method method, final Object[] args)
+              throws Throwable {
+            String methodName = method.getName();
+            if ("apply".equals(methodName)) {
+              Context context = Context.newBuilder(args[0])
+                  .combine(attributes)
+                  .build();
+              attributes.clear();
+              if (args.length == 2) {
+                template.apply(context, (Writer) args[1]);
+                return null;
+              }
+              return template.apply(context);
+            }
+
+            if (Modifier.isPublic(method.getModifiers()) && methodName.startsWith("set")) {
+              String attrName = StringUtils.uncapitalize(methodName.substring("set".length()));
+              if (args != null && args.length == 1 && attrName.length() > 0) {
+                attributes.put(attrName, args[0]);
+                if (TypeSafeTemplate.class.isAssignableFrom(method.getReturnType())) {
+                  return proxy;
+                }
+                return null;
+              }
+            }
+            String message = String.format(
+                "No handler method for: '%s(%s)', expected method signature is: 'setXxx(value)'",
+                methodName, args == null ? "" : join(args, ", "));
+            throw new UnsupportedOperationException(message);
+          }
+        });
   }
 
   @Override

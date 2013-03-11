@@ -61,6 +61,29 @@ public interface Template {
     public String toJavaScript() {
       return "";
     }
+
+    @SuppressWarnings({"rawtypes", "unchecked" })
+    @Override
+    public <T> TypeSafeTemplate<T> as() {
+      TypeSafeTemplate template = as(TypeSafeTemplate.class);
+      return template;
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public <T, S extends TypeSafeTemplate<T>> S as(final Class<S> rootType) {
+      TypeSafeTemplate<T> template = new TypeSafeTemplate<T>() {
+        @Override
+        public String apply(final T context) throws IOException {
+          return "";
+        }
+
+        @Override
+        public void apply(final T context, final Writer writer) throws IOException {
+        }
+      };
+      return (S) template;
+    }
   };
 
   /**
@@ -113,4 +136,22 @@ public interface Template {
    * @throws IOException If compilation fails.
    */
   String toJavaScript() throws IOException;
+
+  /**
+   * Creates a new {@link TypeSafeTemplate}.
+   *
+   * @param type The template type. Required.
+   * @param <T> The root type.
+   * @param <S> The template type.
+   * @return A new {@link TypeSafeTemplate}.
+   */
+  <T, S extends TypeSafeTemplate<T>> S as(final Class<S> type);
+
+  /**
+   * Creates a new {@link TypeSafeTemplate}.
+   *
+   * @param <T> The root type.
+   * @return A new {@link TypeSafeTemplate}.
+   */
+  <T> TypeSafeTemplate<T> as();
 }
