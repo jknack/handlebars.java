@@ -6,7 +6,6 @@ import static com.github.jknack.handlebars.StringHelpers.capitalizeFirst;
 import static com.github.jknack.handlebars.StringHelpers.center;
 import static com.github.jknack.handlebars.StringHelpers.cut;
 import static com.github.jknack.handlebars.StringHelpers.defaultIfEmpty;
-import static com.github.jknack.handlebars.StringHelpers.join;
 import static com.github.jknack.handlebars.StringHelpers.ljust;
 import static com.github.jknack.handlebars.StringHelpers.lower;
 import static com.github.jknack.handlebars.StringHelpers.rjust;
@@ -35,7 +34,7 @@ import org.junit.Test;
  * @author edgar.espina
  * @since 0.2.2
  */
-public class StringHelpersTest {
+public class StringHelpersTest extends AbstractTest {
 
   @Test
   public void capFirst() throws IOException {
@@ -130,40 +129,33 @@ public class StringHelpersTest {
   }
 
   @Test
-  public void join() throws IOException {
-    Options options = createMock(Options.class);
-    expect(options.param(0, null)).andReturn(", ").anyTimes();
-    expect(options.hash("prefix", "")).andReturn("").anyTimes();
-    expect(options.hash("suffix", "")).andReturn("").anyTimes();
+  public void joinIterable() throws IOException {
+    shouldCompileTo("{{{join this \", \"}}}", Arrays.asList("6", "7", "8"),
+        $("join", StringHelpers.join), "6, 7, 8");
+  }
 
-    replay(options);
+  @Test
+  public void joinIterator() throws IOException {
+    shouldCompileTo("{{{join this \", \"}}}", Arrays.asList("6", "7", "8").iterator(),
+        $("join", StringHelpers.join), "6, 7, 8");
+  }
 
-    assertEquals("join", join.name());
-    assertEquals("6, 7, 8",
-        join.apply(Arrays.asList("6", "7", "8"), options));
-    assertEquals("6, 7, 8",
-        join.apply(new Object[] {"6", "7", "8" }, options));
+  @Test
+  public void joinArray() throws IOException {
+    shouldCompileTo("{{{join this \", \"}}}", new String[]{"6", "7", "8" },
+        $("join", StringHelpers.join), "6, 7, 8");
+  }
 
-    assertEquals(null,
-        join.apply("Not an array or iterable", options));
-    assertEquals(null, join.apply(null, options));
-
-    verify(options);
+  @Test
+  public void joinValues() throws IOException {
+    shouldCompileTo("{{{join \"6\" 7 n8 \"-\"}}}", $("n8", 8), $("join", StringHelpers.join),
+        "6-7-8");
   }
 
   @Test
   public void joinWithPrefixAndSuffix() throws IOException {
-    Options options = createMock(Options.class);
-    expect(options.param(0, null)).andReturn(", ");
-    expect(options.hash("prefix", "")).andReturn("<");
-    expect(options.hash("suffix", "")).andReturn(">");
-
-    replay(options);
-
-    assertEquals("<6, 7, 8>",
-        join.apply(Arrays.asList("6", "7", "8"), options));
-
-    verify(options);
+    shouldCompileTo("{{{join this \", \" prefix='<' suffix='>'}}}", Arrays.asList("6", "7", "8"),
+        $("join", StringHelpers.join), "<6, 7, 8>");
   }
 
   @Test
@@ -272,7 +264,7 @@ public class StringHelpersTest {
     Template fn = createMock(Template.class);
 
     Options options = new Options.Builder(hbs, ctx, fn)
-        .setParams(new Object[] {"handlebars.java" })
+        .setParams(new Object[]{"handlebars.java" })
         .build();
 
     assertEquals("stringFormat", stringFormat.name());
@@ -288,7 +280,7 @@ public class StringHelpersTest {
     Template fn = createMock(Template.class);
 
     Options options = new Options.Builder(hbs, ctx, fn)
-        .setParams(new Object[] {10.0 / 3.0 })
+        .setParams(new Object[]{10.0 / 3.0 })
         .build();
 
     assertEquals("stringFormat", stringFormat.name());
@@ -370,8 +362,8 @@ public class StringHelpersTest {
     assertEquals("wordWrap", wordWrap.name());
 
     assertEquals("Joel" + SystemUtils.LINE_SEPARATOR + "is a"
-            + SystemUtils.LINE_SEPARATOR + "slug",
-            wordWrap.apply("Joel is a slug", options));
+        + SystemUtils.LINE_SEPARATOR + "slug",
+        wordWrap.apply("Joel is a slug", options));
 
     verify(options);
   }

@@ -21,6 +21,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -122,39 +123,49 @@ public enum StringHelpers implements Helper<Object> {
   },
 
   /**
-   * Joins a list with a string, like Python's str.join(list)
+   * Joins an array, iterator or an iterable with a string.
    * For example:
    *
    * <pre>
    * {{join value " // " [prefix=""] [suffix=""]}}
    * </pre>
    *
-   * If value is the list ['a', 'b', 'c'], the output will be the string
-   * "a // b // c".
+   * <p>
+   * If value is the list ['a', 'b', 'c'], the output will be the string "a // b // c".
+   * </p>
+   * Or:
+   *
+   * <pre>
+   * {{join "a" "b" "c" " // " [prefix=""] [suffix=""]}}
+   * <p>Join the "a", "b", "c", the output will be the string "a // b // c".</p>
+   * </pre>
    */
   join {
     @SuppressWarnings("rawtypes")
     @Override
     public CharSequence apply(final Object context, final Options options)
         throws IOException {
-      Object separator = options.param(0, null);
-      notNull(separator, "found 'null', expected 'separator' at param: 0");
+      int separatorIdx = options.params.length - 1;
+      Object separator = options.param(separatorIdx, null);
+      notNull(separator, "found 'null', expected 'separator' at param[%s]", separatorIdx);
       isTrue(separator instanceof String,
-          "found '%s', expected 'separator' at param: 0", separator);
-      if (context == null) {
-        return null;
-      }
+          "found '%s', expected 'separator' at param[%s]", separator, separatorIdx);
       String prefix = options.hash("prefix", "");
       String suffix = options.hash("suffix", "");
       if (context instanceof Iterable) {
-        return prefix
-            + StringUtils.join((Iterable) context, (String) separator) + suffix;
+        return prefix + StringUtils.join((Iterable) context, (String) separator) + suffix;
+      }
+      if (context instanceof Iterator) {
+        return prefix + StringUtils.join((Iterator) context, (String) separator) + suffix;
       }
       if (context.getClass().isArray()) {
-        return prefix
-            + StringUtils.join((Object[]) context, (String) separator) + suffix;
+        return prefix + StringUtils.join((Object[]) context, (String) separator) + suffix;
       }
-      return null;
+      // join everything as single values
+      Object[] values = new Object[options.params.length];
+      System.arraycopy(options.params, 0, values, 1, separatorIdx);
+      values[0] = context;
+      return prefix + StringUtils.join(values, (String) separator) + suffix;
     }
   },
 
@@ -487,15 +498,25 @@ public enum StringHelpers implements Helper<Object> {
   };
 
   /**
-   * Regiter all the text helpers.
+   * Register the helper in a handlebars instance.
    *
-   * @param handlebars The helper's owner.
+   * @param handlebars A handlebars object. Required.
+   */
+  public void registerHelper(final Handlebars handlebars) {
+    notNull(handlebars, "The handlebars is required.");
+    handlebars.registerHelper(name(), this);
+  }
+
+  /**
+   * Register all the text helpers.
+   *
+   * @param handlebars The helper's owner. Required.
    */
   public static void register(final Handlebars handlebars) {
     notNull(handlebars, "A handlebars object is required.");
     StringHelpers[] helpers = values();
     for (StringHelpers helper : helpers) {
-      handlebars.registerHelper(helper.name(), helper);
+      helper.registerHelper(handlebars);
     }
   }
 }
