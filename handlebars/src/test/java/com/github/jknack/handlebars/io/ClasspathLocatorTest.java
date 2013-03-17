@@ -17,6 +17,7 @@
  */
 package com.github.jknack.handlebars.io;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.FileNotFoundException;
@@ -82,5 +83,17 @@ public class ClasspathLocatorTest {
     Reader reader = locator.load(URI.create("comments"));
     assertNotNull(reader);
     reader.close();
+  }
+
+  @Test
+  public void nullSuffix() throws IOException {
+    assertEquals("suffix should be optional",
+        new ClassPathTemplateLoader("/", null).loadAsString(URI.create("noextension")));
+  }
+
+  @Test
+  public void emptySuffix() throws IOException {
+    assertEquals("suffix should be optional",
+        new ClassPathTemplateLoader("/", "").loadAsString(URI.create("noextension")));
   }
 }

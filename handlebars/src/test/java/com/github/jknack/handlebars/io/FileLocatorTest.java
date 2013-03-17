@@ -17,6 +17,7 @@
  */
 package com.github.jknack.handlebars.io;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.File;
@@ -89,4 +90,15 @@ public class FileLocatorTest {
     reader.close();
   }
 
+  @Test
+  public void nullSuffix() throws IOException {
+    assertEquals("suffix should be optional",
+        new FileTemplateLoader("src/test/resources/", null).loadAsString(URI.create("noextension")));
+  }
+
+  @Test
+  public void emptySuffix() throws IOException {
+    assertEquals("suffix should be optional",
+        new FileTemplateLoader("src/test/resources/", "").loadAsString(URI.create("noextension")));
+  }
 }

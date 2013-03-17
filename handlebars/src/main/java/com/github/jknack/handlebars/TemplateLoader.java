@@ -13,6 +13,7 @@
  */
 package com.github.jknack.handlebars;
 
+import static org.apache.commons.lang3.StringUtils.defaultString;
 import static org.apache.commons.lang3.Validate.notEmpty;
 import static org.apache.commons.lang3.Validate.notNull;
 
@@ -177,7 +178,7 @@ public abstract class TemplateLoader {
    *        URI.
    */
   public void setSuffix(final String suffix) {
-    this.suffix = notEmpty(suffix, "The view suffix is required.");
+    this.suffix = defaultString(suffix, "");
   }
 
   /**
