@@ -41,6 +41,7 @@ import com.github.jknack.handlebars.helper.PartialHelper;
 import com.github.jknack.handlebars.helper.PrecompileHelper;
 import com.github.jknack.handlebars.helper.UnlessHelper;
 import com.github.jknack.handlebars.helper.WithHelper;
+import com.github.jknack.handlebars.helper.IncludeHelper;
 import com.github.jknack.handlebars.internal.HbsParserFactory;
 import com.github.jknack.handlebars.io.ClassPathTemplateLoader;
 
@@ -815,6 +816,7 @@ public class Handlebars {
     handlebars.registerHelper(EmbeddedHelper.NAME, EmbeddedHelper.INSTANCE);
     handlebars.registerHelper(BlockHelper.NAME, BlockHelper.INSTANCE);
     handlebars.registerHelper(PartialHelper.NAME, PartialHelper.INSTANCE);
+    handlebars.registerHelper(IncludeHelper.NAME, IncludeHelper.INSTANCE);
     handlebars.registerHelper(PrecompileHelper.NAME,
         PrecompileHelper.INSTANCE);
     I18nHelper.registerHelpers(handlebars);
