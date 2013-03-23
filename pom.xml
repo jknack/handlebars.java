@@ -226,7 +226,7 @@
           <consoleOutput>true</consoleOutput>
           <configLocation>checkstyle.xml</configLocation>
           <failsOnError>true</failsOnError>
-          <excludes>**/PegParser*,**/Parboiled*,**/HbsServer*</excludes>
+          <excludes>**/HbsServer*</excludes>
         </configuration>
         <executions>
           <execution>
