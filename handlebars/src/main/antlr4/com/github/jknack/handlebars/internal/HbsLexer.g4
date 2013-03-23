@@ -185,6 +185,7 @@ ELSE
 QID
  :
    '../' QID
+ | '..'
  | '.'
  | '[' ID ']' ID_SEPARATOR QID
  | '[' ID ']'

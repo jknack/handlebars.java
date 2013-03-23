@@ -28,6 +28,8 @@ import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.github.jknack.handlebars.context.MapValueResolver;
+
 /**
  * Mustache/Handlebars are contextual template engines. This class represent the
  * 'context stack' of a template.
@@ -53,9 +55,14 @@ public class Context {
   private static final String PATH_SEPARATOR = "./";
 
   /**
-   * Handlebars 'parent' reference.
+   * Handlebars 'parent' attribute reference.
    */
-  private static final String PARENT = "../";
+  private static final String PARENT_ATTR = "../";
+
+  /**
+   * Handlebars 'parent' attribute reference.
+   */
+  private static final String PARENT = "..";
 
   /**
    * Handlebars 'this' reference.
@@ -343,12 +350,33 @@ public class Context {
   }
 
   /**
+   * Store the map in the data storage.
+   *
+   * @param attributes The attributes to add. Required.
+   * @return This context.
+   */
+  public Context data(final Map<String, ?> attributes) {
+    notNull(attributes, "The attributes are required.");
+    data.putAll(attributes);
+    return this;
+  }
+
+  /**
    * Resolved as '.' or 'this' inside templates.
    *
    * @return The model or data.
    */
   public Object model() {
     return model;
+  }
+
+  /**
+   * The parent context or null.
+   *
+   * @return The parent context or null.
+   */
+  public Context parent() {
+    return parent;
   }
 
   /**
@@ -394,25 +422,45 @@ public class Context {
    *         value is found.
    */
   public Object get(final String key) {
+    // '.' or 'this'
     if (MUSTACHE_THIS.equals(key) || THIS.equals(key)) {
       return model;
     }
-    if (key.startsWith(PARENT)) {
-      return parent == null ? null : parent.get(key.substring(PARENT.length()));
+    // '..'
+    if (key.equals(PARENT)) {
+      return parent == null ? null : parent.model;
+    }
+    // '../'
+    if (key.startsWith(PARENT_ATTR)) {
+      return parent == null ? null : parent.get(key.substring(PARENT_ATTR.length()));
     }
     String[] path = toPath(key);
     Object value = get(path);
     if (value == null) {
       // No luck, check the extended context.
       value = get(extendedContext, key);
+      // No luck, check the data context.
+      if (value == null && data != null) {
+        String dataKey = key.charAt(0) == '@' ? key.substring(1) : key;
+        // simple data keys will be resolved immediately, complex keys need to go down and using a
+        // new context.
+        value = data.get(dataKey);
+        if (value == null && path.length > 1) {
+          // for complex keys, a new data context need to be created per invocation,
+          // bc data might changes per execution.
+          Context dataContext = Context.newBuilder(data).resolver(MapValueResolver.INSTANCE)
+              .build();
+          // don't extend the lookup further.
+          dataContext.data = null;
+          value = dataContext.get(dataKey);
+          // destroy it!
+          dataContext.destroy();
+        }
+      }
       // No luck, but before checking at the parent scope we need to check for
       // the 'this' qualifier. If present, no look up will be done.
       if (value == null && !path[0].equals(THIS)) {
         value = get(parent, key);
-      }
-      // See at the data context
-      if (value == null && data != null) {
-        value = data.get(key.startsWith("@") ? key.substring(1) : key);
       }
     }
     return value == NULL ? null : value;

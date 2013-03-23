@@ -80,7 +80,7 @@ public class EachHelper implements Helper<Object> {
       throws IOException {
     Set<Entry<String, Object>> propertySet = options.propertySet(context);
     StringBuilder buffer = new StringBuilder();
-    Context parent = options.wrap(context);
+    Context parent = options.context;
     for (Entry<String, Object> entry : propertySet) {
       Context current = Context.newContext(parent, entry.getValue())
           .data("key", entry.getKey());
@@ -105,8 +105,8 @@ public class EachHelper implements Helper<Object> {
     } else {
       Iterator<Object> iterator = context.iterator();
       int index = 0;
+      Context parent = options.context;
       while (iterator.hasNext()) {
-        Context parent = options.wrap(context);
         Object element = iterator.next();
         boolean first = index == 0;
         boolean even = index % 2 == 0;

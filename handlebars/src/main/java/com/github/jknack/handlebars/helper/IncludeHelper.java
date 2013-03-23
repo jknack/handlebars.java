@@ -17,46 +17,35 @@
  */
 package com.github.jknack.handlebars.helper;
 
-import com.github.jknack.handlebars.Context;
+import java.io.IOException;
+import java.net.URI;
+
 import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Helper;
 import com.github.jknack.handlebars.Options;
 import com.github.jknack.handlebars.Template;
-
-import java.io.IOException;
-import java.net.URI;
-import java.util.Map;
 
 /**
  * Allows to include partials with custom context.
  * This is a port of https://github.com/wycats/handlebars.js/pull/368
  */
 public class IncludeHelper implements Helper<String> {
-    /**
-     * A singleton instance of this helper.
-     */
-    public static final Helper<String> INSTANCE = new IncludeHelper();
+  /**
+   * A singleton instance of this helper.
+   */
+  public static final Helper<String> INSTANCE = new IncludeHelper();
 
-    /**
-     * The helper's name.
-     */
-    public static final String NAME = "include";
+  /**
+   * The helper's name.
+   */
+  public static final String NAME = "include";
 
-    @Override
-    public CharSequence apply(final String partial, final Options options) throws IOException {
-        merge(options.context, options.hash);
-        Template template = options.handlebars.compile(URI.create(partial));
-        return new Handlebars.SafeString(template.apply(options.context));
-    }
+  @Override
+  public CharSequence apply(final String partial, final Options options) throws IOException {
+    // merge all the hashes into the context
+    options.context.data(options.hash);
+    Template template = options.handlebars.compile(URI.create(partial));
+    return new Handlebars.SafeString(template.apply(options.context));
+  }
 
-    /**
-     * Merge everything from a hash into the given context.
-     * @param context the context
-     * @param hash the hash
-     */
-    private void merge(final Context context, final Map<String, Object> hash) {
-        for (Map.Entry<String, Object> a : hash.entrySet()) {
-            context.data(a.getKey(), a.getValue());
-        }
-    }
 }
