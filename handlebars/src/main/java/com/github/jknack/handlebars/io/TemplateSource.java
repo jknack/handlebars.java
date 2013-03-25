@@ -15,26 +15,46 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.jknack.handlebars;
+package com.github.jknack.handlebars.io;
 
 import java.io.IOException;
-
-import com.github.jknack.handlebars.io.TemplateSource;
+import java.io.Reader;
 
 /**
- * The Handlebars Parser.
+ * The template source.
  *
  * @author edgar.espina
- * @since 0.10.0
+ * @since 0.11.0
  */
-public interface Parser {
+public interface TemplateSource {
 
   /**
-   * Parse a handlebars input and return a {@link Template}.
+   * The template content.
    *
-   * @param source The input to parse. Required.
-   * @return A new handlebars template.
-   * @throws IOException If the input can't be parsed.
+   * @return The template content.
+   * @throws IOException If the template can't read.
    */
-  Template parse(TemplateSource source) throws IOException;
+  String content() throws IOException;
+
+  /**
+   * The template content.
+   *
+   * @return The template content.
+   * @throws IOException If the template can't read.
+   */
+  Reader reader() throws IOException;
+
+  /**
+   * The file's name.
+   *
+   * @return The file's name.
+   */
+  String filename();
+
+  /**
+   * The last modified date.
+   *
+   * @return The last modified date.
+   */
+  long lastModified();
 }

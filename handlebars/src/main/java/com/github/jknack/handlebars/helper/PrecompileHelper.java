@@ -43,7 +43,7 @@ import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Helper;
 import com.github.jknack.handlebars.Options;
 import com.github.jknack.handlebars.Template;
-import com.github.jknack.handlebars.TemplateLoader;
+import com.github.jknack.handlebars.io.TemplateLoader;
 
 /**
  * Precompiled a template to JavaScript using handlebars.js.
@@ -201,7 +201,7 @@ public final class PrecompileHelper implements Helper<String> {
         StringUtils.join(JsWrapper.values(), ", ").toLowerCase());
 
     Handlebars handlebars = options.handlebars;
-    final TemplateLoader loader = handlebars.getTemplateLoader();
+    final TemplateLoader loader = handlebars.getLoader();
     String name = path + loader.getSuffix();
     Template template = handlebars.compile(URI.create(path));
     String precompiled = template.toJavaScript();

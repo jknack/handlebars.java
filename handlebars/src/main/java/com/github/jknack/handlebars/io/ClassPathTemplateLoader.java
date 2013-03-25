@@ -18,11 +18,8 @@
 package com.github.jknack.handlebars.io;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
+import java.net.URL;
 
-import com.github.jknack.handlebars.TemplateLoader;
 
 /**
  * Load templates from the class-path. A base path can be specified at creation
@@ -32,7 +29,7 @@ import com.github.jknack.handlebars.TemplateLoader;
  * @author edgar.espina
  * @since 0.1.0
  */
-public class ClassPathTemplateLoader extends TemplateLoader {
+public class ClassPathTemplateLoader extends URLTemplateLoader {
 
   /**
    * Creates a new {@link ClassPathTemplateLoader}.
@@ -63,12 +60,7 @@ public class ClassPathTemplateLoader extends TemplateLoader {
   }
 
   @Override
-  protected Reader read(final String location) throws IOException {
-    InputStream input = getClass().getResourceAsStream(location);
-    if (input == null) {
-      return null;
-    }
-    return new InputStreamReader(input, "UTF-8");
+  protected URL getResource(final String location) throws IOException {
+    return  getClass().getResource(location);
   }
-
 }

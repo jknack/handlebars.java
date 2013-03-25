@@ -21,11 +21,9 @@ import static org.apache.commons.lang3.Validate.isTrue;
 import static org.apache.commons.lang3.Validate.notNull;
 
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
-import java.io.Reader;
+import java.net.URL;
 
-import com.github.jknack.handlebars.TemplateLoader;
 
 /**
  * Load templates from the file system. A base path must be specified at
@@ -34,7 +32,7 @@ import com.github.jknack.handlebars.TemplateLoader;
  * @author edgar.espina
  * @since 0.1.0
  */
-public class FileTemplateLoader extends TemplateLoader {
+public class FileTemplateLoader extends URLTemplateLoader {
 
   /**
    * Creates a new {@link FileTemplateLoader}.
@@ -81,12 +79,8 @@ public class FileTemplateLoader extends TemplateLoader {
   }
 
   @Override
-  protected Reader read(final String location) throws IOException {
+  protected URL getResource(final String location) throws IOException {
     File file = new File(location);
-    if (!file.exists()) {
-      return null;
-    }
-    return new FileReader(file);
+    return file.exists() ? file.toURI().toURL() : null;
   }
-
 }

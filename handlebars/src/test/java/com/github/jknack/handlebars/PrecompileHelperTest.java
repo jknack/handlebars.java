@@ -13,10 +13,12 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
+import com.github.jknack.handlebars.io.URLTemplateLoader;
+
 @RunWith(Parameterized.class)
 public class PrecompileHelperTest {
 
-  TemplateLoader loader = new MapTemplateLoader()
+  URLTemplateLoader loader = new MapTemplateLoader()
       .define("input", "Hi {{this}}!");
 
   Handlebars handlebars = new Handlebars(loader);

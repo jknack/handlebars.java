@@ -22,12 +22,11 @@ import static org.junit.Assert.assertNotNull;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.Reader;
 import java.net.URI;
 
 import org.junit.Test;
 
-import com.github.jknack.handlebars.TemplateLoader;
+
 
 /**
  * Unit test for {@link ClassPathTemplateLoader}.
@@ -38,62 +37,57 @@ import com.github.jknack.handlebars.TemplateLoader;
 public class ClasspathLocatorTest {
 
   @Test
-  public void locate() throws IOException {
-    TemplateLoader locator = new ClassPathTemplateLoader();
-    Reader reader = locator.load(URI.create("template"));
-    assertNotNull(reader);
-    reader.close();
+  public void source() throws IOException {
+    TemplateLoader loader = new ClassPathTemplateLoader();
+    TemplateSource source = loader.sourceAt(URI.create("template"));
+    assertNotNull(source);
   }
 
   @Test
   public void subFolder() throws IOException {
-    TemplateLoader locator = new ClassPathTemplateLoader();
-    locator.setSuffix(".yml");
-    Reader reader = locator.load(URI.create("mustache/specs/comments"));
-    assertNotNull(reader);
-    reader.close();
+    URLTemplateLoader loader = new ClassPathTemplateLoader();
+    loader.setSuffix(".yml");
+    TemplateSource source = loader.sourceAt(URI.create("mustache/specs/comments"));
+    assertNotNull(source);
   }
 
   @Test
   public void subFolderwithDashAtBeginning() throws IOException {
-    TemplateLoader locator = new ClassPathTemplateLoader();
-    locator.setSuffix(".yml");
-    Reader reader = locator.load(URI.create("/mustache/specs/comments"));
-    assertNotNull(reader);
-    reader.close();
+    URLTemplateLoader loader = new ClassPathTemplateLoader();
+    loader.setSuffix(".yml");
+    TemplateSource source = loader.sourceAt(URI.create("/mustache/specs/comments"));
+    assertNotNull(source);
   }
 
   @Test(expected = FileNotFoundException.class)
   public void failLocate() throws IOException {
-    TemplateLoader locator = new ClassPathTemplateLoader();
-    locator.load(URI.create("notExist"));
+    TemplateLoader loader = new ClassPathTemplateLoader();
+    loader.sourceAt(URI.create("notExist"));
   }
 
   @Test
   public void setBasePath() throws IOException {
-    TemplateLoader locator = new ClassPathTemplateLoader("/mustache/specs", ".yml");
-    Reader reader = locator.load(URI.create("comments"));
-    assertNotNull(reader);
-    reader.close();
+    TemplateLoader loader = new ClassPathTemplateLoader("/mustache/specs", ".yml");
+    TemplateSource source = loader.sourceAt(URI.create("comments"));
+    assertNotNull(source);
   }
 
   @Test
   public void setBasePathWithDashDash() throws IOException {
-    TemplateLoader locator = new ClassPathTemplateLoader("/mustache/specs/", ".yml");
-    Reader reader = locator.load(URI.create("comments"));
-    assertNotNull(reader);
-    reader.close();
+    TemplateLoader loader = new ClassPathTemplateLoader("/mustache/specs/", ".yml");
+    TemplateSource source = loader.sourceAt(URI.create("comments"));
+    assertNotNull(source);
   }
 
   @Test
   public void nullSuffix() throws IOException {
     assertEquals("suffix should be optional",
-        new ClassPathTemplateLoader("/", null).loadAsString(URI.create("noextension")));
+        new ClassPathTemplateLoader("/", null).sourceAt(URI.create("noextension")).content());
   }
 
   @Test
   public void emptySuffix() throws IOException {
     assertEquals("suffix should be optional",
-        new ClassPathTemplateLoader("/", "").loadAsString(URI.create("noextension")));
+        new ClassPathTemplateLoader("/", "").sourceAt(URI.create("noextension")).content());
   }
 }

@@ -37,8 +37,9 @@ import org.springframework.web.servlet.view.AbstractUrlBasedView;
 
 import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Helper;
-import com.github.jknack.handlebars.TemplateLoader;
 import com.github.jknack.handlebars.ValueResolver;
+import com.github.jknack.handlebars.io.TemplateLoader;
+import com.github.jknack.handlebars.io.URLTemplateLoader;
 
 /**
  * A Handlebars {@link ViewResolver view resolver}.
@@ -147,7 +148,7 @@ public class HandlebarsViewResolver extends AbstractTemplateViewResolver
   @Override
   public void afterPropertiesSet() throws Exception {
     // Creates a new template loader.
-    TemplateLoader templateLoader =
+    URLTemplateLoader templateLoader =
         createTemplateLoader(getApplicationContext());
     // Creates a new handlebars object.
     handlebars = notNull(createHandlebars(templateLoader),
@@ -181,7 +182,7 @@ public class HandlebarsViewResolver extends AbstractTemplateViewResolver
    * @param templateLoader A template loader.
    * @return A new handlebar's object.
    */
-  protected Handlebars createHandlebars(final TemplateLoader templateLoader) {
+  protected Handlebars createHandlebars(final URLTemplateLoader templateLoader) {
     return new Handlebars(templateLoader);
   }
 
@@ -191,9 +192,9 @@ public class HandlebarsViewResolver extends AbstractTemplateViewResolver
    * @param context The application's context.
    * @return A new template loader.
    */
-  protected TemplateLoader createTemplateLoader(
+  protected URLTemplateLoader createTemplateLoader(
       final ApplicationContext context) {
-    TemplateLoader templateLoader = new SpringTemplateLoader(context);
+    URLTemplateLoader templateLoader = new SpringTemplateLoader(context);
     // Override prefix and suffix.
     templateLoader.setPrefix(getPrefix());
     templateLoader.setSuffix(getSuffix());

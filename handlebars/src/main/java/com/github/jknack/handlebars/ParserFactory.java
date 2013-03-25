@@ -29,11 +29,10 @@ public interface ParserFactory {
    * Creates a new {@link Parser}.
    *
    * @param handlebars The parser owner.
-   * @param filename The file's name.
    * @param startDelimiter The start delimiter.
    * @param endDelimiter The end delimiter.
    * @return A new {@link Parser}.
    */
-  Parser create(final Handlebars handlebars, final String filename, final String startDelimiter,
+  Parser create(final Handlebars handlebars, final String startDelimiter,
       final String endDelimiter);
 }

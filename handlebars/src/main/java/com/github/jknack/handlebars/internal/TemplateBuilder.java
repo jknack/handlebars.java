@@ -41,7 +41,6 @@ import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Helper;
 import com.github.jknack.handlebars.Parser;
 import com.github.jknack.handlebars.Template;
-import com.github.jknack.handlebars.TemplateLoader;
 import com.github.jknack.handlebars.internal.HbsParser.AmpvarContext;
 import com.github.jknack.handlebars.internal.HbsParser.BlockContext;
 import com.github.jknack.handlebars.internal.HbsParser.BodyContext;
@@ -66,6 +65,9 @@ import com.github.jknack.handlebars.internal.HbsParser.TvarContext;
 import com.github.jknack.handlebars.internal.HbsParser.UnlessContext;
 import com.github.jknack.handlebars.internal.HbsParser.VarContext;
 import com.github.jknack.handlebars.internal.Variable.Type;
+import com.github.jknack.handlebars.io.StringTemplateSource;
+import com.github.jknack.handlebars.io.TemplateLoader;
+import com.github.jknack.handlebars.io.TemplateSource;
 
 /**
  * Traverse the parse tree and build templates.
@@ -339,12 +341,12 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
     if (uri.startsWith("[") && uri.endsWith("]")) {
       uri = uri.substring(1, uri.length() - 1);
     }
-    TemplateLoader loader = handlebars.getTemplateLoader();
+    TemplateLoader loader = handlebars.getLoader();
     if (uri.startsWith("/")) {
       String message = "found: '/', partial shouldn't start with '/'";
       reportError(null, pathToken.getLine(), pathToken.getCharPositionInLine(), message);
     }
-    String partialPath = loader.resolve(uri);
+    String partialPath = loader.resolve(URI.create(uri));
     if (!handlebars.allowInfiniteLoops() && isInStack(stacktraceList, partialPath)) {
       Collections.reverse(stacktraceList);
       String message = String.format(
@@ -356,23 +358,26 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
     Partial partial = partials.get(partialPath);
     if (partial == null) {
       try {
-        Stacktrace stacktrace =
-            new Stacktrace(pathToken.getLine(), pathToken.getCharPositionInLine(), uri,
-                filename);
+        Stacktrace stacktrace = new Stacktrace(pathToken.getLine(),
+            pathToken.getCharPositionInLine(), uri, filename);
         stacktraceList.addLast(stacktrace);
-        String input = loader.loadAsString(URI.create(uri));
+
+        TemplateSource source = loader.sourceAt(URI.create(uri));
 
         HbsParserFactory parserFactory = (HbsParserFactory) handlebars.getParserFactory();
         Parser parser = parserFactory
-            .create(handlebars, uri, "{{", "}}", partials, stacktraceList);
+            .create(handlebars, "{{", "}}", partials, stacktraceList);
         String startDelim = ctx.start.getText();
         partial = new Partial().startDelimiter(startDelim.substring(0, startDelim.length() - 1))
             .endDelimiter(ctx.stop.getText());
 
         // Avoid stack overflow exceptions
         partials.put(partialPath, partial);
-
-        Template template = parser.parse(partialInput(input, hasTag() ? line.toString() : null));
+        if (hasTag()) {
+          source = new StringTemplateSource(source.filename(), partialInput(source.content(),
+              line.toString()));
+        }
+        Template template = handlebars.getCache().get(source, parser);
         TerminalNode partialContext = ctx.QID();
         partial.template(uri, template, partialContext != null ? partialContext.getText() : null);
         stacktraceList.removeLast();

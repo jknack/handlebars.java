@@ -20,13 +20,10 @@ package com.github.jknack.handlebars.io;
 import static org.apache.commons.lang3.Validate.notNull;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
+import java.net.URL;
 
 import javax.servlet.ServletContext;
 
-import com.github.jknack.handlebars.TemplateLoader;
 
 /**
  * Load templates from the {@link ServletContext}.
@@ -34,7 +31,7 @@ import com.github.jknack.handlebars.TemplateLoader;
  * @author edgar.espina
  * @since 0.1.0
  */
-public class ServletContextTemplateLoader extends TemplateLoader {
+public class ServletContextTemplateLoader extends URLTemplateLoader {
 
   /**
    * The servlet context. Required.
@@ -79,12 +76,7 @@ public class ServletContextTemplateLoader extends TemplateLoader {
   }
 
   @Override
-  protected Reader read(final String path) throws IOException {
-    InputStream input = servletContext.getResourceAsStream(path);
-    if (input == null) {
-      return null;
-    }
-    return new InputStreamReader(input, "UTF-8");
+  protected URL getResource(final String location) throws IOException {
+    return servletContext.getResource(location);
   }
-
 }

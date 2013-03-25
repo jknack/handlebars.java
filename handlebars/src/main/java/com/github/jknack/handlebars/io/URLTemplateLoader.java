@@ -15,17 +15,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.jknack.handlebars;
+package com.github.jknack.handlebars.io;
 
 import static org.apache.commons.lang3.StringUtils.defaultString;
 import static org.apache.commons.lang3.Validate.notEmpty;
 import static org.apache.commons.lang3.Validate.notNull;
 
-import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.Reader;
 import java.net.URI;
+import java.net.URL;
+
 
 /**
  * <p>
@@ -63,17 +63,7 @@ import java.net.URI;
  * @author edgar.espina
  * @since 0.1.0
  */
-public abstract class TemplateLoader {
-
-  /**
-   * The default view prefix.
-   */
-  public static final String DEFAULT_PREFIX = "/";
-
-  /**
-   * The default view suffix.
-   */
-  public static final String DEFAULT_SUFFIX = ".hbs";
+public abstract class URLTemplateLoader implements TemplateLoader {
 
   /**
    * The prefix that gets prepended to view names when building a URI.
@@ -86,49 +76,32 @@ public abstract class TemplateLoader {
   private String suffix = DEFAULT_SUFFIX;
 
   /**
-   * Load the template from a template repository.
+   * Get a template source for the given uri.
    *
-   * @param uri The resource's uri. Required.
-   * @return The requested resource.
-   * @throws IOException If the resource cannot be loaded.
+   * @param uri The location of the template source. Required.
+   * @return A new template source.
+   * @throws IOException If the template's source can't be read.
    */
-  public Reader load(final URI uri) throws IOException {
+  @Override
+  public TemplateSource sourceAt(final URI uri) throws IOException {
     notNull(uri, "The uri is required.");
     notEmpty(uri.toString(), "The uri is required.");
-    String location = resolve(normalize(uri.toString()));
-    Handlebars.debug("Loading resource: %s", location);
-    Reader reader = read(location);
-    if (reader == null) {
-      throw new FileNotFoundException(location.toString());
+    String location = resolve(normalize(uri));
+    URL resource = getResource(location);
+    if (resource == null) {
+      throw new FileNotFoundException(location);
     }
-    Handlebars.debug("Resource found: %s", location);
-    return reader;
+    return new URLTemplateSource(resource);
   }
 
   /**
-   * Load the template as string from a template repository.
+   * Get a template resource for the given location.
    *
-   * @param uri The resource's uri. Required.
-   * @return The requested resource.
-   * @throws IOException If the resource cannot be loaded.
+   * @param location The location of the template source. Required.
+   * @return A new template resource.
+   * @throws IOException If the template's resource can't be resolved.
    */
-  public String loadAsString(final URI uri) throws IOException {
-    Reader reader = new BufferedReader(load(uri));
-    final int bufferSize = 1024;
-    try {
-      char[] cbuf = new char[bufferSize];
-      StringBuilder sb = new StringBuilder(bufferSize);
-      int len;
-      while ((len = reader.read(cbuf, 0, bufferSize)) != -1) {
-        sb.append(cbuf, 0, len);
-      }
-      return sb.toString();
-    } finally {
-      if (reader != null) {
-        reader.close();
-      }
-    }
-  }
+  protected abstract URL getResource(String location) throws IOException;
 
   /**
    * Resolve the uri to an absolute location.
@@ -136,7 +109,8 @@ public abstract class TemplateLoader {
    * @param uri The candidate uri.
    * @return Resolve the uri to an absolute location.
    */
-  public String resolve(final String uri) {
+  @Override
+  public String resolve(final URI uri) {
     return prefix + normalize(uri) + suffix;
   }
 
@@ -146,21 +120,12 @@ public abstract class TemplateLoader {
    * @param uri The candidate uri.
    * @return A uri without '/' at the beginning.
    */
-  private String normalize(final String uri) {
-    if (uri.startsWith("/")) {
-      return uri.substring(1);
+  protected URI normalize(final URI uri) {
+    if (uri.toString().startsWith("/")) {
+      return URI.create(uri.toString().substring(1));
     }
     return uri;
   }
-
-  /**
-   * Read the resource from the given URI.
-   *
-   * @param location The resource's location.
-   * @return The requested resource or null if not found.
-   * @throws IOException If the resource cannot be loaded.
-   */
-  protected abstract Reader read(String location) throws IOException;
 
   /**
    * Set the prefix that gets prepended to view names when building a URI.
@@ -188,6 +153,7 @@ public abstract class TemplateLoader {
   /**
    * @return The prefix that gets prepended to view names when building a URI.
    */
+  @Override
   public String getPrefix() {
     return prefix;
   }
@@ -196,6 +162,7 @@ public abstract class TemplateLoader {
    * @return The suffix that gets appended to view names when building a
    *         URI.
    */
+  @Override
   public String getSuffix() {
     return suffix;
   }

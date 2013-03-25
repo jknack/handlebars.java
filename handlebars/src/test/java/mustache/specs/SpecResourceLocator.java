@@ -17,15 +17,21 @@
  */
 package mustache.specs;
 
+import static org.apache.commons.lang3.Validate.notEmpty;
+import static org.apache.commons.lang3.Validate.notNull;
+
+import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.Reader;
-import java.io.StringReader;
+import java.net.URI;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.github.jknack.handlebars.TemplateLoader;
+import com.github.jknack.handlebars.io.StringTemplateSource;
+import com.github.jknack.handlebars.io.TemplateSource;
+import com.github.jknack.handlebars.io.URLTemplateLoader;
 
-public class SpecResourceLocator extends TemplateLoader {
+public class SpecResourceLocator extends URLTemplateLoader {
   private Map<String, String> templates;
 
   public SpecResourceLocator(final Spec spec) {
@@ -37,14 +43,19 @@ public class SpecResourceLocator extends TemplateLoader {
   }
 
   @Override
-  public String resolve(final String uri) {
-    return uri;
+  public TemplateSource sourceAt(final URI uri) throws IOException {
+    notNull(uri, "The uri is required.");
+    notEmpty(uri.toString(), "The uri is required.");
+    String location = resolve(normalize(uri));
+    String text = templates.get(uri.toString());
+    if (text == null) {
+      throw new FileNotFoundException(location);
+    }
+    return new StringTemplateSource(location, text);
   }
 
   @Override
-  protected Reader read(final String uri) throws IOException {
-    String template = templates.get(uri);
-    return template == null ? null : new StringReader(template);
+  protected URL getResource(final String location) throws IOException {
+    throw new UnsupportedOperationException();
   }
-
 }

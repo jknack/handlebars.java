@@ -108,7 +108,7 @@ public class EmbeddedHelper implements Helper<String> {
   public CharSequence apply(final String path, final Options options)
       throws IOException {
     notEmpty(path, "found '%s', expected 'partial's name'", path);
-    String suffix = options.handlebars.getTemplateLoader().getSuffix();
+    String suffix = options.handlebars.getLoader().getSuffix();
     String defaultId = (path + suffix).replace('/', '-').replace('.', '-');
     String id = options.param(0, defaultId);
     Template template = options.handlebars.compile(URI.create(path));

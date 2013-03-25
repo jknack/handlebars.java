@@ -35,19 +35,24 @@ import java.util.Set;
 
 import org.slf4j.Logger;
 
+import com.github.jknack.handlebars.cache.NullTemplateCache;
+import com.github.jknack.handlebars.cache.TemplateCache;
 import com.github.jknack.handlebars.helper.BlockHelper;
 import com.github.jknack.handlebars.helper.EachHelper;
 import com.github.jknack.handlebars.helper.EmbeddedHelper;
 import com.github.jknack.handlebars.helper.I18nHelper;
 import com.github.jknack.handlebars.helper.IfHelper;
+import com.github.jknack.handlebars.helper.IncludeHelper;
 import com.github.jknack.handlebars.helper.MethodHelper;
 import com.github.jknack.handlebars.helper.PartialHelper;
 import com.github.jknack.handlebars.helper.PrecompileHelper;
 import com.github.jknack.handlebars.helper.UnlessHelper;
 import com.github.jknack.handlebars.helper.WithHelper;
-import com.github.jknack.handlebars.helper.IncludeHelper;
 import com.github.jknack.handlebars.internal.HbsParserFactory;
 import com.github.jknack.handlebars.io.ClassPathTemplateLoader;
+import com.github.jknack.handlebars.io.StringTemplateSource;
+import com.github.jknack.handlebars.io.TemplateLoader;
+import com.github.jknack.handlebars.io.TemplateSource;
 
 /**
  * <p>
@@ -273,27 +278,6 @@ public class Handlebars {
   public static final String DELIM_END = "}}";
 
   /**
-   * NO CACHE.
-   */
-  private static final TemplateCache NO_CACHE = new TemplateCache() {
-    @Override
-    public void put(final Object key, final Template template) {
-    }
-
-    @Override
-    public Template get(final Object key) {
-      return null;
-    }
-
-    @Override
-    public void evict(final Object key) {
-    }
-
-    @Override
-    public void clear() {
-    }
-  };
-  /**
    * The logging system.
    */
   private static final Logger logger = getLogger(Handlebars.class);
@@ -362,7 +346,7 @@ public class Handlebars {
    * @param loader The template loader. Required.
    */
   public Handlebars(final TemplateLoader loader) {
-    this(loader, NO_CACHE);
+    this(loader, NullTemplateCache.INSTANCE);
   }
 
   /**
@@ -370,7 +354,7 @@ public class Handlebars {
    * cache.
    */
   public Handlebars() {
-    this(new ClassPathTemplateLoader(), NO_CACHE);
+    this(new ClassPathTemplateLoader(), NullTemplateCache.INSTANCE);
   }
 
   /**
@@ -397,8 +381,8 @@ public class Handlebars {
       final String endDelimiter) throws IOException {
     notNull(uri, "The uri is required.");
     notEmpty(uri.toString(), "The uri is required.");
-    return compile(uri.toString(), loader.loadAsString(uri), startDelimiter,
-        endDelimiter);
+    TemplateSource source = loader.sourceAt(uri);
+    return compile(source, startDelimiter, endDelimiter);
   }
 
   /**
@@ -423,38 +407,23 @@ public class Handlebars {
    */
   public Template compile(final String input, final String startDelimiter,
       final String endDelimiter) throws IOException {
-    return compile("inline", input, startDelimiter, endDelimiter);
+    return compile(new StringTemplateSource(loader.resolve(URI.create("inline")), input),
+        startDelimiter, endDelimiter);
   }
 
   /**
-   * Compile the given input.
+   * Compile a handlebars template.
    *
-   * @param filename The name of the file.
-   * @param input The input text. Required.
+   * @param source The template source. Required.
    * @param startDelimiter The start delimiter. Required.
    * @param endDelimiter The end delimiter. Required.
-   * @return A compiled template.
+   * @return A handlebars template.
    * @throws IOException If the resource cannot be loaded.
    */
-  private Template compile(final String filename, final String input,
-      final String startDelimiter, final String endDelimiter)
-      throws IOException {
-    notNull(input, "The input text is required.");
-    notEmpty(startDelimiter, "The start delimiter is required.");
-    notEmpty(endDelimiter, "The end delimiter is required.");
-
-    String key =
-        filename + "@" + startDelimiter + input.hashCode() + endDelimiter;
-
-    debug("Looking for: %s", key);
-    Template template = cache.get(key);
-    if (template == null) {
-      debug("Key not found: %s", key);
-      template = parserFactory.create(this, filename, startDelimiter, endDelimiter)
-          .parse(input);
-      cache.put(key, template);
-      debug("Key saved: %s", key);
-    }
+  private Template compile(final TemplateSource source, final String startDelimiter,
+      final String endDelimiter) throws IOException {
+    Parser parser = parserFactory.create(this, startDelimiter, endDelimiter);
+    Template template = cache.get(source, parser);
     return template;
   }
 
@@ -590,8 +559,17 @@ public class Handlebars {
    *
    * @return The resource locator.
    */
-  public TemplateLoader getTemplateLoader() {
+  public TemplateLoader getLoader() {
     return loader;
+  }
+
+  /**
+   * The template cache.
+   *
+   * @return The template cache.
+   */
+  public TemplateCache getCache() {
+    return cache;
   }
 
   /**

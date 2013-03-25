@@ -17,11 +17,19 @@
  */
 package com.github.jknack.handlebars;
 
+import static org.apache.commons.lang3.Validate.notEmpty;
+import static org.apache.commons.lang3.Validate.notNull;
+
+import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.Reader;
-import java.io.StringReader;
+import java.net.URI;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
+
+import com.github.jknack.handlebars.io.StringTemplateSource;
+import com.github.jknack.handlebars.io.TemplateSource;
+import com.github.jknack.handlebars.io.URLTemplateLoader;
 
 /**
  * Template loader for testing.
@@ -29,7 +37,7 @@ import java.util.Map;
  * @author edgar.espina
  * @since 0.2.1
  */
-public class MapTemplateLoader extends TemplateLoader {
+public class MapTemplateLoader extends URLTemplateLoader {
 
   private Map<String, String> map;
 
@@ -47,9 +55,20 @@ public class MapTemplateLoader extends TemplateLoader {
   }
 
   @Override
-  protected Reader read(final String location) throws IOException {
+  public TemplateSource sourceAt(final URI uri) throws IOException {
+    notNull(uri, "The uri is required.");
+    notEmpty(uri.toString(), "The uri is required.");
+    String location = resolve(normalize(uri));
     String text = map.get(location);
-    return text == null ? null : new StringReader(text);
+    if (text == null) {
+      throw new FileNotFoundException(location);
+    }
+    return new StringTemplateSource(location, text);
+  }
+
+  @Override
+  protected URL getResource(final String location) throws IOException {
+    throw new UnsupportedOperationException();
   }
 
 }

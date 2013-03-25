@@ -48,8 +48,9 @@ import com.github.jknack.handlebars.HumanizeHelper;
 import com.github.jknack.handlebars.Jackson2Helper;
 import com.github.jknack.handlebars.MarkdownHelper;
 import com.github.jknack.handlebars.StringHelpers;
-import com.github.jknack.handlebars.TemplateLoader;
 import com.github.jknack.handlebars.io.FileTemplateLoader;
+import com.github.jknack.handlebars.io.TemplateLoader;
+import com.github.jknack.handlebars.io.URLTemplateLoader;
 
 /**
  * A handlebars web server.
@@ -148,7 +149,7 @@ public class HbsServer {
     }
     logger.info("Welcome to the Handlebars.java server v" + version);
 
-    TemplateLoader loader = new FileTemplateLoader(args.dir);
+    URLTemplateLoader loader = new FileTemplateLoader(args.dir);
     loader.setPrefix(new File(args.dir, args.prefix).getAbsolutePath());
     loader.setSuffix(args.suffix);
     Handlebars handlebars = new Handlebars(loader);

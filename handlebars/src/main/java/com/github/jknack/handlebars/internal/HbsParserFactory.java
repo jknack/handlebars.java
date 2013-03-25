@@ -17,6 +17,8 @@
  */
 package com.github.jknack.handlebars.internal;
 
+import java.io.IOException;
+import java.io.Reader;
 import java.util.LinkedList;
 import java.util.Map;
 
@@ -34,6 +36,7 @@ import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Parser;
 import com.github.jknack.handlebars.ParserFactory;
 import com.github.jknack.handlebars.Template;
+import com.github.jknack.handlebars.io.TemplateSource;
 
 /**
  * The default {@link ParserFactory}.
@@ -47,7 +50,6 @@ public class HbsParserFactory implements ParserFactory {
    * Creates a new {@link Parser}.
    *
    * @param handlebars The parser owner.
-   * @param filename The file's name.
    * @param startDelimiter The start delimiter.
    * @param endDelimiter The end delimiter.
    * @param partials Any partial previously loaded.
@@ -55,7 +57,6 @@ public class HbsParserFactory implements ParserFactory {
    * @return A new {@link Parser}.
    */
   public Parser create(final Handlebars handlebars,
-      final String filename,
       final String startDelimiter,
       final String endDelimiter,
       final Map<String, Partial> partials,
@@ -63,74 +64,80 @@ public class HbsParserFactory implements ParserFactory {
     return new Parser() {
 
       @Override
-      public Template parse(final String input) {
-        String fname = handlebars.getTemplateLoader().resolve(filename);
-        ANTLRInputStream stream = new ANTLRInputStream(input);
-        stream.name = fname;
-        final ANTLRErrorListener errorReporter = new HbsErrorReporter(stream.name);
-        final HbsLexer lexer = new HbsLexer(stream, startDelimiter,
-            endDelimiter) {
+      public Template parse(final TemplateSource source) throws IOException {
+        Reader reader = null;
+        try {
+          reader = source.reader();
+          ANTLRInputStream stream = new ANTLRInputStream(reader);
+          stream.name = source.filename();
+          final ANTLRErrorListener errorReporter = new HbsErrorReporter(stream.name);
+          final HbsLexer lexer = new HbsLexer(stream, startDelimiter,
+              endDelimiter) {
 
-          @Override
-          public void notifyListeners(final LexerNoViableAltException e) {
-            String text = _input.getText(Interval.of(_tokenStartCharIndex, _input.index()));
-            String msg = "found: '" + getErrorDisplay(text) + "'";
-            ANTLRErrorListener listener = getErrorListenerDispatch();
-            listener
-                .syntaxError(this, null, _tokenStartLine, _tokenStartCharPositionInLine, msg, e);
+            @Override
+            public void notifyListeners(final LexerNoViableAltException e) {
+              String text = _input.getText(Interval.of(_tokenStartCharIndex, _input.index()));
+              String msg = "found: '" + getErrorDisplay(text) + "'";
+              ANTLRErrorListener listener = getErrorListenerDispatch();
+              listener
+                  .syntaxError(this, null, _tokenStartLine, _tokenStartCharPositionInLine, msg, e);
+            }
+
+            @Override
+            public void recover(final LexerNoViableAltException e) {
+              throw new IllegalArgumentException(e);
+            }
+          };
+          lexer.removeErrorListeners();
+          lexer.addErrorListener(errorReporter);
+          CommonTokenStream tokens = new CommonTokenStream(lexer);
+          final HbsParser parser = new HbsParser(tokens) {
+            @Override
+            void setStart(final String start) {
+              lexer.start = start;
+            }
+
+            @Override
+            void setEnd(final String end) {
+              lexer.end = end;
+            }
+          };
+          parser.removeErrorListeners();
+          parser.addErrorListener(errorReporter);
+          parser.setErrorHandler(new HbsErrorStrategy());
+          parser.getInterpreter().setPredictionMode(PredictionMode.SLL);
+          ParseTree tree = parser.template();
+
+          if (handlebars.prettyWhitespaces()) {
+            // remove unnecessary spaces and new lines
+            new ParseTreeWalker().walk(new SpaceTrimmer(), tree);
           }
 
-          @Override
-          public void recover(final LexerNoViableAltException e) {
-            throw new IllegalArgumentException(e);
+          TemplateBuilder builder = new TemplateBuilder(handlebars, source.filename(), partials,
+              stacktrace) {
+            @Override
+            protected void reportError(final CommonToken offendingToken, final int line,
+                final int column,
+                final String message) {
+              errorReporter.syntaxError(parser, offendingToken, line, column, message, null);
+            }
+          };
+          Template template = builder.visit(tree);
+          return template;
+        } finally {
+          if (reader != null) {
+            reader.close();
           }
-        };
-        lexer.removeErrorListeners();
-        lexer.addErrorListener(errorReporter);
-        CommonTokenStream tokens = new CommonTokenStream(lexer);
-        final HbsParser parser = new HbsParser(tokens) {
-          @Override
-          void setStart(final String start) {
-            lexer.start = start;
-          }
-
-          @Override
-          void setEnd(final String end) {
-            lexer.end = end;
-          }
-        };
-        parser.removeErrorListeners();
-        parser.addErrorListener(errorReporter);
-        parser.setErrorHandler(new HbsErrorStrategy());
-        parser.getInterpreter().setPredictionMode(PredictionMode.SLL);
-        ParseTree tree = parser.template();
-
-        if (handlebars.prettyWhitespaces()) {
-          // remove unnecessary spaces and new lines
-          new ParseTreeWalker().walk(new SpaceTrimmer(), tree);
         }
-
-        TemplateBuilder builder = new TemplateBuilder(handlebars, fname, partials, stacktrace) {
-          @Override
-          protected void reportError(final CommonToken offendingToken, final int line,
-              final int column,
-              final String message) {
-            errorReporter.syntaxError(parser, offendingToken, line, column, message, null);
-          }
-        };
-        Template template = builder.visit(tree);
-        return template;
       }
     };
   }
 
   @Override
   public Parser create(final Handlebars handlebars,
-      final String filename,
       final String startDelimiter,
       final String endDelimiter) {
-    return create(handlebars, filename, startDelimiter, endDelimiter,
-        null, null);
+    return create(handlebars, startDelimiter, endDelimiter,  null, null);
   }
 
 }

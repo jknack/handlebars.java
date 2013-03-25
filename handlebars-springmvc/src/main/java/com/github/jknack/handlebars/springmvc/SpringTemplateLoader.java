@@ -19,16 +19,17 @@ package com.github.jknack.handlebars.springmvc;
 
 import static org.apache.commons.lang3.Validate.notNull;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
+import java.net.URI;
+import java.net.URL;
 
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.util.ResourceUtils;
 
-import com.github.jknack.handlebars.TemplateLoader;
+import com.github.jknack.handlebars.io.URLTemplateLoader;
 
 /**
  * A template loader for a Spring application.
@@ -42,7 +43,7 @@ import com.github.jknack.handlebars.TemplateLoader;
  * @since 0.4.1
  * @see ResourceLoader#getResource(String)
  */
-public class SpringTemplateLoader extends TemplateLoader {
+public class SpringTemplateLoader extends URLTemplateLoader {
 
   /**
    * The Spring {@link ResourceLoader}.
@@ -68,26 +69,27 @@ public class SpringTemplateLoader extends TemplateLoader {
   }
 
   @Override
-  public String resolve(final String uri) {
+  protected URL getResource(final String location) throws IOException {
+    Resource resource = loader.getResource(location);
+    if (!resource.exists()) {
+      throw new FileNotFoundException(location);
+    }
+    return resource.getURL();
+  }
+
+  @Override
+  public String resolve(final URI uri) {
     String protocol = null;
-    if (uri.startsWith(ResourceUtils.CLASSPATH_URL_PREFIX)) {
+    String location = uri.toString();
+    if (location.startsWith(ResourceUtils.CLASSPATH_URL_PREFIX)) {
       protocol = ResourceUtils.CLASSPATH_URL_PREFIX;
-    } else if (uri.startsWith(ResourceUtils.FILE_URL_PREFIX)) {
+    } else if (location.startsWith(ResourceUtils.FILE_URL_PREFIX)) {
       protocol = ResourceUtils.FILE_URL_PREFIX;
     }
     if (protocol == null) {
       return super.resolve(uri);
     }
-    return protocol + super.resolve(uri.substring(protocol.length()));
-  }
-
-  @Override
-  protected Reader read(final String location) throws IOException {
-    Resource resource = loader.getResource(location);
-    if (resource.exists()) {
-      return new InputStreamReader(resource.getInputStream());
-    }
-    return null;
+    return protocol + super.resolve(URI.create(location.substring(protocol.length())));
   }
 
 }

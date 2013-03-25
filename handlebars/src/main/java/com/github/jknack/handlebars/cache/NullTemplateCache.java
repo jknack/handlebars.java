@@ -17,48 +17,36 @@
  */
 package com.github.jknack.handlebars.cache;
 
-import static org.apache.commons.lang3.Validate.notNull;
+import java.io.IOException;
 
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-
+import com.github.jknack.handlebars.Parser;
 import com.github.jknack.handlebars.Template;
-import com.github.jknack.handlebars.TemplateCache;
+import com.github.jknack.handlebars.io.TemplateSource;
 
 /**
- * A {@link TemplateCache} based on a {@link ConcurrentMap}.
+ * Null cache implementation.
  *
  * @author edgar.espina
- * @since 0.1.0
+ * @since 0.11.0
  */
-public class ConcurrentMapCache implements TemplateCache {
+public enum NullTemplateCache implements TemplateCache {
 
   /**
-   * The object storage.
+   * Shared instance of null cache.
    */
-  private final ConcurrentMap<Object, Template> store =
-      new ConcurrentHashMap<Object, Template>();
+  INSTANCE;
 
   @Override
   public void clear() {
-    store.clear();
   }
 
   @Override
-  public void evict(final Object key) {
-    store.remove(key);
+  public void evict(final TemplateSource source) {
   }
 
   @Override
-  public Template get(final Object key) {
-    return store.get(key);
-  }
-
-  @Override
-  public void put(final Object key, final Template template) {
-    notNull(key, "The key is required.");
-    notNull(template, "The template is required.");
-    store.put(key, template);
+  public Template get(final TemplateSource source, final Parser parser) throws IOException {
+    return parser.parse(source);
   }
 
 }

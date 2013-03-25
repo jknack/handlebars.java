@@ -3,21 +3,22 @@ package com.github.jknack.handlebars.springmvc;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.IOException;
-import java.io.Reader;
 import java.net.URI;
 
 import org.junit.Test;
 import org.springframework.core.io.DefaultResourceLoader;
 
+import com.github.jknack.handlebars.io.TemplateSource;
+
 public class SpringTemplateLoaderTest {
 
   @Test
-  public void load() throws IOException {
+  public void source() throws IOException {
     SpringTemplateLoader loader =
         new SpringTemplateLoader(new DefaultResourceLoader());
 
-    Reader reader = loader.load(URI.create("template"));
+    TemplateSource source = loader.sourceAt(URI.create("template"));
 
-    assertNotNull(reader);
+    assertNotNull(source);
   }
 }
