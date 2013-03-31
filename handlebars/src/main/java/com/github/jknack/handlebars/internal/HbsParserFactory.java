@@ -30,6 +30,8 @@ import org.antlr.v4.runtime.atn.PredictionMode;
 import org.antlr.v4.runtime.misc.Interval;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Parser;
@@ -44,6 +46,12 @@ import com.github.jknack.handlebars.io.TemplateSource;
  * @since 0.10.0
  */
 public class HbsParserFactory implements ParserFactory {
+
+
+  /**
+   * The logging system.
+   */
+  private final Logger logger = LoggerFactory.getLogger(getClass());
 
   /**
    * Creates a new {@link Parser}.
@@ -63,6 +71,7 @@ public class HbsParserFactory implements ParserFactory {
       public Template parse(final TemplateSource source) throws IOException {
         Reader reader = null;
         try {
+          logger.debug("About to parse: {}", source);
           final ANTLRErrorListener errorReporter = new HbsErrorReporter(source.filename());
 
           reader = source.reader();
@@ -75,11 +84,13 @@ public class HbsParserFactory implements ParserFactory {
           final HbsParser parser = newParser(lexer);
           configure(parser, errorReporter);
 
+          logger.debug("Building AST");
           // 3. Parse
           ParseTree tree = parser.template();
 
           // remove unnecessary spaces and new lines?
           if (handlebars.prettyWhitespaces()) {
+            logger.debug("Applying Mustache spec");
             new ParseTreeWalker().walk(new SpaceTrimmer(), tree);
           }
 
@@ -94,6 +105,7 @@ public class HbsParserFactory implements ParserFactory {
               errorReporter.syntaxError(parser, offendingToken, line, column, message, null);
             }
           };
+          logger.debug("Creating templates");
           Template template = builder.visit(tree);
           return template;
         } finally {

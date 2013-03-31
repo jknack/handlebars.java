@@ -404,7 +404,9 @@ public class Handlebars {
    */
   public Template compile(final String input, final String startDelimiter,
       final String endDelimiter) throws IOException {
-    return compile(new StringTemplateSource(loader.resolve(URI.create("inline")), input),
+    notNull(input, "The input is required.");
+    String filename = "inline@" + Integer.toHexString(Math.abs(input.hashCode()));
+    return compile(new StringTemplateSource(loader.resolve(URI.create(filename)), input),
         startDelimiter, endDelimiter);
   }
 

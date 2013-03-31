@@ -21,62 +21,47 @@ import static org.apache.commons.lang3.Validate.notNull;
 
 import java.io.IOException;
 import java.io.Reader;
-import java.io.StringReader;
-
 
 /**
- * String implementation of {@link TemplateSource}.
+ * A template source which forwards all its method calls to another template source..
  *
  * @author edgar.espina
  * @since 0.11.0
  */
-public class StringTemplateSource extends AbstractTemplateSource {
+public class ForwardingTemplateSource extends AbstractTemplateSource {
 
   /**
-   * The template's content. Required.
+   * The template source.
    */
-  private final String content;
+  private final TemplateSource source;
 
   /**
-   * The template's file name. Required.
-   */
-  private final String filename;
-
-  /**
-   * The last modified date.
-   */
-  private final long lastModified;
-
-  /**
-   * Creates a new {@link StringTemplateSource}.
+   * Creates a new {@link ForwardingTemplateSource}.
    *
-   * @param filename The template's file name. Required.
-   * @param content The template's content. Required.
+   * @param source The template source to forwards all the method calls.
    */
-  public StringTemplateSource(final String filename, final String content) {
-    this.content = notNull(content, "The content is required.");
-    this.filename = notNull(filename, "The filename is required.");
-    this.lastModified = content.hashCode();
+  public ForwardingTemplateSource(final TemplateSource source) {
+    this.source = notNull(source, "The source is required.");
   }
 
   @Override
   public String content() throws IOException {
-    return content;
+    return source.content();
   }
 
   @Override
   public Reader reader() throws IOException {
-    return new StringReader(content);
+    return source.reader();
   }
 
   @Override
   public String filename() {
-    return filename;
+    return source.filename();
   }
 
   @Override
   public long lastModified() {
-    return lastModified;
+    return source.lastModified();
   }
 
 }

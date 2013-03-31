@@ -723,14 +723,13 @@ Template get(TemplateSource source, Parser parser) throws IOException {
 }
 ```
 
-Beside the ```null``` cache Handlebars.java provides two more implementation:
+Beside the ```null``` cache Handlebars.java provides three more implementations:
 
 1. ```ConcurrentMapTemplateCache```: a template cache implementation built on top of a ```ConcurrentMap```.
 2. ```HighConcurrencyTemplateCache```: a template cache implementation built on top of ```ConcurrentMap``` with all the design techniques described in [Java Concurrency in Practice](http://www.amazon.com/Java-Concurrency-Practice-Brian-Goetz/dp/0321349601)
+3. ```GuavaTemplateCache```: a template cache implementation built on top of [Google Guava](https://code.google.com/p/guava-libraries/wiki/CachesExplained). Available in [handlebars-guava-cache module](https://github.com/jknack/handlebars.java/tree/master/handlebars-guava-cache)
 
 These two implementations are able to detect files changes and reload them in an efficient way.
-
-Of course, You can implement your own cache system or use a [guava](https://code.google.com/p/guava-libraries/wiki/CachesExplained) too.
 
 Finally, you can configure Handlebars.java to use a cache by:
 

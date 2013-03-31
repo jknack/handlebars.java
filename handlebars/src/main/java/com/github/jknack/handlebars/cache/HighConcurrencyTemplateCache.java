@@ -35,6 +35,7 @@ import org.slf4j.LoggerFactory;
 import com.github.jknack.handlebars.HandlebarsException;
 import com.github.jknack.handlebars.Parser;
 import com.github.jknack.handlebars.Template;
+import com.github.jknack.handlebars.io.ForwardingTemplateSource;
 import com.github.jknack.handlebars.io.TemplateSource;
 
 /**
@@ -53,8 +54,24 @@ public class HighConcurrencyTemplateCache implements TemplateCache {
   /**
    * The map cache.
    */
-  private final ConcurrentMap<TemplateSource, Future<Pair<TemplateSource, Template>>> cache =
-      new ConcurrentHashMap<TemplateSource, Future<Pair<TemplateSource, Template>>>();
+  private final ConcurrentMap<TemplateSource, Future<Pair<TemplateSource, Template>>> cache;
+
+  /**
+   * Creates a new HighConcurrencyTemplateCache.
+   *
+   * @param cache The concurrent map cache. Required.
+   */
+  protected HighConcurrencyTemplateCache(
+      final ConcurrentMap<TemplateSource, Future<Pair<TemplateSource, Template>>> cache) {
+    this.cache = notNull(cache, "The cache is required.");
+  }
+
+  /**
+   * Creates a new HighConcurrencyTemplateCache.
+   */
+  public HighConcurrencyTemplateCache() {
+    this(new ConcurrentHashMap<TemplateSource, Future<Pair<TemplateSource, Template>>>());
+  }
 
   @Override
   public void clear() {
@@ -68,6 +85,37 @@ public class HighConcurrencyTemplateCache implements TemplateCache {
 
   @Override
   public Template get(final TemplateSource source, final Parser parser) throws IOException {
+    notNull(source, "The source is required.");
+    notNull(parser, "The parser is required.");
+
+    /**
+     * Don't keep duplicated entries, remove old one if a change is detected.
+     */
+    return cacheGet(new ForwardingTemplateSource(source) {
+      @Override
+      public boolean equals(final Object obj) {
+        if (obj instanceof TemplateSource) {
+          return source.filename().equals(((TemplateSource) obj).filename());
+        }
+        return false;
+      }
+
+      @Override
+      public int hashCode() {
+        return source.filename().hashCode();
+      }
+    }, parser);
+  }
+
+  /**
+   * Get/Parse a template source.
+   *
+   * @param source The template source.
+   * @param parser The parser.
+   * @return A Handlebars template.
+   * @throws IOException If we can't read input.
+   */
+  private Template cacheGet(final TemplateSource source, final Parser parser) throws IOException {
     notNull(source, "The source is required.");
     notNull(parser, "The parser is required.");
 
@@ -154,7 +202,7 @@ public class HighConcurrencyTemplateCache implements TemplateCache {
     } else if (cause instanceof Error) {
       throw (Error) cause;
     } else {
-      throw new HandlebarsException("Can't parse: " + source, cause);
+      return new HandlebarsException("Can't parse: " + source, cause);
     }
   }
 

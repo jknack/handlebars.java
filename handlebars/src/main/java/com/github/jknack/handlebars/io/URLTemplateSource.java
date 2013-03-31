@@ -35,7 +35,7 @@ import com.github.jknack.handlebars.Handlebars;
  * @author edgar.espina
  * @since 0.11.0
  */
-public class URLTemplateSource implements TemplateSource {
+public class URLTemplateSource extends AbstractTemplateSource {
 
   /**
    * The resource. Required.
@@ -105,6 +105,7 @@ public class URLTemplateSource implements TemplateSource {
    *
    * @param resource The resource.
    * @return The last modified date from a resource.
+   * @throws IOException
    */
   private long lastModified(final URL resource) {
     URLConnection uc = null;
@@ -130,25 +131,4 @@ public class URLTemplateSource implements TemplateSource {
     }
   }
 
-  @Override
-  public int hashCode() {
-    return resource.hashCode();
-  }
-
-  @Override
-  public boolean equals(final Object obj) {
-    if (this == obj) {
-      return true;
-    }
-    if (obj instanceof URLTemplateSource) {
-      URLTemplateSource that = (URLTemplateSource) obj;
-      return resource.equals(that.resource);
-    }
-    return false;
-  }
-
-  @Override
-  public String toString() {
-    return filename;
-  }
 }
