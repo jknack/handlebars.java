@@ -926,7 +926,7 @@ Checkout the [HandlebarsViewResolver](https://github.com/jknack/handlebars.java/
 
 # Architecture and API Design
  * Handlebars.java follows the JavaScript API with some minors exceptions due to the nature of the Java language.
- * The parser is built on top of [Parboiled] (https://github.com/sirthias/parboiled).
+ * The parser is built on top of [ANTLR v4] (http://www.antlr.org/).
  * Data is provided as primitive types (int, boolean, double, etc.), strings, maps, list or JavaBeans objects.
  * Helpers are type-safe.
  * Handlebars.java is thread-safe.
