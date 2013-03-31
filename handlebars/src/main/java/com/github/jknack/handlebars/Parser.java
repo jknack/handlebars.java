@@ -34,7 +34,7 @@ public interface Parser {
    *
    * @param source The input to parse. Required.
    * @return A new handlebars template.
-   * @throws IOException If the input can't be parsed.
+   * @throws IOException If the resource cannot be loaded.
    */
   Template parse(TemplateSource source) throws IOException;
 }

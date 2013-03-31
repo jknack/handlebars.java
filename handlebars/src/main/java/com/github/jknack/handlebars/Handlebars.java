@@ -379,10 +379,7 @@ public class Handlebars {
    */
   public Template compile(final URI uri, final String startDelimiter,
       final String endDelimiter) throws IOException {
-    notNull(uri, "The uri is required.");
-    notEmpty(uri.toString(), "The uri is required.");
-    TemplateSource source = loader.sourceAt(uri);
-    return compile(source, startDelimiter, endDelimiter);
+    return compile(loader.sourceAt(uri), startDelimiter, endDelimiter);
   }
 
   /**
@@ -415,6 +412,17 @@ public class Handlebars {
    * Compile a handlebars template.
    *
    * @param source The template source. Required.
+   * @return A handlebars template.
+   * @throws IOException If the resource cannot be loaded.
+   */
+  public Template compile(final TemplateSource source) throws IOException {
+    return compile(source, DELIM_START, DELIM_END);
+  }
+
+  /**
+   * Compile a handlebars template.
+   *
+   * @param source The template source. Required.
    * @param startDelimiter The start delimiter. Required.
    * @param endDelimiter The end delimiter. Required.
    * @return A handlebars template.
@@ -422,6 +430,9 @@ public class Handlebars {
    */
   public Template compile(final TemplateSource source, final String startDelimiter,
       final String endDelimiter) throws IOException {
+    notNull(source, "The template source is required.");
+    notEmpty(startDelimiter, "The start delimiter is required.");
+    notEmpty(endDelimiter, "The end delimiter is required.");
     Parser parser = parserFactory.create(this, startDelimiter, endDelimiter);
     Template template = cache.get(source, parser);
     return template;
