@@ -64,11 +64,11 @@ public class HbsErrorReporter implements ANTLRErrorListener {
       final RecognitionException e) {
     int column = Math.max(1, charPositionInLine);
     CommonToken offendingToken = (CommonToken) offendingSymbol;
-    String reason = offendingSymbol == null ? msg : offendingSymbol.toString();
     StringBuilder message = new StringBuilder();
     message.append(filename).append(":").append(line).append(":").append(column)
         .append(": ");
     String stacktrace = "";
+    int reasonStart = message.length();
     if (offendingToken == null) {
       String[] parts = StringUtils.split(msg, "\n");
       message.append(parts[0]);
@@ -77,6 +77,7 @@ public class HbsErrorReporter implements ANTLRErrorListener {
       message.append("found: '").append(offendingToken.getText()).append("', ");
       message.append("expected: '").append(msg).append("'");
     }
+    String reason = message.substring(reasonStart);
     message.append("\n");
     int evidenceStat = message.length();
     String[] lines = lines(recognizer);

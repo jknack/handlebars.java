@@ -50,9 +50,7 @@ public class ParsingErrorTest extends AbstractTest {
           "idx1", "{{list[0]}}",
           "idx2", "{{list.[0}}",
           "idx3", "{{list.[]}}",
-          "idx4", "{{list.[}}",
-          "home", "{{>stackoverflow}}",
-          "stackoverflow", "{{>home}}");
+          "idx4", "{{list.[}}");
 
   @Test(expected = HandlebarsException.class)
   public void correctPath() throws IOException {
@@ -159,15 +157,12 @@ public class ParsingErrorTest extends AbstractTest {
     parse("idx4");
   }
 
-  @Test(expected = HandlebarsException.class)
-  public void stackoverflow() throws IOException {
-    parse("stackoverflow");
-  }
-
   private void parse(final String candidate) throws IOException {
     try {
       String input = (String) source.get(candidate);
       Template compiled = compile(input == null ? candidate : input, $(), source);
+      compiled.apply(new Object());
+
       System.out.println(compiled);
       fail("An error is expected");
     } catch (HandlebarsException ex) {

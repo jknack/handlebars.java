@@ -17,8 +17,6 @@
  */
 package com.github.jknack.handlebars.internal;
 
-import java.util.EnumSet;
-
 import com.github.jknack.handlebars.Context;
 
 /**
@@ -144,8 +142,7 @@ enum ParamType {
    * @return A param type.
    */
   private static ParamType get(final Object param) {
-    EnumSet<ParamType> types = EnumSet.allOf(ParamType.class);
-    for (ParamType type : types) {
+    for (ParamType type : values()) {
       if (type.apply(param)) {
         return type;
       }

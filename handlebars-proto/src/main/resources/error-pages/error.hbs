@@ -79,7 +79,7 @@ body {
     {{#if error}}
     <script type="syntaxhighlighter"
       class="brush: {{lower lang}}; first-line: {{firstLine}}; highlight: {{error.line}}"
-      title="{{error.filename}}:{{error.line}}:{{error.column}}: {{error.reason}}">
+      title="{{error.filename}}:{{error.line}}:{{error.column}}: {{{error.reason}}}">
 {{{error.evidence}}}
     </script>
     {{^}}

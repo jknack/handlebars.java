@@ -420,7 +420,7 @@ public class Handlebars {
    * @return A handlebars template.
    * @throws IOException If the resource cannot be loaded.
    */
-  private Template compile(final TemplateSource source, final String startDelimiter,
+  public Template compile(final TemplateSource source, final String startDelimiter,
       final String endDelimiter) throws IOException {
     Parser parser = parserFactory.create(this, startDelimiter, endDelimiter);
     Template template = cache.get(source, parser);

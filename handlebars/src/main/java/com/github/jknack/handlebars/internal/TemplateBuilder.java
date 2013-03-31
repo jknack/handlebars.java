@@ -18,15 +18,10 @@
 package com.github.jknack.handlebars.internal;
 
 import static org.apache.commons.lang3.StringUtils.isEmpty;
-import static org.apache.commons.lang3.StringUtils.join;
-import static org.apache.commons.lang3.Validate.notEmpty;
 import static org.apache.commons.lang3.Validate.notNull;
 
-import java.io.IOException;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -37,9 +32,9 @@ import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
+import com.github.jknack.handlebars.Context;
 import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Helper;
-import com.github.jknack.handlebars.Parser;
 import com.github.jknack.handlebars.Template;
 import com.github.jknack.handlebars.internal.HbsParser.AmpvarContext;
 import com.github.jknack.handlebars.internal.HbsParser.BlockContext;
@@ -65,8 +60,6 @@ import com.github.jknack.handlebars.internal.HbsParser.TvarContext;
 import com.github.jknack.handlebars.internal.HbsParser.UnlessContext;
 import com.github.jknack.handlebars.internal.HbsParser.VarContext;
 import com.github.jknack.handlebars.internal.Variable.Type;
-import com.github.jknack.handlebars.io.StringTemplateSource;
-import com.github.jknack.handlebars.io.TemplateLoader;
 import com.github.jknack.handlebars.io.TemplateSource;
 
 /**
@@ -83,14 +76,9 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
   private Handlebars handlebars;
 
   /**
-   * The file's name. required.
+   * The template source. Required.
    */
-  private String filename;
-
-  /**
-   * The partials registry.
-   */
-  private Map<String, Partial> partials;
+  private TemplateSource source;
 
   /**
    * Flag to track dead spaces and lines.
@@ -103,31 +91,14 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
   protected StringBuilder line = new StringBuilder();
 
   /**
-   * The stack trace.
-   */
-  protected LinkedList<Stacktrace> stacktraceList;
-
-  /**
-   * True if this is the root builder.
-   */
-  private boolean rootBuilder;
-
-  /**
    * Creates a new {@link TemplateBuilder}.
    *
    * @param handlebars A handlbars object. required.
-   * @param filename The file's name. required.
-   * @param partials The partial registry. optional.
-   * @param stacktraceList The stacktrace. optional.
+   * @param source The template source. required.
    */
-  public TemplateBuilder(final Handlebars handlebars, final String filename,
-      final Map<String, Partial> partials,
-      final LinkedList<Stacktrace> stacktraceList) {
+  public TemplateBuilder(final Handlebars handlebars, final TemplateSource source) {
     this.handlebars = notNull(handlebars, "The handlebars can't be null.");
-    this.filename = notEmpty(filename, "The filename can't be empty/null.");
-    this.partials = partials == null ? new HashMap<String, Partial>() : partials;
-    this.stacktraceList = stacktraceList == null ? new LinkedList<Stacktrace>() : stacktraceList;
-    this.rootBuilder = partials == null;
+    this.source = notNull(source, "The template source is requied.");
   }
 
   @Override
@@ -147,7 +118,7 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
     hasTag(true);
     Block block = new Block(handlebars, nameStart, false, params(ctx.param()),
         hash(ctx.hash()));
-    block.filename(filename);
+    block.filename(source.filename());
     block.position(ctx.nameStart.getLine(), ctx.nameStart.getCharPositionInLine());
     String startDelim = ctx.start.getText();
     block.startDelimiter(startDelim.substring(0, startDelim.length() - 1));
@@ -172,7 +143,7 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
     hasTag(true);
     Block block = new Block(handlebars, ctx.nameStart.getText(), true, Collections.emptyList(),
         Collections.<String, Object> emptyMap());
-    block.filename(filename);
+    block.filename(source.filename());
     block.position(ctx.nameStart.getLine(), ctx.nameStart.getCharPositionInLine());
     String startDelim = ctx.start.getText();
     block.startDelimiter(startDelim.substring(0, startDelim.length() - 1));
@@ -233,7 +204,7 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
     return new Variable(handlebars, varName, varType, params, hash)
         .startDelimiter(startDelimiter)
         .endDelimiter(endDelimiter)
-        .filename(filename)
+        .filename(source.filename())
         .position(name.getLine(), name.getCharPositionInLine());
   }
 
@@ -319,18 +290,36 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
   @Override
   public Template visitTemplate(final TemplateContext ctx) {
     Template template = visitBody(ctx.body());
-    this.handlebars = null;
-    this.filename = null;
-    this.hasTag = null;
-    this.line.delete(0, line.length());
-    this.line = null;
-    if (rootBuilder) {
-      this.partials.clear();
-      this.stacktraceList.clear();
+    if (!handlebars.allowInfiniteLoops() && template instanceof BaseTemplate) {
+      template = infiniteLoop(source, (BaseTemplate) template);
     }
-    this.partials = null;
-    this.stacktraceList = null;
+    destroy();
     return template;
+  }
+
+  /**
+   * Creates a {@link Template} that detects recursively calls.
+   *
+   * @param source The template source.
+   * @param template The original template.
+   * @return A new {@link Template} that detects recursively calls.
+   */
+  private static Template infiniteLoop(final TemplateSource source, final BaseTemplate template) {
+    return new ForwardingTemplate(template) {
+      @Override
+      protected void beforeApply(final Context context) {
+        LinkedList<TemplateSource> invocationStack = context.data(Context.INVOCATION_STACK);
+        invocationStack.addLast(source);
+      }
+
+      @Override
+      protected void afterApply(final Context context) {
+        LinkedList<TemplateSource> invocationStack = context.data(Context.INVOCATION_STACK);
+        if (!invocationStack.isEmpty()) {
+          invocationStack.removeLast();
+        }
+      }
+    };
   }
 
   @Override
@@ -341,92 +330,32 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
     if (uri.startsWith("[") && uri.endsWith("]")) {
       uri = uri.substring(1, uri.length() - 1);
     }
-    TemplateLoader loader = handlebars.getLoader();
+
     if (uri.startsWith("/")) {
       String message = "found: '/', partial shouldn't start with '/'";
       reportError(null, pathToken.getLine(), pathToken.getCharPositionInLine(), message);
     }
-    String partialPath = loader.resolve(URI.create(uri));
-    if (!handlebars.allowInfiniteLoops() && isInStack(stacktraceList, partialPath)) {
-      Collections.reverse(stacktraceList);
-      String message = String.format(
-          "an infinite loop was detected, partial '%s' was previously loaded\n%s", partialPath,
-          join(stacktraceList, "\n"));
-      reportError(null, pathToken.getLine(), pathToken.getCharPositionInLine(), message);
-    }
 
-    Partial partial = partials.get(partialPath);
-    if (partial == null) {
-      try {
-        Stacktrace stacktrace = new Stacktrace(pathToken.getLine(),
-            pathToken.getCharPositionInLine(), uri, filename);
-        stacktraceList.addLast(stacktrace);
-
-        TemplateSource source = loader.sourceAt(URI.create(uri));
-
-        HbsParserFactory parserFactory = (HbsParserFactory) handlebars.getParserFactory();
-        Parser parser = parserFactory
-            .create(handlebars, "{{", "}}", partials, stacktraceList);
-        String startDelim = ctx.start.getText();
-        partial = new Partial().startDelimiter(startDelim.substring(0, startDelim.length() - 1))
-            .endDelimiter(ctx.stop.getText());
-
-        // Avoid stack overflow exceptions
-        partials.put(partialPath, partial);
-        if (hasTag()) {
-          source = new StringTemplateSource(source.filename(), partialInput(source.content(),
-              line.toString()));
-        }
-        Template template = handlebars.getCache().get(source, parser);
-        TerminalNode partialContext = ctx.QID();
-        partial.template(uri, template, partialContext != null ? partialContext.getText() : null);
-        stacktraceList.removeLast();
-      } catch (IOException ex) {
-        String message = "The partial '" + partialPath + "' could not be found";
-        reportError(null, pathToken.getLine(), pathToken.getCharPositionInLine(), message);
+    String indent = line.toString();
+    if (hasTag()) {
+      if (isEmpty(indent) || !isEmpty(indent.trim())) {
+        indent = null;
       }
+    } else {
+      indent = null;
     }
+
+    TerminalNode partialContext = ctx.QID();
+    String startDelim = ctx.start.getText();
+    Template partial = new Partial(handlebars, uri,
+        partialContext != null ? partialContext.getText() : "this")
+        .startDelimiter(startDelim.substring(0, startDelim.length() - 1))
+        .endDelimiter(ctx.stop.getText())
+        .indent(indent)
+        .filename(source.filename())
+        .position(pathToken.getLine(), pathToken.getCharPositionInLine());
+
     return partial;
-  }
-
-  /**
-   * True, if the file was already processed.
-   *
-   * @param stacktrace The current stack trace.
-   * @param filename The filename to check for.
-   * @return True, if the file was already processed.
-   */
-  private boolean isInStack(final LinkedList<Stacktrace> stacktrace, final String filename) {
-    for (Stacktrace st : stacktrace) {
-      if (st.getFilename().equals(filename)) {
-        return true;
-      }
-    }
-    return this.filename.equals(filename);
-  }
-
-  /**
-   * Apply the given indent to the start of each line if necessary.
-   *
-   * @param input The whole input.
-   * @param indent The indent to apply.
-   * @return A new input.
-   */
-  private String partialInput(final String input, final String indent) {
-    if (isEmpty(indent) || !isEmpty(indent.trim())) {
-      return input;
-    }
-    StringBuilder buffer = new StringBuilder(input.length() + indent.length());
-    buffer.append(indent);
-    int len = input.length();
-    for (int idx = 0; idx < len; idx++) {
-      char ch = input.charAt(idx);
-      buffer.append(ch);
-      if (ch == '\n' && idx < len - 1) {
-        buffer.append(indent);
-      }
-    }
-    return buffer.toString();
   }
 
   @Override
@@ -517,6 +446,17 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
     if (this.hasTag != Boolean.FALSE) {
       this.hasTag = hasTag;
     }
+  }
+
+  /**
+   * Cleanup resources.
+   */
+  private void destroy() {
+    this.handlebars = null;
+    this.source = null;
+    this.hasTag = null;
+    this.line.delete(0, line.length());
+    this.line = null;
   }
 
   /**

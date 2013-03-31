@@ -66,7 +66,7 @@ public class PartialsTest extends AbstractTest {
   @Test
   public void renderingUndefinedPartialThrowsException() throws IOException {
     try {
-      shouldCompileTo("{{> whatever}}", $, null);
+      compile("{{> whatever}}").apply($);
       fail("rendering undefined partial throws an exception");
     } catch (HandlebarsException ex) {
       HandlebarsError error = ex.getError();

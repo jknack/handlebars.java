@@ -17,6 +17,7 @@
  */
 package com.github.jknack.handlebars.io;
 
+import static org.apache.commons.lang3.Validate.notEmpty;
 import static org.apache.commons.lang3.Validate.notNull;
 
 import java.io.IOException;
@@ -47,11 +48,18 @@ public class URLTemplateSource implements TemplateSource {
   private long lastModified;
 
   /**
+   * The file's name.
+   */
+  private String filename;
+
+  /**
    * Creates a new {@link URLTemplateSource}.
    *
+   * @param filename The file's name.
    * @param resource The resource. Required.
    */
-  public URLTemplateSource(final URL resource) {
+  public URLTemplateSource(final String filename, final URL resource) {
+    this.filename = notEmpty(filename, "The filename is required.");
     this.resource = notNull(resource, "A resource is required.");
     this.lastModified = lastModified(resource);
   }
@@ -78,7 +86,7 @@ public class URLTemplateSource implements TemplateSource {
 
   @Override
   public String filename() {
-    return resource.toString();
+    return filename;
   }
 
   @Override
@@ -141,6 +149,6 @@ public class URLTemplateSource implements TemplateSource {
 
   @Override
   public String toString() {
-    return resource.toString();
+    return filename;
   }
 }

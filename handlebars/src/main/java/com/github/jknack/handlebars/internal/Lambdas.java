@@ -52,7 +52,7 @@ final class Lambdas {
   public static CharSequence merge(final Handlebars handlebars,
       final Lambda<Object, Object> lambda, final Context scope,
       final Template template) throws IOException {
-    BaseTemplate result = compile(handlebars, lambda, scope, template);
+    Template result = compile(handlebars, lambda, scope, template);
     return result.apply(scope);
   }
 
@@ -66,7 +66,7 @@ final class Lambdas {
    * @return The resulting template.
    * @throws IOException If the resource cannot be loaded.
    */
-  public static BaseTemplate compile(final Handlebars handlebars,
+  public static Template compile(final Handlebars handlebars,
       final Lambda<Object, Object> lambda, final Context scope,
       final Template template)
       throws IOException {
@@ -85,17 +85,15 @@ final class Lambdas {
    * @return The resulting template.
    * @throws IOException If the resource cannot be loaded.
    */
-  public static BaseTemplate compile(final Handlebars handlebars,
+  public static Template compile(final Handlebars handlebars,
       final Lambda<Object, Object> lambda, final Context scope,
       final Template template, final String startDelimiter,
       final String endDelimiter)
       throws IOException {
     Object value = lambda.apply(scope, template);
-    BaseTemplate result;
+    final Template result;
     if (value instanceof CharSequence) {
-      result =
-          (BaseTemplate) handlebars.compile(value.toString(), startDelimiter,
-              endDelimiter);
+      result = handlebars.compile(value.toString(), startDelimiter, endDelimiter);
     } else {
       // Don't escape no string values.
       result = new Variable(handlebars, "$$lambda", value, Type.TRIPLE_VAR);

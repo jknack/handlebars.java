@@ -17,6 +17,7 @@
  */
 package com.github.jknack.handlebars.internal;
 
+import static org.apache.commons.lang3.StringUtils.isEmpty;
 import static org.apache.commons.lang3.Validate.notNull;
 
 import java.io.IOException;
@@ -144,7 +145,7 @@ class Block extends HelperResolver {
         .setHash(hash(context))
         .build();
     CharSequence result = helper.apply(childContext, options);
-    if (result != null) {
+    if (!isEmpty(result)) {
       writer.append(result);
     }
   }

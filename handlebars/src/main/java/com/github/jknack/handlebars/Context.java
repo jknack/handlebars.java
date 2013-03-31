@@ -24,6 +24,7 @@ import java.lang.reflect.Array;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -33,6 +34,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.github.jknack.handlebars.context.MapValueResolver;
+import com.github.jknack.handlebars.io.TemplateSource;
 
 /**
  * Mustache/Handlebars are contextual template engines. This class represent the
@@ -233,6 +235,11 @@ public class Context {
   public static final String PARTIALS = Context.class.getName() + "#partials";
 
   /**
+   * The qualified name for partials. Internal use.
+   */
+  public static final String INVOCATION_STACK = Context.class.getName() + "#invocationStack";
+
+  /**
    * The parent context. Optional.
    */
   private Context parent;
@@ -284,6 +291,7 @@ public class Context {
     root.parent = null;
     root.data = new HashMap<String, Object>();
     root.data.put(PARTIALS, new HashMap<String, Template>());
+    root.data.put(INVOCATION_STACK, new LinkedList<TemplateSource>());
     return root;
   }
 

@@ -91,7 +91,7 @@ public abstract class URLTemplateLoader implements TemplateLoader {
     if (resource == null) {
       throw new FileNotFoundException(location);
     }
-    return new URLTemplateSource(resource);
+    return new URLTemplateSource(location, resource);
   }
 
   /**

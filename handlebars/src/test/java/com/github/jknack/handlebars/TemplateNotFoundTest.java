@@ -23,9 +23,6 @@ import java.net.URI;
 
 import org.junit.Test;
 
-import com.github.jknack.handlebars.Handlebars;
-import com.github.jknack.handlebars.HandlebarsException;
-
 public class TemplateNotFoundTest {
 
   @Test(expected = FileNotFoundException.class)
@@ -37,6 +34,6 @@ public class TemplateNotFoundTest {
   @Test(expected = HandlebarsException.class)
   public void partialNotFound() throws IOException {
     Handlebars handlebars = new Handlebars();
-    handlebars.compile("{{> text}}");
+    handlebars.compile("{{> text}}").apply(null);
   }
 }
