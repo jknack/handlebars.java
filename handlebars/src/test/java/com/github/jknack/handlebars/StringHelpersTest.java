@@ -285,7 +285,7 @@ public class StringHelpersTest extends AbstractTest {
 
     assertEquals("stringFormat", stringFormat.name());
 
-    assertEquals("10 / 3 = 3.33",
+    assertEquals(String.format("10 / 3 = %.2f", 10.0 / 3.0),
         stringFormat.apply("10 / 3 = %.2f", options));
   }
 

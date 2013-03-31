@@ -39,7 +39,7 @@ public class PrecompileHelperTest {
     InputStream in =
         getClass().getResourceAsStream("/" + wrapper + ".precompiled.js");
 
-    assertEquals(IOUtils.toString(in), js);
+    assertEquals(IOUtils.toString(in).replace("\r\n", "\n"), js.replace("\r\n", "\n"));
 
     in.close();
 
