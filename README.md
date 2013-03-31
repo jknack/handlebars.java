@@ -683,6 +683,62 @@ Context context = Context
   ).build();
 ```
 
+### The Cache System
+ The cache system is designed to provide scalability and flexibility. Here is a quick view of the ```TemplateCache``` system:
+
+```java
+ public interface TemplateCache {
+
+  /**
+   * Remove all mappings from the cache.
+   */
+  void clear();
+
+  /**
+   * Evict the mapping for this source from this cache if it is present.
+   *
+   * @param source the source whose mapping is to be removed from the cache
+   */
+  void evict(TemplateSource source);
+
+  /**
+   * Return the value to which this cache maps the specified key.
+   *
+   * @param source source whose associated template is to be returned.
+   * @param parser The Handlebars parser.
+   * @return A template.
+   * @throws IOException If input can't be parsed.
+   */
+  Template get(TemplateSource source, Parser parser) throws IOException;
+}
+```
+
+As you can see, there isn't a ```put``` method. So all the hard work is done in the ```get``` method, which is basically the core of the cache system.
+
+By default, Handlebars.java use a ```null``` cache implementation (a.k.a. no cache at all) which looks like:
+
+```
+Template get(TemplateSource source, Parser parser) throws IOException {
+  return parser.parse(source);
+}
+```
+
+Beside the ```null``` cache Handlebars.java provides two more implementation:
+
+1. ```ConcurrentMapTemplateCache```: a template cache implementation built on top of a ```ConcurrentMap```.
+2. ```HighConcurrencyTemplateCache```: a template cache implementation built on top of ```ConcurrentMap``` with all the design techniques described in [Java Concurrency in Practice](http://www.amazon.com/Java-Concurrency-Practice-Brian-Goetz/dp/0321349601)
+
+These two implementations are able to detect files changes and reload them in an efficient way.
+
+Of course, You can implement your own cache system or use a [guava](https://code.google.com/p/guava-libraries/wiki/CachesExplained) too.
+
+Finally, you can configure Handlebars.java to use a cache by:
+
+```
+Handlebars hbs = new Handlebars()
+  .with(new MyCache());
+```
+
 ### Using a MissingValueResolver
  A ```MissingValueResolver``` let you use default values for ```{{variable}}``` expressions resolved to ```null```.
  
