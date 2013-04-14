@@ -54,5 +54,19 @@ public enum TagType {
    * section while {{/person}} ends it.
    * </p>
    */
-  SECTION;
+  SECTION {
+    @Override
+    public boolean inline() {
+      return false;
+    }
+  };
+
+  /**
+   * True for inline tags.
+   *
+   * @return True for inline tags.
+   */
+  public boolean inline() {
+    return true;
+  }
 }

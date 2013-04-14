@@ -1,5 +1,7 @@
 package com.github.jknack.handlebars;
 
+import static org.junit.Assert.assertTrue;
+
 import java.io.IOException;
 
 import org.junit.Test;
@@ -33,4 +35,17 @@ public class TagTypeTest extends AbstractTest {
     shouldCompileTo("{{#tag}}{{/tag}}", $, helpers, "SECTION");
   }
 
+  @Test
+  public void inline() {
+    assertTrue(TagType.VAR.inline());
+
+    assertTrue(TagType.AMP_VAR.inline());
+
+    assertTrue(TagType.TRIPLE_VAR.inline());
+  }
+
+  @Test
+  public void block() {
+    assertTrue(!TagType.SECTION.inline());
+  }
 }
