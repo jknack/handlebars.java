@@ -86,13 +86,6 @@
         <version>1.7R4</version>
       </dependency>
 
-      <!-- Parboiled -->
-      <dependency>
-        <groupId>org.parboiled</groupId>
-        <artifactId>parboiled-java</artifactId>
-        <version>${parboiled-version}</version>
-      </dependency>
-
       <!-- Logging System -->
       <dependency>
         <groupId>org.slf4j</groupId>
@@ -404,8 +397,7 @@
   <properties>
     <!-- Encoding UTF-8 -->
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <jackson2-version>2.1.2</jackson2-version>
+    <jackson2-version>2.1.4</jackson2-version>
     <jackson-version>1.9.12</jackson-version>
-    <parboiled-version>1.1.4</parboiled-version>
   </properties>
 </project>

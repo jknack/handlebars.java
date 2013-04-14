@@ -12,7 +12,7 @@
   <artifactId>handlebars-markdown</artifactId>
 
   <name>A Markdown Helper</name>
-  <description>A Markdown Helper base on pegdown library</description>
+  <description>A Markdown Helper built on top of the pegdown library</description>
 
   <dependencies>
     <dependency>
