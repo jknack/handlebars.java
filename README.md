@@ -47,7 +47,7 @@ Hello Handlebars.java!
 Templates are loaded using the ```TemplateLoader``` class. Handlebars.java provides three implementations of a ```TemplateLodaer```:
  * ClassPathTemplateLoader (default)
  * FileTemplateLoader
- * SpringTemplateLoader (see the [handlebars-springmvc](https://github.com/jknack/handlebars.java/tree/develop/handlebars-springmvc) module)
+ * SpringTemplateLoader (see the [handlebars-springmvc](https://github.com/jknack/handlebars.java/tree/master/handlebars-springmvc) module)
 
 This example load ```mytemplate.hbs``` from the root of the classpath:
 
@@ -889,7 +889,7 @@ Usage:
  HumanizeHelper.register(handlebars);
 ```
 
-See the JavaDoc of the [HumanizeHelper] (https://github.com/jknack/handlebars.java/blob/develop/handlebars-humanize/src/main/java/com/github/jknack/handlebars/HumanizeHelper.java) for more information.
+See the JavaDoc of the [HumanizeHelper] (https://github.com/jknack/handlebars.java/blob/master/handlebars-humanize/src/main/java/com/github/jknack/handlebars/HumanizeHelper.java) for more information.
 
 # Modules
 ## SpringMVC
@@ -922,7 +922,7 @@ where:
 * arg:  the message's argument. Optional.
 * default: the default's message. Optional.
 
-Checkout the [HandlebarsViewResolver](https://github.com/jknack/handlebars.java/blob/develop/handlebars-springmvc/src/main/java/com/github/jknack/handlebars/springmvc/HandlebarsViewResolver.java).
+Checkout the [HandlebarsViewResolver](https://github.com/jknack/handlebars.java/blob/master/handlebars-springmvc/src/main/java/com/github/jknack/handlebars/springmvc/HandlebarsViewResolver.java).
 
 # Architecture and API Design
  * Handlebars.java follows the JavaScript API with some minors exceptions due to the nature of the Java language.
@@ -974,11 +974,11 @@ Hello {{#child}}{{this.value}}{{/child}}
 ## Status
 ### Mustache 1.0 Compliant
  * Passes the 123 tests from the [Mustache Spec](https://github.com/mustache/spec).
- * Tests can be found here [comments.yml](https://github.com/jknack/handlebars.java/blob/develop/handlebars/src/test/java/specs/CommentsTest.java), [delimiters.yml](https://github.com/jknack/handlebars.java/blob/develop/handlebars/src/test/java/specs/DelimitersTest.java), [interpolation.yml](https://github.com/jknack/handlebars.java/blob/develop/handlebars/src/test/java/specs/InterpolationTest.java), [inverted.yml](https://github.com/jknack/handlebars.java/blob/develop/handlebars/src/test/java/specs/InvertedTest.java), [lambdas.yml](https://github.com/jknack/handlebars.java/blob/develop/handlebars/src/test/java/specs/LambdasTest.java), [partials.yml](https://github.com/jknack/handlebars.java/blob/develop/handlebars/src/test/java/specs/PartialsTest.java), [sections.yml](https://github.com/jknack/handlebars.java/blob/develop/handlebars/src/test/java/specs/SectionsTest.java)
+ * Tests can be found here [comments.yml](https://github.com/jknack/handlebars.java/blob/master/handlebars/src/test/java/specs/CommentsTest.java), [delimiters.yml](https://github.com/jknack/handlebars.java/blob/master/handlebars/src/test/java/specs/DelimitersTest.java), [interpolation.yml](https://github.com/jknack/handlebars.java/blob/master/handlebars/src/test/java/specs/InterpolationTest.java), [inverted.yml](https://github.com/jknack/handlebars.java/blob/master/handlebars/src/test/java/specs/InvertedTest.java), [lambdas.yml](https://github.com/jknack/handlebars.java/blob/master/handlebars/src/test/java/specs/LambdasTest.java), [partials.yml](https://github.com/jknack/handlebars.java/blob/master/handlebars/src/test/java/specs/PartialsTest.java), [sections.yml](https://github.com/jknack/handlebars.java/blob/master/handlebars/src/test/java/specs/SectionsTest.java)
 
 ### Handlebars.js Compliant
   * Passes all the [Handlebars.js tests](https://github.com/wycats/handlebars.js/blob/master/spec/qunit_spec.js)
-  * Tests can be found here [basic context](https://github.com/jknack/handlebars.java/blob/develop/handlebars/src/test/java/hbs/js/BasicContextTest.java), [string literals](https://github.com/jknack/handlebars.java/blob/develop/handlebars/src/test/java/hbs/js/StringLiteralParametersTest.java), [inverted sections](https://github.com/jknack/handlebars.java/blob/develop/handlebars/src/test/java/hbs/js/InvertedSectionTest.java), [blocks](https://github.com/jknack/handlebars.java/blob/develop/handlebars/src/test/java/hbs/js/BlockTest.java), [block helper missing](https://github.com/jknack/handlebars.java/blob/develop/handlebars/src/test/java/hbs/js/BlockHelperMissingTest.java), [helper hash](https://github.com/jknack/handlebars.java/blob/develop/handlebars/src/test/java/hbs/js/HelperHashTest.java), [partials](https://github.com/jknack/handlebars.java/blob/develop/handlebars/src/test/java/hbs/js/PartialsTest.java)
+  * Tests can be found here [basic context](https://github.com/jknack/handlebars.java/blob/master/handlebars/src/test/java/hbs/js/BasicContextTest.java), [string literals](https://github.com/jknack/handlebars.java/blob/master/handlebars/src/test/java/hbs/js/StringLiteralParametersTest.java), [inverted sections](https://github.com/jknack/handlebars.java/blob/master/handlebars/src/test/java/hbs/js/InvertedSectionTest.java), [blocks](https://github.com/jknack/handlebars.java/blob/master/handlebars/src/test/java/hbs/js/BlockTest.java), [block helper missing](https://github.com/jknack/handlebars.java/blob/master/handlebars/src/test/java/hbs/js/BlockHelperMissingTest.java), [helper hash](https://github.com/jknack/handlebars.java/blob/master/handlebars/src/test/java/hbs/js/HelperHashTest.java), [partials](https://github.com/jknack/handlebars.java/blob/master/handlebars/src/test/java/hbs/js/PartialsTest.java)
   
 ## Dependencies
 
