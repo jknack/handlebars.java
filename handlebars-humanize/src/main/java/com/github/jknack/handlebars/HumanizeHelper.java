@@ -292,7 +292,7 @@ public enum HumanizeHelper implements Helper<Object> {
     public CharSequence apply(final Object value, final Options options)
         throws IOException {
       isTrue(value instanceof String, "found '%s', expected: 'string'", value);
-      return Humanize.pluralize((String) value, resolveLocale(options))
+      return Humanize.pluralizeFormat((String) value, resolveLocale(options))
           .render(options.params);
     }
   },
