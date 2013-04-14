@@ -33,6 +33,7 @@ package com.github.jknack.handlebars.helper;
 
 import static org.apache.commons.lang3.Validate.isTrue;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URI;
 
@@ -71,14 +72,15 @@ public class BlockHelper implements Helper<Object> {
     if (template == null) {
       try {
         template = options.handlebars.compile(URI.create(path));
-        options.partial(path, template);
-      } catch (IOException ex) {
+      } catch (FileNotFoundException ex) {
         // partial not found
         Handlebars.debug(ex.getMessage());
         template = options.fn;
       }
     }
     CharSequence result = options.apply(template);
+    // once applied, remove the template from current execution.
+    options.partial(path, null);
     return result;
   }
 }
