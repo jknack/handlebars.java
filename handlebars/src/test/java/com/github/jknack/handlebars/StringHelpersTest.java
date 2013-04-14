@@ -263,7 +263,7 @@ public class StringHelpersTest extends AbstractTest {
     Context ctx = createMock(Context.class);
     Template fn = createMock(Template.class);
 
-    Options options = new Options.Builder(hbs, ctx, fn)
+    Options options = new Options.Builder(hbs, TagType.VAR, ctx, fn)
         .setParams(new Object[]{"handlebars.java" })
         .build();
 
@@ -279,7 +279,7 @@ public class StringHelpersTest extends AbstractTest {
     Context ctx = createMock(Context.class);
     Template fn = createMock(Template.class);
 
-    Options options = new Options.Builder(hbs, ctx, fn)
+    Options options = new Options.Builder(hbs, TagType.VAR, ctx, fn)
         .setParams(new Object[]{10.0 / 3.0 })
         .build();
 

@@ -182,7 +182,7 @@
         <module name="VisibilityModifier">
           <property name="packageAllowed" value="true"/>
           <property name="protectedAllowed" value="true"/>
-          <property name="publicMemberPattern" value="handlebars|fn|inverse|params|hash|context|line|column|evidence|reason|message|filename"/>
+          <property name="publicMemberPattern" value="handlebars|fn|inverse|params|tagType|hash|context|line|column|evidence|reason|message|filename"/>
         </module>
 
 

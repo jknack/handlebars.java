@@ -86,14 +86,22 @@ public class Options {
     private Map<String, Object> hash = Collections.emptyMap();
 
     /**
+     * The {@link TagType} from where the helper was called.
+     */
+    private TagType tagType;
+
+    /**
      * Creates a new {@link Builder}.
      *
      * @param handlebars A handlebars object. Required.
+     * @param tagType The {@link TagType} from where the helper was called.
      * @param context A context object. Required.
      * @param fn A template object. Required.
      */
-    public Builder(final Handlebars handlebars, final Context context, final Template fn) {
+    public Builder(final Handlebars handlebars, final TagType tagType, final Context context,
+        final Template fn) {
       this.handlebars = notNull(handlebars, "The handlebars is required.");
+      this.tagType = notNull(tagType, "The tag type is required.");
       this.context = notNull(context, "The context is required.");
       this.fn = notNull(fn, "The fn template is required.");
     }
@@ -104,9 +112,10 @@ public class Options {
      * @return A new {@link Options} object.
      */
     public Options build() {
-      Options options = new Options(handlebars, context, fn, inverse, params, hash);
+      Options options = new Options(handlebars, tagType, context, fn, inverse, params, hash);
       // clear out references
       handlebars = null;
+      tagType = null;
       context = null;
       fn = null;
       inverse = null;
@@ -180,19 +189,26 @@ public class Options {
   public final Map<String, Object> hash;
 
   /**
+   * The {@link TagType} from where the helper was called.
+   */
+  public final TagType tagType;
+
+  /**
    * Creates a new Handlebars {@link Options}.
    *
    * @param handlebars The handlebars instance. Required.
+   * @param tagType The {@link TagType} from where the helper was called.
    * @param context The current context. Required.
    * @param fn The template function. Required.
    * @param inverse The inverse template function. Required.
    * @param params The parameters. Required.
    * @param hash The optional hash. Required.
    */
-  public Options(final Handlebars handlebars, final Context context,
+  public Options(final Handlebars handlebars, final TagType tagType, final Context context,
       final Template fn, final Template inverse, final Object[] params,
       final Map<String, Object> hash) {
     this.handlebars = notNull(handlebars, "The handlebars is required.");
+    this.tagType = notNull(tagType, "The tag type is required.");
     this.context = notNull(context, "The context is required");
     this.fn = notNull(fn, "The template is required.");
     this.inverse = notNull(inverse, "The inverse template is required.");

@@ -30,6 +30,7 @@ import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Helper;
 import com.github.jknack.handlebars.Lambda;
 import com.github.jknack.handlebars.Options;
+import com.github.jknack.handlebars.TagType;
 import com.github.jknack.handlebars.Template;
 import com.github.jknack.handlebars.helper.EachHelper;
 import com.github.jknack.handlebars.helper.IfHelper;
@@ -139,7 +140,7 @@ class Block extends HelperResolver {
     } else {
       childContext = transform(determineContext(context));
     }
-    Options options = new Options.Builder(handlebars, currentScope, template)
+    Options options = new Options.Builder(handlebars, TagType.SECTION, currentScope, template)
         .setInverse(inverse == null ? Template.EMPTY : inverse)
         .setParams(params(currentScope))
         .setHash(hash(context))

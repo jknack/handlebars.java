@@ -35,6 +35,7 @@ import org.antlr.v4.runtime.tree.TerminalNode;
 import com.github.jknack.handlebars.Context;
 import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Helper;
+import com.github.jknack.handlebars.TagType;
 import com.github.jknack.handlebars.Template;
 import com.github.jknack.handlebars.internal.HbsParser.AmpvarContext;
 import com.github.jknack.handlebars.internal.HbsParser.BlockContext;
@@ -59,7 +60,6 @@ import com.github.jknack.handlebars.internal.HbsParser.TextContext;
 import com.github.jknack.handlebars.internal.HbsParser.TvarContext;
 import com.github.jknack.handlebars.internal.HbsParser.UnlessContext;
 import com.github.jknack.handlebars.internal.HbsParser.VarContext;
-import com.github.jknack.handlebars.internal.Variable.Type;
 import com.github.jknack.handlebars.io.TemplateSource;
 
 /**
@@ -160,21 +160,21 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
   @Override
   public Template visitVar(final VarContext ctx) {
     hasTag(false);
-    return newVar(ctx.QID().getSymbol(), Type.VAR, params(ctx.param()), hash(ctx.hash()),
+    return newVar(ctx.QID().getSymbol(), TagType.VAR, params(ctx.param()), hash(ctx.hash()),
         ctx.start.getText(), ctx.stop.getText());
   }
 
   @Override
   public Template visitTvar(final TvarContext ctx) {
     hasTag(false);
-    return newVar(ctx.QID().getSymbol(), Type.TRIPLE_VAR, params(ctx.param()), hash(ctx.hash()),
+    return newVar(ctx.QID().getSymbol(), TagType.TRIPLE_VAR, params(ctx.param()), hash(ctx.hash()),
         ctx.start.getText(), ctx.stop.getText());
   }
 
   @Override
   public Template visitAmpvar(final AmpvarContext ctx) {
     hasTag(false);
-    return newVar(ctx.QID().getSymbol(), Type.AMPERSAND_VAR, params(ctx.param()), hash(ctx.hash()),
+    return newVar(ctx.QID().getSymbol(), TagType.AMP_VAR, params(ctx.param()), hash(ctx.hash()),
         ctx.start.getText(), ctx.stop.getText());
   }
 
@@ -189,7 +189,7 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
    * @param endDelimiter The current end delimiter.
    * @return A new {@link Variable}.
    */
-  private Template newVar(final Token name, final Type varType, final List<Object> params,
+  private Template newVar(final Token name, final TagType varType, final List<Object> params,
       final Map<String, Object> hash, final String startDelimiter, final String endDelimiter) {
     String varName = name.getText();
     Helper<Object> helper = handlebars.helper(varName);

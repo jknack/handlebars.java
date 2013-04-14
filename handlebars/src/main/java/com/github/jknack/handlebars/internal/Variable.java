@@ -29,6 +29,7 @@ import com.github.jknack.handlebars.Helper;
 import com.github.jknack.handlebars.Lambda;
 import com.github.jknack.handlebars.MissingValueResolver;
 import com.github.jknack.handlebars.Options;
+import com.github.jknack.handlebars.TagType;
 
 /**
  * The most basic tag type is the variable. A {{name}} tag in a basic template
@@ -45,52 +46,6 @@ import com.github.jknack.handlebars.Options;
 class Variable extends HelperResolver {
 
   /**
-   * The variable's type.
-   *
-   * @author edgar.espina
-   * @since 0.1.0
-   */
-  enum Type {
-    /**
-     * Dont escape a variable.
-     */
-    TRIPLE_VAR {
-      @Override
-      public boolean escape() {
-        return false;
-      }
-    },
-
-    /**
-     * Dont escape a variable.
-     */
-    AMPERSAND_VAR {
-      @Override
-      public boolean escape() {
-        return false;
-      }
-    },
-
-    /**
-     * Escape a variable.
-     */
-    VAR {
-      @Override
-      public boolean escape() {
-        return true;
-      }
-    };
-
-    /**
-     * Return true if the value must be escaped.
-     *
-     * @return True if the value must be escaped.
-     */
-    public abstract boolean escape();
-
-  }
-
-  /**
    * The variable's name. Required.
    */
   private final String name;
@@ -98,7 +53,7 @@ class Variable extends HelperResolver {
   /**
    * The variable type.
    */
-  private final Type type;
+  private final TagType type;
 
   /**
    * Default value for a variable. If set, no lookup is executed. Optional.
@@ -130,7 +85,7 @@ class Variable extends HelperResolver {
    * @param hash The variable's hash. Required.
    */
   public Variable(final Handlebars handlebars, final String name,
-      final Type type, final List<Object> params,
+      final TagType type, final List<Object> params,
       final Map<String, Object> hash) {
     this(handlebars, name, null, type, params, hash);
   }
@@ -146,7 +101,7 @@ class Variable extends HelperResolver {
    * @param hash The variable's hash. Required.
    */
   public Variable(final Handlebars handlebars, final String name,
-      final Object value, final Type type, final List<Object> params,
+      final Object value, final TagType type, final List<Object> params,
       final Map<String, Object> hash) {
     super(handlebars);
     missingValueResolver = handlebars.getMissingValueResolver();
@@ -167,7 +122,7 @@ class Variable extends HelperResolver {
    */
   @SuppressWarnings("unchecked")
   public Variable(final Handlebars handlebars, final String name,
-      final Object value, final Type type) {
+      final Object value, final TagType type) {
     this(handlebars, name, value, type, Collections.EMPTY_LIST,
         Collections.EMPTY_MAP);
   }
@@ -187,7 +142,7 @@ class Variable extends HelperResolver {
       throws IOException {
     Helper<Object> helper = helper(name);
     if (helper != null) {
-      Options options = new Options.Builder(handlebars, scope, this)
+      Options options = new Options.Builder(handlebars, type, scope, this)
           .setParams(params(scope))
           .setHash(hash(scope))
           .build();
@@ -233,7 +188,7 @@ class Variable extends HelperResolver {
     boolean isString =
         value instanceof CharSequence || value instanceof Character;
     if (isString) {
-      return type.escape();
+      return type == TagType.VAR;
     } else {
       return false;
     }

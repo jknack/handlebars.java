@@ -21,6 +21,7 @@ import org.springframework.context.MessageSource;
 import com.github.jknack.handlebars.Context;
 import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Options;
+import com.github.jknack.handlebars.TagType;
 import com.github.jknack.handlebars.Template;
 
 @RunWith(PowerMockRunner.class)
@@ -48,7 +49,7 @@ public class MessageSourceHelperTest {
     Context ctx = createMock(Context.class);
     Template fn = createMock(Template.class);
 
-    Options options = new Options.Builder(hbs, ctx, fn)
+    Options options = new Options.Builder(hbs, TagType.VAR, ctx, fn)
         .setParams(params)
         .setHash(hash)
         .build();
@@ -82,7 +83,7 @@ public class MessageSourceHelperTest {
     Context ctx = createMock(Context.class);
     Template fn = createMock(Template.class);
 
-    Options options = new Options.Builder(hbs, ctx, fn)
+    Options options = new Options.Builder(hbs, TagType.VAR, ctx, fn)
         .setParams(params)
         .setHash(hash)
         .build();
@@ -116,7 +117,7 @@ public class MessageSourceHelperTest {
     Context ctx = createMock(Context.class);
     Template fn = createMock(Template.class);
 
-    Options options = new Options.Builder(hbs, ctx, fn)
+    Options options = new Options.Builder(hbs, TagType.VAR, ctx, fn)
         .setParams(params)
         .setHash(hash)
         .build();
