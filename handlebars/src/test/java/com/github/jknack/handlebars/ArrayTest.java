@@ -13,9 +13,13 @@
  */
 package com.github.jknack.handlebars;
 
+import static org.junit.Assert.assertEquals;
+
 import java.io.IOException;
 
 import org.junit.Test;
+
+import com.github.jknack.handlebars.context.FieldValueResolver;
 
 public class ArrayTest extends AbstractTest {
 
@@ -55,5 +59,13 @@ public class ArrayTest extends AbstractTest {
     Hash hash = $("list", new Letter[]{new Letter('w'), new Letter('o'),
         new Letter('r'), new Letter('l'), new Letter('d') });
     shouldCompileTo("Hello {{#list}}{{this}}{{/list}}!", hash, "Hello world!");
+  }
+
+  @Test
+  public void arrayLength() throws IOException {
+    Object[] array = {"1", 2, "3" };
+    assertEquals(
+        "3", compile("{{this.length}}").apply(
+            Context.newBuilder(array).resolver(FieldValueResolver.INSTANCE).build()));
   }
 }
