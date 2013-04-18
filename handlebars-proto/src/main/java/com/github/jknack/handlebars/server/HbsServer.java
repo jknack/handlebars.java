@@ -47,7 +47,7 @@ import com.github.jknack.handlebars.Helper;
 import com.github.jknack.handlebars.HumanizeHelper;
 import com.github.jknack.handlebars.Jackson2Helper;
 import com.github.jknack.handlebars.MarkdownHelper;
-import com.github.jknack.handlebars.StringHelpers;
+import com.github.jknack.handlebars.helper.StringHelpers;
 import com.github.jknack.handlebars.io.FileTemplateLoader;
 import com.github.jknack.handlebars.io.TemplateLoader;
 import com.github.jknack.handlebars.io.URLTemplateLoader;

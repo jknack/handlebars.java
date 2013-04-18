@@ -1,20 +1,20 @@
 package com.github.jknack.handlebars;
 
-import static com.github.jknack.handlebars.StringHelpers.abbreviate;
-import static com.github.jknack.handlebars.StringHelpers.capitalize;
-import static com.github.jknack.handlebars.StringHelpers.capitalizeFirst;
-import static com.github.jknack.handlebars.StringHelpers.center;
-import static com.github.jknack.handlebars.StringHelpers.cut;
-import static com.github.jknack.handlebars.StringHelpers.defaultIfEmpty;
-import static com.github.jknack.handlebars.StringHelpers.ljust;
-import static com.github.jknack.handlebars.StringHelpers.lower;
-import static com.github.jknack.handlebars.StringHelpers.rjust;
-import static com.github.jknack.handlebars.StringHelpers.slugify;
-import static com.github.jknack.handlebars.StringHelpers.stringFormat;
-import static com.github.jknack.handlebars.StringHelpers.stripTags;
-import static com.github.jknack.handlebars.StringHelpers.upper;
-import static com.github.jknack.handlebars.StringHelpers.wordWrap;
-import static com.github.jknack.handlebars.StringHelpers.yesno;
+import static com.github.jknack.handlebars.helper.StringHelpers.abbreviate;
+import static com.github.jknack.handlebars.helper.StringHelpers.capitalize;
+import static com.github.jknack.handlebars.helper.StringHelpers.capitalizeFirst;
+import static com.github.jknack.handlebars.helper.StringHelpers.center;
+import static com.github.jknack.handlebars.helper.StringHelpers.cut;
+import static com.github.jknack.handlebars.helper.StringHelpers.defaultIfEmpty;
+import static com.github.jknack.handlebars.helper.StringHelpers.ljust;
+import static com.github.jknack.handlebars.helper.StringHelpers.lower;
+import static com.github.jknack.handlebars.helper.StringHelpers.rjust;
+import static com.github.jknack.handlebars.helper.StringHelpers.slugify;
+import static com.github.jknack.handlebars.helper.StringHelpers.stringFormat;
+import static com.github.jknack.handlebars.helper.StringHelpers.stripTags;
+import static com.github.jknack.handlebars.helper.StringHelpers.upper;
+import static com.github.jknack.handlebars.helper.StringHelpers.wordWrap;
+import static com.github.jknack.handlebars.helper.StringHelpers.yesno;
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
@@ -27,6 +27,8 @@ import java.util.Collections;
 
 import org.apache.commons.lang3.SystemUtils;
 import org.junit.Test;
+
+import com.github.jknack.handlebars.helper.StringHelpers;
 
 /**
  * Unit test for {@link StringHelpers}.

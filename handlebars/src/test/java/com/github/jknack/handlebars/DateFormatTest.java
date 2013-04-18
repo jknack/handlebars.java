@@ -26,6 +26,8 @@ import java.util.Locale;
 
 import org.junit.Test;
 
+import com.github.jknack.handlebars.helper.StringHelpers;
+
 public class DateFormatTest extends AbstractTest {
 
   @Override
