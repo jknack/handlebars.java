@@ -39,9 +39,10 @@ public interface TemplateSource {
   String content() throws IOException;
 
   /**
-   * The template content.
+   * The template content as a {@link Reader}. Clients of this method must close the {@link Reader}.
    *
-   * @return The template content.
+   * @return The template content as a {@link Reader}.Clients of this method must close the
+   *         {@link Reader}.
    * @throws IOException If the template can't read.
    */
   Reader reader() throws IOException;

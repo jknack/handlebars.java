@@ -23,7 +23,6 @@ import static org.junit.Assert.assertNotNull;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.net.URI;
 
 import org.junit.Test;
 
@@ -40,7 +39,7 @@ public class FileLocatorTest {
   public void locate() throws IOException {
     TemplateLoader locator =
         new FileTemplateLoader(new File("src/test/resources"));
-    TemplateSource source = locator.sourceAt(URI.create("template"));
+    TemplateSource source = locator.sourceAt("template");
     assertNotNull(source);
   }
 
@@ -48,7 +47,7 @@ public class FileLocatorTest {
   public void subFolder() throws IOException {
     TemplateLoader locator =
         new FileTemplateLoader(new File("src/test/resources"), ".yml");
-    TemplateSource source = locator.sourceAt(URI.create("mustache/specs/comments"));
+    TemplateSource source = locator.sourceAt("mustache/specs/comments");
     assertNotNull(source);
   }
 
@@ -56,7 +55,7 @@ public class FileLocatorTest {
   public void subFolderwithDashAtBeginning() throws IOException {
     TemplateLoader locator =
         new FileTemplateLoader(new File("src/test/resources"), ".yml");
-    TemplateSource source = locator.sourceAt(URI.create("mustache/specs/comments"));
+    TemplateSource source = locator.sourceAt("mustache/specs/comments");
     assertNotNull(source);
   }
 
@@ -64,14 +63,14 @@ public class FileLocatorTest {
   public void failLocate() throws IOException {
     TemplateLoader locator =
         new FileTemplateLoader(new File("src/test/resources"));
-    locator.sourceAt(URI.create("notExist"));
+    locator.sourceAt("notExist");
   }
 
   @Test
   public void setBasePath() throws IOException {
     TemplateLoader locator =
         new FileTemplateLoader(new File("src/test/resources/mustache/specs"), ".yml");
-    TemplateSource source = locator.sourceAt(URI.create("comments"));
+    TemplateSource source = locator.sourceAt("comments");
     assertNotNull(source);
   }
 
@@ -79,21 +78,21 @@ public class FileLocatorTest {
   public void setBasePathWithDash() throws IOException {
     TemplateLoader locator =
         new FileTemplateLoader(new File("src/test/resources/mustache/specs/"), ".yml");
-    TemplateSource source = locator.sourceAt(URI.create("comments"));
+    TemplateSource source = locator.sourceAt("comments");
     assertNotNull(source);
   }
 
   @Test
   public void nullSuffix() throws IOException {
     assertEquals("suffix should be optional",
-        new FileTemplateLoader("src/test/resources/", null).sourceAt(URI.create("noextension"))
+        new FileTemplateLoader("src/test/resources/", null).sourceAt("noextension")
             .content());
   }
 
   @Test
   public void emptySuffix() throws IOException {
     assertEquals("suffix should be optional",
-        new FileTemplateLoader("src/test/resources/", "").sourceAt(URI.create("noextension"))
+        new FileTemplateLoader("src/test/resources/", "").sourceAt("noextension")
             .content());
   }
 }

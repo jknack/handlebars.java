@@ -30,7 +30,7 @@ public class PropertyAccessTest {
   @Test
   public void arrayAccess() throws IOException {
     Handlebars handlebars = new Handlebars();
-    Template template = handlebars.compile("{{array.[0]}}");
+    Template template = handlebars.compileInline("{{array.[0]}}");
     Map<String, Object> context = new HashMap<String, Object>();
     context.put("array", new String[] {"s1", "s2" });
     assertEquals("s1", template.apply(context));
@@ -39,7 +39,7 @@ public class PropertyAccessTest {
   @Test
   public void listAccess() throws IOException {
     Handlebars handlebars = new Handlebars();
-    Template template = handlebars.compile("{{list.[1]}}");
+    Template template = handlebars.compileInline("{{list.[1]}}");
     Map<String, Object> context = new HashMap<String, Object>();
     context.put("list", Arrays.asList("s1", "s2"));
     assertEquals("s2", template.apply(context));
@@ -48,7 +48,7 @@ public class PropertyAccessTest {
   @Test
   public void listArrayIndexOutOfBounds() throws IOException {
     Handlebars handlebars = new Handlebars();
-    Template template = handlebars.compile("{{list.[10]}}");
+    Template template = handlebars.compileInline("{{list.[10]}}");
     Map<String, Object> context = new HashMap<String, Object>();
     context.put("list", Arrays.asList("s1", "s2"));
     try {
@@ -63,7 +63,7 @@ public class PropertyAccessTest {
   @Test
   public void listIndexOutOfBounds() throws IOException {
     Handlebars handlebars = new Handlebars();
-    Template template = handlebars.compile("{{list.[10]}}");
+    Template template = handlebars.compileInline("{{list.[10]}}");
     Map<String, Object> context = new HashMap<String, Object>();
     context.put("list", new ArrayList<String>(Arrays.asList("s1", "s2")));
     try {
@@ -78,7 +78,7 @@ public class PropertyAccessTest {
   @Test
   public void arrayIndexOutOfBounds() throws IOException {
     Handlebars handlebars = new Handlebars();
-    Template template = handlebars.compile("{{list.[10]}}");
+    Template template = handlebars.compileInline("{{list.[10]}}");
     Map<String, Object> context = new HashMap<String, Object>();
     context.put("list", new String[] {"s1", "s2" });
     try {
@@ -94,7 +94,7 @@ public class PropertyAccessTest {
   @Test
   public void qualifiedListAccess() throws IOException {
     Handlebars handlebars = new Handlebars();
-    Template template = handlebars.compile("{{list.[0].title}}");
+    Template template = handlebars.compileInline("{{list.[0].title}}");
     Map<String, Object> blog = new HashMap<String, Object>();
     blog.put("title", "First Post!");
 
@@ -106,7 +106,7 @@ public class PropertyAccessTest {
   @Test
   public void ifArrayAccess() throws IOException {
     Handlebars handlebars = new Handlebars();
-    Template template = handlebars.compile("{{#if array.[0]}}S1{{/if}}");
+    Template template = handlebars.compileInline("{{#if array.[0]}}S1{{/if}}");
     Map<String, Object> context = new HashMap<String, Object>();
     context.put("array", new String[] {"s1", "s2" });
     assertEquals("S1", template.apply(context));
@@ -115,7 +115,7 @@ public class PropertyAccessTest {
   @Test
   public void falsyArrayAccess() throws IOException {
     Handlebars handlebars = new Handlebars();
-    Template template = handlebars.compile("{{#if array.[0]}}S1{{/if}}");
+    Template template = handlebars.compileInline("{{#if array.[0]}}S1{{/if}}");
     Map<String, Object> context = new HashMap<String, Object>();
     context.put("array", new String[] {"" });
     assertEquals("", template.apply(context));
@@ -130,10 +130,10 @@ public class PropertyAccessTest {
     context.put("foo or bar", "foo");
     context.put("134", "134");
 
-    assertEquals("foo", handlebars.compile("{{this.[1foo]}}").apply(context));
-    assertEquals("foo", handlebars.compile("{{this.['foo']}}").apply(context));
-    assertEquals("foo", handlebars.compile("{{this.[foo or bar]}}")
+    assertEquals("foo", handlebars.compileInline("{{this.[1foo]}}").apply(context));
+    assertEquals("foo", handlebars.compileInline("{{this.['foo']}}").apply(context));
+    assertEquals("foo", handlebars.compileInline("{{this.[foo or bar]}}")
         .apply(context));
-    assertEquals("134", handlebars.compile("{{this.[134]}}").apply(context));
+    assertEquals("134", handlebars.compileInline("{{this.[134]}}").apply(context));
   }
 }

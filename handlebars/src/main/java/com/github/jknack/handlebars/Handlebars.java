@@ -26,7 +26,6 @@ import java.io.IOException;
 import java.lang.reflect.Array;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.net.URI;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -360,26 +359,26 @@ public class Handlebars {
   /**
    * Compile the resource located at the given uri.
    *
-   * @param uri The resource's location. Required.
+   * @param location The resource's location. Required.
    * @return A compiled template.
    * @throws IOException If the resource cannot be loaded.
    */
-  public Template compile(final URI uri) throws IOException {
-    return compile(uri, DELIM_START, DELIM_END);
+  public Template compile(final String location) throws IOException {
+    return compile(location, DELIM_START, DELIM_END);
   }
 
   /**
    * Compile the resource located at the given uri.
    *
-   * @param uri The resource's location. Required.
+   * @param location The resource's location. Required.
    * @param startDelimiter The start delimiter. Required.
    * @param endDelimiter The end delimiter. Required.
    * @return A compiled template.
    * @throws IOException If the resource cannot be loaded.
    */
-  public Template compile(final URI uri, final String startDelimiter,
+  public Template compile(final String location, final String startDelimiter,
       final String endDelimiter) throws IOException {
-    return compile(loader.sourceAt(uri), startDelimiter, endDelimiter);
+    return compile(loader.sourceAt(location), startDelimiter, endDelimiter);
   }
 
   /**
@@ -389,8 +388,8 @@ public class Handlebars {
    * @return A compiled template.
    * @throws IOException If the resource cannot be loaded.
    */
-  public Template compile(final String input) throws IOException {
-    return compile(input, DELIM_START, DELIM_END);
+  public Template compileInline(final String input) throws IOException {
+    return compileInline(input, DELIM_START, DELIM_END);
   }
 
   /**
@@ -402,11 +401,11 @@ public class Handlebars {
    * @return A compiled template.
    * @throws IOException If the resource cannot be loaded.
    */
-  public Template compile(final String input, final String startDelimiter,
+  public Template compileInline(final String input, final String startDelimiter,
       final String endDelimiter) throws IOException {
     notNull(input, "The input is required.");
     String filename = "inline@" + Integer.toHexString(Math.abs(input.hashCode()));
-    return compile(new StringTemplateSource(loader.resolve(URI.create(filename)), input),
+    return compile(new StringTemplateSource(loader.resolve(filename), input),
         startDelimiter, endDelimiter);
   }
 

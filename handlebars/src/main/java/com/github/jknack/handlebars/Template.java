@@ -21,7 +21,7 @@ import java.io.IOException;
 import java.io.Writer;
 
 /**
- * A compiled template created by {@link Handlebars#compile(String)}.
+ * A compiled template created by {@link Handlebars#compileInline(String)}.
  *
  * @author edgar.espina
  * @since 0.1.0

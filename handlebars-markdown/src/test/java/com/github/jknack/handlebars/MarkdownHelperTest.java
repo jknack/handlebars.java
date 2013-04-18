@@ -46,7 +46,7 @@ public class MarkdownHelperTest {
 
     Handlebars handlebars = new Handlebars();
     handlebars.registerHelper("markdown", new MarkdownHelper());
-    Template template = handlebars.compile("{{markdown .}}");
+    Template template = handlebars.compileInline("{{markdown .}}");
 
     String expected = "<h1>Header 1</h1>\n";
     expected += "<ul>\n";

@@ -39,7 +39,7 @@ public class PseudoVarsTest {
         "odd=\n" +
         "first=\n" +
         "last=last\n",
-        handlebars.compile(input).apply(new Object() {
+        handlebars.compileInline(input).apply(new Object() {
           @SuppressWarnings("unused")
           public List<String> getList() {
             return Arrays.asList("a", "b", "c");
@@ -60,6 +60,6 @@ public class PseudoVarsTest {
     Map<String, Object> context = new HashMap<String, Object>();
     context.put("parent", parent);
 
-    assertEquals("0. px 1. px ", handlebars.compile(input).apply(context));
+    assertEquals("0. px 1. px ", handlebars.compileInline(input).apply(context));
   }
 }

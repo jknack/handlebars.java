@@ -3,7 +3,6 @@ package com.github.jknack.handlebars;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.IOException;
-import java.net.URI;
 
 import org.junit.Test;
 
@@ -18,7 +17,7 @@ public class Issue95 {
 
     Handlebars handlebars = new Handlebars(loader);
     handlebars.setAllowInfiniteLoops(true);
-    Template template = handlebars.compile(URI.create("hbs/start"));
+    Template template = handlebars.compile("hbs/start");
     assertNotNull(template);
   }
 }

@@ -18,7 +18,6 @@
 package com.github.jknack.handlebars.io;
 
 import java.io.IOException;
-import java.net.URI;
 
 import com.github.jknack.handlebars.Template;
 
@@ -43,19 +42,19 @@ public interface TemplateLoader {
   /**
    * Get a template source for the given uri.
    *
-   * @param uri The location of the template source. Required.
+   * @param location The location of the template source. Required.
    * @return A new template source.
    * @throws IOException If the template's source can't be read.
    */
-  TemplateSource sourceAt(final URI uri) throws IOException;
+  TemplateSource sourceAt(final String location) throws IOException;
 
   /**
-   * Resolve the uri to an absolute location.
+   * Resolve a relative location to an absolute location.
    *
-   * @param uri The candidate uri.
+   * @param location The candidate location.
    * @return Resolve the uri to an absolute location.
    */
-  String resolve(final URI uri);
+  String resolve(final String location);
 
   /**
    * @return The prefix that gets prepended to view names when building a URI.

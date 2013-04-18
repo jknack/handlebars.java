@@ -125,7 +125,7 @@ public class AbstractTest {
       }
       handlebars.registerHelper(entry.getKey(), helper);
     }
-    Template t = handlebars.compile(template);
+    Template t = handlebars.compileInline(template);
     return t;
   }
 

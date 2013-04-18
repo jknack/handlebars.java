@@ -24,7 +24,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.Writer;
-import java.net.URI;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -115,9 +114,7 @@ public class HbsServlet extends HttpServlet {
     Writer writer = null;
 
     try {
-      Template template =
-          handlebars.compile(
-              URI.create(removeExtension(requestURI(request))));
+      Template template = handlebars.compile(removeExtension(requestURI(request)));
 
       Object model = model(request);
 
@@ -296,8 +293,7 @@ public class HbsServlet extends HttpServlet {
     Handlebars handlebars = new Handlebars();
     StringHelpers.register(handlebars);
 
-    Template template =
-        handlebars.compile(URI.create("/error-pages/error"));
+    Template template = handlebars.compile("/error-pages/error");
 
     PrintWriter writer = null;
     writer = response.getWriter();

@@ -26,7 +26,6 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 import java.io.Writer;
-import java.net.URI;
 import java.util.Collections;
 import java.util.LinkedList;
 
@@ -99,7 +98,7 @@ class Partial extends BaseTemplate {
     try {
       LinkedList<TemplateSource> invocationStack = context.data(Context.INVOCATION_STACK);
 
-      TemplateSource source = loader.sourceAt(URI.create(path));
+      TemplateSource source = loader.sourceAt(path);
 
       if (exists(invocationStack, source.filename())) {
         TemplateSource caller = invocationStack.removeLast();
@@ -136,7 +135,7 @@ class Partial extends BaseTemplate {
       }
     } catch (FileNotFoundException ex) {
       String reason = String.format("The partial '%s' could not be found",
-          loader.resolve(URI.create(path)));
+          loader.resolve(path));
       String message = String.format("%s:%s:%s: %s", filename, line, column, reason);
       HandlebarsError error = new HandlebarsError(filename, line,
           column, reason, text(), message);

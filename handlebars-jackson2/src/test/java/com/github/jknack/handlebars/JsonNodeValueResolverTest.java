@@ -30,7 +30,7 @@ public class JsonNodeValueResolverTest {
     root.put("bool", true);
 
     assertEquals("abc 678 6789 7.13 3.14 true",
-        handlebars.compile("{{string}} {{int}} {{long}} {{float}} {{double}} {{bool}}")
+        handlebars.compileInline("{{string}} {{int}} {{long}} {{float}} {{double}} {{bool}}")
             .apply(context(root)));
   }
 
@@ -66,7 +66,7 @@ public class JsonNodeValueResolverTest {
     Map<String, Object> root = new HashMap<String, Object>();
     root.put("pojo", item);
 
-    assertEquals("pojo", handlebars.compile("{{pojo.key}}").apply(context(root)));
+    assertEquals("pojo", handlebars.compileInline("{{pojo.key}}").apply(context(root)));
   }
 
   @Test
@@ -76,8 +76,8 @@ public class JsonNodeValueResolverTest {
     Map<String, Object> root = new HashMap<String, Object>();
     root.put("array", new Object[] {1, 2, 3});
 
-    assertEquals("123", handlebars.compile("{{array.[0]}}{{array.[1]}}{{array.[2]}}").apply(context(root)));
-    assertEquals("123", handlebars.compile("{{#array}}{{this}}{{/array}}").apply(context(root)));
+    assertEquals("123", handlebars.compileInline("{{array.[0]}}{{array.[1]}}{{array.[2]}}").apply(context(root)));
+    assertEquals("123", handlebars.compileInline("{{#array}}{{this}}{{/array}}").apply(context(root)));
   }
 
   @Test
@@ -94,8 +94,8 @@ public class JsonNodeValueResolverTest {
     Map<String, Object> root = new HashMap<String, Object>();
     root.put("array", new Object[] {item});
 
-    assertEquals("pojo", handlebars.compile("{{array.[0].key}}").apply(context(root)));
-    assertEquals("pojo", handlebars.compile("{{#array}}{{key}}{{/array}}").apply(context(root)));
+    assertEquals("pojo", handlebars.compileInline("{{array.[0].key}}").apply(context(root)));
+    assertEquals("pojo", handlebars.compileInline("{{#array}}{{key}}{{/array}}").apply(context(root)));
   }
 
   public static JsonNode node(final Object object) throws IOException {

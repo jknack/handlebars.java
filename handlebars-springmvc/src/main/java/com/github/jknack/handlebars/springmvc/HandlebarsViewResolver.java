@@ -22,7 +22,6 @@ import static org.apache.commons.lang3.Validate.notNull;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -124,7 +123,7 @@ public class HandlebarsViewResolver extends AbstractTemplateViewResolver
         - getSuffix().length());
     // Compile the template.
     try {
-      view.setTemplate(handlebars.compile(URI.create(url)));
+      view.setTemplate(handlebars.compile(url));
       view.setValueResolver(valueResolvers);
     } catch (FileNotFoundException ex) {
       if (failOnMissingFile) {

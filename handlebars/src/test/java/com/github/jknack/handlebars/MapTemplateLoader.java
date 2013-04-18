@@ -22,7 +22,6 @@ import static org.apache.commons.lang3.Validate.notNull;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.net.URI;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
@@ -55,7 +54,7 @@ public class MapTemplateLoader extends URLTemplateLoader {
   }
 
   @Override
-  public TemplateSource sourceAt(final URI uri) throws IOException {
+  public TemplateSource sourceAt(final String uri) throws IOException {
     notNull(uri, "The uri is required.");
     notEmpty(uri.toString(), "The uri is required.");
     String location = resolve(normalize(uri));

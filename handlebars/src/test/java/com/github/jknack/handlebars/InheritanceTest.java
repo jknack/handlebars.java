@@ -22,7 +22,6 @@ import static org.junit.Assert.assertEquals;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URI;
 import java.util.Arrays;
 import java.util.Collection;
 
@@ -53,7 +52,7 @@ public class InheritanceTest {
   @Test
   public void inheritance() throws IOException {
     try {
-      Template template = handlebars.compile(URI.create(name));
+      Template template = handlebars.compile(name);
       CharSequence result = template.apply(new Object());
       String expected = FileUtils.readFileToString(new File("src/test/resources/inheritance/"
           + name + ".expected"));

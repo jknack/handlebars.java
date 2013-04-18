@@ -40,14 +40,14 @@ public class ScalarContextTest {
   @Test
   public void integer() throws IOException {
     Handlebars handlebars = new Handlebars();
-    Template template = handlebars.compile("var i = {{" + selector + "}};");
+    Template template = handlebars.compileInline("var i = {{" + selector + "}};");
     assertEquals("var i = 10;", template.apply(10));
   }
 
   @Test
   public void string() throws IOException {
     Handlebars handlebars = new Handlebars();
-    Template template = handlebars.compile("var s = '{{" + selector + "}}';");
+    Template template = handlebars.compileInline("var s = '{{" + selector + "}}';");
     assertEquals("var s = 'Hello';", template.apply("Hello"));
   }
 
@@ -61,7 +61,7 @@ public class ScalarContextTest {
         return context;
       }
     });
-    Template template = handlebars.compile("{{{quote \"2\\\"secs\"}}}");
+    Template template = handlebars.compileInline("{{{quote \"2\\\"secs\"}}}");
     assertEquals("2\"secs", template.apply(new Object()));
   }
 
@@ -75,7 +75,7 @@ public class ScalarContextTest {
         return (CharSequence) options.hash.get("q");
       }
     });
-    Template template = handlebars.compile("{{{quote q=\"2\\\"secs\"}}}");
+    Template template = handlebars.compileInline("{{{quote q=\"2\\\"secs\"}}}");
     assertEquals("2\"secs", template.apply(null));
   }
 
@@ -83,7 +83,7 @@ public class ScalarContextTest {
   public void array() throws IOException {
     Handlebars handlebars = new Handlebars();
     Template template =
-        handlebars.compile("{{#" + selector + "}}{{" + selector + "}} {{/"
+        handlebars.compileInline("{{#" + selector + "}}{{" + selector + "}} {{/"
             + selector + "}}");
     assertEquals("1 2 3 ", template.apply(new Object[] {1, 2, 3 }));
   }
@@ -92,7 +92,7 @@ public class ScalarContextTest {
   public void list() throws IOException {
     Handlebars handlebars = new Handlebars();
     Template template =
-        handlebars.compile("{{#" + selector + "}}{{" + selector + "}} {{/"
+        handlebars.compileInline("{{#" + selector + "}}{{" + selector + "}} {{/"
             + selector + "}}");
     assertEquals("1 2 3 ", template.apply(new Object[] {1, 2, 3 }));
   }
@@ -100,7 +100,7 @@ public class ScalarContextTest {
   @Test
   public void dontEscape() throws IOException {
     Handlebars handlebars = new Handlebars();
-    Template template = handlebars.compile("var s = '{{{" + selector + "}}}';");
+    Template template = handlebars.compileInline("var s = '{{{" + selector + "}}}';");
     assertEquals("var s = '<div>';",
         template.apply("<div>"));
   }
@@ -108,7 +108,7 @@ public class ScalarContextTest {
   @Test
   public void safeString() throws IOException {
     Handlebars handlebars = new Handlebars();
-    Template template = handlebars.compile("var s = '{{" + selector + "}}';");
+    Template template = handlebars.compileInline("var s = '{{" + selector + "}}';");
     assertEquals("var s = '<div>';",
         template.apply(new Handlebars.SafeString("<div>")));
   }
@@ -116,35 +116,35 @@ public class ScalarContextTest {
   @Test
   public void ch() throws IOException {
     Handlebars handlebars = new Handlebars();
-    Template template = handlebars.compile("var s = '{{" + selector + "}}';");
+    Template template = handlebars.compileInline("var s = '{{" + selector + "}}';");
     assertEquals("var s = 'c';", template.apply('c'));
   }
 
   @Test
   public void chHtml() throws IOException {
     Handlebars handlebars = new Handlebars();
-    Template template = handlebars.compile("var s = '{{" + selector + "}}';");
+    Template template = handlebars.compileInline("var s = '{{" + selector + "}}';");
     assertEquals("var s = '&lt;';", template.apply('<'));
   }
 
   @Test
   public void htmlString() throws IOException {
     Handlebars handlebars = new Handlebars();
-    Template template = handlebars.compile("var s = '{{" + selector + "}}';");
+    Template template = handlebars.compileInline("var s = '{{" + selector + "}}';");
     assertEquals("var s = '&lt;div&gt;';", template.apply("<div>"));
   }
 
   @Test
   public void bool() throws IOException {
     Handlebars handlebars = new Handlebars();
-    Template template = handlebars.compile("if ({{" + selector + "}})");
+    Template template = handlebars.compileInline("if ({{" + selector + "}})");
     assertEquals("if (true)", template.apply(true));
   }
 
   @Test
   public void decimal() throws IOException {
     Handlebars handlebars = new Handlebars();
-    Template template = handlebars.compile("var d = {{" + selector + "}};");
+    Template template = handlebars.compileInline("var d = {{" + selector + "}};");
     assertEquals("var d = 1.34;", template.apply(1.34));
   }
 

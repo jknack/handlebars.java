@@ -43,28 +43,28 @@ public class CompilerBenchTest {
   @BenchmarkOptions(benchmarkRounds = ROUNDS, warmupRounds = WARM_UP)
   public void helloWorld() throws IOException {
     final String template = "Hello World!";
-    handlebars.compile(template);
+    handlebars.compileInline(template);
   }
 
   @Test
   @BenchmarkOptions(benchmarkRounds = ROUNDS, warmupRounds = WARM_UP)
   public void variables() throws IOException {
     final String template = "Hello {{name}}! You have {{count}} new messages.";
-    handlebars.compile(template);
+    handlebars.compileInline(template);
   }
 
   @Test
   @BenchmarkOptions(benchmarkRounds = ROUNDS, warmupRounds = WARM_UP)
   public void object() throws IOException {
     final String template = "{{#with person}}{{name}}{{age}}{{/with}}";
-    handlebars.compile(template);
+    handlebars.compileInline(template);
   }
 
   @Test
   @BenchmarkOptions(benchmarkRounds = ROUNDS, warmupRounds = WARM_UP)
   public void array() throws IOException {
     final String template = "{{#each names}}{{name}}{{/each}}";
-    handlebars.compile(template);
+    handlebars.compileInline(template);
   }
 
   @Test
@@ -76,7 +76,7 @@ public class CompilerBenchTest {
             "<li><a href=\"{{url}}\">{{name}}</a></li>{{/if}}" +
             "{{/each}}</ul>{{^}}<p>The list is empty.</p>{{/if}}";
 
-    handlebars.compile(template);
+    handlebars.compileInline(template);
   }
 
   @Test
@@ -84,7 +84,7 @@ public class CompilerBenchTest {
   public void recursion() throws IOException {
     final String template = "{{name}}{{#each kids}}{{>recursion}}{{/each}}";
 
-    handlebars.compile(template);
+    handlebars.compileInline(template);
   }
 
   @Test
@@ -92,7 +92,7 @@ public class CompilerBenchTest {
   public void partial() throws IOException {
     final String template = "{{#each peeps}}{{>variables}}{{/each}}";
 
-    handlebars.compile(template);
+    handlebars.compileInline(template);
   }
 
 }

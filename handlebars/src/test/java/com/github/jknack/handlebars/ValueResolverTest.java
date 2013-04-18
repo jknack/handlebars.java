@@ -165,7 +165,7 @@ public class ValueResolverTest {
     };
 
     Template template =
-        new Handlebars().compile("{{#each users}}{{name}}, {{/each}}");
+        new Handlebars().compileInline("{{#each users}}{{name}}, {{/each}}");
 
     Context context = Context.newBuilder(users)
         .resolver(
@@ -204,7 +204,7 @@ public class ValueResolverTest {
     };
 
     Template template =
-        new Handlebars().compile("{{#each users}}{{name}}-{{extended.role}}, {{/each}}");
+        new Handlebars().compileInline("{{#each users}}{{name}}-{{extended.role}}, {{/each}}");
 
     Context context = Context.newBuilder(users)
         .combine("extended", extended)

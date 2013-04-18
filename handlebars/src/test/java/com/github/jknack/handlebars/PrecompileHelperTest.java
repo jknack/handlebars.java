@@ -32,7 +32,7 @@ public class PrecompileHelperTest {
   @Test
   public void precompile() throws IOException {
     String js =
-        handlebars.compile(
+        handlebars.compileInline(
             "{{precompile \"input\" wrapper=\"" + wrapper + "\"}}").apply(
             "Handlebar.js");
 

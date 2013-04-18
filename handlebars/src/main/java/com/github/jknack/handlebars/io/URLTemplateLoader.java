@@ -23,7 +23,6 @@ import static org.apache.commons.lang3.Validate.notNull;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.net.URI;
 import java.net.URL;
 
 
@@ -83,7 +82,7 @@ public abstract class URLTemplateLoader implements TemplateLoader {
    * @throws IOException If the template's source can't be read.
    */
   @Override
-  public TemplateSource sourceAt(final URI uri) throws IOException {
+  public TemplateSource sourceAt(final String uri) throws IOException {
     notNull(uri, "The uri is required.");
     notEmpty(uri.toString(), "The uri is required.");
     String location = resolve(normalize(uri));
@@ -110,21 +109,21 @@ public abstract class URLTemplateLoader implements TemplateLoader {
    * @return Resolve the uri to an absolute location.
    */
   @Override
-  public String resolve(final URI uri) {
+  public String resolve(final String uri) {
     return prefix + normalize(uri) + suffix;
   }
 
   /**
-   * Normalize the uri by removing '/' at the beginning.
+   * Normalize the location by removing '/' at the beginning.
    *
-   * @param uri The candidate uri.
-   * @return A uri without '/' at the beginning.
+   * @param location The candidate location.
+   * @return A location without '/' at the beginning.
    */
-  protected URI normalize(final URI uri) {
-    if (uri.toString().startsWith("/")) {
-      return URI.create(uri.toString().substring(1));
+  protected String normalize(final String location) {
+    if (location.toString().startsWith("/")) {
+      return location.substring(1);
     }
-    return uri;
+    return location;
   }
 
   /**

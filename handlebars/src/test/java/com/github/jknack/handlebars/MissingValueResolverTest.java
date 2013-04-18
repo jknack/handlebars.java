@@ -19,7 +19,7 @@ public class MissingValueResolverTest {
         return "(none)";
       }
     });
-    assertEquals("(none)", handlebars.compile("{{missingVar}}").apply(hash));
+    assertEquals("(none)", handlebars.compileInline("{{missingVar}}").apply(hash));
   }
 
   @Test(expected = HandlebarsException.class)
@@ -31,6 +31,6 @@ public class MissingValueResolverTest {
         throw new IllegalStateException("Missing variable: " + var);
       }
     });
-    handlebars.compile("{{missingVar}}").apply(hash);
+    handlebars.compileInline("{{missingVar}}").apply(hash);
   }
 }

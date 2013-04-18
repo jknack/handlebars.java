@@ -19,7 +19,6 @@ package com.github.jknack.handlebars;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.net.URI;
 
 import org.junit.Test;
 
@@ -28,12 +27,12 @@ public class TemplateNotFoundTest {
   @Test(expected = FileNotFoundException.class)
   public void templateNotFound() throws IOException {
     Handlebars handlebars = new Handlebars();
-    handlebars.compile(URI.create("template.hbs"));
+    handlebars.compile("template.hbs");
   }
 
   @Test(expected = HandlebarsException.class)
   public void partialNotFound() throws IOException {
     Handlebars handlebars = new Handlebars();
-    handlebars.compile("{{> text}}").apply(null);
+    handlebars.compileInline("{{> text}}").apply(null);
   }
 }

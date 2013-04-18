@@ -21,7 +21,6 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -164,7 +163,7 @@ public abstract class SpecTest {
     Handlebars handlebars = new Handlebars(new SpecResourceLocator(spec));
     handlebars.setPrettyWhitespaces(true);
     configure(handlebars);
-    Template template = handlebars.compile(URI.create("template"));
+    Template template = handlebars.compile("template");
     long endCompile = System.currentTimeMillis();
     long startMerge = System.currentTimeMillis();
     CharSequence output = template.apply(data);

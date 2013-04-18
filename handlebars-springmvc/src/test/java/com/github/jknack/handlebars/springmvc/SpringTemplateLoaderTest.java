@@ -3,7 +3,6 @@ package com.github.jknack.handlebars.springmvc;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.IOException;
-import java.net.URI;
 
 import org.junit.Test;
 import org.springframework.core.io.DefaultResourceLoader;
@@ -17,7 +16,7 @@ public class SpringTemplateLoaderTest {
     SpringTemplateLoader loader =
         new SpringTemplateLoader(new DefaultResourceLoader());
 
-    TemplateSource source = loader.sourceAt(URI.create("template"));
+    TemplateSource source = loader.sourceAt("template");
 
     assertNotNull(source);
   }

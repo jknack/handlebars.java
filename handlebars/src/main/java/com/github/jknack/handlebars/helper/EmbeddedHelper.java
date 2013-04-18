@@ -34,7 +34,6 @@ package com.github.jknack.handlebars.helper;
 import static org.apache.commons.lang3.Validate.notEmpty;
 
 import java.io.IOException;
-import java.net.URI;
 
 import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Helper;
@@ -111,7 +110,7 @@ public class EmbeddedHelper implements Helper<String> {
     String suffix = options.handlebars.getLoader().getSuffix();
     String defaultId = (path + suffix).replace('/', '-').replace('.', '-');
     String id = options.param(0, defaultId);
-    Template template = options.handlebars.compile(URI.create(path));
+    Template template = options.handlebars.compile(path);
     StringBuilder script = new StringBuilder();
     script.append("<script id=\"").append(id)
         .append("\" type=\"text/x-handlebars\">\n");

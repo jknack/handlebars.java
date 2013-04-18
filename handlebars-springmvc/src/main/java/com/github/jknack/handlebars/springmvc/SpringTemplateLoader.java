@@ -21,7 +21,6 @@ import static org.apache.commons.lang3.Validate.notNull;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.net.URI;
 import java.net.URL;
 
 import org.springframework.context.ApplicationContext;
@@ -78,18 +77,17 @@ public class SpringTemplateLoader extends URLTemplateLoader {
   }
 
   @Override
-  public String resolve(final URI uri) {
+  public String resolve(final String location) {
     String protocol = null;
-    String location = uri.toString();
     if (location.startsWith(ResourceUtils.CLASSPATH_URL_PREFIX)) {
       protocol = ResourceUtils.CLASSPATH_URL_PREFIX;
     } else if (location.startsWith(ResourceUtils.FILE_URL_PREFIX)) {
       protocol = ResourceUtils.FILE_URL_PREFIX;
     }
     if (protocol == null) {
-      return super.resolve(uri);
+      return super.resolve(location);
     }
-    return protocol + super.resolve(URI.create(location.substring(protocol.length())));
+    return protocol + super.resolve(location.substring(protocol.length()));
   }
 
 }

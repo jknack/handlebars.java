@@ -28,7 +28,7 @@ public class CompilationPerSecondBenchTest {
 
       @Override
       public void run() throws IOException {
-        handlebars.compile(template);
+        handlebars.compileInline(template);
       }
 
       @Override
@@ -47,7 +47,7 @@ public class CompilationPerSecondBenchTest {
 
       @Override
       public void run() throws IOException {
-        handlebars.compile(template);
+        handlebars.compileInline(template);
       }
 
       @Override
@@ -66,7 +66,7 @@ public class CompilationPerSecondBenchTest {
 
       @Override
       public void run() throws IOException {
-        handlebars.compile(template);
+        handlebars.compileInline(template);
       }
 
       @Override
@@ -84,7 +84,7 @@ public class CompilationPerSecondBenchTest {
 
       @Override
       public void run() throws IOException {
-        handlebars.compile(template);
+        handlebars.compileInline(template);
       }
 
       @Override
@@ -107,7 +107,7 @@ public class CompilationPerSecondBenchTest {
 
       @Override
       public void run() throws IOException {
-        handlebars.compile(template);
+        handlebars.compileInline(template);
       }
 
       @Override
@@ -131,7 +131,7 @@ public class CompilationPerSecondBenchTest {
 
       @Override
       public void run() throws IOException {
-        handlebars.compile(template);
+        handlebars.compileInline(template);
       }
 
       @Override
@@ -153,7 +153,7 @@ public class CompilationPerSecondBenchTest {
 
       @Override
       public void run() throws IOException {
-        handlebars.compile(template);
+        handlebars.compileInline(template);
       }
 
       @Override

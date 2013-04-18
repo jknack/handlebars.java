@@ -22,7 +22,6 @@ import static org.junit.Assert.assertNotNull;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.net.URI;
 
 import org.junit.Test;
 
@@ -39,7 +38,7 @@ public class ClasspathLocatorTest {
   @Test
   public void source() throws IOException {
     TemplateLoader loader = new ClassPathTemplateLoader();
-    TemplateSource source = loader.sourceAt(URI.create("template"));
+    TemplateSource source = loader.sourceAt("template");
     assertNotNull(source);
   }
 
@@ -47,7 +46,7 @@ public class ClasspathLocatorTest {
   public void subFolder() throws IOException {
     URLTemplateLoader loader = new ClassPathTemplateLoader();
     loader.setSuffix(".yml");
-    TemplateSource source = loader.sourceAt(URI.create("mustache/specs/comments"));
+    TemplateSource source = loader.sourceAt("mustache/specs/comments");
     assertNotNull(source);
   }
 
@@ -55,39 +54,39 @@ public class ClasspathLocatorTest {
   public void subFolderwithDashAtBeginning() throws IOException {
     URLTemplateLoader loader = new ClassPathTemplateLoader();
     loader.setSuffix(".yml");
-    TemplateSource source = loader.sourceAt(URI.create("/mustache/specs/comments"));
+    TemplateSource source = loader.sourceAt("/mustache/specs/comments");
     assertNotNull(source);
   }
 
   @Test(expected = FileNotFoundException.class)
   public void failLocate() throws IOException {
     TemplateLoader loader = new ClassPathTemplateLoader();
-    loader.sourceAt(URI.create("notExist"));
+    loader.sourceAt("notExist");
   }
 
   @Test
   public void setBasePath() throws IOException {
     TemplateLoader loader = new ClassPathTemplateLoader("/mustache/specs", ".yml");
-    TemplateSource source = loader.sourceAt(URI.create("comments"));
+    TemplateSource source = loader.sourceAt("comments");
     assertNotNull(source);
   }
 
   @Test
   public void setBasePathWithDashDash() throws IOException {
     TemplateLoader loader = new ClassPathTemplateLoader("/mustache/specs/", ".yml");
-    TemplateSource source = loader.sourceAt(URI.create("comments"));
+    TemplateSource source = loader.sourceAt("comments");
     assertNotNull(source);
   }
 
   @Test
   public void nullSuffix() throws IOException {
     assertEquals("suffix should be optional",
-        new ClassPathTemplateLoader("/", null).sourceAt(URI.create("noextension")).content());
+        new ClassPathTemplateLoader("/", null).sourceAt("noextension").content());
   }
 
   @Test
   public void emptySuffix() throws IOException {
     assertEquals("suffix should be optional",
-        new ClassPathTemplateLoader("/", "").sourceAt(URI.create("noextension")).content());
+        new ClassPathTemplateLoader("/", "").sourceAt("noextension").content());
   }
 }

@@ -1,7 +1,6 @@
 package com.github.jknack.handlebars;
 
 import java.io.IOException;
-import java.net.URI;
 
 import org.junit.Test;
 
@@ -24,7 +23,7 @@ public class InfiniteLoopTest {
 
   private void apply(final String path) throws IOException {
     try {
-      new Handlebars().compile(URI.create(path)).apply(new Object());
+      new Handlebars().compile(path).apply(new Object());
     } catch (HandlebarsException ex) {
       Handlebars.log(ex.getMessage());
       throw ex;

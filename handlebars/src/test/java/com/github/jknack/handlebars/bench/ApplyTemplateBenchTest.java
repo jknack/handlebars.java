@@ -59,23 +59,23 @@ public class ApplyTemplateBenchTest extends AbstractTest {
       handlebars = new Handlebars(new MapTemplateLoader(templates));
       handlebars.setAllowInfiniteLoops(true);
 
-      helloWorld = handlebars.compile("Hello World!");
+      helloWorld = handlebars.compileInline("Hello World!");
 
-      variables = handlebars.compile("Hello {{name}}! You have {{count}} new messages.");
+      variables = handlebars.compileInline("Hello {{name}}! You have {{count}} new messages.");
 
-      object = handlebars.compile("{{#with person}}{{name}}{{age}}{{/with}}");
+      object = handlebars.compileInline("{{#with person}}{{name}}{{age}}{{/with}}");
 
-      array = handlebars.compile("{{#each names}}{{name}}{{/each}}");
+      array = handlebars.compileInline("{{#each names}}{{name}}{{/each}}");
 
       complex = handlebars
-          .compile("<h1>{{header}}</h1>{{#if items}}<ul>{{#each items}}{{#if current}}" +
+          .compileInline("<h1>{{header}}</h1>{{#if items}}<ul>{{#each items}}{{#if current}}" +
               "<li><strong>{{name}}</strong></li>{{^}}" +
               "<li><a href=\"{{url}}\">{{name}}</a></li>{{/if}}" +
               "{{/each}}</ul>{{^}}<p>The list is empty.</p>{{/if}}");
 
-      recursion = handlebars.compile("{{name}}{{#each kids}}{{>recursion}}{{/each}}");
+      recursion = handlebars.compileInline("{{name}}{{#each kids}}{{>recursion}}{{/each}}");
 
-      partial = handlebars.compile("{{#each peeps}}{{>variables}}{{/each}}");
+      partial = handlebars.compileInline("{{#each peeps}}{{>variables}}{{/each}}");
     } catch (IOException e) {
       // TODO Auto-generated catch block
       e.printStackTrace();

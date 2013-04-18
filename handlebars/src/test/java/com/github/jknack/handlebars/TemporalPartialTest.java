@@ -3,7 +3,6 @@ package com.github.jknack.handlebars;
 import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
-import java.net.URI;
 import java.util.Arrays;
 
 import org.junit.Test;
@@ -30,11 +29,11 @@ public class TemporalPartialTest {
     handlebars.registerHelper("item", new Helper<Item>() {
       @Override
       public CharSequence apply(final Item item, final Options options) throws IOException {
-        Template template = options.handlebars.compile(URI.create("item" + item.getName()));
+        Template template = options.handlebars.compile("item" + item.getName());
         return template.apply(options.context);
       }
     });
-    Template template = handlebars.compile(URI.create("base"));
+    Template template = handlebars.compile("base");
     assertEquals("Items:\n" +
         "\n" +
         "Item: Custom\n" +

@@ -18,7 +18,6 @@
 package com.github.jknack.handlebars.helper;
 
 import java.io.IOException;
-import java.net.URI;
 
 import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Helper;
@@ -44,7 +43,7 @@ public class IncludeHelper implements Helper<String> {
   public CharSequence apply(final String partial, final Options options) throws IOException {
     // merge all the hashes into the context
     options.context.data(options.hash);
-    Template template = options.handlebars.compile(URI.create(partial));
+    Template template = options.handlebars.compile(partial);
     return new Handlebars.SafeString(template.apply(options.context));
   }
 

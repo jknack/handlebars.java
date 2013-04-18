@@ -35,7 +35,6 @@ import static org.apache.commons.lang3.Validate.notEmpty;
 import static org.apache.commons.lang3.Validate.notNull;
 
 import java.io.IOException;
-import java.net.URI;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -203,7 +202,7 @@ public final class PrecompileHelper implements Helper<String> {
     Handlebars handlebars = options.handlebars;
     final TemplateLoader loader = handlebars.getLoader();
     String name = path + loader.getSuffix();
-    Template template = handlebars.compile(URI.create(path));
+    Template template = handlebars.compile(path);
     String precompiled = template.toJavaScript();
     return new Handlebars.SafeString(wrapper.wrap(name, precompiled));
   }

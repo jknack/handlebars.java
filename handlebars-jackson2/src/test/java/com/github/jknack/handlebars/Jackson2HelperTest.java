@@ -36,7 +36,7 @@ public class Jackson2HelperTest {
     Handlebars handlebars = new Handlebars();
     handlebars.registerHelper("@json", Jackson2Helper.INSTANCE);
 
-    Template template = handlebars.compile("{{@json this}}");
+    Template template = handlebars.compileInline("{{@json this}}");
 
     CharSequence result = template.apply(new Blog("First Post", "..."));
 
@@ -52,7 +52,7 @@ public class Jackson2HelperTest {
 
     Template template =
         handlebars
-            .compile("{{@json this view=\"com.github.jknack.handlebars.Blog$Views$Public\"}}");
+            .compileInline("{{@json this view=\"com.github.jknack.handlebars.Blog$Views$Public\"}}");
 
     CharSequence result = template.apply(new Blog("First Post", "..."));
 
@@ -71,7 +71,7 @@ public class Jackson2HelperTest {
 
     Template template =
         handlebars
-            .compile("{{@json this view=\"com.github.jknack.handlebars.Blog$Views$Public\"}}");
+            .compileInline("{{@json this view=\"com.github.jknack.handlebars.Blog$Views$Public\"}}");
 
     CharSequence result = template.apply(new Blog("First Post", "..."));
 
@@ -90,7 +90,7 @@ public class Jackson2HelperTest {
 
     Template template =
         handlebars
-            .compile("{{@json this view=\"myView\"}}");
+            .compileInline("{{@json this view=\"myView\"}}");
 
     CharSequence result = template.apply(new Blog("First Post", "..."));
 
@@ -108,7 +108,7 @@ public class Jackson2HelperTest {
 
     Template template =
         handlebars
-            .compile("{{@json this view=\"missing.ViewClass\"}}");
+            .compileInline("{{@json this view=\"missing.ViewClass\"}}");
 
     CharSequence result = template.apply(new Blog("First Post", "..."));
 

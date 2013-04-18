@@ -93,7 +93,7 @@ final class Lambdas {
     Object value = lambda.apply(scope, template);
     final Template result;
     if (value instanceof CharSequence) {
-      result = handlebars.compile(value.toString(), startDelimiter, endDelimiter);
+      result = handlebars.compileInline(value.toString(), startDelimiter, endDelimiter);
     } else {
       // Don't escape no string values.
       result = new Variable(handlebars, "$$lambda", value, TagType.TRIPLE_VAR);
