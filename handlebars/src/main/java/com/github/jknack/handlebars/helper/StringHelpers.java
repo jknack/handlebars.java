@@ -478,6 +478,33 @@ public enum StringHelpers implements Helper<Object> {
       return dateFormat.format(date);
     }
 
+  },
+
+  /**
+   * <p>
+   * Usage:
+   * </p>
+   *
+   * <pre>
+   *    {{now ["format"]}}
+   * </pre>
+   *
+   * Format parameters is one of:
+   * <ul>
+   * <li>"full": full date format. For example: Tuesday, June 19, 2012</li>
+   * <li>"long": long date format. For example: June 19, 2012</li>
+   * <li>"medium": medium date format. For example: Jun 19, 2012</li>
+   * <li>"short": short date format. For example: 6/19/12</li>
+   * <li>"pattern": a date pattern.</li>
+   * </ul>
+   * Otherwise, the default formatter will be used.
+   */
+  now {
+    @Override
+    protected CharSequence safeApply(final Object value, final Options options) {
+      return StringHelpers.dateFormat.safeApply(new Date(), options);
+    }
+
   };
 
   @Override
