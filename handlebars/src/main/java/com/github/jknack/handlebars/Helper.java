@@ -31,7 +31,7 @@ import java.io.IOException;
 public interface Helper<T> {
 
   /**
-   * Callback method for execute the given method.
+   * Apply the helper to the context.
    *
    * @param context The context object (param=0).
    * @param options The options object.

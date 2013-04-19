@@ -59,9 +59,7 @@ public enum StringHelpers implements Helper<Object> {
    */
   capitalizeFirst {
     @Override
-    public CharSequence apply(final Object value, final Options options)
-        throws IOException {
-      isTrue(value instanceof String, "found '%s', expected 'string'", value);
+    protected CharSequence safeApply(final Object value, final Options options) {
       return StringUtils.capitalize(value.toString());
     }
 
@@ -79,9 +77,7 @@ public enum StringHelpers implements Helper<Object> {
    */
   center {
     @Override
-    public CharSequence apply(final Object value, final Options options)
-        throws IOException {
-      isTrue(value instanceof String, "found '%s', expected 'string'", value);
+    protected CharSequence safeApply(final Object value, final Options options) {
       Integer size = options.hash("size");
       notNull(size, "found 'null', expected 'size'");
       String pad = options.hash("pad", " ");
@@ -101,9 +97,7 @@ public enum StringHelpers implements Helper<Object> {
    */
   cut {
     @Override
-    public CharSequence apply(final Object value, final Options options)
-        throws IOException {
-      isTrue(value instanceof String, "found '%s', expected 'string'", value);
+    protected CharSequence safeApply(final Object value, final Options options) {
       String strip = options.param(0, " ");
       return value.toString().replace(strip, "");
     }
@@ -128,6 +122,12 @@ public enum StringHelpers implements Helper<Object> {
       }
       return String.valueOf(value);
     }
+
+    @Override
+    protected CharSequence safeApply(final Object context, final Options options) {
+      // Ignored
+      return null;
+    }
   },
 
   /**
@@ -151,8 +151,7 @@ public enum StringHelpers implements Helper<Object> {
   join {
     @SuppressWarnings("rawtypes")
     @Override
-    public CharSequence apply(final Object context, final Options options)
-        throws IOException {
+    protected CharSequence safeApply(final Object context, final Options options) {
       int separatorIdx = options.params.length - 1;
       Object separator = options.param(separatorIdx, null);
       notNull(separator, "found 'null', expected 'separator' at param[%s]", separatorIdx);
@@ -190,9 +189,7 @@ public enum StringHelpers implements Helper<Object> {
    */
   ljust {
     @Override
-    public CharSequence apply(final Object value, final Options options)
-        throws IOException {
-      isTrue(value instanceof String, "found '%s', expected 'string'", value);
+    protected CharSequence safeApply(final Object value, final Options options) {
       Integer size = options.hash("size");
       notNull(size, "found 'null', expected 'size'");
       String pad = options.hash("pad", " ");
@@ -213,9 +210,7 @@ public enum StringHelpers implements Helper<Object> {
    */
   rjust {
     @Override
-    public CharSequence apply(final Object value, final Options options)
-        throws IOException {
-      isTrue(value instanceof String, "found '%s', expected 'string'", value);
+    protected CharSequence safeApply(final Object value, final Options options) {
       Integer size = options.hash("size");
       notNull(size, "found 'null', expected 'size'");
       String pad = options.hash("pad", " ");
@@ -235,10 +230,8 @@ public enum StringHelpers implements Helper<Object> {
    */
   lower {
     @Override
-    public CharSequence apply(final Object value, final Options options)
-        throws IOException {
-      isTrue(value instanceof String, "found '%s', expected 'string'", value);
-      return ((String) value).toLowerCase();
+    protected CharSequence safeApply(final Object value, final Options options) {
+      return value.toString().toLowerCase();
     }
   },
 
@@ -254,10 +247,8 @@ public enum StringHelpers implements Helper<Object> {
    */
   upper {
     @Override
-    public CharSequence apply(final Object value, final Options options)
-        throws IOException {
-      isTrue(value instanceof String, "found '%s', expected 'string'", value);
-      return ((String) value).toUpperCase();
+    protected CharSequence safeApply(final Object value, final Options options) {
+      return value.toString().toUpperCase();
     }
   },
 
@@ -275,11 +266,8 @@ public enum StringHelpers implements Helper<Object> {
    */
   slugify {
     @Override
-    public CharSequence apply(final Object context, final Options options)
-        throws IOException {
-      isTrue(context instanceof String, "found '%s', expected 'string'",
-          context);
-      String value = StringUtils.strip((String) context);
+    protected CharSequence safeApply(final Object context, final Options options) {
+      String value = StringUtils.strip(context.toString());
       StringBuilder buffer = new StringBuilder(value.length());
       for (int i = 0; i < value.length(); i++) {
         char ch = value.charAt(i);
@@ -310,12 +298,8 @@ public enum StringHelpers implements Helper<Object> {
    */
   stringFormat {
     @Override
-    public CharSequence apply(final Object context, final Options options)
-        throws IOException {
-      isTrue(context instanceof String, "found '%s', expected 'string'",
-          context);
-      String format = (String) context;
-      return String.format(format, options.params);
+    protected CharSequence safeApply(final Object format, final Options options) {
+      return String.format(format.toString(), options.params);
     }
 
   },
@@ -337,11 +321,8 @@ public enum StringHelpers implements Helper<Object> {
         .compile("\\<[^>]*>", Pattern.DOTALL);
 
     @Override
-    public CharSequence apply(final Object context, final Options options)
-        throws IOException {
-      isTrue(context instanceof String, "found '%s', expected 'string'",
-          context);
-      Matcher matcher = pattern.matcher((String) context);
+    protected CharSequence safeApply(final Object value, final Options options) {
+      Matcher matcher = pattern.matcher(value.toString());
       return matcher.replaceAll("");
     }
 
@@ -359,15 +340,11 @@ public enum StringHelpers implements Helper<Object> {
    */
   capitalize {
     @Override
-    public CharSequence apply(final Object context, final Options options)
-        throws IOException {
-      isTrue(context instanceof String, "found '%s', expected 'string'",
-          context);
+    protected CharSequence safeApply(final Object value, final Options options) {
       Boolean fully = options.hash("fully", false);
-      String value = (String) context;
       return fully
-          ? WordUtils.capitalizeFully(value)
-          : WordUtils.capitalize(value);
+          ? WordUtils.capitalizeFully(value.toString())
+          : WordUtils.capitalize(value.toString());
     }
   },
 
@@ -385,13 +362,10 @@ public enum StringHelpers implements Helper<Object> {
    */
   abbreviate {
     @Override
-    public CharSequence apply(final Object context, final Options options)
-        throws IOException {
-      isTrue(context instanceof String, "found '%s', expected 'string'",
-          context);
+    protected CharSequence safeApply(final Object value, final Options options) {
       Integer width = options.param(0, null);
       notNull(width, "found 'null', expected 'width'");
-      return StringUtils.abbreviate((String) context, width);
+      return StringUtils.abbreviate(value.toString(), width);
     }
   },
 
@@ -414,13 +388,10 @@ public enum StringHelpers implements Helper<Object> {
    */
   wordWrap {
     @Override
-    public CharSequence apply(final Object context, final Options options)
-        throws IOException {
-      isTrue(context instanceof String, "found '%s', expected 'string'",
-          context);
+    protected CharSequence safeApply(final Object value, final Options options) {
       Integer length = options.param(0, null);
       notNull(length, "found 'null', expected 'length'");
-      return WordUtils.wrap((String) context, length);
+      return WordUtils.wrap(value.toString(), length);
     }
 
   },
@@ -448,6 +419,12 @@ public enum StringHelpers implements Helper<Object> {
       }
       return options.hash("no", "no");
     }
+
+    @Override
+    protected CharSequence safeApply(final Object context, final Options options) {
+      return null;
+    }
+
   },
 
   /**
@@ -485,10 +462,8 @@ public enum StringHelpers implements Helper<Object> {
     };
 
     @Override
-    public CharSequence apply(final Object value, final Options options)
-        throws IOException {
+    protected CharSequence safeApply(final Object value, final Options options) {
       isTrue(value instanceof Date, "found '%s', expected 'date'", value);
-
       Date date = (Date) value;
       final DateFormat dateFormat;
       Object pattern = options.param(0, "medium");
@@ -504,6 +479,24 @@ public enum StringHelpers implements Helper<Object> {
     }
 
   };
+
+  @Override
+  public CharSequence apply(final Object context, final Options options) throws IOException {
+    if (options.isFalsy(context)) {
+      Object param = options.param(0, null);
+      return param == null ? null : param.toString();
+    }
+    return safeApply(context, options);
+  }
+
+  /**
+   * Apply the helper to the context.
+   *
+   * @param context The context object (param=0).
+   * @param options The options object.
+   * @return A string result.
+   */
+  protected abstract CharSequence safeApply(final Object context, final Options options);
 
   /**
    * Register the helper in a handlebars instance.

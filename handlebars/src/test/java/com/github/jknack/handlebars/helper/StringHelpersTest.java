@@ -1,4 +1,4 @@
-package com.github.jknack.handlebars;
+package com.github.jknack.handlebars.helper;
 
 import static com.github.jknack.handlebars.helper.StringHelpers.abbreviate;
 import static com.github.jknack.handlebars.helper.StringHelpers.capitalize;
@@ -15,6 +15,7 @@ import static com.github.jknack.handlebars.helper.StringHelpers.stripTags;
 import static com.github.jknack.handlebars.helper.StringHelpers.upper;
 import static com.github.jknack.handlebars.helper.StringHelpers.wordWrap;
 import static com.github.jknack.handlebars.helper.StringHelpers.yesno;
+import static org.easymock.EasyMock.anyObject;
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
@@ -24,11 +25,19 @@ import static org.junit.Assert.assertEquals;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 import org.apache.commons.lang3.SystemUtils;
 import org.junit.Test;
 
-import com.github.jknack.handlebars.helper.StringHelpers;
+import com.github.jknack.handlebars.AbstractTest;
+import com.github.jknack.handlebars.Context;
+import com.github.jknack.handlebars.Handlebars;
+import com.github.jknack.handlebars.Helper;
+import com.github.jknack.handlebars.Options;
+import com.github.jknack.handlebars.TagType;
+import com.github.jknack.handlebars.Template;
 
 /**
  * Unit test for {@link StringHelpers}.
@@ -41,6 +50,7 @@ public class StringHelpersTest extends AbstractTest {
   @Test
   public void capFirst() throws IOException {
     Options options = createMock(Options.class);
+    expect(options.isFalsy(anyObject())).andReturn(false);
 
     replay(options);
 
@@ -55,6 +65,7 @@ public class StringHelpersTest extends AbstractTest {
   public void center() throws IOException {
     Options options = createMock(Options.class);
     expect(options.hash("size")).andReturn(19);
+    expect(options.isFalsy(anyObject())).andReturn(false);
     expect(options.hash("pad", " ")).andReturn(null);
 
     replay(options);
@@ -71,6 +82,7 @@ public class StringHelpersTest extends AbstractTest {
     Options options = createMock(Options.class);
     expect(options.hash("size")).andReturn(19);
     expect(options.hash("pad", " ")).andReturn("*");
+    expect(options.isFalsy(anyObject())).andReturn(false);
 
     replay(options);
 
@@ -85,6 +97,7 @@ public class StringHelpersTest extends AbstractTest {
   public void cut() throws IOException {
     Options options = createMock(Options.class);
     expect(options.param(0, " ")).andReturn(" ");
+    expect(options.isFalsy(anyObject())).andReturn(false);
 
     replay(options);
 
@@ -99,6 +112,7 @@ public class StringHelpersTest extends AbstractTest {
   public void cutNoWhitespace() throws IOException {
     Options options = createMock(Options.class);
     expect(options.param(0, " ")).andReturn("*");
+    expect(options.isFalsy(anyObject())).andReturn(false);
 
     replay(options);
 
@@ -165,6 +179,7 @@ public class StringHelpersTest extends AbstractTest {
     Options options = createMock(Options.class);
     expect(options.hash("size")).andReturn(20);
     expect(options.hash("pad", " ")).andReturn(null);
+    expect(options.isFalsy(anyObject())).andReturn(false);
 
     replay(options);
 
@@ -180,6 +195,7 @@ public class StringHelpersTest extends AbstractTest {
     Options options = createMock(Options.class);
     expect(options.hash("size")).andReturn(17);
     expect(options.hash("pad", " ")).andReturn("+");
+    expect(options.isFalsy(anyObject())).andReturn(false);
 
     replay(options);
 
@@ -195,6 +211,7 @@ public class StringHelpersTest extends AbstractTest {
     Options options = createMock(Options.class);
     expect(options.hash("size")).andReturn(20);
     expect(options.hash("pad", " ")).andReturn(null);
+    expect(options.isFalsy(anyObject())).andReturn(false);
 
     replay(options);
 
@@ -210,6 +227,7 @@ public class StringHelpersTest extends AbstractTest {
     Options options = createMock(Options.class);
     expect(options.hash("size")).andReturn(17);
     expect(options.hash("pad", " ")).andReturn("+");
+    expect(options.isFalsy(anyObject())).andReturn(false);
 
     replay(options);
 
@@ -223,6 +241,7 @@ public class StringHelpersTest extends AbstractTest {
   @Test
   public void lower() throws IOException {
     Options options = createMock(Options.class);
+    expect(options.isFalsy(anyObject())).andReturn(false);
 
     replay(options);
 
@@ -236,6 +255,7 @@ public class StringHelpersTest extends AbstractTest {
   @Test
   public void upper() throws IOException {
     Options options = createMock(Options.class);
+    expect(options.isFalsy(anyObject())).andReturn(false);
 
     replay(options);
 
@@ -249,6 +269,7 @@ public class StringHelpersTest extends AbstractTest {
   @Test
   public void slugify() throws IOException {
     Options options = createMock(Options.class);
+    expect(options.isFalsy(anyObject())).andReturn(false);
 
     replay(options);
 
@@ -294,6 +315,7 @@ public class StringHelpersTest extends AbstractTest {
   @Test
   public void stripTags() throws IOException {
     Options options = createMock(Options.class);
+    expect(options.isFalsy(anyObject())).andReturn(false);
 
     replay(options);
 
@@ -308,6 +330,7 @@ public class StringHelpersTest extends AbstractTest {
   @Test
   public void stripTagsMultiLine() throws IOException {
     Options options = createMock(Options.class);
+    expect(options.isFalsy(anyObject())).andReturn(false);
 
     replay(options);
 
@@ -325,6 +348,7 @@ public class StringHelpersTest extends AbstractTest {
     Options options = createMock(Options.class);
     expect(options.hash("fully", false)).andReturn(false);
     expect(options.hash("fully", false)).andReturn(true);
+    expect(options.isFalsy(anyObject())).andReturn(false).times(2);
 
     replay(options);
 
@@ -342,6 +366,7 @@ public class StringHelpersTest extends AbstractTest {
   @Test
   public void abbreviate() throws IOException {
     Options options = createMock(Options.class);
+    expect(options.isFalsy(anyObject())).andReturn(false);
     expect(options.param(0, null)).andReturn(13);
 
     replay(options);
@@ -357,6 +382,7 @@ public class StringHelpersTest extends AbstractTest {
   @Test
   public void wordWrap() throws IOException {
     Options options = createMock(Options.class);
+    expect(options.isFalsy(anyObject())).andReturn(false);
     expect(options.param(0, null)).andReturn(5);
 
     replay(options);
@@ -406,4 +432,65 @@ public class StringHelpersTest extends AbstractTest {
     verify(options);
   }
 
+  @Test
+  public void nullContext() throws IOException {
+    Set<Helper<Object>> helpers = new LinkedHashSet<Helper<Object>>(Arrays.asList(StringHelpers
+        .values()));
+    helpers.remove(StringHelpers.yesno);
+    helpers.remove(StringHelpers.defaultIfEmpty);
+
+    Options options = createMock(Options.class);
+    expect(options.isFalsy(anyObject())).andReturn(true).times(helpers.size());
+    expect(options.param(0, null)).andReturn(null).times(helpers.size());
+
+    replay(options);
+
+    for (Helper<Object> helper : helpers) {
+      assertEquals(null, helper.apply($, options));
+    }
+
+    verify(options);
+  }
+
+  @Test
+  public void nullContextWithDefault() throws IOException {
+    Set<Helper<Object>> helpers = new LinkedHashSet<Helper<Object>>(Arrays.asList(StringHelpers
+        .values()));
+    helpers.remove(StringHelpers.yesno);
+    helpers.remove(StringHelpers.defaultIfEmpty);
+
+    String nothing = "nothing";
+    Options options = createMock(Options.class);
+    expect(options.isFalsy(anyObject())).andReturn(true).times(helpers.size());
+    expect(options.param(0, null)).andReturn(nothing).times(helpers.size());
+
+    replay(options);
+
+    for (Helper<Object> helper : helpers) {
+      assertEquals(nothing, helper.apply($, options));
+    }
+
+    verify(options);
+  }
+
+  @Test
+  public void nullContextWithNumber() throws IOException {
+    Set<Helper<Object>> helpers = new LinkedHashSet<Helper<Object>>(Arrays.asList(StringHelpers
+        .values()));
+    helpers.remove(StringHelpers.yesno);
+    helpers.remove(StringHelpers.defaultIfEmpty);
+
+    Object number = 32;
+    Options options = createMock(Options.class);
+    expect(options.isFalsy(anyObject())).andReturn(true).times(helpers.size());
+    expect(options.param(0, null)).andReturn(number).times(helpers.size());
+
+    replay(options);
+
+    for (Helper<Object> helper : helpers) {
+      assertEquals(number.toString(), helper.apply($, options));
+    }
+
+    verify(options);
+  }
 }
