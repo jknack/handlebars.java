@@ -21,8 +21,10 @@ import static org.apache.commons.lang3.Validate.notNull;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.util.List;
 
 import com.github.jknack.handlebars.Context;
+import com.github.jknack.handlebars.TagType;
 import com.github.jknack.handlebars.Template;
 import com.github.jknack.handlebars.TypeSafeTemplate;
 
@@ -140,4 +142,8 @@ class ForwardingTemplate implements Template {
     return Context.newContext(candidate);
   }
 
+  @Override
+  public List<String> collect(final TagType... tagType) {
+    return template.collect(tagType);
+  }
 }

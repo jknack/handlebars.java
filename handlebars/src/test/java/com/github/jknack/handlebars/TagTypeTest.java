@@ -1,8 +1,10 @@
 package com.github.jknack.handlebars;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 import org.junit.Test;
 
@@ -47,5 +49,37 @@ public class TagTypeTest extends AbstractTest {
   @Test
   public void block() {
     assertTrue(!TagType.SECTION.inline());
+  }
+
+  @Test
+  public void collectVar() throws IOException {
+    assertEquals(Arrays.asList("a", "z", "k"), compile("{{#hello}}{{a}}{{&b}}{{z}}{{/hello}}{{k}}")
+        .collect(TagType.VAR));
+  }
+
+  @Test
+  public void collectAmpVar() throws IOException {
+    assertEquals(Arrays.asList("b"), compile("{{#hello}}{{a}}{{&b}}{{z}}{{/hello}}{{k}}")
+        .collect(TagType.AMP_VAR));
+  }
+
+  @Test
+  public void collectTripleVar() throws IOException {
+    assertEquals(Arrays.asList("tvar"),
+        compile("{{{tvar}}}{{#hello}}{{a}}{{&b}}{{z}}{{/hello}}{{k}}")
+            .collect(TagType.TRIPLE_VAR));
+  }
+
+  @Test
+  public void collectSection() throws IOException {
+    assertEquals(Arrays.asList("hello"), compile("{{#hello}}{{a}}{{&b}}{{z}}{{/hello}}{{k}}")
+        .collect(TagType.SECTION));
+  }
+
+  @Test
+  public void collectSectionAndVars() throws IOException {
+    assertEquals(Arrays.asList("hello", "a", "b", "z", "k"),
+        compile("{{#hello}}{{a}}{{&b}}{{z}}{{/hello}}{{k}}")
+            .collect(TagType.SECTION, TagType.VAR, TagType.TRIPLE_VAR, TagType.AMP_VAR));
   }
 }

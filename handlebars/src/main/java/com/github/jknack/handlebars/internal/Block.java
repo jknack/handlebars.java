@@ -22,8 +22,12 @@ import static org.apache.commons.lang3.Validate.notNull;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.github.jknack.handlebars.Context;
 import com.github.jknack.handlebars.Handlebars;
@@ -279,6 +283,25 @@ class Block extends HelperResolver {
    */
   public String endDelimiter() {
     return endDelimiter;
+  }
+
+  @Override
+  public List<String> collect(final TagType... tagType) {
+    if (body != null) {
+      Set<String> tagNames = new LinkedHashSet<String>();
+      tagNames.addAll(super.collect(tagType));
+      tagNames.addAll(body.collect(tagType));
+      return new ArrayList<String>(tagNames);
+    } else {
+      return super.collect(tagType);
+    }
+  }
+
+  @Override
+  protected void collect(final Collection<String> result, final TagType tagType) {
+    if (tagType == TagType.SECTION) {
+      result.add(name);
+    }
   }
 
   @Override

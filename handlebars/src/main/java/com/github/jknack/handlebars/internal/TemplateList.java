@@ -19,11 +19,15 @@ package com.github.jknack.handlebars.internal;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 import com.github.jknack.handlebars.Context;
+import com.github.jknack.handlebars.TagType;
 import com.github.jknack.handlebars.Template;
 
 /**
@@ -90,4 +94,12 @@ class TemplateList extends BaseTemplate implements Iterable<Template> {
     return nodes.size();
   }
 
+  @Override
+  public List<String> collect(final TagType... tagType) {
+    Set<String> tagNames = new LinkedHashSet<String>();
+    for (Template node : nodes) {
+      tagNames.addAll(node.collect(tagType));
+    }
+    return new ArrayList<String>(tagNames);
+  }
 }

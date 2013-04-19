@@ -19,6 +19,7 @@ package com.github.jknack.handlebars.internal;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -172,6 +173,13 @@ class Variable extends HelperResolver {
           writer.append(stringValue);
         }
       }
+    }
+  }
+
+  @Override
+  protected void collect(final Collection<String> result, final TagType tagType) {
+    if (this.type == tagType) {
+      result.add(name);
     }
   }
 

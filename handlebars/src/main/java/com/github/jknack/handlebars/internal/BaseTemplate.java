@@ -29,8 +29,13 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Proxy;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 import org.mozilla.javascript.Scriptable;
@@ -40,6 +45,7 @@ import org.mozilla.javascript.tools.ToolErrorReporter;
 import com.github.jknack.handlebars.Context;
 import com.github.jknack.handlebars.HandlebarsError;
 import com.github.jknack.handlebars.HandlebarsException;
+import com.github.jknack.handlebars.TagType;
 import com.github.jknack.handlebars.Template;
 import com.github.jknack.handlebars.TypeSafeTemplate;
 
@@ -253,6 +259,26 @@ abstract class BaseTemplate implements Template {
             throw new UnsupportedOperationException(message);
           }
         });
+  }
+
+  @Override
+  public List<String> collect(final TagType... tagType) {
+    isTrue(tagType.length > 0, "At least one tag type is required.");
+    Set<String> tagNames = new LinkedHashSet<String>();
+    for (TagType tt : tagType) {
+      collect(tagNames, tt);
+    }
+    return new ArrayList<String>(tagNames);
+  }
+
+  /**
+   * Child classes might want to check if they apply to the tagtype and append them self to the
+   * result list.
+   *
+   * @param result The result list.
+   * @param tagType The matching tagtype.
+   */
+  protected void collect(final Collection<String> result, final TagType tagType) {
   }
 
   @Override

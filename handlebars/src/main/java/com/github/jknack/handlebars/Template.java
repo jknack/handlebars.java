@@ -19,6 +19,8 @@ package com.github.jknack.handlebars;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * A compiled template created by {@link Handlebars#compileInline(String)}.
@@ -83,6 +85,11 @@ public interface Template {
         }
       };
       return (S) template;
+    }
+
+    @Override
+    public List<String> collect(final TagType... tagType) {
+      return Collections.emptyList();
     }
   };
 
@@ -154,4 +161,31 @@ public interface Template {
    * @return A new {@link TypeSafeTemplate}.
    */
   <T> TypeSafeTemplate<T> as();
+
+  /**
+   * Collect all the tag names under the given tagType.
+   * <p>
+   * Usage:
+   * </p>
+   *
+   * <pre>
+   * {{hello}}
+   * {{var 1}}
+   * {{{tripleVar}}}
+   * </pre>
+   * <p>
+   * <code>collect(TagType.VAR)</code> returns <code>[hello, var]</code>
+   * </p>
+   * <p>
+   * <code>collect(TagType.TRIPLE_VAR)</code> returns <code>[tripleVar]</code>
+   * </p>
+   * <p>
+   * <code>collect(TagType.VAR, TagType.TRIPLE_VAR)</code> returns
+   * <code>[hello, var, tripleVar]</code>
+   * </p>
+   *
+   * @param tagType The tag type. Required.
+   * @return A list with tag names.
+   */
+  List<String> collect(TagType... tagType);
 }
