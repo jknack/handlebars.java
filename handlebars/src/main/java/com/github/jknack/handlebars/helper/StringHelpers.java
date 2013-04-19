@@ -28,6 +28,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
+import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -433,7 +434,7 @@ public enum StringHelpers implements Helper<Object> {
    * </p>
    *
    * <pre>
-   *    {{dateFormat date ["format"]}}
+   *    {{dateFormat date ["format"] [tz=timeZone|timeZoneId]}}
    * </pre>
    *
    * Format parameters is one of:
@@ -475,6 +476,12 @@ public enum StringHelpers implements Helper<Object> {
       } else {
         dateFormat = DateFormat.getDateInstance(style, locale);
       }
+      Object tz = options.hash("tz");
+      if (tz != null) {
+        final TimeZone timeZone = tz instanceof TimeZone ? (TimeZone) tz : TimeZone.getTimeZone(tz
+            .toString());
+        dateFormat.setTimeZone(timeZone);
+      }
       return dateFormat.format(date);
     }
 
@@ -486,7 +493,7 @@ public enum StringHelpers implements Helper<Object> {
    * </p>
    *
    * <pre>
-   *    {{now ["format"]}}
+   *    {{now ["format"] [tz=timeZone|timeZoneId]}}
    * </pre>
    *
    * Format parameters is one of:
