@@ -1,19 +1,26 @@
 package com.github.jknack.handlebars.cache;
 
+import static org.easymock.EasyMock.capture;
 import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.eq;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
+import java.util.concurrent.CancellationException;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
+import org.easymock.Capture;
 import org.junit.Test;
 
+import com.github.jknack.handlebars.HandlebarsException;
 import com.github.jknack.handlebars.Parser;
 import com.github.jknack.handlebars.Template;
 import com.github.jknack.handlebars.io.ForwardingTemplateSource;
@@ -96,6 +103,127 @@ public class HighConcurrencyTemplateCacheTest {
     new HighConcurrencyTemplateCache(cache).evict(source);
 
     verify(cache, source);
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void cancellationException() throws IOException, InterruptedException, ExecutionException {
+    TemplateSource source = createMock(TemplateSource.class);
+    expect(source.lastModified()).andReturn(615L).times(3);
+
+    Template template = createMock(Template.class);
+
+    Future<Pair<TemplateSource, Template>> future = createMock(Future.class);
+    expect(future.get()).andThrow(new CancellationException());
+    expect(future.get()).andReturn(ImmutablePair.<TemplateSource, Template> of(source, template))
+        .times(2);
+
+    Capture<TemplateSource> keyGet = new Capture<TemplateSource>();
+    Capture<TemplateSource> keyRemove = new Capture<TemplateSource>();
+
+    ConcurrentMap<TemplateSource, Future<Pair<TemplateSource, Template>>> cache =
+        createMock(ConcurrentMap.class);
+    expect(cache.get(capture(keyGet))).andReturn(future).times(2);
+    expect(cache.remove(capture(keyRemove), eq(future))).andReturn(true);
+
+    Parser parser = createMock(Parser.class);
+
+    Object[] mocks = {cache, source, future, template };
+
+    replay(mocks);
+
+    Template result = new HighConcurrencyTemplateCache(cache).get(source, parser);
+    assertEquals(template, result);
+
+    verify(mocks);
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  @SuppressWarnings("unchecked")
+  public void runtimeException() throws IOException, InterruptedException, ExecutionException {
+    TemplateSource source = createMock(TemplateSource.class);
+    expect(source.lastModified()).andReturn(615L).times(3);
+
+    Template template = createMock(Template.class);
+
+    Future<Pair<TemplateSource, Template>> future = createMock(Future.class);
+    expect(future.get()).andThrow(new ExecutionException(new IllegalArgumentException()));
+
+    Capture<TemplateSource> keyGet = new Capture<TemplateSource>();
+
+    ConcurrentMap<TemplateSource, Future<Pair<TemplateSource, Template>>> cache =
+        createMock(ConcurrentMap.class);
+    expect(cache.get(capture(keyGet))).andReturn(future);
+
+    Parser parser = createMock(Parser.class);
+
+    Object[] mocks = {cache, source, future, template };
+
+    replay(mocks);
+
+    Template result = new HighConcurrencyTemplateCache(cache).get(source, parser);
+    assertEquals(template, result);
+
+    verify(mocks);
+  }
+
+  @Test(expected = Error.class)
+  @SuppressWarnings("unchecked")
+  public void errorException() throws IOException, InterruptedException, ExecutionException {
+    TemplateSource source = createMock(TemplateSource.class);
+    expect(source.lastModified()).andReturn(615L).times(3);
+
+    Template template = createMock(Template.class);
+
+    Future<Pair<TemplateSource, Template>> future = createMock(Future.class);
+    expect(future.get()).andThrow(new ExecutionException(new Error()));
+
+    Capture<TemplateSource> keyGet = new Capture<TemplateSource>();
+
+    ConcurrentMap<TemplateSource, Future<Pair<TemplateSource, Template>>> cache =
+        createMock(ConcurrentMap.class);
+    expect(cache.get(capture(keyGet))).andReturn(future);
+
+    Parser parser = createMock(Parser.class);
+
+    Object[] mocks = {cache, source, future, template };
+
+    replay(mocks);
+
+    Template result = new HighConcurrencyTemplateCache(cache).get(source, parser);
+    assertEquals(template, result);
+
+    verify(mocks);
+  }
+
+  @Test(expected = HandlebarsException.class)
+  @SuppressWarnings("unchecked")
+  public void hbsException() throws IOException, InterruptedException, ExecutionException {
+    TemplateSource source = createMock(TemplateSource.class);
+    expect(source.filename()).andReturn("filename");
+    expect(source.lastModified()).andReturn(615L);
+
+    Template template = createMock(Template.class);
+
+    Future<Pair<TemplateSource, Template>> future = createMock(Future.class);
+    expect(future.get()).andThrow(new ExecutionException(new Exception()));
+
+    Capture<TemplateSource> keyGet = new Capture<TemplateSource>();
+
+    ConcurrentMap<TemplateSource, Future<Pair<TemplateSource, Template>>> cache =
+        createMock(ConcurrentMap.class);
+    expect(cache.get(capture(keyGet))).andReturn(future);
+
+    Parser parser = createMock(Parser.class);
+
+    Object[] mocks = {cache, source, future, template };
+
+    replay(mocks);
+
+    Template result = new HighConcurrencyTemplateCache(cache).get(source, parser);
+    assertEquals(template, result);
+
+    verify(mocks);
   }
 
   @Test

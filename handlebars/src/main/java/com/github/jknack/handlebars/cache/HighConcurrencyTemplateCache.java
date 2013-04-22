@@ -89,9 +89,19 @@ public class HighConcurrencyTemplateCache implements TemplateCache {
     notNull(parser, "The parser is required.");
 
     /**
-     * Don't keep duplicated entries, remove old one if a change is detected.
+     * Don't keep duplicated entries, remove old templates if a change is detected.
      */
-    return cacheGet(new ForwardingTemplateSource(source) {
+    return cacheGet(templateSource(source), parser);
+  }
+
+  /**
+   * Don't keep duplicated entries, remove old templates if a change is detected.
+   *
+   * @param source template source.
+   * @return A custom template source.
+   */
+  private static ForwardingTemplateSource templateSource(final TemplateSource source) {
+    return new ForwardingTemplateSource(source) {
       @Override
       public boolean equals(final Object obj) {
         if (obj instanceof TemplateSource) {
@@ -104,7 +114,7 @@ public class HighConcurrencyTemplateCache implements TemplateCache {
       public int hashCode() {
         return source.filename().hashCode();
       }
-    }, parser);
+    };
   }
 
   /**
@@ -166,7 +176,7 @@ public class HighConcurrencyTemplateCache implements TemplateCache {
     return new FutureTask<Pair<TemplateSource, Template>>(
         new Callable<Pair<TemplateSource, Template>>() {
           @Override
-          public Pair<TemplateSource, Template> call() throws Exception {
+          public Pair<TemplateSource, Template> call() throws IOException {
             return Pair.of(source, parser.parse(source));
           }
         });

@@ -20,6 +20,7 @@ package com.github.jknack.handlebars.springmvc;
 import static org.apache.commons.lang3.Validate.notEmpty;
 import static org.apache.commons.lang3.Validate.notNull;
 
+import java.io.IOException;
 import java.util.Locale;
 import java.util.Map;
 
@@ -56,7 +57,7 @@ public class HandlebarsView extends AbstractTemplateView {
   @Override
   protected void renderMergedTemplateModel(final Map<String, Object> model,
       final HttpServletRequest request, final HttpServletResponse response)
-      throws Exception {
+      throws IOException {
     Context context = Context.newBuilder(model)
         .resolver(valueResolvers)
         .build();
@@ -68,7 +69,7 @@ public class HandlebarsView extends AbstractTemplateView {
   }
 
   @Override
-  public boolean checkResource(final Locale locale) throws Exception {
+  public boolean checkResource(final Locale locale) {
     return template != null;
   }
 

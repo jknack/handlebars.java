@@ -1,6 +1,9 @@
 package com.github.jknack.handlebars;
 
+import static org.apache.commons.lang3.StringUtils.join;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.IOException;
 
@@ -61,6 +64,60 @@ public class ReflectiveHelperTest extends AbstractTest {
         "blog:awesome!");
   }
 
+  @Test
+  public void params() throws IOException {
+    shouldCompileTo("{{params this l d f c b s}}",
+        $("l", 1L, "d", 2.0D, "f", 3.0f, "c", '4', "b", (byte) 5, "s", (short) 6),
+        "1, 2.0, 3.0, 4, 5, 6");
+  }
+
+  public CharSequence params(final Object context, final long l, final double d, final float f,
+      final char c, final byte b, final short s) {
+    return join(new Object[]{l, d, f, c, b, s }, ", ");
+  }
+
+  @Test
+  public void testRuntimeException() throws IOException {
+    try {
+      shouldCompileTo("{{runtimeException}}", $, "");
+      fail("A runtime exception is expeced");
+    } catch (HandlebarsException ex) {
+      assertTrue(ex.getCause() instanceof IllegalArgumentException);
+    }
+  }
+
+  @Test
+  public void testCheckedException() throws IOException {
+    try {
+      shouldCompileTo("{{checkedException}}", $, "");
+      fail("A checked exception is expeced");
+    } catch (HandlebarsException ex) {
+      assertTrue(ex.getCause() instanceof IllegalStateException);
+    }
+  }
+
+  @Test
+  public void testIOException() throws IOException {
+    try {
+      shouldCompileTo("{{ioException}}", $, "");
+      fail("A io exception is expeced");
+    } catch (HandlebarsException ex) {
+      assertTrue(ex.getCause() instanceof IOException);
+    }
+  }
+
+  public static String runtimeException() {
+    throw new IllegalArgumentException();
+  }
+
+  public static String ioException() throws IOException {
+    throw new IOException();
+  }
+
+  public static String checkedException() throws Exception {
+    throw new Exception();
+  }
+
   public static String helperA() {
     return "helperA";
   }
@@ -102,4 +159,5 @@ public class ReflectiveHelperTest extends AbstractTest {
     assertNotNull(options);
     return "blog:" + title;
   }
+
 }

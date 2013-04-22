@@ -29,10 +29,15 @@ import org.pegdown.PegDownProcessor;
  */
 public class MarkdownHelper implements Helper<Object> {
 
+  /**
+   * A singleton version of {@link Jackson2Helper}.
+   */
+  public static final Helper<Object> INSTANCE = new MarkdownHelper();
+
   @Override
   public CharSequence apply(final Object context, final Options options)
       throws IOException {
-    if (context == null) {
+    if (options.isFalsy(context)) {
       return "";
     }
     String markdown = context.toString();

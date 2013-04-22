@@ -499,7 +499,7 @@ public class Context {
     StringTokenizer tokenizer = new StringTokenizer(key, PATH_SEPARATOR);
     int len = tokenizer.countTokens();
     if (len == 1) {
-      return new String[]{key.toString() };
+      return new String[]{key };
     }
     String[] path = new String[len];
     int i = 0;

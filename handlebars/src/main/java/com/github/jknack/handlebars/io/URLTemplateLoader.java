@@ -83,8 +83,7 @@ public abstract class URLTemplateLoader implements TemplateLoader {
    */
   @Override
   public TemplateSource sourceAt(final String uri) throws IOException {
-    notNull(uri, "The uri is required.");
-    notEmpty(uri.toString(), "The uri is required.");
+    notEmpty(uri, "The uri is required.");
     String location = resolve(normalize(uri));
     URL resource = getResource(location);
     if (resource == null) {

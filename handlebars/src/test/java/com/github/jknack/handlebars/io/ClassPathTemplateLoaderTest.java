@@ -33,7 +33,7 @@ import org.junit.Test;
  * @author edgar.espina
  * @since 0.1.0
  */
-public class ClasspathLocatorTest {
+public class ClassPathTemplateLoaderTest {
 
   @Test
   public void source() throws IOException {

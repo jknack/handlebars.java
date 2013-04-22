@@ -1,15 +1,20 @@
 package com.github.jknack.handlebars.cache;
 
 import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.eq;
 import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.isA;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
 
 import org.junit.Test;
 
+import com.github.jknack.handlebars.HandlebarsException;
 import com.github.jknack.handlebars.Parser;
 import com.github.jknack.handlebars.Template;
 import com.github.jknack.handlebars.io.ForwardingTemplateSource;
@@ -106,6 +111,60 @@ public class GuavaTemplateCacheTest {
     new GuavaTemplateCache(cache).clear();
 
     verify(cache);
+  }
+
+  @SuppressWarnings("unchecked")
+  @Test(expected = IllegalStateException.class)
+  public void executionExceptionWithRuntimeException() throws IOException, ExecutionException {
+    TemplateSource source = createMock(TemplateSource.class);
+
+    Parser parser = createMock(Parser.class);
+
+    Cache<TemplateSource, Template> cache = createMock(Cache.class);
+    expect(cache.get(eq(source), isA(Callable.class))).andThrow(
+        new ExecutionException(new IllegalStateException()));
+
+    replay(cache, source, parser);
+
+    new GuavaTemplateCache(cache).get(source, parser);
+
+    verify(cache, source, parser);
+  }
+
+  @SuppressWarnings("unchecked")
+  @Test(expected = Error.class)
+  public void executionExceptionWithError() throws IOException, ExecutionException {
+    TemplateSource source = createMock(TemplateSource.class);
+
+    Parser parser = createMock(Parser.class);
+
+    Cache<TemplateSource, Template> cache = createMock(Cache.class);
+    expect(cache.get(eq(source), isA(Callable.class))).andThrow(
+        new ExecutionException(new Error()));
+
+    replay(cache, source, parser);
+
+    new GuavaTemplateCache(cache).get(source, parser);
+
+    verify(cache, source, parser);
+  }
+
+  @SuppressWarnings("unchecked")
+  @Test(expected = HandlebarsException.class)
+  public void executionExceptionWithCheckedException() throws IOException, ExecutionException {
+    TemplateSource source = createMock(TemplateSource.class);
+
+    Parser parser = createMock(Parser.class);
+
+    Cache<TemplateSource, Template> cache = createMock(Cache.class);
+    expect(cache.get(eq(source), isA(Callable.class))).andThrow(
+        new ExecutionException(new IOException()));
+
+    replay(cache, source, parser);
+
+    new GuavaTemplateCache(cache).get(source, parser);
+
+    verify(cache, source, parser);
   }
 
   private TemplateSource source(final String filename) throws IOException {

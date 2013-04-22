@@ -68,7 +68,7 @@ public class GuavaTemplateCache implements TemplateCache {
     try {
       return cache.get(source, new Callable<Template>() {
         @Override
-        public Template call() throws Exception {
+        public Template call() throws IOException {
           return parser.parse(source);
         }
       });

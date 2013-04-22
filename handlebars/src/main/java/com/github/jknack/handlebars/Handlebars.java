@@ -32,6 +32,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 
 import com.github.jknack.handlebars.cache.NullTemplateCache;
@@ -224,7 +225,7 @@ public class Handlebars {
      *         SafeString.
      */
     public static String escapeExpression(final CharSequence input) {
-      if (input == null || input.length() == 0) {
+      if (StringUtils.isEmpty(input)) {
         return "";
       }
       // Don't escape SafeStrings, since they're already safe

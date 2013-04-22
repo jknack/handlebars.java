@@ -17,6 +17,7 @@
  */
 package com.github.jknack.handlebars.context;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -47,7 +48,13 @@ public class MethodValueResolver extends MemberValueResolver<Method> {
   protected Object invokeMember(final Method member, final Object context) {
     try {
       return member.invoke(context);
-    } catch (Exception ex) {
+    } catch (InvocationTargetException ex) {
+      Throwable cause = ex.getCause();
+      if (cause instanceof RuntimeException) {
+        throw (RuntimeException) cause;
+      }
+      throw new IllegalStateException("Execution of '" + member.getName() + "'", ex);
+    } catch (IllegalAccessException ex) {
       throw new IllegalStateException(
           "Shouldn't be illegal to access method '" + member.getName()
               + "'", ex);

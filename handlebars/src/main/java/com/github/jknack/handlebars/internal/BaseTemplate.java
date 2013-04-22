@@ -112,8 +112,12 @@ abstract class BaseTemplate implements Template {
   @Override
   public String apply(final Context context) throws IOException {
     FastStringWriter writer = new FastStringWriter();
-    apply(context, writer);
-    return writer.toString();
+    try {
+      apply(context, writer);
+      return writer.toString();
+    } finally {
+      writer.close();
+    }
   }
 
   @Override
@@ -229,7 +233,7 @@ abstract class BaseTemplate implements Template {
 
           @Override
           public Object invoke(final Object proxy, final Method method, final Object[] args)
-              throws Throwable {
+              throws IOException {
             String methodName = method.getName();
             if ("apply".equals(methodName)) {
               Context context = Context.newBuilder(args[0])

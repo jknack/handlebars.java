@@ -78,8 +78,7 @@ public class MessageSourceHelper implements Helper<String> {
    * @param messageSource The message source. Required.
    */
   public MessageSourceHelper(final MessageSource messageSource) {
-    this.messageSource =
-        notNull(messageSource, "A message source is required.");
+    this.messageSource = notNull(messageSource, "A message source is required.");
   }
 
   @Override
@@ -87,8 +86,7 @@ public class MessageSourceHelper implements Helper<String> {
       throws IOException {
     Object[] args = options.params;
     String defaultMessage = options.hash("default");
-    return messageSource
-        .getMessage(code, args, defaultMessage, currentLocale());
+    return messageSource.getMessage(code, args, defaultMessage, currentLocale());
   }
 
   /**

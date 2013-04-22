@@ -33,52 +33,52 @@ import org.junit.Test;
  * @author edgar.espina
  * @since 0.1.0
  */
-public class FileLocatorTest {
+public class FileTemplateLoaderTest {
 
   @Test
-  public void locate() throws IOException {
-    TemplateLoader locator =
+  public void sourceAt() throws IOException {
+    TemplateLoader loader =
         new FileTemplateLoader(new File("src/test/resources"));
-    TemplateSource source = locator.sourceAt("template");
+    TemplateSource source = loader.sourceAt("template");
     assertNotNull(source);
   }
 
   @Test
   public void subFolder() throws IOException {
-    TemplateLoader locator =
+    TemplateLoader loader =
         new FileTemplateLoader(new File("src/test/resources"), ".yml");
-    TemplateSource source = locator.sourceAt("mustache/specs/comments");
+    TemplateSource source = loader.sourceAt("mustache/specs/comments");
     assertNotNull(source);
   }
 
   @Test
   public void subFolderwithDashAtBeginning() throws IOException {
-    TemplateLoader locator =
+    TemplateLoader loader =
         new FileTemplateLoader(new File("src/test/resources"), ".yml");
-    TemplateSource source = locator.sourceAt("mustache/specs/comments");
+    TemplateSource source = loader.sourceAt("/mustache/specs/comments");
     assertNotNull(source);
   }
 
   @Test(expected = FileNotFoundException.class)
   public void failLocate() throws IOException {
-    TemplateLoader locator =
+    TemplateLoader loader =
         new FileTemplateLoader(new File("src/test/resources"));
-    locator.sourceAt("notExist");
+    loader.sourceAt("notExist");
   }
 
   @Test
   public void setBasePath() throws IOException {
-    TemplateLoader locator =
+    TemplateLoader loader =
         new FileTemplateLoader(new File("src/test/resources/mustache/specs"), ".yml");
-    TemplateSource source = locator.sourceAt("comments");
+    TemplateSource source = loader.sourceAt("comments");
     assertNotNull(source);
   }
 
   @Test
   public void setBasePathWithDash() throws IOException {
-    TemplateLoader locator =
+    TemplateLoader loader =
         new FileTemplateLoader(new File("src/test/resources/mustache/specs/"), ".yml");
-    TemplateSource source = locator.sourceAt("comments");
+    TemplateSource source = loader.sourceAt("comments");
     assertNotNull(source);
   }
 

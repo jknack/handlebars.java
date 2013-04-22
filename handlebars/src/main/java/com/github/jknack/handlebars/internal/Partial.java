@@ -28,6 +28,7 @@ import java.io.StringReader;
 import java.io.Writer;
 import java.util.Collections;
 import java.util.LinkedList;
+import java.util.List;
 
 import com.github.jknack.handlebars.Context;
 import com.github.jknack.handlebars.Handlebars;
@@ -150,7 +151,7 @@ class Partial extends BaseTemplate {
    * @param filename The filename to check for.
    * @return True, if the file was already processed.
    */
-  private static boolean exists(final LinkedList<TemplateSource> invocationStack,
+  private static boolean exists(final List<TemplateSource> invocationStack,
       final String filename) {
     for (TemplateSource ts : invocationStack) {
       if (ts.filename().equals(filename)) {

@@ -145,7 +145,7 @@ public class HandlebarsViewResolver extends AbstractTemplateViewResolver
   }
 
   @Override
-  public void afterPropertiesSet() throws Exception {
+  public void afterPropertiesSet() {
     // Creates a new template loader.
     URLTemplateLoader templateLoader =
         createTemplateLoader(getApplicationContext());

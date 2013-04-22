@@ -35,6 +35,7 @@ import static org.apache.commons.lang3.Validate.isTrue;
 import static org.apache.commons.lang3.Validate.notNull;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
@@ -104,12 +105,16 @@ public class MethodHelper implements Helper<Object> {
     }
     try {
       return (CharSequence) method.invoke(source, args.toArray(new Object[args.size()]));
-    } catch (RuntimeException ex) {
-      throw ex;
-    } catch (Exception ex) {
-      if (ex instanceof IOException) {
-        throw (IOException) ex;
+    } catch (InvocationTargetException ex) {
+      Throwable cause = ex.getCause();
+      if (cause instanceof RuntimeException) {
+        throw (RuntimeException) cause;
       }
+      if (cause instanceof IOException) {
+        throw (IOException) cause;
+      }
+      throw new IllegalStateException("could not execute helper: " + method.getName(), ex);
+    } catch (IllegalAccessException ex) {
       throw new IllegalStateException("could not execute helper: " + method.getName(), ex);
     }
   }

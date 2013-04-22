@@ -23,10 +23,6 @@ import java.io.IOException;
 
 import org.junit.Test;
 
-import com.github.jknack.handlebars.Handlebars;
-import com.github.jknack.handlebars.MarkdownHelper;
-import com.github.jknack.handlebars.Template;
-
 /**
  * Unit test for {@link MarkdownHelper}.
  *
@@ -34,6 +30,15 @@ import com.github.jknack.handlebars.Template;
  * @since 0.1.0
  */
 public class MarkdownHelperTest {
+
+  @Test
+  public void markdownFalsy() throws IOException {
+    Handlebars handlebars = new Handlebars();
+    handlebars.registerHelper("markdown", new MarkdownHelper());
+    Template template = handlebars.compileInline("{{markdown this}}");
+
+    assertEquals("", template.apply(null));
+  }
 
   @Test
   public void markdown() throws IOException {
