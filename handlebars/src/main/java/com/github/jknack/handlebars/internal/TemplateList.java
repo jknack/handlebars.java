@@ -77,15 +77,6 @@ class TemplateList extends BaseTemplate implements Iterable<Template> {
   }
 
   /**
-   * Remove a node from the given position.
-   *
-   * @param idx The node's position.
-   */
-  public void remove(final int idx) {
-    nodes.remove(idx);
-  }
-
-  /**
    * The number of children.
    *
    * @return The number of children.
