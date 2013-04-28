@@ -1,0 +1,1093 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>{{ Handlebars.java }}</title>
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script src="javascripts/respond.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <!--[if lt IE 8]>
+    <link rel="stylesheet" href="stylesheets/ie.css">
+    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+  </head>
+  <body>
+      <div id="header">
+        <nav>
+          <li class="fork"><a href="https://github.com/jknack/handlebars.java">Fork me on GitHub</a></li>
+          <li class="downloads"><a href="https://github.com/jknack/handlebars.java/zipball/master">ZIP</a></li>
+          <li class="downloads"><a href="https://github.com/jknack/handlebars.java/tarball/master">TAR</a></li>
+          <li class="title">DOWNLOADS</li>
+        </nav>
+      </div><!-- end header -->
+
+    <div class="wrapper">
+
+      <section>
+        <div id="title">
+          <h1>Handlebars.java</h1>
+          <p>Logic-less and semantic templates with Java</p>
+          <hr>
+          <span class="credits left">Project maintained by <a href="https://github.com/jknack">jknack</a></span>
+          <span class="credits right">Hosted on GitHub Pages &mdash; Theme by <a href="http://twitter.com/#!/michigangraham">mattgraham</a></span>
+        </div>
+
+        <p><a href="https://travis-ci.org/jknack/handlebars.java"><img src="https://secure.travis-ci.org/jknack/handlebars.java.png?branch=master" alt="Build Status"></a></p>
+
+<h1>Handlebars.java - Logic-less and semantic templates with Java</h1>
+
+<p>Handlebars.java is a Java port of <a href="http://handlebarsjs.com/">handlebars</a>.</p>
+
+<p>Handlebars provides the power necessary to let you build semantic templates effectively with no frustration.</p>
+
+<p><a href="http://mustache.github.com/mustache.5.html">Mustache</a> templates are compatible with Handlebars, so you can take a <a href="http://mustache.github.com">Mustache</a> template, import it into Handlebars, and start taking advantage of the extra Handlebars features.</p>
+
+<h1>Getting Started</h1>
+
+<p>In general, the syntax of <strong>Handlebars</strong> templates is a superset of <a href="http://mustache.github.com">Mustache</a> templates. For basic syntax, check out the <a href="http://mustache.github.com">Mustache manpage</a>.</p>
+
+<h2>Maven</h2>
+
+<h4>Stable version: <strong>0.12.0</strong>
+</h4>
+
+<div class="highlight"><pre>  <span class="nt">&lt;dependency&gt;</span>
+    <span class="nt">&lt;groupId&gt;</span>com.github.jknack<span class="nt">&lt;/groupId&gt;</span>
+    <span class="nt">&lt;artifactId&gt;</span>handlebars<span class="nt">&lt;/artifactId&gt;</span>
+    <span class="nt">&lt;version&gt;</span>${handlebars-version}<span class="nt">&lt;/version&gt;</span>
+  <span class="nt">&lt;/dependency&gt;</span>
+</pre></div>
+
+<h4>Development version: <strong>0.13.0-SNAPSHOT</strong>
+</h4>
+
+<p>SNAPSHOT versions are NOT synchronized to Central. If you want to use a snapshot version you need to add the <a href="https://oss.sonatype.org/content/repositories/snapshots/">https://oss.sonatype.org/content/repositories/snapshots/</a> repository to your pom.xml.</p>
+
+<h2>Hello Handlebars.java</h2>
+
+<div class="highlight"><pre><span class="n">Handlebars</span> <span class="n">handlebars</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Handlebars</span><span class="o">();</span>
+
+<span class="n">Template</span> <span class="n">template</span> <span class="o">=</span> <span class="n">handlebars</span><span class="o">.</span><span class="na">compile</span><span class="o">(</span><span class="s">"Hello {{this}}!"</span><span class="o">);</span>
+
+<span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">template</span><span class="o">.</span><span class="na">apply</span><span class="o">(</span><span class="s">"Handlebars.java"</span><span class="o">));</span>
+</pre></div>
+
+<p>Output:</p>
+
+<pre><code>Hello Handlebars.java!
+</code></pre>
+
+<h3>Loading templates</h3>
+
+<p>Templates are loaded using the <code>TemplateLoader</code> class. Handlebars.java provides three implementations of a <code>TemplateLodaer</code>:</p>
+
+<ul>
+<li>ClassPathTemplateLoader (default)</li>
+<li>FileTemplateLoader</li>
+<li>SpringTemplateLoader (see the <a href="https://github.com/jknack/handlebars.java/tree/master/handlebars-springmvc">handlebars-springmvc</a> module)</li>
+</ul><p>This example load <code>mytemplate.hbs</code> from the root of the classpath:</p>
+
+<p>mytemplate.hbs:</p>
+
+<pre><code>Hello {{this}}!
+</code></pre>
+
+<div class="highlight"><pre><span class="n">Handlebars</span> <span class="n">handlebars</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Handlebars</span><span class="o">();</span>
+
+<span class="n">Template</span> <span class="n">template</span> <span class="o">=</span> <span class="n">handlebars</span><span class="o">.</span><span class="na">compile</span><span class="o">(</span><span class="n">URI</span><span class="o">.</span><span class="na">create</span><span class="o">(</span><span class="s">"mytemplate"</span><span class="o">));</span>
+
+<span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">template</span><span class="o">.</span><span class="na">apply</span><span class="o">(</span><span class="s">"Handlebars.java"</span><span class="o">));</span>
+</pre></div>
+
+<p>Output:</p>
+
+<pre><code>Hello Handlebars.java!
+</code></pre>
+
+<p>You can specicy a different <code>TemplateLoader</code> by:</p>
+
+<div class="highlight"><pre><span class="n">TemplateLoader</span> <span class="n">loader</span> <span class="o">=</span> <span class="o">...;</span>
+<span class="n">Handlebars</span> <span class="n">handlebars</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Handlebars</span><span class="o">(</span><span class="n">loader</span><span class="o">);</span>
+</pre></div>
+
+<h4>Templates prefix and suffix</h4>
+
+<p>A <code>TemplateLoader</code> provides two important properties:</p>
+
+<ul>
+<li>
+<code>prefix</code>: useful for setting a default prefix where templates are stored.</li>
+<li>
+<code>suffix</code>: useful for setting a default suffix or file extension for your templates. Default is: <code>.hbs</code>
+</li>
+</ul><p>Example:</p>
+
+<div class="highlight"><pre><span class="n">TemplateLoader</span> <span class="n">loader</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ClassPathTemplateLoader</span><span class="o">();</span>
+<span class="n">loader</span><span class="o">.</span><span class="na">setPrefix</span><span class="o">(</span><span class="s">"/templates"</span><span class="o">);</span>
+<span class="n">loader</span><span class="o">.</span><span class="na">setSuffix</span><span class="o">(</span><span class="s">".html"</span><span class="o">);</span>
+<span class="n">Handlebars</span> <span class="n">handlebars</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Handlebars</span><span class="o">(</span><span class="n">loader</span><span class="o">);</span>
+
+<span class="n">Template</span> <span class="n">template</span> <span class="o">=</span> <span class="n">handlebars</span><span class="o">.</span><span class="na">compile</span><span class="o">(</span><span class="n">URI</span><span class="o">.</span><span class="na">create</span><span class="o">(</span><span class="s">"mytemplate"</span><span class="o">));</span>
+
+<span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">template</span><span class="o">.</span><span class="na">apply</span><span class="o">(</span><span class="s">"Handlebars.java"</span><span class="o">));</span>
+</pre></div>
+
+<p>Handlebars.java will resolve <code>mytemplate</code> to <code>/templates/mytemplate.html</code> and load it.</p>
+
+<h2>The Handlebars.java Server</h2>
+
+<p>The handlebars.java server is small application where you can write Mustache/Handlebars template and merge them with data.</p>
+
+<p>It is a useful tool for Web Designers.</p>
+
+<p>Download from Maven Central:</p>
+
+<ol>
+<li>Go <a href="http://search.maven.org/#search%7Cga%7C1%7Chandlebars-proto">here</a>
+</li>
+<li>Under the <strong>Download</strong> section click on <strong>jar</strong>
+</li>
+</ol><p>Maven:</p>
+
+<div class="highlight"><pre><span class="nt">&lt;dependency&gt;</span>
+  <span class="nt">&lt;groupId&gt;</span>com.github.jknack<span class="nt">&lt;/groupId&gt;</span>
+  <span class="nt">&lt;artifactId&gt;</span>handlebars-proto<span class="nt">&lt;/artifactId&gt;</span>
+  <span class="nt">&lt;version&gt;</span>${current-version}<span class="nt">&lt;/version&gt;</span>
+<span class="nt">&lt;/dependency&gt;</span>
+</pre></div>
+
+<p>Usage:
+<code>java -jar handlebars-proto-${current-version}.jar -dir myTemplates</code></p>
+
+<p>Example:</p>
+
+<p><strong>myTemplates/home.hbs</strong></p>
+
+<pre><code>&lt;ul&gt;
+ {{#items}}
+ {{name}}
+ {{/items}}
+&lt;/ul&gt;
+</code></pre>
+
+<p><strong>myTemplates/home.json</strong></p>
+
+<div class="highlight"><pre><span class="p">{</span>
+  <span class="err">items:</span> <span class="err">[</span>
+    <span class="err">{</span>
+      <span class="err">name:</span> <span class="nt">"Handlebars.java rocks!"</span>
+    <span class="p">}</span>
+  <span class="err">]</span>
+<span class="err">}</span>
+</pre></div>
+
+<p>or if you prefer YAML <strong>myTemplates/home.yml</strong>:</p>
+
+<div class="highlight"><pre><span class="l-Scalar-Plain">list</span><span class="p-Indicator">:</span>
+  <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">name</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">Handlebars.java rocks!</span>
+</pre></div>
+
+<h3>Open a browser a type:</h3>
+
+<pre><code>http://localhost:6780/home.hbs
+</code></pre>
+
+<p>enjoy it!</p>
+
+<h3>Additional options:</h3>
+
+<ul>
+<li>-dir: set the template directory</li>
+<li>-prefix: set the template's prefix, default is /</li>
+<li>-suffix: set the template's suffix, default is .hbs</li>
+<li>-context: set the context's path, default is /</li>
+<li>-port: set port number, default is 6780</li>
+<li>-content-type: set the content-type header, default is text/html</li>
+</ul><h3>Multiples data sources per template</h3>
+
+<p>Sometimes you need or want to test multiples datasets over a single template, you can do that by setting a <code>data</code> parameter in the request URI.</p>
+
+<p>Example:</p>
+
+<pre><code>http://localhost:6780/home.hbs?data=mytestdata
+</code></pre>
+
+<p>Please note you don't have to specified the extension file.</p>
+
+<h2>Helpers</h2>
+
+<h3>Built-in helpers:</h3>
+
+<ul>
+<li><strong>with</strong></li>
+<li><strong>each</strong></li>
+<li><strong>if</strong></li>
+<li><strong>unless</strong></li>
+<li><strong>log</strong></li>
+<li><strong>block</strong></li>
+<li><strong>partial</strong></li>
+<li><strong>precompile</strong></li>
+<li><strong>embedded</strong></li>
+<li>
+<strong>i18n</strong> and <strong>i18nJs</strong> </li>
+</ul><h3>with, each, if, unless:</h3>
+
+<p>See the <a href="http://handlebarsjs.com/block_helpers.html">built-in helper documentation</a>.</p>
+
+<h3>block and partial</h3>
+
+<p>Block and partial helpers work together to provide you <a href="http://thejohnfreeman.com/blog/2012/03/23/template-inheritance-for-handlebars.html">Template Inheritance</a>.</p>
+
+<p>Usage:</p>
+
+<pre><code>  {{#block "title"}}
+    ...
+  {{/block}}
+</code></pre>
+
+<p>context: A string literal which define the region's name.</p>
+
+<p>Usage:</p>
+
+<pre><code>  {{#partial "title"}}
+    ...
+  {{/partial}}
+</code></pre>
+
+<p>context: A string literal which define the region's name.</p>
+
+<h3>precompile</h3>
+
+<p>Precompile a Handlebars.java template to JavaScript using handlebars.js</p>
+
+<p>user.hbs</p>
+
+<div class="highlight"><pre>Hello {{this}}!
+</pre></div>
+
+<p>home.hbs</p>
+
+<div class="highlight"><pre><span class="nt">&lt;script </span><span class="na">type=</span><span class="s">"text/javascript"</span><span class="nt">&gt;</span>
+<span class="p">{{</span><span class="nx">precompile</span> <span class="s2">"user"</span><span class="p">}}</span>
+<span class="nt">&lt;/script&gt;</span>
+</pre></div>
+
+<p>Output:</p>
+
+<div class="highlight"><pre><span class="nt">&lt;script </span><span class="na">type=</span><span class="s">"text/javascript"</span><span class="nt">&gt;</span>
+<span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+  <span class="kd">var</span> <span class="nx">template</span> <span class="o">=</span> <span class="nx">Handlebars</span><span class="p">.</span><span class="nx">template</span><span class="p">,</span> <span class="nx">templates</span> <span class="o">=</span> <span class="nx">Handlebars</span><span class="p">.</span><span class="nx">templates</span> <span class="o">=</span> <span class="nx">Handlebars</span><span class="p">.</span><span class="nx">templates</span> <span class="o">||</span> <span class="p">{};</span>
+<span class="nx">templates</span><span class="p">[</span><span class="s1">'user.hbs'</span><span class="p">]</span> <span class="o">=</span> <span class="nx">template</span><span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">Handlebars</span><span class="p">,</span><span class="nx">depth0</span><span class="p">,</span><span class="nx">helpers</span><span class="p">,</span><span class="nx">partials</span><span class="p">,</span><span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nx">helpers</span> <span class="o">=</span> <span class="nx">helpers</span> <span class="o">||</span> <span class="nx">Handlebars</span><span class="p">.</span><span class="nx">helpers</span><span class="p">;</span>
+  <span class="kd">var</span> <span class="nx">buffer</span> <span class="o">=</span> <span class="s2">""</span><span class="p">,</span> <span class="nx">functionType</span><span class="o">=</span><span class="s2">"function"</span><span class="p">,</span> <span class="nx">escapeExpression</span><span class="o">=</span><span class="k">this</span><span class="p">.</span><span class="nx">escapeExpression</span><span class="p">;</span>
+
+
+  <span class="nx">buffer</span> <span class="o">+=</span> <span class="s2">"Hi "</span><span class="p">;</span>
+  <span class="nx">depth0</span> <span class="o">=</span> <span class="k">typeof</span> <span class="nx">depth0</span> <span class="o">===</span> <span class="nx">functionType</span> <span class="o">?</span> <span class="nx">depth0</span><span class="p">()</span> <span class="o">:</span> <span class="nx">depth0</span><span class="p">;</span>
+  <span class="nx">buffer</span> <span class="o">+=</span> <span class="nx">escapeExpression</span><span class="p">(</span><span class="nx">depth0</span><span class="p">)</span> <span class="o">+</span> <span class="s2">"!"</span><span class="p">;</span>
+  <span class="k">return</span> <span class="nx">buffer</span><span class="p">;});</span>
+<span class="p">})();</span>
+<span class="nt">&lt;/script&gt;</span>
+</pre></div>
+
+<p>You can access to the precompiled template by:</p>
+
+<div class="highlight"><pre><span class="kd">var</span> <span class="nx">template</span> <span class="o">=</span> <span class="nx">Handlebars</span><span class="p">.</span><span class="nx">templates</span><span class="p">[</span><span class="s1">'user.hbs'</span><span class="p">]</span>
+</pre></div>
+
+<p>For more information have a look at <a href="https://github.com/wycats/handlebars.js/">Precompiling Templates</a> documentation</p>
+
+<p>Usage:</p>
+
+<pre><code>{{precompile "template" [wrapper="anonymous, amd or none"]}}
+</code></pre>
+
+<p>context: A template name. Required.</p>
+
+<p>wrapper: One of "anonymous", "amd" or "none". Default is: "anonymous" </p>
+
+<h3>embedded</h3>
+
+<p>The embedded helper allow you to "embedded" a handlebars template inside a <code>&lt;script&gt;</code> HTML tag:</p>
+
+<p>user.hbs</p>
+
+<div class="highlight"><pre><span class="nt">&lt;tr&gt;</span>
+  <span class="nt">&lt;td&gt;</span>{{firstName}}<span class="nt">&lt;/td&gt;</span>
+  <span class="nt">&lt;td&gt;</span>{{lastName}}<span class="nt">&lt;/td&gt;</span>
+<span class="nt">&lt;/tr&gt;</span>
+</pre></div>
+
+<p>home.hbs</p>
+
+<div class="highlight"><pre><span class="nt">&lt;html&gt;</span>
+...
+{{embedded "user"}}
+...
+<span class="nt">&lt;/html&gt;</span>
+</pre></div>
+
+<p>Output:</p>
+
+<div class="highlight"><pre><span class="nt">&lt;html&gt;</span>
+...
+<span class="nt">&lt;script </span><span class="na">id=</span><span class="s">"user-hbs"</span> <span class="na">type=</span><span class="s">"text/x-handlebars"</span><span class="nt">&gt;</span>
+<span class="o">&lt;</span><span class="nx">tr</span><span class="o">&gt;</span>
+  <span class="o">&lt;</span><span class="nx">td</span><span class="o">&gt;</span><span class="p">{{</span><span class="nx">firstName</span><span class="p">}}</span><span class="o">&lt;</span><span class="err">/td&gt;</span>
+  <span class="o">&lt;</span><span class="nx">td</span><span class="o">&gt;</span><span class="p">{{</span><span class="nx">lastName</span><span class="p">}}</span><span class="o">&lt;</span><span class="err">/td&gt;</span>
+<span class="o">&lt;</span><span class="err">/tr&gt;</span>
+<span class="nt">&lt;/script&gt;</span>
+...
+<span class="nt">&lt;/html&gt;</span>
+</pre></div>
+
+<p>Usage:</p>
+
+<pre><code>{{embedded "template"}}
+</code></pre>
+
+<p>context: A template name. Required.</p>
+
+<h3>i18n</h3>
+
+<p>A helper built on top of a {<a href="https://github.com/link" class="user-mention">@link</a> ResourceBundle}. A {<a href="https://github.com/link" class="user-mention">@link</a> ResourceBundle} is the most well known mechanism for internationalization (i18n) in Java.</p>
+
+<p>Usage:</p>
+
+<div class="highlight"><pre>{{i18n "hello"}}
+</pre></div>
+
+<p>This require a <code>messages.properties</code> in the root of classpath.</p>
+
+<p>Using a locale:</p>
+
+<div class="highlight"><pre>{{i18n "hello" locale="es_AR"}}
+</pre></div>
+
+<p>This require a <code>messages_es_AR.properties</code> in the root of classpath.</p>
+
+<p>Using a different bundle:</p>
+
+<div class="highlight"><pre>{{i18n "hello" bundle="myMessages"}}
+</pre></div>
+
+<p>This require a <code>myMessages.properties</code> in the root of classpath.</p>
+
+<p>Using a message format:</p>
+
+<div class="highlight"><pre>{{i18n "hello" "Handlebars.java"}}
+</pre></div>
+
+<p>Where <code>hello</code> is <code>Hola {0}!</code>, results in <code>Hola Handlebars.java!</code>.</p>
+
+<h3>i18nJs</h3>
+
+<p>Translate a <code>ResourceBundle</code> into JavaScript code. The generated code assume you have the <a href="https://github.com/fnando/i18n-js">I18n</a> in your application.</p>
+
+<p>Usage:</p>
+
+<pre><code>{{i18nJs [locale] [bundle=messages]}}
+</code></pre>
+
+<p>If locale argument is present it will translate that locale to JavaScript. Otherwise, the default locale.</p>
+
+<p>The generated code looks like:</p>
+
+<div class="highlight"><pre><span class="o">&lt;</span><span class="nx">script</span> <span class="nx">type</span><span class="o">=</span><span class="s2">"text/javascript"</span><span class="o">&gt;</span>
+  <span class="nx">I18n</span><span class="p">.</span><span class="nx">defaultLocale</span> <span class="o">=</span> <span class="s1">'es_AR'</span><span class="p">;</span>
+  <span class="nx">I18n</span><span class="p">.</span><span class="nx">locale</span> <span class="o">=</span> <span class="s1">'es_AR'</span><span class="p">;</span>
+  <span class="nx">I18n</span><span class="p">.</span><span class="nx">translations</span> <span class="o">=</span> <span class="nx">I18n</span><span class="p">.</span><span class="nx">translations</span> <span class="o">||</span> <span class="p">{};</span>
+  <span class="c1">// Spanish (Argentina)</span>
+  <span class="nx">I18n</span><span class="p">.</span><span class="nx">translations</span><span class="p">[</span><span class="s1">'es_AR'</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">"hello"</span><span class="o">:</span> <span class="s2">"Hi {{arg0}}!"</span>
+  <span class="p">}</span>
+<span class="o">&lt;</span><span class="err">/script&gt;</span>
+</pre></div>
+
+<p>Finally, it converts message patterns like: <code>Hi {0}</code> into <code>Hi {{arg0}}</code>. This make possible to the <a href="https://github.com/fnando/i18n-js">I18n</a> JS library to interpolate variables.</p>
+
+<h3>TypeSafe Templates</h3>
+
+<p>TypeSafe templates are created by extending the <code>TypeSafeTemplate</code> interface. For example:</p>
+
+<div class="highlight"><pre>
+<span class="c1">// 1</span>
+<span class="kd">public</span> <span class="kd">static</span> <span class="kd">interface</span> <span class="nc">UserTemplate</span> <span class="kd">extends</span> <span class="n">TypeSafeTemplate</span><span class="o">&lt;</span><span class="n">User</span><span class="o">&gt;</span> <span class="o">{</span>
+
+  <span class="c1">// 2</span>
+  <span class="kd">public</span> <span class="n">UserTemplate</span> <span class="nf">setAge</span><span class="o">(</span><span class="kt">int</span> <span class="n">age</span><span class="o">);</span>
+
+  <span class="kd">public</span> <span class="n">UserTemplate</span> <span class="nf">setRole</span><span class="o">(</span><span class="n">String</span> <span class="n">role</span><span class="o">);</span>
+
+<span class="o">}</span>
+
+<span class="c1">// 3</span>
+<span class="n">UserTemplate</span> <span class="n">userTmpl</span> <span class="o">=</span> <span class="n">handlebars</span><span class="o">.</span><span class="na">compile</span><span class="o">(</span><span class="s">"{{name}} is {{age}} years old!"</span><span class="o">)</span>
+  <span class="o">.</span><span class="na">as</span><span class="o">(</span><span class="n">UserTemplate</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+
+<span class="n">userTmpl</span><span class="o">.</span><span class="na">setAge</span><span class="o">(</span><span class="mi">32</span><span class="o">);</span>
+
+<span class="n">assertEquals</span><span class="o">(</span><span class="s">"Edgar is 32 years old!"</span><span class="o">,</span> <span class="n">userTmpl</span><span class="o">.</span><span class="na">apply</span><span class="o">(</span><span class="k">new</span> <span class="n">User</span><span class="o">(</span><span class="s">"Edgar"</span><span class="o">)));</span>
+</pre></div>
+
+<ol>
+<li>You extend the <code>TypeSafeTemplate</code> interface.</li>
+<li>You add all the set method you need. The set method can returns <code>void</code> or <code>TypeSafeTemplate</code> object.</li>
+<li>You create a new type safe template using the: <code>as()</code> method.</li>
+</ol><h3>Registering Helpers</h3>
+
+<p>There are two ways of registering helpers.</p>
+
+<h4>Using the <code>Helper</code> interface</h4>
+
+<div class="highlight"><pre><span class="n">handlebars</span><span class="o">.</span><span class="na">registerHelper</span><span class="o">(</span><span class="s">"blog"</span><span class="o">,</span> <span class="k">new</span> <span class="n">Helper</span><span class="o">&lt;</span><span class="n">Blog</span><span class="o">&gt;()</span> <span class="o">{</span>
+  <span class="kd">public</span> <span class="n">CharSequence</span> <span class="nf">apply</span><span class="o">(</span><span class="n">Blog</span> <span class="n">blog</span><span class="o">,</span> <span class="n">Options</span> <span class="n">options</span><span class="o">)</span> <span class="o">{</span>
+    <span class="k">return</span> <span class="n">options</span><span class="o">.</span><span class="na">fn</span><span class="o">(</span><span class="n">blog</span><span class="o">);</span>
+  <span class="o">}</span>
+<span class="o">});</span>
+</pre></div>
+
+<div class="highlight"><pre><span class="n">handlebars</span><span class="o">.</span><span class="na">registerHelper</span><span class="o">(</span><span class="s">"blog-list"</span><span class="o">,</span> <span class="k">new</span> <span class="n">Helper</span><span class="o">&lt;</span><span class="n">List</span><span class="o">&lt;</span><span class="n">Blog</span><span class="o">&gt;&gt;()</span> <span class="o">{</span>
+  <span class="kd">public</span> <span class="n">CharSequence</span> <span class="nf">apply</span><span class="o">(</span><span class="n">List</span><span class="o">&lt;</span><span class="n">Blog</span><span class="o">&gt;</span> <span class="n">list</span><span class="o">,</span> <span class="n">Options</span> <span class="n">options</span><span class="o">)</span> <span class="o">{</span>
+    <span class="n">String</span> <span class="n">ret</span> <span class="o">=</span> <span class="s">"&lt;ul&gt;"</span><span class="o">;</span>
+    <span class="k">for</span> <span class="o">(</span><span class="n">Blog</span> <span class="nl">blog:</span> <span class="n">list</span><span class="o">)</span> <span class="o">{</span>
+      <span class="n">ret</span> <span class="o">+=</span> <span class="s">"&lt;li&gt;"</span> <span class="o">+</span> <span class="n">options</span><span class="o">.</span><span class="na">fn</span><span class="o">(</span><span class="n">blog</span><span class="o">)</span> <span class="o">+</span> <span class="s">"&lt;/li&gt;"</span><span class="o">;</span>
+    <span class="o">}</span>
+    <span class="k">return</span> <span class="k">new</span> <span class="n">Handlebars</span><span class="o">.</span><span class="na">SafeString</span><span class="o">(</span><span class="n">ret</span> <span class="o">+</span> <span class="s">"&lt;/ul&gt;"</span><span class="o">);</span>
+  <span class="o">}</span>
+<span class="o">});</span>
+</pre></div>
+
+<h4>Using a <code>HelperSource</code>
+</h4>
+
+<p>A helper source is any class with public methods returning an instance of a <code>CharSequence</code>.</p>
+
+<div class="highlight"><pre>  <span class="kd">public</span> <span class="kd">static</span><span class="o">?</span> <span class="n">CharSequence</span> <span class="n">methodName</span><span class="o">(</span><span class="n">context</span><span class="o">?,</span> <span class="n">parameter</span><span class="o">*,</span> <span class="n">options</span><span class="o">?)</span> <span class="o">{</span>
+  <span class="o">}</span>
+</pre></div>
+
+<p>Where: </p>
+
+<ul>
+<li>A method can/can't be static</li>
+<li>The method's name became the helper's name</li>
+<li>Context, parameters and options are all optionals</li>
+<li>If context and options are present they must be the <strong>first</strong> and <strong>last</strong> arguments of the method</li>
+</ul><p>All these are valid definitions of helper methods:</p>
+
+<div class="highlight"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">HelperSource</span> <span class="o">{</span>
+  <span class="kd">public</span> <span class="n">String</span> <span class="nf">blog</span><span class="o">(</span><span class="n">Blog</span> <span class="n">blog</span><span class="o">,</span> <span class="n">Options</span> <span class="n">options</span><span class="o">)</span> <span class="o">{</span>
+    <span class="k">return</span> <span class="n">options</span><span class="o">.</span><span class="na">fn</span><span class="o">(</span><span class="n">blog</span><span class="o">);</span>
+  <span class="o">}</span>
+
+  <span class="kd">public</span> <span class="kd">static</span> <span class="n">String</span> <span class="nf">now</span><span class="o">()</span> <span class="o">{</span>
+    <span class="k">return</span> <span class="k">new</span> <span class="nf">Date</span><span class="o">().</span><span class="na">toString</span><span class="o">();</span>
+  <span class="o">}</span>
+
+  <span class="kd">public</span> <span class="n">String</span> <span class="nf">render</span><span class="o">(</span><span class="n">Blog</span> <span class="n">context</span><span class="o">,</span> <span class="n">String</span> <span class="n">param0</span><span class="o">,</span> <span class="kt">int</span> <span class="n">param1</span><span class="o">,</span> <span class="kt">boolean</span> <span class="n">param2</span><span class="o">,</span> <span class="n">Options</span> <span class="n">options</span><span class="o">)</span> <span class="o">{</span>
+    <span class="k">return</span> <span class="o">...</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+
+<span class="o">...</span>
+
+<span class="n">handlebars</span><span class="o">.</span><span class="na">registerHelpers</span><span class="o">(</span><span class="k">new</span> <span class="n">HelperSource</span><span class="o">());</span>
+
+</pre></div>
+
+<p>Or, if you prefer static methods only:</p>
+
+<div class="highlight"><pre><span class="n">handlebars</span><span class="o">.</span><span class="na">registerHelpers</span><span class="o">(</span><span class="n">HelperSource</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+
+</pre></div>
+
+<h3>Helper Options</h3>
+
+<h4>Parameters</h4>
+
+<div class="highlight"><pre><span class="n">handlebars</span><span class="o">.</span><span class="na">registerHelper</span><span class="o">(</span><span class="s">"blog-list"</span><span class="o">,</span> <span class="k">new</span> <span class="n">Helper</span><span class="o">&lt;</span><span class="n">Blog</span><span class="o">&gt;()</span> <span class="o">{</span>
+  <span class="kd">public</span> <span class="n">CharSequence</span> <span class="nf">apply</span><span class="o">(</span><span class="n">List</span><span class="o">&lt;</span><span class="n">Blog</span><span class="o">&gt;</span> <span class="n">list</span><span class="o">,</span> <span class="n">Options</span> <span class="n">options</span><span class="o">)</span> <span class="o">{</span>
+    <span class="n">String</span> <span class="n">p0</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="na">param</span><span class="o">(</span><span class="mi">0</span><span class="o">);</span>
+    <span class="n">assertEquals</span><span class="o">(</span><span class="s">"param0"</span><span class="o">,</span> <span class="n">p0</span><span class="o">);</span>
+    <span class="n">Integer</span> <span class="n">p1</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="na">param</span><span class="o">(</span><span class="mi">1</span><span class="o">);</span>
+    <span class="n">assertEquals</span><span class="o">(</span><span class="mi">123</span><span class="o">,</span> <span class="n">p1</span><span class="o">);</span>
+    <span class="o">...</span>
+  <span class="o">}</span>
+<span class="o">});</span>
+
+<span class="n">Bean</span> <span class="n">bean</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Bean</span><span class="o">();</span>
+<span class="n">bean</span><span class="o">.</span><span class="na">setParam1</span><span class="o">(</span><span class="mi">123</span><span class="o">);</span>
+
+<span class="n">Template</span> <span class="n">template</span> <span class="o">=</span> <span class="n">handlebars</span><span class="o">.</span><span class="na">compile</span><span class="o">(</span><span class="s">"{{#blog-list blogs \"param0\" param1}}{{/blog-list}}"</span><span class="o">);</span>
+<span class="n">template</span><span class="o">.</span><span class="na">apply</span><span class="o">(</span><span class="n">bean</span><span class="o">);</span>
+</pre></div>
+
+<h4>Default parameters</h4>
+
+<div class="highlight"><pre><span class="n">handlebars</span><span class="o">.</span><span class="na">registerHelper</span><span class="o">(</span><span class="s">"blog-list"</span><span class="o">,</span> <span class="k">new</span> <span class="n">Helper</span><span class="o">&lt;</span><span class="n">Blog</span><span class="o">&gt;()</span> <span class="o">{</span>
+  <span class="kd">public</span> <span class="n">CharSequence</span> <span class="nf">apply</span><span class="o">(</span><span class="n">List</span><span class="o">&lt;</span><span class="n">Blog</span><span class="o">&gt;</span> <span class="n">list</span><span class="o">,</span> <span class="n">Options</span> <span class="n">options</span><span class="o">)</span> <span class="o">{</span>
+    <span class="n">String</span> <span class="n">p0</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="na">param</span><span class="o">(</span><span class="mi">0</span><span class="o">,</span> <span class="s">"param0"</span><span class="o">);</span>
+    <span class="n">assertEquals</span><span class="o">(</span><span class="s">"param0"</span><span class="o">,</span> <span class="n">p0</span><span class="o">);</span>
+    <span class="n">Integer</span> <span class="n">p1</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="na">param</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span> <span class="mi">123</span><span class="o">);</span>
+    <span class="n">assertEquals</span><span class="o">(</span><span class="mi">123</span><span class="o">,</span> <span class="n">p1</span><span class="o">);</span>
+    <span class="o">...</span>
+  <span class="o">}</span>
+<span class="o">});</span>
+
+<span class="n">Template</span> <span class="n">template</span> <span class="o">=</span> <span class="n">handlebars</span><span class="o">.</span><span class="na">compile</span><span class="o">(</span><span class="s">"{{#blog-list blogs}}{{/blog-list}}"</span><span class="o">);</span>
+</pre></div>
+
+<h4>Hash</h4>
+
+<div class="highlight"><pre><span class="n">handlebars</span><span class="o">.</span><span class="na">registerHelper</span><span class="o">(</span><span class="s">"blog-list"</span><span class="o">,</span> <span class="k">new</span> <span class="n">Helper</span><span class="o">&lt;</span><span class="n">Blog</span><span class="o">&gt;()</span> <span class="o">{</span>
+  <span class="kd">public</span> <span class="n">CharSequence</span> <span class="nf">apply</span><span class="o">(</span><span class="n">List</span><span class="o">&lt;</span><span class="n">Blog</span><span class="o">&gt;</span> <span class="n">list</span><span class="o">,</span> <span class="n">Options</span> <span class="n">options</span><span class="o">)</span> <span class="o">{</span>
+    <span class="n">String</span> <span class="kd">class</span> <span class="err">= </span><span class="nc">options</span><span class="o">.</span><span class="na">hash</span><span class="o">(</span><span class="s">"class"</span><span class="o">);</span>
+    <span class="n">assertEquals</span><span class="o">(</span><span class="s">"blog-css"</span><span class="o">,</span> <span class="n">class</span><span class="o">);</span>
+    <span class="o">...</span>
+  <span class="o">}</span>
+<span class="o">});</span>
+
+<span class="n">handlebars</span><span class="o">.</span><span class="na">compile</span><span class="o">(</span><span class="s">"{{#blog-list blogs class=\"blog-css\"}}{{/blog-list}}"</span><span class="o">);</span>
+</pre></div>
+
+<h4>Default hash</h4>
+
+<div class="highlight"><pre><span class="n">handlebars</span><span class="o">.</span><span class="na">registerHelper</span><span class="o">(</span><span class="s">"blog-list"</span><span class="o">,</span> <span class="k">new</span> <span class="n">Helper</span><span class="o">&lt;</span><span class="n">Blog</span><span class="o">&gt;()</span> <span class="o">{</span>
+  <span class="kd">public</span> <span class="n">CharSequence</span> <span class="nf">apply</span><span class="o">(</span><span class="n">List</span><span class="o">&lt;</span><span class="n">Blog</span><span class="o">&gt;</span> <span class="n">list</span><span class="o">,</span> <span class="n">Options</span> <span class="n">options</span><span class="o">)</span> <span class="o">{</span>
+    <span class="n">String</span> <span class="kd">class</span> <span class="err">= </span><span class="nc">options</span><span class="o">.</span><span class="na">hash</span><span class="o">(</span><span class="s">"class"</span><span class="o">,</span> <span class="s">"blog-css"</span><span class="o">);</span>
+    <span class="n">assertEquals</span><span class="o">(</span><span class="s">"blog-css"</span><span class="o">,</span> <span class="n">class</span><span class="o">);</span>
+    <span class="o">...</span>
+  <span class="o">}</span>
+<span class="o">});</span>
+
+<span class="n">handlebars</span><span class="o">.</span><span class="na">compile</span><span class="o">(</span><span class="s">"{{#blog-list blogs}}{{/blog-list}}"</span><span class="o">);</span>
+</pre></div>
+
+<h2>Error reporting</h2>
+
+<h3>Syntax errors</h3>
+
+<pre><code>file:line:column: message
+   evidence
+   ^
+[at file:line:column]
+</code></pre>
+
+<p>Examples:</p>
+
+<p>template.hbs</p>
+
+<pre><code>{{value
+</code></pre>
+
+<pre><code>/templates.hbs:1:8: found 'eof', expected: 'id', 'parameter', 'hash' or '}'
+    {{value
+           ^
+</code></pre>
+
+<p>If a partial isn't found or if has errors, a call stack is added</p>
+
+<pre><code>/deep1.hbs:1:5: The partial '/deep2.hbs' could not be found
+    {{&gt; deep2
+        ^
+at /deep1.hbs:1:10
+at /deep.hbs:1:10
+</code></pre>
+
+<h3>Helper/Runtime errors</h3>
+
+<p>Helper or runtime errors are similar to syntax errors, except for two thing:</p>
+
+<ol>
+<li>The location of the problem may (or may not) be the correct one.</li>
+<li>The stack-trace isn't available</li>
+</ol><p>Examples:</p>
+
+<p>Block helper:</p>
+
+<div class="highlight"><pre><span class="kd">public</span> <span class="n">CharSequence</span> <span class="nf">apply</span><span class="o">(</span><span class="kd">final</span> <span class="n">Object</span> <span class="n">context</span><span class="o">,</span> <span class="kd">final</span> <span class="n">Options</span> <span class="n">options</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">IOException</span> <span class="o">{</span>
+  <span class="k">if</span> <span class="o">(</span><span class="n">context</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+    <span class="k">throw</span> <span class="k">new</span> <span class="nf">IllegalArgumentException</span><span class="o">(</span>
+        <span class="s">"found 'null', expected 'string'"</span><span class="o">);</span>
+  <span class="o">}</span>
+  <span class="k">if</span> <span class="o">(!(</span><span class="n">context</span> <span class="k">instanceof</span> <span class="n">String</span><span class="o">))</span> <span class="o">{</span>
+    <span class="k">throw</span> <span class="k">new</span> <span class="nf">IllegalArgumentException</span><span class="o">(</span>
+        <span class="s">"found '"</span> <span class="o">+</span> <span class="n">context</span> <span class="o">+</span> <span class="s">"', expected 'string'"</span><span class="o">);</span>
+  <span class="o">}</span>
+  <span class="o">...</span>
+<span class="o">}</span>
+</pre></div>
+
+<p>base.hbs</p>
+
+<pre><code>
+{{#block}} {{/block}}
+</code></pre>
+
+<p>Handlebars.java reports:</p>
+
+<pre><code>/base.hbs:2:4: found 'null', expected 'string'
+    {{#block}} ... {{/block}}
+</code></pre>
+
+<p>In short from a helper you can throw an Exception and Handlebars.java will add the filename, line, column and the evidence.</p>
+
+<h2>Advanced Usage</h2>
+
+<h3>Extending the context stack</h3>
+
+<p>Let's say you need to access to the current logged-in user in every single view/page.
+ You can publishing the current logged in user by hooking into the context-stack. See it in action:</p>
+
+<div class="highlight"><pre>  <span class="n">hookContextStack</span><span class="o">(</span><span class="n">Object</span> <span class="n">model</span><span class="o">,</span> <span class="n">Template</span> <span class="n">template</span><span class="o">)</span> <span class="o">{</span>
+    <span class="n">User</span> <span class="n">user</span> <span class="o">=</span> <span class="o">....;</span><span class="c1">// Get the logged-in user from somewhere</span>
+    <span class="n">Map</span> <span class="n">moreData</span> <span class="o">=</span> <span class="o">...;</span>
+    <span class="n">Context</span> <span class="n">context</span> <span class="o">=</span> <span class="n">Context</span>
+      <span class="o">.</span><span class="na">newBuilder</span><span class="o">(</span><span class="n">model</span><span class="o">)</span>
+        <span class="o">.</span><span class="na">combine</span><span class="o">(</span><span class="s">"user"</span><span class="o">,</span> <span class="n">user</span><span class="o">)</span>
+        <span class="o">.</span><span class="na">combine</span><span class="o">(</span><span class="n">moreData</span><span class="o">)</span>
+        <span class="o">.</span><span class="na">build</span><span class="o">();</span>
+    <span class="n">template</span><span class="o">.</span><span class="na">apply</span><span class="o">(</span><span class="n">user</span><span class="o">);</span>
+    <span class="n">context</span><span class="o">.</span><span class="na">destroy</span><span class="o">();</span>
+  <span class="o">}</span>
+</pre></div>
+
+<p>Where is the <code>hookContextStack</code> method? Well, it depends on your application architecture.</p>
+
+<h3>Using the ValueResolver</h3>
+
+<p>By default, Handlebars.java use the JavaBean methods (i.e. public getXxx methods) and Map as value resolvers.</p>
+
+<p>You can choose a different value resolver. This section describe how to do it.</p>
+
+<h4>The JavaBeanValueResolver</h4>
+
+<p>Resolves values from public methods prefixed with "get/is"</p>
+
+<div class="highlight"><pre><span class="n">Context</span> <span class="n">context</span> <span class="o">=</span> <span class="n">Context</span>
+  <span class="o">.</span><span class="na">newBuilder</span><span class="o">(</span><span class="n">model</span><span class="o">)</span>
+  <span class="o">.</span><span class="na">resolver</span><span class="o">(</span><span class="n">JavaBeanValueResolver</span><span class="o">.</span><span class="na">INSTANCE</span><span class="o">)</span>
+  <span class="o">.</span><span class="na">build</span><span class="o">();</span>
+</pre></div>
+
+<h4>The FieldValueResolver</h4>
+
+<p>Resolves values from  no-static fields.</p>
+
+<div class="highlight"><pre><span class="n">Context</span> <span class="n">context</span> <span class="o">=</span> <span class="n">Context</span>
+  <span class="o">.</span><span class="na">newBuilder</span><span class="o">(</span><span class="n">model</span><span class="o">)</span>
+  <span class="o">.</span><span class="na">resolver</span><span class="o">(</span><span class="n">FieldValueResolver</span><span class="o">.</span><span class="na">INSTANCE</span><span class="o">)</span>
+  <span class="o">.</span><span class="na">build</span><span class="o">();</span>
+</pre></div>
+
+<h4>The MapValueResolver</h4>
+
+<p>Resolves values from a <code>java.util.Map</code> objects.</p>
+
+<div class="highlight"><pre><span class="n">Context</span> <span class="n">context</span> <span class="o">=</span> <span class="n">Context</span>
+  <span class="o">.</span><span class="na">newBuilder</span><span class="o">(</span><span class="n">model</span><span class="o">)</span>
+  <span class="o">.</span><span class="na">resolver</span><span class="o">(</span><span class="n">MapValueResolver</span><span class="o">.</span><span class="na">INSTANCE</span><span class="o">)</span>
+  <span class="o">.</span><span class="na">build</span><span class="o">();</span>
+</pre></div>
+
+<h4>The MethodValueResolver</h4>
+
+<p>Resolves values from public methods.</p>
+
+<div class="highlight"><pre><span class="n">Context</span> <span class="n">context</span> <span class="o">=</span> <span class="n">Context</span>
+  <span class="o">.</span><span class="na">newBuilder</span><span class="o">(</span><span class="n">model</span><span class="o">)</span>
+  <span class="o">.</span><span class="na">resolver</span><span class="o">(</span><span class="n">MethodValueResolver</span><span class="o">.</span><span class="na">INSTANCE</span><span class="o">)</span>
+  <span class="o">.</span><span class="na">build</span><span class="o">();</span>
+</pre></div>
+
+<h4>The JsonNodeValueResolver</h4>
+
+<p>Resolves values from <code>JsonNode</code> objects.</p>
+
+<div class="highlight"><pre><span class="n">Context</span> <span class="n">context</span> <span class="o">=</span> <span class="n">Context</span>
+  <span class="o">.</span><span class="na">newBuilder</span><span class="o">(</span><span class="n">model</span><span class="o">)</span>
+  <span class="o">.</span><span class="na">resolver</span><span class="o">(</span><span class="n">JsonNodeValueResolver</span><span class="o">.</span><span class="na">INSTANCE</span><span class="o">)</span>
+  <span class="o">.</span><span class="na">build</span><span class="o">();</span>
+</pre></div>
+
+<p>Available in <a href="https://github.com/jknack/handlebars.java/tree/master/handlebars-json">Jackson 1.x</a> and <a href="https://github.com/jknack/handlebars.java/tree/master/handlebars-jackson2">Jackson 2.x</a> modules.</p>
+
+<h4>Using multiples value resolvers</h4>
+
+<div class="highlight"><pre><span class="n">Context</span> <span class="n">context</span> <span class="o">=</span> <span class="n">Context</span>
+  <span class="o">.</span><span class="na">newBuilder</span><span class="o">(</span><span class="n">model</span><span class="o">)</span>
+  <span class="o">.</span><span class="na">resolver</span><span class="o">(</span>
+      <span class="n">MapValueResolver</span><span class="o">.</span><span class="na">INSTANCE</span><span class="o">,</span>
+      <span class="n">JavaBeanValueResolver</span><span class="o">.</span><span class="na">INSTANCE</span><span class="o">,</span>
+      <span class="n">FieldValueResolver</span><span class="o">.</span><span class="na">INSTANCE</span>
+  <span class="o">).</span><span class="na">build</span><span class="o">();</span>
+</pre></div>
+
+<h3>The Cache System</h3>
+
+<p>The cache system is designed to provide scalability and flexibility. Here is a quick view of the <code>TemplateCache</code> system:</p>
+
+<div class="highlight"><pre> <span class="kd">public</span> <span class="kd">interface</span> <span class="nc">TemplateCache</span> <span class="o">{</span>
+
+  <span class="cm">/**</span>
+<span class="cm">   * Remove all mappings from the cache.</span>
+<span class="cm">   */</span>
+  <span class="kt">void</span> <span class="nf">clear</span><span class="o">();</span>
+
+  <span class="cm">/**</span>
+<span class="cm">   * Evict the mapping for this source from this cache if it is present.</span>
+<span class="cm">   *</span>
+<span class="cm">   * @param source the source whose mapping is to be removed from the cache</span>
+<span class="cm">   */</span>
+  <span class="kt">void</span> <span class="nf">evict</span><span class="o">(</span><span class="n">TemplateSource</span> <span class="n">source</span><span class="o">);</span>
+
+  <span class="cm">/**</span>
+<span class="cm">   * Return the value to which this cache maps the specified key.</span>
+<span class="cm">   *</span>
+<span class="cm">   * @param source source whose associated template is to be returned.</span>
+<span class="cm">   * @param parser The Handlebars parser.</span>
+<span class="cm">   * @return A template.</span>
+<span class="cm">   * @throws IOException If input can't be parsed.</span>
+<span class="cm">   */</span>
+  <span class="n">Template</span> <span class="nf">get</span><span class="o">(</span><span class="n">TemplateSource</span> <span class="n">source</span><span class="o">,</span> <span class="n">Parser</span> <span class="n">parser</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">IOException</span><span class="o">;</span>
+<span class="o">}</span>
+</pre></div>
+
+<p>As you can see, there isn't a <code>put</code> method. So all the hard work is done in the <code>get</code> method, which is basically the core of the cache system.</p>
+
+<p>By default, Handlebars.java use a <code>null</code> cache implementation (a.k.a. no cache at all) which looks like:</p>
+
+<pre><code>Template get(TemplateSource source, Parser parser) throws IOException {
+  return parser.parse(source);
+}
+</code></pre>
+
+<p>Beside the <code>null</code> cache Handlebars.java provides three more implementations:</p>
+
+<ol>
+<li>
+<code>ConcurrentMapTemplateCache</code>: a template cache implementation built on top of a <code>ConcurrentMap</code>.</li>
+<li>
+<code>HighConcurrencyTemplateCache</code>: a template cache implementation built on top of <code>ConcurrentMap</code> with all the design techniques described in <a href="http://www.amazon.com/Java-Concurrency-Practice-Brian-Goetz/dp/0321349601">Java Concurrency in Practice</a>
+</li>
+<li>
+<code>GuavaTemplateCache</code>: a template cache implementation built on top of <a href="https://code.google.com/p/guava-libraries/wiki/CachesExplained">Google Guava</a>. Available in <a href="https://github.com/jknack/handlebars.java/tree/master/handlebars-guava-cache">handlebars-guava-cache module</a>
+</li>
+</ol><p>These two implementations are able to detect files changes and reload them in an efficient way.</p>
+
+<p>Finally, you can configure Handlebars.java to use a cache by:</p>
+
+<pre><code>Handlebars hbs = new Handlebars()
+  .with(new MyCache());
+</code></pre>
+
+<h3>Using a MissingValueResolver</h3>
+
+<p>A <code>MissingValueResolver</code> let you use default values for <code>{{variable}}</code> expressions resolved to <code>null</code>.</p>
+
+<div class="highlight"><pre>  <span class="n">MissingValueResolver</span> <span class="n">missingValueResolver</span> <span class="o">=</span> <span class="k">new</span> <span class="n">MissingValueResolver</span><span class="o">()</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="n">String</span> <span class="nf">resolve</span><span class="o">(</span><span class="n">Object</span> <span class="n">context</span><span class="o">,</span> <span class="n">String</span> <span class="n">name</span><span class="o">)</span> <span class="o">{</span>
+      <span class="c1">//return a default value or throw an exception</span>
+      <span class="o">...;</span>
+    <span class="o">}</span>
+  <span class="o">};</span>
+  <span class="n">Handlebars</span> <span class="n">handlebars</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Handlebars</span><span class="o">().</span><span class="na">with</span><span class="o">(</span><span class="n">missingValueResolver</span><span class="o">);</span>
+</pre></div>
+
+<h3>Helper Missing</h3>
+
+<p>By default, Handlebars.java throws an <code>java.lang.IllegalArgumentException()</code> if a helper cannot be resolved.
+ You can override the default behaviour by providing a <code>helperMissing</code> helper. Example:</p>
+
+<div class="highlight"><pre>  <span class="n">handlebars</span><span class="o">.</span><span class="na">registerHelper</span><span class="o">(</span><span class="n">Handlebars</span><span class="o">.</span><span class="na">HELPER_MISSING</span><span class="o">,</span> <span class="k">new</span> <span class="n">Helper</span><span class="o">&lt;</span><span class="n">Object</span><span class="o">&gt;()</span> <span class="o">{</span>
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="n">CharSequence</span> <span class="nf">apply</span><span class="o">(</span><span class="kd">final</span> <span class="n">Object</span> <span class="n">context</span><span class="o">,</span> <span class="kd">final</span> <span class="n">Options</span> <span class="n">options</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">IOException</span> <span class="o">{</span>
+      <span class="k">return</span> <span class="n">options</span><span class="o">.</span><span class="na">fn</span><span class="o">.</span><span class="na">text</span><span class="o">();</span>
+    <span class="o">}</span>
+  <span class="o">});</span>
+</pre></div>
+
+<h3>String form parameters</h3>
+
+<p>You can access to a parameter name if you set the: <code>stringParams: true</code>. Example:</p>
+
+<div class="highlight"><pre>{{sayHi this edgar}}
+</pre></div>
+
+<div class="highlight"><pre>  <span class="n">Handlebars</span> <span class="n">handlebars</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Handlebars</span><span class="o">();</span>
+  <span class="n">handlebars</span><span class="o">.</span><span class="na">setStringParams</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+
+  <span class="n">handlebars</span><span class="o">.</span><span class="na">registerHelper</span><span class="o">(</span><span class="s">"sayHi"</span><span class="o">,</span> <span class="k">new</span> <span class="n">Helper</span><span class="o">&lt;</span><span class="n">Object</span><span class="o">&gt;()</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="n">Object</span> <span class="nf">apply</span><span class="o">(</span><span class="n">Object</span> <span class="n">context</span><span class="o">,</span> <span class="n">Options</span> <span class="n">options</span><span class="o">)</span> <span class="o">{</span>
+      <span class="k">return</span> <span class="s">"Hello "</span> <span class="o">+</span> <span class="n">options</span><span class="o">.</span><span class="na">param</span><span class="o">(</span><span class="mi">0</span><span class="o">)</span> <span class="o">+</span> <span class="s">"!"</span><span class="o">;</span>
+    <span class="o">}</span>
+  <span class="o">});</span>
+</pre></div>
+
+<p>results in:</p>
+
+<pre><code>Hello edgar!
+</code></pre>
+
+<p>How it works? <code>stringParams: true</code> instruct Handlebars.java to resolve a parameter
+ to his name if the value isn't present in the context stack.</p>
+
+<h3>Allow Infite loops</h3>
+
+<p>By default, Handlebars.java don't allow a partial to call him self (directly or indirectly).
+ You can change this by setting the: <code>Handlebars.setAllowInifiteLoops</code> to <code>true</code>, just avoid <code>StackOverflowError</code>.</p>
+
+<h3>Pretty Whitspaces</h3>
+
+<p>The Mustache Spec has some rules for removing spaces and new lines, by default, this feature is off.
+ You can turn on this by setting the: <code>Handlebars.setPrettyWhitespaces</code> to <code>true</code>.</p>
+
+<h1>Additional Helpers</h1>
+
+<h2>String Helpers</h2>
+
+<p>Functions like abbreviate, capitalize, join, dateFormat, yesno, etc., are available from <a href="https://github.com/jknack/handlebars.java/blob/master/handlebars/src/main/java/com/github/jknack/handlebars/StringHelpers.java">StringHelpers</a>.</p>
+
+<h3>Usage:</h3>
+
+<div class="highlight"><pre> <span class="n">StringHelpers</span><span class="o">.</span><span class="na">register</span><span class="o">(</span><span class="n">handlebars</span><span class="o">);</span>
+</pre></div>
+
+<h2>Jackson 1.x</h2>
+
+<p>Maven:</p>
+
+<div class="highlight"><pre> <span class="nt">&lt;dependency&gt;</span>
+   <span class="nt">&lt;groupId&gt;</span>com.github.jknack<span class="nt">&lt;/groupId&gt;</span>
+   <span class="nt">&lt;artifactId&gt;</span>handlebars-json<span class="nt">&lt;/artifactId&gt;</span>
+   <span class="nt">&lt;version&gt;</span>${handlebars-version}<span class="nt">&lt;/version&gt;</span>
+ <span class="nt">&lt;/dependency&gt;</span>
+
+</pre></div>
+
+<p>Usage:</p>
+
+<div class="highlight"><pre> <span class="n">handlebars</span><span class="o">.</span><span class="na">registerHelper</span><span class="o">(</span><span class="s">"json"</span><span class="o">,</span> <span class="n">JacksonHelper</span><span class="o">.</span><span class="na">INSTANCE</span><span class="o">);</span>
+</pre></div>
+
+<pre><code> {{json context [view="foo.MyFullyQualifiedClassName"]}}
+</code></pre>
+
+<p>Alternative:</p>
+
+<div class="highlight"><pre> <span class="n">handlebars</span><span class="o">.</span><span class="na">registerHelper</span><span class="o">(</span><span class="s">"json"</span><span class="o">,</span> <span class="k">new</span> <span class="n">JacksonHelper</span><span class="o">().</span><span class="na">viewAlias</span><span class="o">(</span><span class="s">"myView"</span><span class="o">,</span>
+   <span class="n">foo</span><span class="o">.</span><span class="na">MyFullyQualifiedClassName</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+</pre></div>
+
+<pre><code> {{json context [view="myView"]}}
+</code></pre>
+
+<p>context: An object, may be null.</p>
+
+<p>view: The name of the <a href="http://wiki.fasterxml.com/JacksonJsonViews">Jackson View</a>. Optional.</p>
+
+<h2>Jackson 2.x</h2>
+
+<p>Maven:</p>
+
+<div class="highlight"><pre> <span class="nt">&lt;dependency&gt;</span>
+   <span class="nt">&lt;groupId&gt;</span>com.github.jknack<span class="nt">&lt;/groupId&gt;</span>
+   <span class="nt">&lt;artifactId&gt;</span>handlebars-jackson2<span class="nt">&lt;/artifactId&gt;</span>
+   <span class="nt">&lt;version&gt;</span>${handlebars-version}<span class="nt">&lt;/version&gt;</span>
+ <span class="nt">&lt;/dependency&gt;</span>
+</pre></div>
+
+<p>Same as Jackson1.x, except for the name of the helper: <code>Jackson2Helper</code></p>
+
+<h2>Markdown</h2>
+
+<p>Maven:</p>
+
+<div class="highlight"><pre> <span class="nt">&lt;dependency&gt;</span>
+   <span class="nt">&lt;groupId&gt;</span>com.github.jknack<span class="nt">&lt;/groupId&gt;</span>
+   <span class="nt">&lt;artifactId&gt;</span>handlebars-markdown<span class="nt">&lt;/artifactId&gt;</span>
+   <span class="nt">&lt;version&gt;</span>${handlebars-version}<span class="nt">&lt;/version&gt;</span>
+ <span class="nt">&lt;/dependency&gt;</span>
+</pre></div>
+
+<p>Usage:</p>
+
+<div class="highlight"><pre> <span class="n">handlebars</span><span class="o">.</span><span class="na">registerHelper</span><span class="o">(</span><span class="s">"md"</span><span class="o">,</span> <span class="k">new</span> <span class="n">MarkdownHelper</span><span class="o">());</span>
+</pre></div>
+
+<pre><code> {{md context}}
+</code></pre>
+
+<p>context: An object or null. Required.</p>
+
+<h2>Humanize</h2>
+
+<p>Maven:</p>
+
+<div class="highlight"><pre> <span class="nt">&lt;dependency&gt;</span>
+   <span class="nt">&lt;groupId&gt;</span>com.github.jknack<span class="nt">&lt;/groupId&gt;</span>
+   <span class="nt">&lt;artifactId&gt;</span>handlebars-humanize<span class="nt">&lt;/artifactId&gt;</span>
+   <span class="nt">&lt;version&gt;</span>${handlebars-version}<span class="nt">&lt;/version&gt;</span>
+ <span class="nt">&lt;/dependency&gt;</span>
+</pre></div>
+
+<p>Usage:</p>
+
+<div class="highlight"><pre> <span class="c1">// Register all the humanize helpers.</span>
+ <span class="n">HumanizeHelper</span><span class="o">.</span><span class="na">register</span><span class="o">(</span><span class="n">handlebars</span><span class="o">);</span>
+</pre></div>
+
+<p>See the JavaDoc of the <a href="https://github.com/jknack/handlebars.java/blob/master/handlebars-humanize/src/main/java/com/github/jknack/handlebars/HumanizeHelper.java">HumanizeHelper</a> for more information.</p>
+
+<h1>Modules</h1>
+
+<h2>SpringMVC</h2>
+
+<p>Maven:</p>
+
+<div class="highlight"><pre> <span class="nt">&lt;dependency&gt;</span>
+   <span class="nt">&lt;groupId&gt;</span>com.github.jknack<span class="nt">&lt;/groupId&gt;</span>
+   <span class="nt">&lt;artifactId&gt;</span>handlebars-springmvc<span class="nt">&lt;/artifactId&gt;</span>
+   <span class="nt">&lt;version&gt;</span>${handlebars-version}<span class="nt">&lt;/version&gt;</span>
+ <span class="nt">&lt;/dependency&gt;</span>
+</pre></div>
+
+<p>Using value resolvers:</p>
+
+<div class="highlight"><pre> <span class="n">HandlebarsViewResolver</span> <span class="n">viewResolver</span> <span class="o">=</span> <span class="o">...;</span>
+
+ <span class="n">viewResolver</span><span class="o">.</span><span class="na">setValueResolvers</span><span class="o">(...);</span>
+</pre></div>
+
+<p>In addition, the HandlebarsViewResolver add a <code>message</code> helper that uses the Spring <code>MessageSource</code> class:</p>
+
+<pre><code>{{message "code" [arg]* [default="default message"]}}
+</code></pre>
+
+<p>where:</p>
+
+<ul>
+<li>code: the message's code. Required.</li>
+<li>arg:  the message's argument. Optional.</li>
+<li>default: the default's message. Optional.</li>
+</ul><p>Checkout the <a href="https://github.com/jknack/handlebars.java/blob/master/handlebars-springmvc/src/main/java/com/github/jknack/handlebars/springmvc/HandlebarsViewResolver.java">HandlebarsViewResolver</a>.</p>
+
+<h1>Architecture and API Design</h1>
+
+<ul>
+<li>Handlebars.java follows the JavaScript API with some minors exceptions due to the nature of the Java language.</li>
+<li>The parser is built on top of <a href="http://www.antlr.org/">ANTLR v4</a>.</li>
+<li>Data is provided as primitive types (int, boolean, double, etc.), strings, maps, list or JavaBeans objects.</li>
+<li>Helpers are type-safe.</li>
+<li>Handlebars.java is thread-safe.</li>
+</ul><h2>Differences between Handlebars.java and Handlebars.js</h2>
+
+<p>Handlebars.java scope resolution follows the Mustache Spec. For example:</p>
+
+<p>Given:</p>
+
+<div class="highlight"><pre><span class="p">{</span>
+  <span class="nt">"value"</span><span class="p">:</span> <span class="s2">"parent"</span><span class="p">,</span>
+  <span class="nt">"child"</span><span class="p">:</span> <span class="p">{</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+<p>and</p>
+
+<div class="highlight"><pre>Hello {{#child}}{{value}}{{/child}}
+</pre></div>
+
+<p>will be:</p>
+
+<div class="highlight"><pre>Hello parent
+</pre></div>
+
+<p>Now, the same model and template with Handlebars.js is:</p>
+
+<div class="highlight"><pre>Hello 
+</pre></div>
+
+<p>That is because Handlebars.js don't look in the context stack for missing attribute in the current scope (as the Mustache Spec says).</p>
+
+<p>Hopefully, you can turn-off the context stack lookup in Handlebars.java by qualifying the attribute with <code>this.</code>:</p>
+
+<div class="highlight"><pre>Hello {{#child}}{{this.value}}{{/child}}
+</pre></div>
+
+<h2>Differences between Handlebars.java and Mustache.js</h2>
+
+<ul>
+<li>Handlebars.java throws a <code>java.io.FileNotFoundException</code> if a partial cannot be loaded.</li>
+</ul><h2>Status</h2>
+
+<h3>Mustache 1.0 Compliant</h3>
+
+<ul>
+<li>Passes the 123 tests from the <a href="https://github.com/mustache/spec">Mustache Spec</a>.</li>
+<li>Tests can be found here <a href="https://github.com/jknack/handlebars.java/blob/master/handlebars/src/test/java/specs/CommentsTest.java">comments.yml</a>, <a href="https://github.com/jknack/handlebars.java/blob/master/handlebars/src/test/java/specs/DelimitersTest.java">delimiters.yml</a>, <a href="https://github.com/jknack/handlebars.java/blob/master/handlebars/src/test/java/specs/InterpolationTest.java">interpolation.yml</a>, <a href="https://github.com/jknack/handlebars.java/blob/master/handlebars/src/test/java/specs/InvertedTest.java">inverted.yml</a>, <a href="https://github.com/jknack/handlebars.java/blob/master/handlebars/src/test/java/specs/LambdasTest.java">lambdas.yml</a>, <a href="https://github.com/jknack/handlebars.java/blob/master/handlebars/src/test/java/specs/PartialsTest.java">partials.yml</a>, <a href="https://github.com/jknack/handlebars.java/blob/master/handlebars/src/test/java/specs/SectionsTest.java">sections.yml</a>
+</li>
+</ul><h3>Handlebars.js Compliant</h3>
+
+<ul>
+<li>Passes all the <a href="https://github.com/wycats/handlebars.js/blob/master/spec/qunit_spec.js">Handlebars.js tests</a>
+</li>
+<li>Tests can be found here <a href="https://github.com/jknack/handlebars.java/blob/master/handlebars/src/test/java/hbs/js/BasicContextTest.java">basic context</a>, <a href="https://github.com/jknack/handlebars.java/blob/master/handlebars/src/test/java/hbs/js/StringLiteralParametersTest.java">string literals</a>, <a href="https://github.com/jknack/handlebars.java/blob/master/handlebars/src/test/java/hbs/js/InvertedSectionTest.java">inverted sections</a>, <a href="https://github.com/jknack/handlebars.java/blob/master/handlebars/src/test/java/hbs/js/BlockTest.java">blocks</a>, <a href="https://github.com/jknack/handlebars.java/blob/master/handlebars/src/test/java/hbs/js/BlockHelperMissingTest.java">block helper missing</a>, <a href="https://github.com/jknack/handlebars.java/blob/master/handlebars/src/test/java/hbs/js/HelperHashTest.java">helper hash</a>, <a href="https://github.com/jknack/handlebars.java/blob/master/handlebars/src/test/java/hbs/js/PartialsTest.java">partials</a>
+</li>
+</ul><h2>Dependencies</h2>
+
+<div class="highlight"><pre>+- org.apache.commons:commons-lang3:jar:3.1
++- org.antlr:antlr4-runtime:jar:4.0
++- org.mozilla:rhino:jar:1.7R4
++- org.slf4j:slf4j-api:jar:1.6.4
+</pre></div>
+
+<h2>FAQ</h2>
+
+<h2>Want to contribute?</h2>
+
+<ul>
+<li>Fork the project on Github.</li>
+<li>Wandering what to work on? See task/bug list and pick up something you would like to work on.</li>
+<li>Create an issue or fix one from <a href="https://github.com/jknack/handlebars.java/issues">issues list</a>.</li>
+<li>If you know the answer to a question posted to our <a href="https://groups.google.com/forum/#!forum/handlebarsjava">mailing list</a> - don't hesitate to write a reply.</li>
+<li>Share your ideas or ask questions on <a href="https://groups.google.com/forum/#!forum/handlebarsjava">mailing list</a> - don't hesitate to write a reply - that helps us improve javadocs/FAQ.</li>
+<li>If you miss a particular feature - browse or ask on the <a href="https://groups.google.com/forum/#!forum/handlebarsjava">mailing list</a> - don't hesitate to write a reply, show us a sample code and describe the problem.</li>
+<li>Write a blog post about how you use or extend handlebars.java.</li>
+<li>Please suggest changes to javadoc/exception messages when you find something unclear.</li>
+<li>If you have problems with documentation, find it non intuitive or hard to follow - let us know about it, we'll try to make it better according to your suggestions. Any constructive critique is greatly appreciated. Don't forget that this is an open source project developed and documented in spare time.</li>
+</ul><h2>Help and Support</h2>
+
+<p><a href="https://groups.google.com/forum/#!forum/handlebarsjava">Help and discussion</a></p>
+
+<p><a href="https://github.com/jknack/handlebars.java/issues">Bugs, Issues and Features</a></p>
+
+<h2>Related Projects</h2>
+
+<ul>
+<li><a href="http://handlebarsjs.com/">Handlebars.js</a></li>
+<li><a href="http://tryhandlebarsjs.com/">Try Handlebars.js</a></li>
+<li><a href="mustache.github.com">Mustache</a></li>
+<li><a href="https://github.com/mfornos/humanize">Humanize</a></li>
+<li><a href="http://http://www.antlr.org/">ANTLRv4</a></li>
+</ul><h2>Author</h2>
+
+<p><a href="https://twitter.com/edgarespina">Edgar Espina</a></p>
+
+<h2>License</h2>
+
+<p><a href="http://www.apache.org/licenses/LICENSE-2.0.html">Apache License 2</a></p>
+      </section>
+
+    </div>
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+    
+  </body>
+</html>

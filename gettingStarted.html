@@ -1,0 +1,275 @@
+---
+layout: default
+title: Mustache Templates in Java
+---
+
+<div>
+  <h1>{{ "{{ Mustache " }}}} Templates in Java</h1>
+</div>
+
+<p>
+<a href="https://github.com/jknack/handlebars.java">Handlebars.java</a> is a Java implementation of <a href="http://mustache.github.com/mustache.5.html">Mustache</a>.
+You can use Handlebars.java in any Java environment, but especially in web applications that make heavy use of JavaScript.
+</p>
+<h2>
+So, what make <a href="https://github.com/jknack/handlebars.java">Handlebars.java</a> special for web development?
+</h2>
+<p>
+Beside <a href="https://github.com/jknack/handlebars.java">Handlebars.java</a> is a multi-purpose template engine, one of the reason that makes <a href="https://github.com/jknack/handlebars.java">Handlebars.java</a> special, is that you can use the same template engine in the browser.
+</p>
+
+These are the most used implementations of <a href="http://mustache.github.com/mustache.5.html">Mustache</a> for JavaScript
+<ul>
+  <li><a href="https://github.com/janl/mustache.js/">Mustache.js</a></li>
+  <li><a href="http://twitter.github.io/hogan.js/">Hogan.js</a></li>
+  <li><a href="http://handlebarsjs.com/">Handlebars.js</a></li>
+</ul>
+</p>
+
+<p>
+Of course that <a href="http://handlebarsjs.com/">Handlebars.js</a> is what makes more sense to use,
+but you can also choose between any other existing implementations of <a href="http://mustache.github.com/mustache.5.html">Mustache</a>.
+</p>
+
+<h1>Getting Mustache</h1>
+<p>The best way of getting started is by reading the <a href="http://mustache.github.com/mustache.5.html">Mustache</a> documentation. You will find it very easy to follow and understand.</p>
+
+<p>Then you might want to read the <a href="http://handlebarsjs.com/expressions.html">Handlebars.js</a> documentation for a better understanding of how <a href="http://handlebarsjs.com">Handlebars.js</a> extends <a href="http://mustache.github.com/mustache.5.html">Mustache</a> through the use of helpers.</p>
+
+<h2>Hello <a href="https://github.com/jknack/handlebars.java">Handlebars.java</a>!</h2>
+
+<div class="highlight">
+<pre>
+Handlebars handlebars = <span class="k">new</span> Handlebars();
+Template template = handlebars.compileInline(<span class="s">"Hello {{ "{{this" }}}}!"</span>);
+System.out.println(template.apply(<span class="s">"Handlebars.java"</span>));
+</pre>
+</div>
+<p>Print out:</p>
+<div class="highlight">
+<pre>
+Hello Handlebars.java!
+</pre>
+</div>
+
+<p><a href="http://mustache.github.com/mustache.5.html">Mustache</a> is very simply template engine with just a few constructions. In the example above, <code>"{{ "{{this" }}}}"</code> get resolved to <code>"Handlebars.java"</code>.</p>
+
+<h2>Built-in helpers:</h2>
+
+<ul>
+<li><strong>with</strong>
+<p>
+The <code>with</code> helper let you switch/change the current context to something else.
+For example:
+</p>
+
+<p>Model:</p>
+<div class="highlight">
+<pre>
+{
+  title: {
+    story: {
+      name: <span class="nt">"Handlebars.java rocks!"</span>
+    }
+  }
+}
+</pre>
+</div>
+
+<div>
+Template:
+<div style="float: right;">Support by: <a href="http://handlebarsjs.com/">Handlebars.js</a></div>
+</div>
+
+<div class="highlight">
+<pre>
+<span class="nt">&lt;h1&gt;</span>{{ "{{title" }}}}<span class="nt">&lt;/h1&gt;</span>
+{{ "{{#with story" }}}}
+  <span class="nt">&lt;span&gt;</span>{{ "{{name" }}}}<span class="nt">&lt;/span&gt;</span>
+{{ "{{/with" }}}}
+</pre>
+</div>
+
+<div>
+Or in plain Mustache:
+<div style="float: right;">Support by:
+  <a href="http://handlebarsjs.com/">Handlebars.js</a>
+  <a href="https://github.com/janl/mustache.js/">Mustache.js</a>
+  <a href="http://twitter.github.io/hogan.js/">Hogan.js</a>
+</div>
+<div class="highlight">
+<pre>
+<span class="nt">&lt;h1&gt;</span>{{ "{{title" }}}}<span class="nt">&lt;/h1&gt;</span>
+{{ "{{#story" }}}}
+  <span class="nt">&lt;span&gt;</span>{{ "{{name" }}}}<span class="nt">&lt;/span&gt;</span>
+{{ "{{/story" }}}}
+</pre>
+</div>
+
+</li>
+
+<li><strong>each</strong>
+<p>
+The <code>each</code> helper let you iterate over collections, arrays and objects.
+For example:
+</p>
+
+<p>Model:</p>
+<div class="highlight">
+<pre>
+{
+  blogs: [
+    title: {
+      story: {
+        name: <span class="nt">"Handlebars.java rocks!"</span>
+      }
+    }
+  ]
+}
+</pre>
+</div>
+
+<div>
+Template:
+<div style="float: right;">Support by: <a href="http://handlebarsjs.com/">Handlebars.js</a></div>
+</div>
+
+<div class="highlight">
+<pre>
+{{ "{{#each blogs" }}}}
+  <span class="nt">&lt;h1&gt;</span>{{ "{{title" }}}}<span class="nt">&lt;/h1&gt;</span>
+  {{ "{{#with story" }}}}
+    <span class="nt">&lt;span&gt;</span>{{ "{{name" }}}}<span class="nt">&lt;/span&gt;</span>
+  {{ "{{/with" }}}}
+{{ "{{/each" }}}}
+</pre>
+</div>
+
+<div>
+Or in plain Mustache:
+<div style="float: right;">Support by:
+  <a href="http://handlebarsjs.com/">Handlebars.js</a>
+  <a href="https://github.com/janl/mustache.js/">Mustache.js</a>
+  <a href="http://twitter.github.io/hogan.js/">Hogan.js</a>
+</div>
+<div class="highlight">
+<pre>
+{{ "{{#blogs" }}}}
+  <span class="nt">&lt;h1&gt;</span>{{ "{{title" }}}}<span class="nt">&lt;/h1&gt;</span>
+  {{ "{{#story" }}}}
+    <span class="nt">&lt;span&gt;</span>{{ "{{name" }}}}<span class="nt">&lt;/span&gt;</span>
+  {{ "{{/story" }}}}
+{{ "{{/blogs" }}}}
+</pre>
+</div>
+
+</li>
+
+<li><strong>if</strong>
+<p>
+The <code>if</code> helper evaluate a context value as <code>true</code>. For example:
+</p>
+
+<div>
+Template:
+<div style="float: right;">Support by: <a href="http://handlebarsjs.com/">Handlebars.js</a></div>
+</div>
+
+<div class="highlight">
+<pre>
+Is Active?
+{{ "{{#if active" }}}}
+  Yes
+{{ "{{/if" }}}}
+</pre>
+</div>
+
+<div>
+Or in plain Mustache:
+<div style="float: right;">Support by:
+  <a href="http://handlebarsjs.com/">Handlebars.js</a>
+  <a href="https://github.com/janl/mustache.js/">Mustache.js</a>
+  <a href="http://twitter.github.io/hogan.js/">Hogan.js</a>
+</div>
+<div class="highlight">
+<pre>
+Is Active?
+{{ "{{#active" }}}}
+  Yes
+{{ "{{/active" }}}}
+</pre>
+</div>
+
+<p>You can add an <code>else</code>branch using the <code>else</code> keyword or the <code>^</code> character:</p>
+
+<div>
+Template:
+<div style="float: right;">Support by: <a href="http://handlebarsjs.com/">Handlebars.js</a></div>
+</div>
+
+<div class="highlight">
+<pre>
+Is Active?
+{{ "{{#if active" }}}}
+  Yes
+{{ "{{else" }}}}
+  No
+{{ "{{/if" }}}}
+</pre>
+</div>
+
+<div>
+Template:
+<div style="float: right;">Support by: <a href="http://handlebarsjs.com/">Handlebars.js</a></div>
+</div>
+
+<div class="highlight">
+<pre>
+Is Active?
+{{ "{{#if active" }}}}
+  Yes
+{{ "{{^" }}}}
+  No
+{{ "{{/if" }}}}
+</pre>
+</div>
+
+</li>
+
+<li><strong>unless</strong>
+<p>
+The <code>unless</code> helper evaluate a context value as <code>false</code>. For example:
+</p>
+
+<div>
+Template:
+<div style="float: right;">Support by: <a href="http://handlebarsjs.com/">Handlebars.js</a></div>
+</div>
+
+<div class="highlight">
+<pre>
+Is Active?
+{{ "{{#unless active" }}}}
+  No
+{{ "{{/unless" }}}}
+</pre>
+</div>
+
+<div>
+Or in plain Mustache:
+<div style="float: right;">Support by:
+  <a href="http://handlebarsjs.com/">Handlebars.js</a>
+  <a href="https://github.com/janl/mustache.js/">Mustache.js</a>
+  <a href="http://twitter.github.io/hogan.js/">Hogan.js</a>
+</div>
+<div class="highlight">
+<pre>
+Is Active?
+{{ "{{^active" }}}}
+  No
+{{ "{{/active" }}}}
+</pre>
+</div>
+
+</li>
+</ul>

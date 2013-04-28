@@ -1,0 +1,104 @@
+---
+layout: default
+title: i18n
+---
+
+<div>
+  <h1>i18n</h1>
+</div>
+<p>
+In this section you will learn how to apply internationalization techniques in <a href="https://github.com/jknack/handlebars.java">Handlebars.java</a>.
+</p>
+<p>Integration between the front-end and back-end can be done in one of two ways:</p>
+
+<ul>
+<li><strong>i18n</strong> helper
+<p>
+The<code>i18n</code>helper is a helper built on top of <a href="http://docs.oracle.com/javase/tutorial/i18n/">java.util.ResourceBundle</a>.
+Syntax is as follows:
+</p>
+
+<div class="highlight">
+<pre>
+<span class="p">{{ "{{" }}</span><span class="nx">i18n</span> <span class="s2">"key"</span> [arg1, ..., argN] [locale=<span class="s2">"current"</span>] [bundle=<span class="s2">"messages"</span>]<span class="p">}}</span>
+</pre>
+</div>
+<p>Where <code>key</code> is the name of the message.</p>
+<p>The <code>locale</code> option let you switch/change the default locale. Default is the current locale.</p>
+<p>The <code>bundle</code> option let you switch/change the default resource bundle. Default is: "messages".</p>
+
+<div class="highlight">
+Looks at the<code>messages</code>bundle for the <span class="s2">"hello"</span> key.
+<pre>
+<span class="p">{{ "{{" }}</span><span class="nx">i18n</span> <span class="s2">"hello"</span><span class="p">}}</span>
+</pre>
+</div>
+
+<div class="highlight">
+Looks at the<code>myMessages</code>bundle for the <span class="s2">"hello"</span> key.
+<pre>
+<span class="p">{{ "{{" }}</span><span class="nx">i18n</span> <span class="s2">"hello"</span> bundle=<span class="s2">"myMessages"</span><span class="p">}}</span>
+</pre>
+</div>
+
+<div class="highlight">
+Looks at the<code>messages</code>bundle for the <span class="s2">"hello"</span> key using the<code>es_AR</code>locale.
+<pre>
+<span class="p">{{ "{{" }}</span><span class="nx">i18n</span> <span class="s2">"hello"</span> locale=<span class="s2">"es_AR"</span><span class="p">}}</span>
+</pre>
+</div>
+
+<div class="highlight">
+Looks at the<code>messages</code>bundle for the <span class="s2">"hello"</span> key and bind the<code>{0}</code>parameter to<code>Handlebars.java</code>.
+<pre>
+<span class="p">{{ "{{" }}</span><span class="nx">i18n</span> <span class="s2">"hello"</span> <span class="s2">"Handlebars.java"</span><span class="p">}}</span>
+</pre>
+</div>
+<p>Now let's see how to reuse the<code>bundle</code>at the browser!</p>
+</li>
+
+<li><strong>i18nJs</strong> helper
+<p>
+The<code>i18nJs</code>helper is a helper built on top of <a href="https://github.com/fnando/i18n-js">i18n.js</a> JavaScript library.
+Syntax is as follows:
+</p>
+
+<div class="highlight">
+<pre>
+<span class="p">{{ "{{" }}</span><span class="nx">i18nJs</span> [<span class="s2">"locale"</span>] [bundle=<span class="s2">"messages"</span>]<span class="p">}}</span>
+</pre>
+</div>
+
+<div class="highlight">
+<p>Example:</p>
+<pre>
+<span class="nt">&lt;script </span><span class="na">type=</span><span class="s">"text/javascript"</span> src=<span class="s">"i18n.js"</span><span class="nt">&gt;</span><span class="nt">&lt;/script</span><span class="nt">&gt;</span>
+</pre>
+</div>
+
+<div class="highlight">
+Dump the content of the<code>messages</code>bundle using the default locale.
+<pre>
+<span class="p">{{ "{{" }}</span><span class="nx">i18nJs</span><span class="p">}}</span>
+</pre>
+</div>
+
+<div class="highlight">
+Generate something like:
+<pre>
+<span class="nt">&lt;script</span> <span class="nx">type</span><span class="o">=</span><span class="s2">"text/javascript"</span><span class="nt">&gt;</span>
+  <span class="nx">I18n</span><span class="p">.</span><span class="nx">defaultLocale</span> <span class="o">=</span> <span class="s1">'es_AR'</span><span class="p">;</span>
+  <span class="nx">I18n</span><span class="p">.</span><span class="nx">locale</span> <span class="o">=</span> <span class="s1">'es_AR'</span><span class="p">;</span>
+  <span class="nx">I18n</span><span class="p">.</span><span class="nx">translations</span> <span class="o">=</span> <span class="nx">I18n</span><span class="p">.</span><span class="nx">translations</span> <span class="o">||</span> <span class="p">{};</span>
+  <span class="c1">// Spanish (Argentina)</span>
+  <span class="nx">I18n</span><span class="p">.</span><span class="nx">translations</span><span class="p">[</span><span class="s1">'es_AR'</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">"hello"</span><span class="o">:</span> <span class="s2">"Hi {{ "{{arg0" }}}}!"</span>
+  <span class="p">}</span>
+<span class="nt">&lt;/script&gt;</span>
+</pre>
+<p>Interpolation of variables in <a href="https://github.com/fnando/i18n-js">i18n.js</a> are possible too, because expressions like<code>Hello {0}!</code> are translated to <code>Hello {{ "{{arg0" }}}}!.</code></p>
+<p>Cool, isn't?</p>
+</div>
+
+</li>
+</ul>

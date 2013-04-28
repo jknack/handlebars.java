@@ -1,0 +1,131 @@
+---
+layout: default
+title: Reusing Templates
+---
+
+<div>
+  <h1>Reusing {{ "{{ Mustache " }}}} Templates</h1>
+</div>
+<p>
+In this section you will learn how to reuse templates in <a href="https://github.com/jknack/handlebars.java">Handlebars.java</a>
+</p>
+
+<ul>
+<li><strong>partials</strong>
+<p>
+A partial is a template that can be included into other template. Syntax is as follow:
+</p>
+
+<div style="float: right;">Support by:
+  <a href="http://handlebarsjs.com/">Handlebars.js</a>
+  <a href="https://github.com/janl/mustache.js/">Mustache.js</a>
+  <a href="http://twitter.github.io/hogan.js/">Hogan.js</a>
+</div>
+
+<div>
+header.hbs:
+</div>
+
+<div class="highlight">
+<pre>
+<span class="nt">&lt;h1&gt;</span>{{ "{{title" }}}}<span class="nt">&lt;/h1&gt;</span>
+</pre>
+</div>
+
+<div>
+footer.hbs:
+</div>
+
+<div class="highlight">
+<pre>
+<span class="nt">&lt;span&gt;</span>Powered by Handlebars.java<span class="nt">&lt;/span&gt;</span>
+</pre>
+</div>
+
+<div>
+home.hbs:
+</div>
+
+<div class="highlight">
+<pre>
+{{ "{{> header" }}}}
+<span class="nt">&lt;p&gt;</span>Home page<span class="nt">&lt;/p&gt;</span>
+{{ "{{> footer" }}}}
+</pre>
+</div>
+
+<div>
+Output:
+</div>
+
+<div class="highlight">
+<pre>
+<span class="nt">&lt;h1&gt;</span>Title<span class="nt">&lt;/h1&gt;</span>
+<span class="nt">&lt;p&gt;</span>Home page<span class="nt">&lt;/p&gt;</span>
+<span class="nt">&lt;span&gt;</span>Powered by Handlebars.java<span class="nt">&lt;/span&gt;</span>
+</pre>
+</div>
+<p>Partials begin with a greater than sign, like {{ "{{> box" }}}}.</p>
+<p>Partials are rendered at runtime (as opposed to compile time), so recursive partials are possible. Just avoid infinite loops.</p>
+</li>
+
+<li><strong>template inheritance</strong>
+<p>
+Template inheritance can be done with the <code>block</code> and <code>partial</code> helpers.
+</p>
+
+<div style="float: right;">Support by:
+  <a href="http://handlebarsjs.com/">Handlebars.js</a>
+</div>
+
+<div>
+base.hbs:
+</div>
+
+<div class="highlight">
+<pre>
+{{ "{{#block &quot;header&quot; " }}}}
+<span class="nt">&lt;h1&gt;</span>Title<span class="nt">&lt;/h1&gt;</span>
+{{ "{{/block" }}}}
+
+{{ "{{#block &quot;content&quot; " }}}}
+{{ "{{/block" }}}}
+
+{{ "{{#block &quot;footer&quot; " }}}}
+<span class="nt">&lt;span&gt;</span>Powered by Handlebars.java<span class="nt">&lt;/span&gt;</span>
+{{ "{{/block" }}}}
+</pre>
+</div>
+
+<div>
+home.hbs:
+</div>
+
+<div class="highlight">
+<pre>
+{{ "{{# partial &quot;content&quot; " }}}}
+<span class="nt">&lt;p&gt;</span>Home page<span class="nt">&lt;/p&gt;</span>
+{{ "{{/partial" }}}}
+
+{{ "{{> base" }}}}
+</pre>
+</div>
+
+<div>
+Output:
+</div>
+
+<div class="highlight">
+<pre>
+<span class="nt">&lt;h1&gt;</span>Title<span class="nt">&lt;/h1&gt;</span>
+<span class="nt">&lt;p&gt;</span>Home page<span class="nt">&lt;/p&gt;</span>
+<span class="nt">&lt;span&gt;</span>Powered by Handlebars.java<span class="nt">&lt;/span&gt;</span>
+</pre>
+</div>
+<p>The <code>header</code> and <code>footer</code> names represent the name of a template (or
+partial) that need to be loaded. If these templates don't exist, the helper body is used.</p>
+<p>In the example above <code>header</code> and <code>footer</code> don't exist, that is why we get
+the default content of each of this partials.</p>
+<p>You can find more information <a href="http://thejohnfreeman.com/blog/2012/03/23/template-inheritance-for-handlebars.html">here</a></p>
+</li>
+</ul>

@@ -1,0 +1,123 @@
+---
+layout: default
+title: When Handlebars.js met Handlebars.java
+---
+
+<div>
+  <h1>When <a href="http://handlebarsjs.com/">Handlebars.js</a> met <a href="https://github.com/jknack/handlebars.java">Handlebars.java</a></h1>
+</div>
+<p>
+In this section you will learn how to integrate <a href="http://handlebarsjs.com/">Handlebars.js</a> and <a href="https://github.com/jknack/handlebars.java">Handlebars.java</a>
+</p>
+<p>Integration between the front-end and back-end can be done in one of two ways:</p>
+
+<ul>
+<li><strong>precompile</strong> helper
+<p>
+The <code>precompile</code>helper takes a <code>template</code> and produce a <code>JavaScript</code>function of the same <code>template.</code>
+Syntax is as follows:
+</p>
+
+<div class="highlight">
+<pre>
+<span class="p">{{ "{{" }}</span><span class="nx">precompile</span> <span class="s2">"template"</span> [wrapper=<span class="s2">"anonymous, amd or none"</span>]<span class="p">}}</span>
+</pre>
+</div>
+<p>Where <code>template</code> is the path to a template. The <code>wrapper</code> option convert the precompiled template to one of these patterns: "anonymous", "amd" or "none". Default is: "anonymous".</p>
+<p>Example: user.hbs:</p>
+
+<div class="highlight"><pre><span class="nt">&lt;script </span><span class="na">type=</span><span class="s">"text/javascript"</span><span class="nt">&gt;</span>
+<span class="p">{{ "{{" }}</span><span class="nx">precompile</span> <span class="s2">"user"</span><span class="p">}}</span>
+<span class="nt">&lt;/script&gt;</span>
+</pre></div>
+
+<p>Output:</p>
+
+<div class="highlight"><pre><span class="nt">&lt;script </span><span class="na">type=</span><span class="s">"text/javascript"</span><span class="nt">&gt;</span>
+<span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+  <span class="kd">var</span> <span class="nx">template</span> <span class="o">=</span> <span class="nx">Handlebars</span><span class="p">.</span><span class="nx">template</span><span class="p">,</span> <span class="nx">templates</span> <span class="o">=</span> <span class="nx">Handlebars</span><span class="p">.</span><span class="nx">templates</span> <span class="o">=</span> <span class="nx">Handlebars</span><span class="p">.</span><span class="nx">templates</span> <span class="o">||</span> <span class="p">{};</span>
+<span class="nx">templates</span><span class="p">[</span><span class="s1">'user.hbs'</span><span class="p">]</span> <span class="o">=</span> <span class="nx">template</span><span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">Handlebars</span><span class="p">,</span><span class="nx">depth0</span><span class="p">,</span><span class="nx">helpers</span><span class="p">,</span><span class="nx">partials</span><span class="p">,</span><span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nx">helpers</span> <span class="o">=</span> <span class="nx">helpers</span> <span class="o">||</span> <span class="nx">Handlebars</span><span class="p">.</span><span class="nx">helpers</span><span class="p">;</span>
+  <span class="kd">var</span> <span class="nx">buffer</span> <span class="o">=</span> <span class="s2">""</span><span class="p">,</span> <span class="nx">functionType</span><span class="o">=</span><span class="s2">"function"</span><span class="p">,</span> <span class="nx">escapeExpression</span><span class="o">=</span><span class="k">this</span><span class="p">.</span><span class="nx">escapeExpression</span><span class="p">;</span>
+
+
+  <span class="nx">buffer</span> <span class="o">+=</span> <span class="s2">"Hi "</span><span class="p">;</span>
+  <span class="nx">depth0</span> <span class="o">=</span> <span class="k">typeof</span> <span class="nx">depth0</span> <span class="o">===</span> <span class="nx">functionType</span> <span class="o">?</span> <span class="nx">depth0</span><span class="p">()</span> <span class="o">:</span> <span class="nx">depth0</span><span class="p">;</span>
+  <span class="nx">buffer</span> <span class="o">+=</span> <span class="nx">escapeExpression</span><span class="p">(</span><span class="nx">depth0</span><span class="p">)</span> <span class="o">+</span> <span class="s2">"!"</span><span class="p">;</span>
+  <span class="k">return</span> <span class="nx">buffer</span><span class="p">;});</span>
+<span class="p">})();</span>
+<span class="nt">&lt;/script&gt;</span>
+</pre></div>
+
+<p>If you're working with precompiled templates, you don't need to ship the compiler with your
+deployed application. Instead, you can use the smaller <a href="https://raw.github.com/wycats/handlebars.js/master/dist/handlebars.runtime.js">runtime</a> build.
+</p>
+<div class="highlight">
+<pre>
+<span class="nt">&lt;script </span><span class="na">type=</span><span class="s">"text/javascript"</span> src=<span class="s">"handlebars.runtime.js"</span><span class="nt">&gt;</span><span class="nt">&lt;/script</span><span class="nt">&gt;</span>
+</pre>
+</div>
+<p>
+In addition to reducing the download size, eliminating client-side compilation will significantly
+speed up boot time, as compilation is the most expensive part of <a href="http://handlebarsjs.com/">Handlebars.js</a>.
+</p>
+
+<p>Finally, you can access to the precompiled template by:</p>
+<div class="highlight">
+<pre>
+<span class="nt">var</span> template = Handlebars.templates[<span class="s">'user.hbs'</span>]
+</pre>
+</div>
+</li>
+
+<li><strong>embedded</strong> helper
+<p>
+The <code>embedded</code> helper let you include templates in a HTML page.
+Syntax is as follows:
+</p>
+
+<div class="highlight">
+<pre>
+<span class="p">{{ "{{" }}</span><span class="nx">embedded</span> <span class="s2">"template"</span><span class="p">}}</span>
+</pre>
+</div>
+<p>Where <code>template</code> is the path to a template.
+
+<p>Example: row.hbs:</p>
+
+<div class="highlight">
+<pre>
+<span class="nt">&lt;tr&gt;</span>
+  <span class="nt">&lt;td&gt;</span>{{ "{{firstName" }}}}<span class="nt">&lt;/td&gt;</span>
+  <span class="nt">&lt;td&gt;</span>{{ "{{lastName" }}}}<span class="nt">&lt;/td&gt;</span>
+<span class="nt">&lt;/tr&gt;</span>
+</pre>
+</div>
+
+<p>home.hbs:</p>
+
+<div class="highlight">
+<pre>
+<span class="nt">&lt;html&gt;</span>
+  <span class="p">{{ "{{" }}</span><span class="nx">embedded</span> <span class="s2">"row"</span><span class="p">}}</span>
+<span class="nt">&lt;/html&gt;</span>
+</pre>
+</div>
+
+<p>Output:</p>
+
+<div class="highlight">
+<pre>
+<span class="nt">&lt;html&gt;</span>
+<span class="nt">&lt;script</span> id=<span class="s">"row-hbs"</span> type=<span class="s">"text/x-handlebars"</span><span class="nt">&gt;</span>
+<span class="nt">&lt;tr&gt;</span>
+  <span class="nt">&lt;td&gt;</span>{{ "{{firstName" }}}}<span class="nt">&lt;/td&gt;</span>
+  <span class="nt">&lt;td&gt;</span>{{ "{{lastName" }}}}<span class="nt">&lt;/td&gt;</span>
+<span class="nt">&lt;/tr&gt;</span>
+<span class="nt">&lt;/script&gt;</span>
+<span class="nt">&lt;/html&gt;</span>
+</pre>
+</div>
+<p>Later, you can access to the <code>dom</code>element using the <code>row-hbs</code> id. Cool, isn't?</p>
+</li>
+</ul>

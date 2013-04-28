@@ -1,0 +1,262 @@
+---
+layout: default
+title: Helpers in Handlebars.java
+---
+
+<div>
+  <h1>Helpers in <a href="https://github.com/jknack/handlebars.java">Handlebars.java</a></h1>
+</div>
+<p>
+In this section you will learn about helpers, their syntax,  how to register, a lot more.
+</p>
+<p>Helpers are a key concept of <a href="https://github.com/jknack/handlebars.java">Handlebars.java</a>.
+Through a<code>helper</code>you can add custom logic from a safe and controlled way.
+Helpers are lightweight components that can be tested using tools like <a href="http://junit.org/">JUnit</a></p>
+<p>
+There are two types of helpers:
+</p>
+
+<div class="highlight">
+Basic helpers:
+<pre>
+{{ "{{name context? [argument]* [hash]*" }}}}
+</pre>
+Block helpers:
+<pre>
+{{ "{{#name context? [argument]* [hash]*" }}}}
+...
+{{ "{{/name" }}}}
+</pre>
+<strong>Name</strong>, <strong>context</strong>, <strong>argument</strong>, and <strong>hash</strong> are defined as follows:
+<pre>
+name: qid;
+
+context: expression;
+
+argument: expression;
+
+hash: id <span class="nt">'='</span> expression;
+
+expression: literal | qid;
+
+qid
+  :
+     <span class="nt">'../'</span> qid
+  |  id <span class="nt">'['</span> .* <span class="nt">']'</span> (<span class="nt">'.'</span> | <span class="nt">'/'</span>) qid
+  |  id <span class="nt">'['</span> .* <span class="nt">']'</span> qid
+  |  id (<span class="nt">'.'</span> | <span class="nt">'/'</span>) qid
+  |  'id'
+  ;
+
+id: idStart (idStart | idPart)*;
+
+idStart: [a-zA-Z_$@];
+
+idPart: [0-9];
+
+literal
+  :
+    stringLiteral
+  | boolLiteral
+  | numberLiteral
+  | <span class="nt">'this'</span>
+  | <span class="nt">'.'</span>
+  ;
+
+stringLiteral:<span class="nt">'"'</span> .* <span class="nt">'"'</span>;
+
+boolLiteral:<span class="nt">'true'</span> | <span class="nt">'false'</span>;
+
+numberLiteral: <span class="nt">'0'</span>..<span class="nt">'9'</span>+;
+</pre>
+</div>
+
+<h1>Registering custom helpers</h1>
+
+<p>There are two way of registering helpers in <a href="https://github.com/jknack/handlebars.java">Handlebars.java</a>:</p>
+<ul>
+<li>Registering one <strong>helper</strong> at the time
+<p>The API for registering a<code>helper</code>is very similar to <a href="http://handlebarsjs.com/">Handlebars.js</a></p>
+<div class="highlight"><pre><span class="n">handlebars</span><span class="o">.</span><span class="na">registerHelper</span><span class="o">(</span><span class="s">"blog"</span><span class="o">,</span> <span class="k">new</span> <span class="n">Helper</span><span class="o">&lt;</span><span class="n">Blog</span><span class="o">&gt;()</span> <span class="o">{</span>
+  <span class="kd">public</span> <span class="n">CharSequence</span> <span class="nf">apply</span><span class="o">(</span><span class="n">Blog</span> <span class="n">blog</span><span class="o">,</span> <span class="n">Options</span> <span class="n">options</span><span class="o">)</span> <span class="o">{</span>
+    <span class="k">return</span> <span class="n">options</span><span class="o">.</span><span class="na">fn</span><span class="o">(</span><span class="n">blog</span><span class="o">);</span>
+  <span class="o">}</span>
+<span class="o">});</span>
+</pre></div>
+
+<p>Beside the differences between the languages, the code for registering a helper is very similar.</p>
+
+</li>
+
+<li>Registering multiples <strong>helpers</strong> at once
+<p>If you have a couple of helpers, you probably don't want to register each<code>helper</code>one by one. This is where a<code>Helper Source</code>makes more sense.</p>
+<p>A<code>Helper Source</code>is a class where any public method returning an instance of<code>java.lang.CharSequence</code>get registered as a<code>helper.</code>
+Also:
+<ul>
+<li>The method can be static</li>
+<li>The method's name become the name of the helper</li>
+<li>Context, parameters and options are all optionals</li>
+<li>If <strong>context</strong> is present it must be the <strong>first</strong> method argument</li>
+<li>If <strong>options</strong> is present it must be the <strong>last</strong> method argument</li>
+</ul>
+
+<div class="highlight">
+These are some helper methods:
+<pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">HelperSource</span> <span class="o">{</span>
+  <span class="kd">public</span> <span class="n">String</span> <span class="nf">blog</span><span class="o">(</span><span class="n">Blog</span> <span class="n">blog</span><span class="o">,</span> <span class="n">Options</span> <span class="n">options</span><span class="o">)</span> <span class="o">{</span>
+    <span class="k">return</span> <span class="n">options</span><span class="o">.</span><span class="na">fn</span><span class="o">(</span><span class="n">blog</span><span class="o">);</span>
+  <span class="o">}</span>
+
+  <span class="kd">public</span> <span class="kd">static</span> <span class="n">String</span> <span class="nf">now</span><span class="o">()</span> <span class="o">{</span>
+    <span class="k">return</span> <span class="k">new</span> <span class="nf">Date</span><span class="o">().</span><span class="na">toString</span><span class="o">();</span>
+  <span class="o">}</span>
+
+  <span class="kd">public</span> <span class="n">String</span> <span class="nf">render</span><span class="o">(</span><span class="n">Blog</span> <span class="n">context</span><span class="o">,</span> <span class="n">String</span> <span class="n">param0</span><span class="o">,</span> <span class="kt">int</span> <span class="n">param1</span><span class="o">,</span> <span class="kt">boolean</span> <span class="n">param2</span><span class="o">,</span> <span class="n">Options</span> <span class="n">options</span><span class="o">)</span> <span class="o">{</span>
+    <span class="k">return</span> <span class="o">...</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</pre>
+</div>
+
+<div class="highlight">
+Registering instance methods:
+<pre>
+<span class="n">handlebars</span><span class="o">.</span><span class="na">registerHelpers</span><span class="o">(</span><span class="k">new</span> <span class="n">HelperSource</span><span class="o">());</span>
+</pre>
+</div>
+
+<div class="highlight">
+Registering static methods:
+<pre>
+<span class="n">handlebars</span><span class="o">.</span><span class="na">registerHelpers</span><span class="o">(</span><span class="n">HelperSource</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+</pre>
+</div>
+
+</li>
+</ul>
+
+<h1>Helper options</h1>
+<p>Now you know how to register a helper, let's see what you can do with it.</p>
+
+<h2>Parameters</h2>
+
+<div class="highlight">
+Accessing to the <strong>parameter</strong><code>arg0</code>using the<code>helper</code>interface:
+<pre>
+<span class="p">{{ "{{" }}</span><span class="nx">blog</span> this <span class="s2">"arg0"</span><span class="p">}}</span>
+...
+<span class="nt">public</span> CharSequence <span class="nf">apply</span>(Blog blog, Options options) {
+  <span class="nt">return</span> options.param(0);
+}
+</pre>
+</div>
+
+<div class="highlight">
+Accessing to the <strong>parameter</strong><code>arg0</code>using a<code>helper</code>method:
+<pre>
+<span class="p">{{ "{{" }}</span><span class="nx">blog</span> this <span class="s2">"arg0"</span><span class="p">}}</span>
+...
+<span class="nt">public</span> CharSequence <span class="nf">blog</span>(Blog blog, String arg0) {
+  <span class="nt">return</span> arg0;
+}
+</pre>
+</div>
+
+<div class="highlight">
+Auto-boxing of parameters using the<code>options</code>variable:
+<pre>
+<span class="p">{{ "{{" }}</span><span class="nx">blog</span> this <span class="s2">"string"</span> <span class="s2">true</span> <span class="s2">678</span><span class="p">}}</span>
+...
+<span class="nt">public</span> CharSequence <span class="nf">blog</span>(Blog blog, Options options) {
+  String str = options.param(0);
+  boolean bool = options.param(1);
+  int num = options.param(2);
+}
+</pre>
+</div>
+
+<div class="highlight">
+Type safe parameters using a<code>helper</code>method:
+<pre>
+<span class="p">{{ "{{" }}</span><span class="nx">blog</span> this <span class="s2">"string"</span> <span class="s2">true</span> <span class="s2">678</span><span class="p">}}</span>
+...
+<span class="nt">public</span> CharSequence <span class="nf">blog</span>(Blog blog, String str, boolean bool, int num) {
+}
+</pre>
+</div>
+
+<div class="highlight">
+Setting a default value to an optional <strong>parameter</strong>:
+<pre>
+<span class="p">{{ "{{" }}</span><span class="nx">blog</span> this<span class="p">}}</span>
+...
+<span class="nt">public</span> CharSequence <span class="nf">blog</span>(Blog blog, Options options) {
+  <span class="nt">return</span> options.param(0, <span class="s2">"arg0"</span>);
+}
+</pre>
+</div>
+
+<div class="highlight">
+Accessing to a context stack value:
+<pre>
+<span class="p">{{ "{{" }}</span><span class="nx">blog</span> this author<span class="p">}}</span>
+...
+<span class="nt">public</span> CharSequence <span class="nf">blog</span>(Blog blog, Author author) {
+  return author.getName();
+}
+</pre>
+<p>In the example above,<code>author</code>is a value in the context stack. If<code>author</code>
+isn't found a<code>null</code>value will be injected in the<code>author</code>variable.</p>
+</div>
+
+<div class="highlight">
+Setting<code>stringParams: true</code>let you access to the parameter name when a context stack value isn't resolved:
+<pre>
+handlebars.setStringParams(true);
+...
+<span class="p">{{ "{{" }}</span><span class="nx">blog</span> this edgar<span class="p">}}</span>
+...
+<span class="nt">public</span> CharSequence <span class="nf">blog</span>(Blog blog, Object author) {
+  return author instanceof String? author: author.getName();
+}
+</pre>
+</div>
+
+<h2>Hash Parameters</h2>
+
+<div class="highlight">
+Accessing to the <strong>hash parameter</strong><code>name</code>using the<code>helper</code>interface:
+<pre>
+<span class="p">{{ "{{" }}</span><span class="nx">blog</span> this name=<span class="s2">"Blog"</span><span class="p">}}</span>
+...
+<span class="nt">public</span> CharSequence <span class="nf">apply</span>(Blog blog, Options options) {
+  <span class="nt">return</span> options.hash(<span class="s2">"name"</span>);
+}
+</pre>
+</div>
+
+<div class="highlight">
+Auto-boxing of <strong>hash parameter</strong> using the<code>options</code>variable:
+<pre>
+<span class="p">{{ "{{" }}</span><span class="nx">blog</span> this s=<span class="s2">"string"</span> b=<span class="s2">true</span> n=<span class="s2">678</span><span class="p">}}</span>
+...
+<span class="nt">public</span> CharSequence <span class="nf">blog</span>(Blog blog, Options options) {
+  String str = options.hash(<span class="s2">"s"</span>);
+  boolean bool = options.get(<span class="s2">"b"</span>);
+  int num = options.get(<span class="s2">"n"</span>);
+}
+</pre>
+</div>
+
+<div class="highlight">
+Setting a default value to an optional <strong>hash parameter</strong>:
+<pre>
+<span class="p">{{ "{{" }}</span><span class="nx">blog</span> this<span class="p">}}</span>
+...
+<span class="nt">public</span> CharSequence <span class="nf">blog</span>(Blog blog, Options options) {
+  <span class="nt">return</span> options.hash(<span class="s2">"arg0"</span>, <span class="s2">"default value"</span>);
+}
+</pre>
+</div>
+
+

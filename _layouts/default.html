@@ -1,0 +1,52 @@
+---
+version: 0.12.0
+---
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>{{ "{{ Handlebars.java " }}}}{% if page.title }%} - {{page.title}}{% endif %}</title>
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script src="javascripts/respond.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <!--[if lt IE 8]>
+    <link rel="stylesheet" href="stylesheets/ie.css">
+    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+  </head>
+  <body>
+      <div id="header">
+        <nav>
+          <li class="fork"><a href="https://github.com/jknack/handlebars.java">Fork me on GitHub</a></li>
+
+          <li class="downloads"><a href="https://github.com/jknack/handlebars.java/zipball/master">ZIP</a></li>
+          <li class="downloads"><a href="https://github.com/jknack/handlebars.java/tarball/master">TAR</a></li>
+          <li class="downloads"><a href="http://search.maven.org/#artifactdetails%7Ccom.github.jknack%7Chandlebars%7C{{page.version}}%7Cjar" target="_blank">Maven</a></li>
+          <li class="title">DOWNLOADS</li>
+        </nav>
+      </div><!-- end header -->
+
+    <div class="wrapper">
+
+      <section>
+        <div id="title">
+          <h1>Handlebars.java</h1>
+          <p>Logic-less and semantic templates with Java</p>
+          <hr>
+          <span class="credits left">by <a href="https://twitter.com/edgarespina" target="_blank">Edgar Espina</a></span>
+          <span class="credits right">Theme by <a href="http://twitter.com/#!/michigangraham" target="_blank">mattgraham</a></span>
+        </div>
+
+        {{content}}
+      </section>
+    </div>
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+
+  </body>
+</html>
