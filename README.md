@@ -713,7 +713,7 @@ Context context = Context
 }
 ```
 
-As you can see, there isn't a ```put``` method. So all the hard work is done in the ```get``` method, which is basically the core of the cache system.
+As you can see, there isn't a ```put``` method. All the hard work is done in the ```get``` method, which is basically the core of the cache system.
 
 By default, Handlebars.java use a ```null``` cache implementation (a.k.a. no cache at all) which looks like:
 
@@ -725,13 +725,18 @@ Template get(TemplateSource source, Parser parser) throws IOException {
 
 Beside the ```null``` cache Handlebars.java provides three more implementations:
 
-1. ```ConcurrentMapTemplateCache```: a template cache implementation built on top of a ```ConcurrentMap```.
-2. ```HighConcurrencyTemplateCache```: a template cache implementation built on top of ```ConcurrentMap``` with all the design techniques described in [Java Concurrency in Practice](http://www.amazon.com/Java-Concurrency-Practice-Brian-Goetz/dp/0321349601)
+1. ```ConcurrentMapTemplateCache```: a template cache implementation built on top of a ```ConcurrentMap``` that detects changes in files automatically.
+This implementation works very well in general, but there is a small window where two or more threads can compile the same template. This isn't a huge problem with Handlebars.java because the compiler is very very fast.
+But if for some reason you don't want this, you can use the ```HighConcurrencyTemplateCache``` template cache.
+
+2. ```HighConcurrencyTemplateCache```: a template cache implementation built on top of ```ConcurrentMap``` that detects changes in files automatically.
+This cache implementation eliminate the window created by ```ConcurrentMapTemplateCache``` to ```zero```.
+It follows the patterns described in [Java Concurrency in Practice](http://www.amazon.com/Java-Concurrency-Practice-Brian-Goetz/dp/0321349601) and ensure that a template will be compiled just one time regardless of the number of threads.
+
+
 3. ```GuavaTemplateCache```: a template cache implementation built on top of [Google Guava](https://code.google.com/p/guava-libraries/wiki/CachesExplained). Available in [handlebars-guava-cache module](https://github.com/jknack/handlebars.java/tree/master/handlebars-guava-cache)
 
-These two implementations are able to detect files changes and reload them in an efficient way.
-
-Finally, you can configure Handlebars.java to use a cache by:
+You can configure Handlebars.java to use a cache by:
 
 ```
 Handlebars hbs = new Handlebars()
