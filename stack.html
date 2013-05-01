@@ -1,0 +1,245 @@
+---
+layout: default
+title: The Context Stack in Handlebars.java
+version: 0.12.0
+---
+
+<div>
+  <h1>The Context Stack in Handlebars.java</h1>
+</div>
+<p>
+In this section you will learn how to interact with the Context Stack in <a href="https://github.com/jknack/handlebars.java">Handlebars.java</a>.
+</p>
+
+<h2>The Context Stack</h2>
+The context stack is where the data live. <a href="http://mustache.github.com/mustache.5.html">Mustache</a> is a contextual and stack based template engine.
+<p>
+That means that a <strong>value</strong> will be resolved in the <strong>current context</strong>, 
+then if the value isn't present in the <strong>current context</strong>, it looks at the <strong>parent context</strong> until:
+</p>
+
+<ol>
+<li>we found the value, or</li>
+<li>we are at the root context and the value isn't there.</li>
+</ol>
+
+<p>If a value isn't in the context stack, null is returned and nothing is rendered. You will learn how to change this later.</p>
+
+<h2>The context class</h2>
+The<code>Context</code>class represent the <strong>context stack</strong> in <a href="https://github.com/jknack/handlebars.java">Handlebars.java</a>.
+You rarely need to instantiate a<code>Context</code>object, <a href="https://github.com/jknack/handlebars.java">Handlebars.java</a> does it for you
+every time you call:
+
+<div class="highlight">
+<pre>
+  String output = template.apply(model);
+  <span class="nf">// or</span>
+  template.apply(model, writer);
+</pre>
+</div>
+<p>
+The<code>apply</code>method accepts a<code>Context</code> or an<code>Object</code>. The<code>Object</code>automatically convert that object into a<code>Context</code>. 
+</p>
+
+<h2>Extending the context stack</h2>
+<p>
+  A common use case in web application is to access to the logged user from a web page.
+</p>
+
+<div class="highlight">
+A first try might looks like:
+<pre>
+  User user = ...;
+  Object model = ...;
+  Map modelWithUser = new HashMap();
+  modelWithUser.put(<span class="s2">"user"</span>, user);
+  modelWithUser.put(<span class="s2">"model"</span>, model);
+
+  template.apply(modelWithUser);
+</pre>
+</div>
+<p>This isn't so bad but there are at least two drawbacks:</p>
+<ol>
+  <li>You will need to write or add this snippet of code in every single page that want access to the current logged user.</li>
+  <li>You are force to access to your data using the {{ "{{#model" }}}}...{{ "{{/model" }}}} expression.</li>
+</ol>
+
+<div class="highlight">
+A better approach is to use the<code>combine</code>method:
+<pre>
+  User user = ...;
+  Object model = ...;
+  Context context = Context
+    .newBuilder(model)
+    .combine("user", user)
+    .build();
+
+  template.apply(context);
+</pre>
+</div>
+
+<p>
+We definetly fix the <strong>second</strong> drawbaback described before.
+</p>
+<p>
+The <strong>first</strong> one depens on your application architecture. For example,
+if you have a<code>hook</code>method where is the only place you merge the model with a view
+and of course you can access to the current logged user.
+</p>
+
+<h2>Value resolvers</h2>
+<p>
+A<code>ValueResolver</code>is responsible of extracting a single value from a source object (a.k.a context).
+By default, a<code>context</code>is able to extract values from <code>maps</code>and<code>JavaBean</code>objects.
+</p>
+
+<h3>The JavaBeanValueResolver</h3>
+<p>
+Let you access to JavaBean properties. It is registered by <strong>default</strong>.
+</p>
+
+<div class="highlight">
+<pre>
+  Context context = Context
+    .newBuilder(model)
+    .resolver(JavaBeanValueResolver.<span class="nt">INSTANCE</span>)
+    .build();
+
+  template.apply(context);
+</pre>
+</div>
+
+<h3>The MapValueResolver</h3>
+<p>
+Let you access to<code>map</code>values. It is registered by <strong>default</strong>.
+</p>
+
+<div class="highlight">
+<pre>
+  Context context = Context
+    .newBuilder(model)
+    .resolver(MapValueResolver.<span class="nt">INSTANCE</span>)
+    .build();
+
+  template.apply(context);
+</pre>
+</div>
+
+<h3>The FieldValueResolver</h3>
+<p>
+Let you access to instance fields (private or public).
+</p>
+
+<div class="highlight">
+<pre>
+  Context context = Context
+    .newBuilder(model)
+    .resolver(FieldValueResolver.<span class="nt">INSTANCE</span>)
+    .build();
+
+  template.apply(context);
+</pre>
+</div>
+
+<h3>The MethodValueResolver</h3>
+<p>
+Let you access to public methods.
+</p>
+
+<div class="highlight">
+<pre>
+  Context context = Context
+    .newBuilder(model)
+    .resolver(MethodValueResolver.<span class="nt">INSTANCE</span>)
+    .build();
+
+  template.apply(context);
+</pre>
+</div>
+
+<h3>Using multiples value resolvers</h3>
+<p>
+You can combine any number of value resolvers according to the data your application has.
+</p>
+
+<div class="highlight">
+Access to JavaBean and Map properties:
+<pre>
+  Context context = Context
+    .newBuilder(model)
+    .resolver(
+        MapValueResolver.<span class="nt">INSTANCE</span>,
+        JavaBeanValueResolver.<span class="nt">INSTANCE</span>
+    )
+    .build();
+
+  template.apply(context);
+</pre>
+</div>
+
+<div class="highlight">
+Access to JavaBean, Map properties and public methods:
+<pre>
+  Context context = Context
+    .newBuilder(model)
+    .resolver(
+        MapValueResolver.<span class="nt">INSTANCE</span>,
+        JavaBeanValueResolver.<span class="nt">INSTANCE</span>,
+        MethodValueResolver.<span class="nt">INSTANCE</span>
+    )
+    .build();
+
+  template.apply(context);
+</pre>
+</div>
+
+<div class="highlight">
+Access to JavaBean, Map properties and instance fields:
+<pre>
+  Context context = Context
+    .newBuilder(model)
+    .resolver(
+        MapValueResolver.<span class="nt">INSTANCE</span>,
+        JavaBeanValueResolver.<span class="nt">INSTANCE</span>,
+        FieldValueResolver.<span class="nt">INSTANCE</span>
+    )
+    .build();
+
+  template.apply(context);
+</pre>
+</div>
+
+<h2>Value resolver execution</h2>
+<p>Let's review how a<code>ValueResolver</code>looks like:</p>
+<div class="highlight">
+<pre>
+<span class="nt">public interface</span> ValueResolver {
+
+  Object UNRESOLVED = <span class="nt">new</span> Object();
+
+  Object <span class="nf">resolve</span>(Object context, String name);
+
+  Set&lt;Entry&lt;String, Object&gt;&gt; <span class="nf">propertySet</span>(Object context);
+}
+</pre>
+</div>
+
+The<code>resolve</code> method must return one of three values:
+<ol>
+<li><strong>None null value</strong>: The property exists and have a<code>none null</code>value.</li>
+<li><strong>A null value</strong>: The property exists and have a<code>null</code>value.</li>
+<li><strong>ValueResolver.UNRESOLVED</strong>: The property doesn't exist and can't be resolve. So, the next resolver in the chain (if any) will be executed.</li>
+</ol>
+
+<p>The<code>propertySet</code> method is used by the <strong>each</strong> helper for iterating over maps and objects.</p>
+
+<h1>Conclusion</h1>
+<p>The<code>Context</code>class does all the hard work: walk through the stack, resolve expressions, etc. This component isn't puggable and can't be set.</p>
+<p>
+Where a<code>ValueResolver</code>extracts a single value from a source. You can add, remove or even create your own <code>value resolver</code>.
+It plays an important role if your application deal with a custom data source.</p>
+<p>For example,
+if your service layer returns the widely used<code>JsonNode</code>from
+<a href="http://jackson.codehaus.org/">Jackson</a> a custom<code>ValueResolver</code>can access
+that object and gets values from it.
+</p>

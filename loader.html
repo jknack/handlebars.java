@@ -1,0 +1,164 @@
+---
+layout: default
+title: Where is my Mustache template?
+---
+
+<div>
+  <h1>Where is my {{ "{{ Mustache " }}}} template?</h1>
+</div>
+<p>
+Learn how to load templates from the file system, classpath, web context and more.
+</p>
+
+<h2>The template loader</h2>
+<div class="highlight">
+Template are loaded using the<code>TemplateLoader</code>API, which looks as follows:
+<pre>
+<span class="nt">public interface</span> TemplateLoader {
+
+  String <span class="nf">DEFAULT_PREFIX</span> = <span class="s2">"/"</span>;
+
+  String <span class="nf">DEFAULT_SUFFIX</span> = <span class="s2">".hbs"</span>;
+
+  String <span class="nf">getPrefix</span>();
+
+  String <span class="nf">getSuffix</span>();
+
+  TemplateSource <span class="nf">sourceAt</span>(<span class="nt">final</span> String location) <span class="s2">throws</span> IOException;
+
+  String <span class="nf">resolve</span>(<span class="nt">final</span> String location);
+}
+</pre>
+</div>
+
+<h3>Prefix and Suffix</h3>
+These two properties control the<code>path</code>of a template.
+<ul>
+<li><strong>prefix</strong>: gets prepended to template names before being resolved.</li>
+<li><strong>suffix</strong>: gets appended to template names before being resolved.</li>
+</ul>
+<div class="highlight">
+As example, template<code>hello</code>with<code>prefix=/site</code>and<code>suffix=.html</code>get resolved to<code>/site/hello.html</code>
+<pre>
+Template template = handlebars.compile(<span class="s2">"hello"</span>);
+</pre>
+The same rules applies for<code>partials</code>
+<pre>
+{{ "{{> hello" }}}}
+</pre>
+</div>
+<p>
+So, as you can see, you don't need to add<code>prefix</code>(like a home directory) and<code>suffix</code>(like a file extension), the<code>TemplateLoader</code>does it for you.
+</p>
+
+
+<h2>The template source</h2>
+<div class="highlight">
+A template source is a lightweight reference to a physical template stored somewhere. The<code>TemplateSource</code>class, looks as follows:
+<pre>
+<span class="nt">public interface</span> TemplateSource {
+  String <span class="nf">content</span>() <span class="nt">throws</span> IOException;
+
+  Reader <span class="nf">reader</span>() <span class="nt">throws</span> IOException;
+
+  String <span class="nf">filename</span>();
+
+  <span class="nt">long</span> <span class="nf">lastModified</span>();
+}
+</pre>
+</div>
+<p>
+You don't have to implement any of these classes, <a href="https://github.com/jknack/handlebars.java">Handlebars.java</a> does it for you.
+But if you want to store your templates in a database (for example), these are the two classes you need to implement.
+</p>
+
+<h2>The class path template loader</h2>
+<p>
+The<code>ClassPathTemplateLoader</code>is the <strong>default</strong> template loader in <a href="https://github.com/jknack/handlebars.java">Handlebars.java</a>.
+If you don't set a template loader, <a href="https://github.com/jknack/handlebars.java">Handlebars.java</a> assume your templates are in the classpath.
+</p>
+
+<div class="highlight">
+The default <strong>prefix</strong> is<code>/</code>(a.k.a root of classpath) and
+the default <strong>suffix</strong> is<code>.hbs</code>(i.e. file extension is .hbs).
+<pre>
+Handlebars handlebars = <span class="nt">new</span> Handlebars();
+handlebars.compile(<span class="s2">"hello"</span>); <span class="nf">// resolved to: /hello.hbs</span>
+</pre>
+</div>
+
+<div class="highlight">
+Setting <strong>prefix</strong> to the<code>root of classpath</code>and<code>.html</code>as file extension.
+<pre>
+TemplateLoader loader = new ClassPathTemplateLoader(<span class="s2">"/"</span>, <span class="s2">".html"</span>);
+Handlebars handlebars = <span class="nt">new</span> Handlebars(loader);
+handlebars.compile(<span class="s2">"hello"</span>); <span class="nf">// resolved to: /hello.html</span>
+</pre>
+</div>
+
+<div class="highlight">
+Setting <strong>prefix</strong> to the<code>/templates</code>and<code>.html</code>as file extension.
+<pre>
+TemplateLoader loader = new ClassPathTemplateLoader(<span class="s2">"/templates"</span>, <span class="s2">".html"</span>);
+Handlebars handlebars = <span class="nt">new</span> Handlebars(loader);
+handlebars.compile(<span class="s2">"hello"</span>); <span class="nf">// resolved to: /templates/hello.html</span>
+</pre>
+</div>
+
+<h2>The file template loader</h2>
+<p>
+The<code>FileTemplateLoader</code>load templates from a file system location. This template loader is useful if you need to make change to your templates after a deploy.
+</p>
+
+<div class="highlight">
+Setting <strong>prefix</strong> to the<code>/usr/share/templates</code>and<code>.html</code>as file extension.
+<pre>
+TemplateLoader loader = new FileTemplateLoader(<span class="s2">"/usr/share/templates"</span>,
+  <span class="s2">".html"</span>);
+Handlebars handlebars = <span class="nt">new</span> Handlebars(loader);
+handlebars.compile(<span class="s2">"hello"</span>); <span class="nf">// resolved to: /usr/share/templates/hello.html</span>
+</pre>
+</div>
+
+<h2>The servlet context template loader</h2>
+<p>
+The<code>ServletContextTemplateLoader</code>load templates from a JavaEE Web Context.
+</p>
+
+<div class="highlight">
+Setting <strong>prefix</strong> to the<code>root of the web context</code>and<code>.hbs</code>as file extension.
+<pre>
+ServletContext servletContext = ...;
+TemplateLoader loader = new ServletContextTemplateLoader(servletContext);
+Handlebars handlebars = <span class="nt">new</span> Handlebars(loader);
+handlebars.compile(<span class="s2">"hello"</span>); <span class="nf">// resolved to: /hello.hbs</span>
+</pre>
+</div>
+
+<div class="highlight">
+Setting <strong>prefix</strong> to<code>/</code>and<code>.html</code>as file extension.
+<pre>
+ServletContext servletContext = ...;
+TemplateLoader loader = new ServletContextTemplateLoader(servletContext, <span class="s2">"/"</span>,
+  <span class="s2">".html"</span>);
+Handlebars handlebars = <span class="nt">new</span> Handlebars(loader);
+handlebars.compile(<span class="s2">"hello"</span>); <span class="nf">// resolved to: /hello.html</span>
+</pre>
+</div>
+
+<div class="highlight">
+Setting <strong>prefix</strong> to<code>/WEB-INF/pages</code>and<code>.html</code>as file extension.
+<pre>
+ServletContext servletContext = ...;
+TemplateLoader loader = new ServletContextTemplateLoader(servletContext,
+  <span class="s2">"/WEB-INF/pages"</span>, <span class="s2">".html"</span>);
+Handlebars handlebars = <span class="nt">new</span> Handlebars(loader);
+handlebars.compile(<span class="s2">"hello"</span>); <span class="nf">// resolved to: /WEB-INF/pages/hello.html</span>
+</pre>
+</div>
+
+<h1>Conclusion</h1>
+<p>
+The<code>TemplateLoader</code>and<code>TemplateSource</code>are two key abstractions in <a href="https://github.com/jknack/handlebars.java">Handlebars.java</a>, they both work together for
+simplify the storage and resolution of templates.
+</p>

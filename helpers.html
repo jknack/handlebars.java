@@ -7,7 +7,7 @@ title: Helpers in Handlebars.java
   <h1>Helpers in <a href="https://github.com/jknack/handlebars.java">Handlebars.java</a></h1>
 </div>
 <p>
-In this section you will learn about helpers, their syntax,  how to register, a lot more.
+In this section you will learn about helpers, their syntax, how to register, a lot more.
 </p>
 <p>Helpers are a key concept of <a href="https://github.com/jknack/handlebars.java">Handlebars.java</a>.
 Through a<code>helper</code>you can add custom logic from a safe and controlled way.
@@ -111,7 +111,8 @@ These are some helper methods:
     <span class="k">return</span> <span class="k">new</span> <span class="nf">Date</span><span class="o">().</span><span class="na">toString</span><span class="o">();</span>
   <span class="o">}</span>
 
-  <span class="kd">public</span> <span class="n">String</span> <span class="nf">render</span><span class="o">(</span><span class="n">Blog</span> <span class="n">context</span><span class="o">,</span> <span class="n">String</span> <span class="n">param0</span><span class="o">,</span> <span class="kt">int</span> <span class="n">param1</span><span class="o">,</span> <span class="kt">boolean</span> <span class="n">param2</span><span class="o">,</span> <span class="n">Options</span> <span class="n">options</span><span class="o">)</span> <span class="o">{</span>
+  <span class="kd">public</span> <span class="n">String</span> <span class="nf">render</span><span class="o">(</span><span class="n">Blog</span> <span class="n">context</span><span class="o">, </span> <span class="n">String</span> <span class="n">param0</span><span class="o">, </span> <span class="kt">int</span> <span class="n">param1</span><span class="o">,</span>
+     <span class="kt">boolean</span> <span class="n">param2</span><span class="o">,</span> <span class="n">Options</span> <span class="n">options</span><span class="o">)</span> <span class="o">{</span>
     <span class="k">return</span> <span class="o">...</span>
   <span class="o">}</span>
 <span class="o">}</span>
@@ -259,4 +260,32 @@ Setting a default value to an optional <strong>hash parameter</strong>:
 </pre>
 </div>
 
+<h1>Helper missing</h1>
+<p>
+If a helper isn't found a<code>java.lang.IllegalArgumentException</code>occurs.
+You can change this by registering a<code>helperMissing</code>helper.
+</p>
 
+<div class="highlight">
+Override<code>helperMissing</code>and return the template block (if any).
+<pre>
+  handlebars.registerHelper(Handlebars.<span class="nt">HELPER_MISSING</span>, new Helper&lt;Object&gt;() {
+    @Override
+    <span class="nt">public</span> CharSequence <span class="nf">apply</span>(<span class="nt">final</span> Object context, <span class="nt">final</span> Options options)
+      <span class="nt">throws</span> IOException {
+      <span class="nt">return</span> options.fn.text();
+    }
+  });
+</pre>
+</div>
+
+<h1>Conclusion</h1>
+<p>
+It is great if you can keep the inherited logic-less from <a href="http://mustache.github.com/mustache.5.html">Mustache</a>.
+This is what will make your application easy to understand, change and evolve.
+</p>
+<p>At the same time logic-less is hard to keep for medium/large size applications or probably you don't own the code and changing the model isn't an option.</p>
+<p>
+In those cases <a href="https://github.com/jknack/handlebars.java">Handlebars.java</a> is here to help you.
+It wont let you add logic in the HTML but you can add as much logic as you need through helpers.
+</p>

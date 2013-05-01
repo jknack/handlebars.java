@@ -1,0 +1,117 @@
+---
+layout: default
+title: Meet the Handlebars.java Server!
+version: 0.12.0
+---
+
+<div>
+  <h1>Meet the Handlebars.java Server!</h1>
+</div>
+<p>
+In this section you will learn to prototype web sites using the <a href="https://github.com/jknack/handlebars.java">Handlebars.java</a> Server!
+</p>
+
+<h2>Download</h2>
+<p>Just click <a href="http://search.maven.org/remotecontent?filepath=com/github/jknack/handlebars-proto/{{page.version}}/handlebars-proto-{{page.version}}.jar">here</a> for download the file.</p>
+
+<h2>Usage</h2>
+<div class="highlight">
+<pre>
+  java -jar handlebars-proto-{{page.version}}.jar [-option value]
+</pre>
+</div>
+
+<h3>Options:</h3>
+<ul>
+ <li><strong>-dir (-d)</strong>: set the template directory. Required.</li>
+ <li><strong>-contentType (-ct)</strong>: set the content's type header, default is:<code>text/html<code></li>
+ <li><strong>-context (-c)</strong>: set the web context's path, default is:<code>/</code></li>
+ <li><strong>-port (-p)</strong>: set the port's number, default is:<code>6780</code></li>
+ <li><strong>-prefix (-px)</strong>: set the template's prefix, default is:<code>/</code></li>
+ <li><strong>-suffix (-sx)</strong>: set the template's suffix, default is:<code>.hbs</code></li>
+</ul>
+
+<h2>Starting the server</h2>
+<div class="highlight">
+<pre>
+  java -jar handlebars-proto-{{page.version}}.jar -d site
+</pre>
+</div>
+
+<div class="highlight">
+site/home.hbs:
+<pre>
+<span class="nt">&lt;html&gt;</span>
+<span class="nt">&lt;body&gt;</span>
+<span class="nt">&lt;ul&gt;</span>
+ {{ "{{" }}#blogs}}
+ <span class="nt">&lt;li&gt;</span>{{ "{{" }}name}}<span class="nt">&lt;/li&gt;</span>
+ {{ "{{" }}/blogs}}
+<span class="nt">&lt;/ul&gt;</span>
+<span class="nt">&lt;/body&gt;</span>
+<span class="nt">&lt;/html&gt;</span>
+</pre>
+</div>
+
+<div class="highlight">
+Open a browser and type:
+<pre>
+http://localhost:6780/home.hbs
+</pre>
+</div>
+<p>So, is that all? No, the next section teach you how to add data to your templates.</p>
+
+<h2>Data Sets</h2>
+
+<ul>
+<li>as <a href="http://en.wikipedia.org/wiki/JSON">JSON</a>
+<div class="highlight">
+site/home.json
+<pre>
+{
+  <span class="s2">"blogs"</span>: [
+    {
+      <span class="s2">"name"</span>:<span class="s2">"Handlebars.java"</span>
+    }, {
+      <span class="s2">"name"</span>:<span class="s2">"Handlebars.js"</span>
+    }, {
+      <span class="s2">"name"</span>:<span class="s2">"Mustache"</span>
+    }
+  ]
+}
+</pre>
+</div>
+</li>
+
+<li>as <a href="http://en.wikipedia.org/wiki/YAML">YAML</a>
+<div class="highlight">
+site/home.yml
+<pre>
+blogs:
+  - name: Handlebars.java
+  - name: Handlebars.js
+  - name: Mustache
+</pre>
+</div>
+</li>
+</ul>
+<p>
+By default the data file must match the template name and must be in the same directory.
+</p>
+
+<div class="highlight">
+You can specify a different data set by using the<code>data</code>parameter in the url.
+<pre>
+http://localhost:6780/home.hbs?<span class="s2">data</span>=path/home2
+</pre>
+The<code>data</code>parameter is a file path without a file extension.
+</div>
+
+<p>Last but not least, let's see error reporting</p>
+
+<h2>Error reporting</h2>
+<p><a href="https://github.com/jknack/handlebars.java">Handlebars.java</a> errors are reported through a fancy HTML page.</p>
+
+<img src="images/error-reporting.png"/>
+
+Cool, isn't?
