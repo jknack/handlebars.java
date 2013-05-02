@@ -193,13 +193,7 @@ class Variable extends HelperResolver {
     if (value instanceof Handlebars.SafeString) {
       return false;
     }
-    boolean isString =
-        value instanceof CharSequence || value instanceof Character;
-    if (isString) {
-      return type == TagType.VAR;
-    } else {
-      return false;
-    }
+    return type == TagType.VAR;
   }
 
   @Override
