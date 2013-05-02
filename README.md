@@ -11,6 +11,8 @@ Handlebars provides the power necessary to let you build semantic templates effe
 
 # Getting Started
  In general, the syntax of **Handlebars** templates is a superset of [Mustache](http://mustache.github.com) templates. For basic syntax, check out the [Mustache manpage](http://mustache.github.com).
+ 
+ The [Handlebars.java blog](http://jknack.github.io/handlebars.java) is a good place for getting started too.
 
 ## Maven
 #### Stable version: **0.12.0**
@@ -811,6 +813,8 @@ Hello edgar!
  StringHelpers.register(handlebars);
 ```
 
+# Modules
+
 ## Jackson 1.x
 
 Maven:
@@ -896,7 +900,6 @@ Usage:
 
 See the JavaDoc of the [HumanizeHelper] (https://github.com/jknack/handlebars.java/blob/master/handlebars-humanize/src/main/java/com/github/jknack/handlebars/HumanizeHelper.java) for more information.
 
-# Modules
 ## SpringMVC
 
 Maven:
