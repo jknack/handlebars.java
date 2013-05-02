@@ -260,7 +260,48 @@ Setting a default value to an optional <strong>hash parameter</strong>:
 </pre>
 </div>
 
+<h2>Helper return value</h2>
+<p>
+A helper method must return an instance of a<code>java.lang.CharSequence</code>or<code>null</code>.
+For <strong>none null</strong> results, the value is HTML escaped.
+</p>
+
+<p>You can unescape the HTML code in one of three ways:</p>
+
+<ol>
+<li>Using <strong>{{ "{{&amp; " }}}}</strong>
+<div class="highlight">
+<pre>
+<span class="p">{{ "{{" }}</span>&amp;<span class="nx">blog</span> this<span class="p">}}</span>
+</pre>
+</div>
+</li>
+
+<li>Using <strong>{{ "{{{ " }}}}}</strong>
+<div class="highlight">
+<pre>
+<span class="p">{{ "{{{" }}</span><span class="nx">blog</span> this<span class="p">}}}</span>
+</pre>
+</div>
+</li>
+
+<li>Using <strong>Handlebars.SafeString</strong>
+<div class="highlight">
+<pre>
+<span class="nt">public</span> CharSequence <span class="nf">blog</span>(Blog blog, Options options) {
+  <span class="nt">return new</span> Handlebars.SafeString(<span class="s2">"&lt;div&gt;Hello&lt;/div&gt;"</span>);
+}
+...
+<span class="p">{{ "{{" }}</span><span class="nx">blog</span> this<span class="p">}}</span>
+</pre>
+</div>
+</li>
+</ol>
+
+<p>From the three methods: <strong>Handlebars.SafeString</strong> is 100% safe, bc doesn't depends on how you invoke the helper.</p>
+
 <h1>Helper missing</h1>
+
 <p>
 If a helper isn't found a<code>java.lang.IllegalArgumentException</code>occurs.
 You can change this by registering a<code>helperMissing</code>helper.
