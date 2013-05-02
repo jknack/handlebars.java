@@ -1,0 +1,81 @@
+---
+layout: default
+title: The Jackson module in Handlebars.java
+version: 0.12.0
+---
+
+<div>
+  <h1>The Jackson module in Handlebars.java</h1>
+</div>
+<p>
+In this section you will learn how to convert a value to <a href="http://en.wikipedia.org/wiki/JSON">JSON</a> using the <a href="http://jackson.codehaus.org/">Jackson</a> library and much more.</li>
+</p>
+
+<div class="highlight">
+The Jackson 2.x module is available in Maven central
+<pre>
+<span class="nt">&lt;dependency&gt;</span>
+  <span class="nt">&lt;groupId&gt;</span>com.github.jknack<span class="nt">&lt;/groupId&gt;</span>
+  <span class="nt">&lt;artifactId&gt;</span>handlebars-jackson2<span class="nt">&lt;/artifactId&gt;</span>
+  <span class="nt">&lt;version&gt;</span>{{page.version}}<span class="nt">&lt;/version&gt;</span>
+<span class="nt">&lt;/dependency&gt;</span>
+</pre>
+</div>
+
+<h2>The Jackson helper</h2>
+<p>The <a href="http://jackson.codehaus.org/">Jackson</a> helper convert a JavaObject to <a href="http://en.wikipedia.org/wiki/JSON">JSON</a>.</p>
+
+<div class="highlight">
+Registering the <a href="http://jackson.codehaus.org/">Jackson</a> helper:
+<pre>
+handlebars.registerHelper(<span class="nt">"json"</span>, JacksonHelper2.<span class="nf">INSTANCE</span>);
+</pre>
+</div>
+
+<div class="highlight">
+Registering the <a href="http://jackson.codehaus.org/">Jackson</a> helper with a custom<code>ObjectMapper</code>:
+<pre>
+ObjectMapper om = ...;
+handlebars.registerHelper(<span class="nt">"json"</span>, <span class="nt">new</span> JacksonHelper2(om));
+</pre>
+</div>
+
+<div class="highlight">
+Using the <a href="http://en.wikipedia.org/wiki/JSON">JSON</a> helper:
+<pre>
+<span class="p">{{ "{{" }}</span><span class="nx">json</span> <span class="nf">this</span><span class="p">}}</span>
+</pre>
+</div>
+
+<div class="highlight">
+JSON <a href="http://wiki.fasterxml.com/JacksonJsonViews">views</a>:
+<pre>
+<span class="p">{{ "{{" }}</span><span class="nx">json</span> <span class="nf">this</span> view=<span class="s2">"foo.MyFullyQualifiedClassName"</span><span class="p">}}</span>
+</pre>
+</div>
+
+<div class="highlight">
+Alias for JSON <a href="http://wiki.fasterxml.com/JacksonJsonViews">views</a>:
+<pre>
+handlebars.registerHelper(<span class="s2">"json"</span>, <span class="nt">new</span> JacksonHelper2().viewAlias(<span class="s2">"myView"</span>,
+   foo.MyFullyQualifiedClassName.<span class="nf">class</span>);
+...
+<span class="p">{{ "{{" }}</span><span class="nx">json</span> <span class="nf">this</span> view=<span class="s2">"myView"</span><span class="p">}}</span>
+</pre>
+</div>
+
+<h2>The JsonNodeValueResolver</h2>
+<p>
+The <a href="http://jackson.codehaus.org/">Jackson</a> module has a custom <a href="stack.html#resolvers">ValueResolver</a> that knows how to extract values from a<code>JsonNode</code>objects.
+</p>
+
+<div class="highlight">
+Registering the <code>JsonNodeValueResolver</code>:
+<pre>
+Context context = Context
+  .newBuilder(model)
+  .resolver(JsonNodeValueResolver.<span class="nf">INSTANCE</span>)
+  .build();
+</pre>
+</div>
+

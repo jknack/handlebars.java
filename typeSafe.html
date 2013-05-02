@@ -1,0 +1,81 @@
+---
+layout: default
+title: TypeSafe templates in Handlebars.java
+---
+
+<div>
+  <h1>TypeSafe templates in Handlebars.java</h1>
+</div>
+<p>
+In this section you will learn how to create and use type safe templates in <a href="https://github.com/jknack/handlebars.java">Handlebars.java</a>.
+</p>
+
+<p>TypeSafe templates are created by extending the<code>TypeSafeTemplate</code>interface</p>
+
+<div class="highlight">
+<pre>
+<span class="nt">public interface</span> TypeSafeTemplate&lt;T&gt; {
+
+  void <span class="nf">apply</span>(T context, Writer writer) <span class="nt">throws</span> IOException;
+
+  String <span class="nf">apply</span>(T context) throws IOException;
+}
+</pre>
+</div>
+
+<p>
+The<code>TypeSafeTemplate</code>interface give you a generic version of the<code>apply</code>methods, but this isn't all.
+</p>
+
+<h2>Creating a type safe template</h2>
+
+<div class="highlight">
+Let's see how to create a<code>UserTemplate</code>:
+<pre>
+<span class="nt">public interface</span> UserTemplate <span class="nt">extends</span> TypeSafeTemplate&lt;User&gt; {
+
+  <span class="nt">public</span> UserTemplate <span class="nf">setAge</span>(<span class="nt">int</span> age);
+
+  <span class="nt">public</span> UserTemplate <span class="nf">setRole</span>(String role);
+}
+</pre>
+</div>
+
+<div class="highlight">
+Instantiating a user template:
+<pre>
+UserTemplate userTmpl = hbs.compileInline(<span class="s2">"{{ "{{name" }}}} is {{ "{{age" }}}} years old!"</span>)
+  .as(UserTemplate.<span class="nf">class</span>);
+
+userTmpl.setAge(<span class="s2">32</span>);
+
+userTmpl.apply(new User(<span class="s2">"Edgar"</span>));
+</pre>
+</div>
+
+<h2>Checking if a variable is present</h2>
+<p>
+Beside we have a<code>setAge</code>method how can we sure that value has been provided?
+One alternative, is to provide a<code>MissingValueResolver</code>to fail if<code>age</code>isn't present.
+</p>
+
+<div class="highlight">
+Failing if<code>age</code>is missing:
+<pre>
+MissingValueResolver missingValueResolver = <span class="nt">new</span> MissingValueResolver() {
+    <span class="nt">public</span> String resolve(Object context, String name) {
+      <span class="nt">throw new</span> IllegalStateException("Missing variable: " + name);
+    }
+  };
+Handlebars hbs = new Handlebars().with(missingValueResolver);
+
+UserTemplate userTmpl = hbs.compileInline(<span class="s2">"{{ "{{name" }}}} is {{ "{{age" }}}} years old!"</span>)
+  .as(UserTemplate.<span class="nf">class</span>);
+
+userTmpl.setAge(<span class="s2">32</span>);
+
+userTmpl.apply(new User(<span class="s2">"Edgar"</span>));
+
+</pre>
+</div>
+
