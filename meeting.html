@@ -24,16 +24,23 @@ Syntax is as follows:
 </pre>
 </div>
 <p>Where <code>template</code> is the path to a template. The <code>wrapper</code> option convert the precompiled template to one of these patterns: "anonymous", "amd" or "none". Default is: "anonymous".</p>
-<p>Example: user.hbs:</p>
 
-<div class="highlight"><pre><span class="nt">&lt;script </span><span class="na">type=</span><span class="s">"text/javascript"</span><span class="nt">&gt;</span>
+<div class="highlight">
+Given the template user.hbs:
+<pre>
+Hello <span class="p">{{ "{{" }}</span>this<span class="p">}}</span>!
+</pre></div>
+
+<div class="highlight">
+It can be precompile in a home.hbs like:
+<pre><span class="nt">&lt;script </span><span class="na">type=</span><span class="s">"text/javascript"</span><span class="nt">&gt;</span>
 <span class="p">{{ "{{" }}</span><span class="nx">precompile</span> <span class="s2">"user"</span><span class="p">}}</span>
 <span class="nt">&lt;/script&gt;</span>
 </pre></div>
 
-<p>Output:</p>
-
-<div class="highlight"><pre><span class="nt">&lt;script </span><span class="na">type=</span><span class="s">"text/javascript"</span><span class="nt">&gt;</span>
+<div class="highlight">
+The final page will looks like:
+<pre><span class="nt">&lt;script </span><span class="na">type=</span><span class="s">"text/javascript"</span><span class="nt">&gt;</span>
 <span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
   <span class="kd">var</span> <span class="nx">template</span> <span class="o">=</span> <span class="nx">Handlebars</span><span class="p">.</span><span class="nx">template</span><span class="p">,</span> <span class="nx">templates</span> <span class="o">=</span> <span class="nx">Handlebars</span><span class="p">.</span><span class="nx">templates</span> <span class="o">=</span> <span class="nx">Handlebars</span><span class="p">.</span><span class="nx">templates</span> <span class="o">||</span> <span class="p">{};</span>
 <span class="nx">templates</span><span class="p">[</span><span class="s1">'user.hbs'</span><span class="p">]</span> <span class="o">=</span> <span class="nx">template</span><span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">Handlebars</span><span class="p">,</span><span class="nx">depth0</span><span class="p">,</span><span class="nx">helpers</span><span class="p">,</span><span class="nx">partials</span><span class="p">,</span><span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
@@ -62,10 +69,11 @@ In addition to reducing the download size, eliminating client-side compilation w
 speed up boot time, as compilation is the most expensive part of <a href="http://handlebarsjs.com/">Handlebars.js</a>.
 </p>
 
-<p>Finally, you can access to the precompiled template by:</p>
+<p>Later, you can access to the precompiled template by:</p>
 <div class="highlight">
 <pre>
 <span class="nt">var</span> template = Handlebars.templates[<span class="s">'user.hbs'</span>]
+<span class="nt">var</span> output = template(model);
 </pre>
 </div>
 </li>
@@ -83,9 +91,8 @@ Syntax is as follows:
 </div>
 <p>Where <code>template</code> is the path to a template.
 
-<p>Example: row.hbs:</p>
-
 <div class="highlight">
+Given row.hbs:
 <pre>
 <span class="nt">&lt;tr&gt;</span>
   <span class="nt">&lt;td&gt;</span>{{ "{{firstName" }}}}<span class="nt">&lt;/td&gt;</span>
@@ -94,9 +101,8 @@ Syntax is as follows:
 </pre>
 </div>
 
-<p>home.hbs:</p>
-
 <div class="highlight">
+row.hbs can be embedded in home.hbs by:
 <pre>
 <span class="nt">&lt;html&gt;</span>
   <span class="p">{{ "{{" }}</span><span class="nx">embedded</span> <span class="s2">"row"</span><span class="p">}}</span>
@@ -104,9 +110,8 @@ Syntax is as follows:
 </pre>
 </div>
 
-<p>Output:</p>
-
 <div class="highlight">
+The final output looks like:
 <pre>
 <span class="nt">&lt;html&gt;</span>
 <span class="nt">&lt;script</span> id=<span class="s">"row-hbs"</span> type=<span class="s">"text/x-handlebars"</span><span class="nt">&gt;</span>
