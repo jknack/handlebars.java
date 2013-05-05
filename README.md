@@ -832,7 +832,7 @@ Usage:
  handlebars.registerHelper("json", JacksonHelper.INSTANCE);
 ```
 ```
- {{json context [view="foo.MyFullyQualifiedClassName"]}}
+ {{json context [view="foo.MyFullyQualifiedClassName"] [escapeHTML=false]}}
 ```
 
 Alternative:
@@ -841,12 +841,14 @@ Alternative:
    foo.MyFullyQualifiedClassName.class);
 ```
 ```
- {{json context [view="myView"]}}
+ {{json context [view="myView"] [escapeHTML=false]}}
 ```
 
 context: An object, may be null.
 
 view: The name of the [Jackson View](http://wiki.fasterxml.com/JacksonJsonViews). Optional.
+
+escapeHTML: True, if the JSON content contains HTML chars and you need to escaped them. Default is: false.
 
 ## Jackson 2.x
 

@@ -17,6 +17,7 @@
  */
 package com.github.jknack.handlebars;
 
+import static org.apache.commons.lang3.StringUtils.isEmpty;
 import static org.apache.commons.lang3.Validate.notEmpty;
 import static org.apache.commons.lang3.Validate.notNull;
 
@@ -24,6 +25,11 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.SerializableString;
+import com.fasterxml.jackson.core.io.CharacterEscapes;
+import com.fasterxml.jackson.core.io.SegmentedStringWriter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 
@@ -43,40 +49,79 @@ import com.fasterxml.jackson.databind.ObjectWriter;
  *  {{json model}}
  * </pre>
  * <p>
- * View class usage:
+ * If <code>model</code> is null an empty string is returned.
+ * </p>
+ * <p>
+ * You can change this using the <code>default</code> option:
  * </p>
  *
  * <pre>
- *  Handlebars hbs = new Handlebars();
+ *  {{json model default="{}"}}
+ * </pre>
  *
- *  hbs.registerHelper("json", Jackson2Helper.INSTANCE);
+ * <p>
+ * Using a view class:
+ * </p>
  *
- *  ...
- *
+ * <pre>
  *  {{json model view="foo.MyView"}}
- *
  * </pre>
  * <p>
- * View alias usage:
+ * Using alias for views:
  * </p>
  *
  * <pre>
- *
- *  Handlebars hbs = new Handlebars();
- *
- *  hbs.registerHelper("json", Jackson2Helper.INSTANCE
- *    .viewAlias("myView", foo.MyView.class));
- *
- *  ...
- *
  *  {{json model view="myView"}}
+ * </pre>
  *
+ * <p>
+ * Escape HTML chars:
+ * </p>
+ *
+ * <pre>
+ *  {{json model escapeHtml=true}}
  * </pre>
  *
  * @author edgar.espina
  * @since 0.4.0
  */
 public class Jackson2Helper implements Helper<Object> {
+
+  /**
+   * Escape HTML chars from JSON content.
+   * See http://www.cowtowncoder.com/blog/archives/2012/08/entry_476.html
+   *
+   * @author edgar.espina
+   * @since 1.0.0
+   */
+  @SuppressWarnings("serial")
+  private static class HtmlEscapes extends CharacterEscapes {
+
+    /**
+     * The escape table.
+     */
+    private int[] escapeTable;
+    {
+      // Start with set of characters known to require escaping (double-quote, backslash etc)
+      escapeTable = CharacterEscapes.standardAsciiEscapesForJSON();
+      // and force escaping of a few others:
+      escapeTable['<'] = CharacterEscapes.ESCAPE_STANDARD;
+      escapeTable['>'] = CharacterEscapes.ESCAPE_STANDARD;
+      escapeTable['&'] = CharacterEscapes.ESCAPE_STANDARD;
+      escapeTable['\''] = CharacterEscapes.ESCAPE_STANDARD;
+    }
+
+    @Override
+    public int[] getEscapeCodesForAscii() {
+      return escapeTable;
+    }
+
+    @Override
+    public SerializableString getEscapeSequence(final int ch) {
+      return null;
+    }
+
+  }
 
   /**
    * A singleton version of {@link Jackson2Helper}.
@@ -113,24 +158,48 @@ public class Jackson2Helper implements Helper<Object> {
   public CharSequence apply(final Object context, final Options options)
       throws IOException {
     if (context == null) {
-      return "";
+      return options.hash("default", "");
     }
     String viewName = options.hash("view", "");
-    final ObjectWriter writer;
-    if (viewName.length() > 0) {
-      try {
+    JsonGenerator generator = null;
+    try {
+      Boolean escapeHtml = options.hash("escapeHTML", Boolean.FALSE);
+
+      final ObjectWriter writer;
+      // do we need to use a view?
+      if (!isEmpty(viewName)) {
         Class<?> viewClass = alias.get(viewName);
         if (viewClass == null) {
           viewClass = getClass().getClassLoader().loadClass(viewName);
         }
         writer = mapper.writerWithView(viewClass);
-      } catch (ClassNotFoundException ex) {
-        throw new IllegalArgumentException(viewName, ex);
+      } else {
+        writer = mapper.writer();
       }
-    } else {
-      writer = mapper.writer();
+      JsonFactory jsonFactory = mapper.getFactory();
+
+      SegmentedStringWriter output = new SegmentedStringWriter(jsonFactory._getBufferRecycler());
+
+      // creates a json generator.
+      generator = jsonFactory.createJsonGenerator(output);
+
+      // do we need to escape html?
+      if (escapeHtml) {
+        generator.setCharacterEscapes(new HtmlEscapes());
+      }
+
+      // write the JSON output.
+      writer.writeValue(generator, context);
+      generator.close();
+
+      return new Handlebars.SafeString(output.getAndClear());
+    } catch (ClassNotFoundException ex) {
+      throw new IllegalArgumentException(viewName, ex);
+    } finally {
+      if (generator != null && !generator.isClosed()) {
+        generator.close();
+      }
     }
-    return new Handlebars.SafeString(writer.writeValueAsString(context));
   }
 
   /**

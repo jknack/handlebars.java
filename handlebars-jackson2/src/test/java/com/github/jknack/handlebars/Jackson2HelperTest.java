@@ -16,6 +16,8 @@ package com.github.jknack.handlebars;
 import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.junit.Test;
 
@@ -113,5 +115,21 @@ public class Jackson2HelperTest {
     CharSequence result = template.apply(new Blog("First Post", "..."));
 
     assertEquals("{\"title\":\"First Post\"}", result);
+  }
+
+  @Test
+  public void escapeHtml() throws IOException {
+    Handlebars handlebars = new Handlebars();
+    handlebars.registerHelper("@json", Jackson2Helper.INSTANCE);
+
+    Map<String, String> model = new HashMap<String, String>();
+    model.put("script", "<script text=\"text/javascript\"></script>");
+
+    assertEquals("{\"script\":\"<script text=\\\"text/javascript\\\"></script>\"}", handlebars
+        .compileInline("{{@json this}}").apply(model));
+
+    assertEquals(
+        "{\"script\":\"\\u003Cscript text=\\\"text/javascript\\\"\\u003E\\u003C/script\\u003E\"}",
+        handlebars.compileInline("{{@json this escapeHTML=true}}").apply(model));
   }
 }
