@@ -47,26 +47,35 @@ Using the <a href="http://en.wikipedia.org/wiki/JSON">JSON</a> helper:
 </pre>
 </div>
 
+<h3>Jackson Views</h3>
 <div class="highlight">
 JSON <a href="http://wiki.fasterxml.com/JacksonJsonViews">views</a>:
 <pre>
-<span class="p">{{ "{{" }}</span><span class="nx">json</span> <span class="nf">this</span> view=<span class="s2">"foo.MyFullyQualifiedClassName"</span><span class="p">}}</span>
+<span class="p">{{ "{{" }}</span><span class="nx">json</span> <span class="nf">this</span> view=<span class="nt">"foo.MyFullyQualifiedClassName"</span><span class="p">}}</span>
 </pre>
 </div>
 
 <div class="highlight">
 Alias for JSON <a href="http://wiki.fasterxml.com/JacksonJsonViews">views</a>:
 <pre>
-handlebars.registerHelper(<span class="s2">"json"</span>, <span class="nt">new</span> JacksonHelper2().viewAlias(<span class="s2">"myView"</span>,
-   foo.MyFullyQualifiedClassName.<span class="nf">class</span>);
+handlebars.registerHelper(<span class="nt">"json"</span>, <span class="nt">new</span> JacksonHelper2()
+   .viewAlias(<span class="nt">"myView"</span>, foo.MyFullyQualifiedClassName.<span class="nf">class</span>);
 ...
-<span class="p">{{ "{{" }}</span><span class="nx">json</span> <span class="nf">this</span> view=<span class="s2">"myView"</span><span class="p">}}</span>
+<span class="p">{{ "{{" }}</span><span class="nx">json</span> <span class="nf">this</span> view=<span class="nt">"myView"</span><span class="p">}}</span>
+</pre>
+</div>
+
+<h3>Escaping HTML chars</h3>
+<div class="highlight">
+You might want to set<code>escapeHTML</code>if your JSON has HTML content.
+<pre>
+<span class="p">{{ "{{" }}</span><span class="nx">json</span> <span class="nf">this</span> escapeHTML=<span class="nt">true</span><span class="p">}}</span>
 </pre>
 </div>
 
 <h2>The JsonNodeValueResolver</h2>
 <p>
-The <a href="http://jackson.codehaus.org/">Jackson</a> module has a custom <a href="stack.html#resolvers">ValueResolver</a> that knows how to extract values from a<code>JsonNode</code>objects.
+The <a href="http://jackson.codehaus.org/">Jackson</a> module has a custom <a href="stack.html#resolvers">ValueResolver</a> that knows how to extract values from a<code>JsonNode</code>object.
 </p>
 
 <div class="highlight">
@@ -78,4 +87,9 @@ Context context = Context
   .build();
 </pre>
 </div>
+
+<h1>Conclusion</h1>
+<p>
+As you see, <a href="https://github.com/jknack/handlebars.java">Handlebars.java</a> provides you a very nice integration with <a href="http://jackson.codehaus.org/">Jackson</a> the most widely used <a href="http://en.wikipedia.org/wiki/JSON">JSON</a> library for Java.
+</p>
 
