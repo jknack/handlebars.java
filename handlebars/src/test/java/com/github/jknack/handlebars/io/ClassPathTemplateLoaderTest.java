@@ -82,11 +82,17 @@ public class ClassPathTemplateLoaderTest {
   public void nullSuffix() throws IOException {
     assertEquals("suffix should be optional",
         new ClassPathTemplateLoader("/", null).sourceAt("noextension").content());
+
+    assertEquals("template.hbs",
+        new ClassPathTemplateLoader("/", null).sourceAt("template.hbs").content());
   }
 
   @Test
   public void emptySuffix() throws IOException {
     assertEquals("suffix should be optional",
         new ClassPathTemplateLoader("/", "").sourceAt("noextension").content());
+
+    assertEquals("template.hbs",
+        new ClassPathTemplateLoader("/", "").sourceAt("template.hbs").content());
   }
 }
