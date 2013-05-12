@@ -17,14 +17,11 @@
  */
 package com.github.jknack.handlebars.helper;
 
-import static org.apache.commons.lang3.Validate.isTrue;
 import static org.apache.commons.lang3.Validate.notNull;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
 
 import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Helper;
@@ -62,81 +59,96 @@ public class MethodHelper implements Helper<Object> {
 
   @Override
   public CharSequence apply(final Object context, final Options options) throws IOException {
-    Class<?>[] parameterTypes = method.getParameterTypes();
-    List<Object> args = new ArrayList<Object>();
+    Class<?>[] paramTypes = method.getParameterTypes();
+    Object[] args = new Object[paramTypes.length];
     // collect the parameters
     int pidx = 0;
-    for (int i = 0; i < parameterTypes.length; i++) {
-      Class<?> paramType = parameterTypes[i];
-      Object arg = null;
-      if (i == 0) {
-        // param=0 might be the context it self
-        if (paramType.isInstance(context)) {
-          arg = context;
-        }
+    for (int i = 0; i < paramTypes.length; i++) {
+      Class<?> paramType = paramTypes[i];
+      Object ctx = i == 0 ? context : null;
+      Options opts = i == paramTypes.length - 1 ? options : null;
+      Object candidate = options.param(pidx, null);
+      Object arg = argument(paramType, candidate, ctx, opts);
+      args[i] = arg;
+      if (candidate == arg) {
+        pidx++;
       }
-      if (arg == null && context != null) {
-        arg = options.param(pidx, null);
-        if (arg == null) {
-          if (paramType.isInstance(options)) {
-            arg = options;
-          }
-        } else {
-          isTrue(paramType.isInstance(arg) || paramType.isAssignableFrom(unwrap(arg.getClass())),
-              "found '%s', expected '%s'", arg.getClass().getName(), paramType.getName());
-          pidx += 1;
-        }
-      }
-      args.add(arg);
     }
     try {
-      return (CharSequence) method.invoke(source, args.toArray(new Object[args.size()]));
+      return (CharSequence) method.invoke(source, args);
     } catch (InvocationTargetException ex) {
-      Throwable cause = ex.getCause();
-      if (cause instanceof RuntimeException) {
-        throw (RuntimeException) cause;
-      }
-      if (cause instanceof IOException) {
-        throw (IOException) cause;
-      }
-      throw new IllegalStateException("could not execute helper: " + method.getName(), ex);
+      throw launderThrowable(ex.getCause());
     } catch (IllegalAccessException ex) {
       throw new IllegalStateException("could not execute helper: " + method.getName(), ex);
     }
   }
 
   /**
-   * Try to unwrapp a primitive wrap to his primitive class.
+   * Return a runtime exception or throw an {@link IOException}.
    *
-   * @param clazz The candidate class.
-   * @return unwrapp a primitive wrap to his primitive class. Or, return the same class for none
-   *         primitive wrapper.
+   * @param cause The invocation cause.
+   * @return A runtime exception or throw an {@link IOException}.
+   * @throws IOException If the cause is an {@link IOException}.
    */
-  private static Class<?> unwrap(final Class<?> clazz) {
-    if (clazz == Integer.class) {
-      return Integer.TYPE;
+  private RuntimeException launderThrowable(final Throwable cause) throws IOException {
+    if (cause instanceof RuntimeException) {
+      return (RuntimeException) cause;
     }
-    if (clazz == Boolean.class) {
-      return Boolean.TYPE;
+    if (cause instanceof IOException) {
+      throw (IOException) cause;
     }
-    if (clazz == Long.class) {
-      return Long.TYPE;
+    return new IllegalStateException("could not execute helper: " + method.getName(), cause);
+  }
+
+  /**
+   * Choose between context, options or a possible argument that matches the parameter type.
+   *
+   * @param paramType The expected parameter type.
+   * @param argument The possible argument.
+   * @param context The context object.
+   * @param options The options object.
+   * @return An object argument.
+   */
+  private Object argument(final Class<?> paramType, final Object argument, final Object context,
+      final Options options) {
+    // priority order is as follows:
+    // 1. context
+    // 2. argument
+    // 3. options
+    for (Object candidate : new Object[]{context, argument, options }) {
+      if (paramType.isInstance(candidate) || wrap(paramType).isInstance(candidate)) {
+        return candidate;
+      }
     }
-    if (clazz == Double.class) {
-      return Double.TYPE;
+    return null;
+  }
+
+  /**
+   * Wrap (if possible) a primitive type to their wrapper.
+   *
+   * @param type The candidate type.
+   * @return A wrapper for the primitive type or the original type.
+   */
+  private static Class<?> wrap(final Class<?> type) {
+    if (type.isPrimitive()) {
+      if (type == Integer.TYPE) {
+        return Integer.class;
+      } else if (type == Boolean.TYPE) {
+        return Boolean.class;
+      } else if (type == Character.TYPE) {
+        return Character.class;
+      } else if (type == Double.TYPE) {
+        return Double.class;
+      } else if (type == Long.TYPE) {
+        return Long.class;
+      } else if (type == Float.TYPE) {
+        return Float.class;
+      } else if (type == Short.TYPE) {
+        return Short.class;
+      } else if (type == Byte.TYPE) {
+        return Byte.class;
+      }
     }
-    if (clazz == Float.class) {
-      return Float.TYPE;
-    }
-    if (clazz == Character.class) {
-      return Character.TYPE;
-    }
-    if (clazz == Byte.class) {
-      return Byte.TYPE;
-    }
-    if (clazz == Short.class) {
-      return Short.TYPE;
-    }
-    return clazz;
+    return type;
   }
 }

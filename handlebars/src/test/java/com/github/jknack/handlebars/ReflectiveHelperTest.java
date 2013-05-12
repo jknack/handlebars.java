@@ -2,6 +2,7 @@ package com.github.jknack.handlebars;
 
 import static org.apache.commons.lang3.StringUtils.join;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -56,6 +57,11 @@ public class ReflectiveHelperTest extends AbstractTest {
   public void testBlog() throws IOException {
     shouldCompileTo("{{blog this}}", new Blog("title", "body"),
         "blog:title");
+  }
+
+  @Test
+  public void testNullBlog() throws IOException {
+    shouldCompileTo("{{nullBlog this}}", null, "blog:null");
   }
 
   @Test
@@ -152,6 +158,16 @@ public class ReflectiveHelperTest extends AbstractTest {
   public CharSequence blog(final Blog blog, final Options options) {
     assertNotNull(options);
     return "blog:" + blog.toString();
+  }
+
+  public CharSequence nullBlog(final Blog blog, final Options options) {
+    assertNull(blog);
+    assertNotNull(options);
+    return "blog:null";
+  }
+
+  public CharSequence nullParameter(final Object context, final String param) {
+    return "blog:" + param;
   }
 
   public CharSequence blogTitle(final Blog blog, final String title, final Options options) {
