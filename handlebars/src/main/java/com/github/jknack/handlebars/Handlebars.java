@@ -50,6 +50,7 @@ import com.github.jknack.handlebars.helper.UnlessHelper;
 import com.github.jknack.handlebars.helper.WithHelper;
 import com.github.jknack.handlebars.internal.HbsParserFactory;
 import com.github.jknack.handlebars.io.ClassPathTemplateLoader;
+import com.github.jknack.handlebars.io.CompositeTemplateLoader;
 import com.github.jknack.handlebars.io.StringTemplateSource;
 import com.github.jknack.handlebars.io.TemplateLoader;
 import com.github.jknack.handlebars.io.TemplateSource;
@@ -290,7 +291,7 @@ public class Handlebars {
   /**
    * The template cache. Required.
    */
-  private TemplateCache cache;
+  private TemplateCache cache = NullTemplateCache.INSTANCE;
 
   /**
    * If true, missing helper parameters will be resolve to their names.
@@ -330,23 +331,12 @@ public class Handlebars {
   }
 
   /**
-   * Creates a new {@link Handlebars}.
-   *
-   * @param loader The template loader. Required.
-   * @param cache The template cache. Required.
-   */
-  public Handlebars(final TemplateLoader loader, final TemplateCache cache) {
-    with(loader);
-    with(cache);
-  }
-
-  /**
    * Creates a new {@link Handlebars} with no cache.
    *
    * @param loader The template loader. Required.
    */
   public Handlebars(final TemplateLoader loader) {
-    this(loader, NullTemplateCache.INSTANCE);
+    with(loader);
   }
 
   /**
@@ -354,7 +344,7 @@ public class Handlebars {
    * cache.
    */
   public Handlebars() {
-    this(new ClassPathTemplateLoader(), NullTemplateCache.INSTANCE);
+    this(new ClassPathTemplateLoader());
   }
 
   /**
@@ -490,8 +480,7 @@ public class Handlebars {
    * <li>A method can/can't be static</li>
    * <li>The method's name became the helper's name</li>
    * <li>Context, parameters and options are all optional</li>
-   * <li>If context and options are present they must be the first and last arguments of
-   * the method</li>
+   * <li>If context and options are present they must be the first and last method arguments.</li>
    * </ul>
    *
    * Instance and static methods will be registered as helpers.
@@ -523,8 +512,7 @@ public class Handlebars {
    * <li>A method can/can't be static</li>
    * <li>The method's name became the helper's name</li>
    * <li>Context, parameters and options are all optional</li>
-   * <li>If context and options are present they must be the first and last arguments of
-   * the method</li>
+   * <li>If context and options are present they must be the first and last method arguments.</li>
    * </ul>
    *
    * Only static methods will be registered as helpers.
@@ -656,13 +644,16 @@ public class Handlebars {
   }
 
   /**
-   * Set a new {@link TemplateLoader}. Default is: {@link ClassPathTemplateLoader}.
+   * Set one or more {@link TemplateLoader}. In the case of two or more {@link TemplateLoader}, a
+   * {@link CompositeTemplateLoader} will be created. Default is: {@link ClassPathTemplateLoader}.
    *
    * @param loader The template loader. Required.
    * @return This handlebars object.
+   * @see CompositeTemplateLoader
    */
-  public Handlebars with(final TemplateLoader loader) {
-    this.loader = notNull(loader, "The template loader is required.");
+  public Handlebars with(final TemplateLoader... loader) {
+    isTrue(loader.length > 0, "The template loader is required.");
+    this.loader = loader.length == 1 ? loader[0] : new CompositeTemplateLoader(loader);
     return this;
   }
 
