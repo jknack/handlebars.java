@@ -202,6 +202,9 @@ public class Handlebars {
       if (value.getClass().isArray()) {
         return Array.getLength(value) == 0;
       }
+      if (value instanceof Number) {
+        return ((Number) value).intValue() == 0;
+      }
       return false;
     }
 
