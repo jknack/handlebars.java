@@ -135,9 +135,9 @@ Example:
 
 ```json
 {
-  items: [
+  "items": [
     {
-      name: "Handlebars.java rocks!"
+      "name": "Handlebars.java rocks!"
     }
   ]
 }
@@ -467,7 +467,6 @@ Or, if you prefer static methods only:
 handlebars.registerHelpers(HelperSource.class);
 
 ```
-
 
 ### Helper Options
 
@@ -809,10 +808,6 @@ Hello edgar!
  The Mustache Spec has some rules for removing spaces and new lines, by default, this feature is off.
  You can turn this on by setting the: ```Handlebars.prettyPrint(true)```.
 
-### Usage:
-```java
- StringHelpers.register(handlebars);
-```
 
 # Modules
 
