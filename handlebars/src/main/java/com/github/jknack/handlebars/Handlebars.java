@@ -65,7 +65,7 @@ import com.github.jknack.handlebars.io.TemplateSource;
  *
  * <pre>
  * Handlebars handlebars = new Handlebars();
- * Template template = handlebars.compile("Hello {{this}}!");
+ * Template template = handlebars.compileInline("Hello {{this}}!");
  * System.out.println(template.apply("Handlebars.java"));
  * </pre>
  *
@@ -84,7 +84,7 @@ import com.github.jknack.handlebars.io.TemplateSource;
  * <pre>
  * Handlebars handlebars = new Handlebars();
  *
- * Template template = handlebars.compile(URI.create("mytemplate"));
+ * Template template = handlebars.compileInline(URI.create("mytemplate"));
  *
  * System.out.println(template.apply("Handlebars.java"));
  * </pre>

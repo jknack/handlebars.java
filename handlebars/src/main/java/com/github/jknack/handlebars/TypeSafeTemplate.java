@@ -36,7 +36,7 @@ import java.io.Writer;
  *    ...
  *  }
  *
- *  UserTemplate template = new Handlebars().compile("{{name}} is {{age}} years old!")
+ *  UserTemplate template = new Handlebars().compileInline("{{name}} is {{age}} years old!")
  *    .as(UserTemplate.class);
  *
  *  template.setAge(32);

@@ -47,7 +47,7 @@ import java.net.URL;
  * loader.setSuffix(".html");
  * Handlebars handlebars = new Handlebars(loader);
  *
- * Template template = handlebars.compile(URI.create("mytemplate"));
+ * Template template = handlebars.compile("mytemplate");
  *
  * System.out.println(template.apply("Handlebars.java"));
  * </pre>

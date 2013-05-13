@@ -35,7 +35,7 @@ SNAPSHOT versions are NOT synchronized to Central. If you want to use a snapshot
 ```java
 Handlebars handlebars = new Handlebars();
 
-Template template = handlebars.compile("Hello {{this}}!");
+Template template = handlebars.compileInline("Hello {{this}}!");
 
 System.out.println(template.apply("Handlebars.java"));
 ```
@@ -61,7 +61,7 @@ Hello {{this}}!
 ```java
 Handlebars handlebars = new Handlebars();
 
-Template template = handlebars.compile(URI.create("mytemplate"));
+Template template = handlebars.compile("mytemplate");
 
 System.out.println(template.apply("Handlebars.java"));
 ```
@@ -90,7 +90,7 @@ loader.setPrefix("/templates");
 loader.setSuffix(".html");
 Handlebars handlebars = new Handlebars(loader);
 
-Template template = handlebars.compile(URI.create("mytemplate"));
+Template template = handlebars.compile("mytemplate");
 
 System.out.println(template.apply("Handlebars.java"));
 ```
@@ -189,6 +189,7 @@ Please note you don't have to specified the extension file.
  * **precompile**
  * **embedded**
  * **i18n** and **i18nJs** 
+ * **string helpers**
 
 ### with, each, if, unless:
  See the [built-in helper documentation](http://handlebarsjs.com/block_helpers.html).
@@ -363,6 +364,10 @@ The generated code looks like:
 
 Finally, it converts message patterns like: ```Hi {0}``` into ```Hi {{arg0}}```. This make possible to the [I18n](https://github.com/fnando/i18n-js) JS library to interpolate variables.
 
+### string helpers
+ Functions like abbreviate, capitalize, join, dateFormat, yesno, etc., are available from [StringHelpers] (https://github.com/jknack/handlebars.java/blob/master/handlebars/src/main/java/com/github/jknack/handlebars/StringHelpers.java).
+
+
 ### TypeSafe Templates
  TypeSafe templates are created by extending the ```TypeSafeTemplate``` interface. For example:
 
@@ -379,7 +384,7 @@ public static interface UserTemplate extends TypeSafeTemplate<User> {
 }
 
 // 3
-UserTemplate userTmpl = handlebars.compile("{{name}} is {{age}} years old!")
+UserTemplate userTmpl = handlebars.compileInline("{{name}} is {{age}} years old!")
   .as(UserTemplate.class);
 
 userTmpl.setAge(32);
@@ -481,7 +486,7 @@ handlebars.registerHelper("blog-list", new Helper<Blog>() {
 Bean bean = new Bean();
 bean.setParam1(123);
 
-Template template = handlebars.compile("{{#blog-list blogs \"param0\" param1}}{{/blog-list}}");
+Template template = handlebars.compileInline("{{#blog-list blogs \"param0\" param1}}{{/blog-list}}");
 template.apply(bean);
 ```
 
@@ -497,7 +502,7 @@ handlebars.registerHelper("blog-list", new Helper<Blog>() {
   }
 });
 
-Template template = handlebars.compile("{{#blog-list blogs}}{{/blog-list}}");
+Template template = handlebars.compileInline("{{#blog-list blogs}}{{/blog-list}}");
 ```
 
 #### Hash
@@ -510,7 +515,7 @@ handlebars.registerHelper("blog-list", new Helper<Blog>() {
   }
 });
 
-handlebars.compile("{{#blog-list blogs class=\"blog-css\"}}{{/blog-list}}");
+handlebars.compileInline("{{#blog-list blogs class=\"blog-css\"}}{{/blog-list}}");
 ```
 
 #### Default hash
@@ -523,7 +528,7 @@ handlebars.registerHelper("blog-list", new Helper<Blog>() {
   }
 });
 
-handlebars.compile("{{#blog-list blogs}}{{/blog-list}}");
+handlebars.compileInline("{{#blog-list blogs}}{{/blog-list}}");
 ```
 ## Error reporting
 
@@ -779,8 +784,8 @@ Handlebars hbs = new Handlebars()
 ```
 
 ```java
-  Handlebars handlebars = new Handlebars();
-  handlebars.setStringParams(true);
+  Handlebars handlebars = new Handlebars()
+    .stringParams(true);
   
   handlebars.registerHelper("sayHi", new Helper<Object>() {
     public Object apply(Object context, Options options) {
@@ -796,18 +801,14 @@ Hello edgar!
  How it works? ```stringParams: true``` instruct Handlebars.java to resolve a parameter
  to his name if the value isn't present in the context stack.
 
-### Allow Infite loops
+### Allow Infinite loops
  By default, Handlebars.java don't allow a partial to call him self (directly or indirectly).
- You can change this by setting the: ```Handlebars.setAllowInifiteLoops``` to ```true```, just avoid ```StackOverflowError```.
+ You can change this by setting the: ```Handlebars.inifiteLoops(true)```, just avoid ```StackOverflowError```.
 
-### Pretty Whitspaces
+### Pretty Print
  The Mustache Spec has some rules for removing spaces and new lines, by default, this feature is off.
- You can turn on this by setting the: ```Handlebars.setPrettyWhitespaces``` to ```true```.
+ You can turn this on by setting the: ```Handlebars.prettyPrint(true)```.
 
-# Additional Helpers
-## String Helpers
- Functions like abbreviate, capitalize, join, dateFormat, yesno, etc., are available from [StringHelpers] (https://github.com/jknack/handlebars.java/blob/master/handlebars/src/main/java/com/github/jknack/handlebars/StringHelpers.java).
- 
 ### Usage:
 ```java
  StringHelpers.register(handlebars);
