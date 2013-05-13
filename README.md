@@ -1,8 +1,8 @@
 [![Build Status](https://secure.travis-ci.org/jknack/handlebars.java.png?branch=master)](https://travis-ci.org/jknack/handlebars.java)
-
-
-Handlebars.java - Logic-less and semantic templates with Java
+Handlebars.java
 ===============
+## Logic-less and semantic templates with Java
+
 Handlebars.java is a Java port of [handlebars](http://handlebarsjs.com/).
 
 Handlebars provides the power necessary to let you build semantic templates effectively with no frustration.
