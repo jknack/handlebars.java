@@ -40,7 +40,7 @@ public class InheritanceTest {
       new Handlebars(new ClassPathTemplateLoader("/inheritance"));
 
   static {
-    handlebars.setPrettyWhitespaces(true);
+    handlebars.setPrettyPrint(true);
   }
 
   private String name;

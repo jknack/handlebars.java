@@ -125,7 +125,7 @@ public class CompilationPerSecondBenchTest {
         "{{name}}{{#each kids}}{{>recursion}}{{/each}}");
     final Handlebars handlebars =
         new Handlebars(new MapTemplateLoader(templates));
-    handlebars.setAllowInfiniteLoops(true);
+    handlebars.setInfiniteLoops(true);
 
     new Bench().run(new Unit() {
 

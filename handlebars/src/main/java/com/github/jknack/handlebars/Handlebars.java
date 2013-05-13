@@ -304,7 +304,7 @@ public class Handlebars {
   /**
    * If true, unnecessary whitespace and new lines will be removed.
    */
-  private boolean prettyWhitespaces;
+  private boolean prettyPrint;
 
   /**
    * The helper registry.
@@ -316,7 +316,7 @@ public class Handlebars {
    * If true, templates will be able to call him self directly or indirectly. Use with caution.
    * Default is: false.
    */
-  private boolean allowInfiniteLoops;
+  private boolean infiniteLoops;
 
   /**
    * The missing value resolver strategy.
@@ -600,7 +600,7 @@ public class Handlebars {
    *
    * @return If true, missing helper parameters will be resolve to their names.
    */
-  public boolean allowStringParams() {
+  public boolean stringParams() {
     return stringParams;
   }
 
@@ -610,18 +610,30 @@ public class Handlebars {
    * @return If true, unnecessary spaces and new lines will be removed from output. Default is:
    *         false.
    */
-  public boolean prettyWhitespaces() {
-    return prettyWhitespaces;
+  public boolean prettyPrint() {
+    return prettyPrint;
   }
 
   /**
    * If true, unnecessary spaces and new lines will be removed from output. Default is: false.
    *
-   * @param prettyWhitespaces If true, unnecessary spaces and new lines will be removed from output.
+   * @param prettyPrint If true, unnecessary spaces and new lines will be removed from output.
    *        Default is: false.
    */
-  public void setPrettyWhitespaces(final boolean prettyWhitespaces) {
-    this.prettyWhitespaces = prettyWhitespaces;
+  public void setPrettyPrint(final boolean prettyPrint) {
+    this.prettyPrint = prettyPrint;
+  }
+
+  /**
+   * If true, unnecessary spaces and new lines will be removed from output. Default is: false.
+   *
+   * @param prettyPrint If true, unnecessary spaces and new lines will be removed from output.
+   *        Default is: false.
+   * @return This handlebars object.
+   */
+  public Handlebars prettyPrint(final boolean prettyPrint) {
+    setPrettyPrint(prettyPrint);
+    return this;
   }
 
   /**
@@ -635,25 +647,50 @@ public class Handlebars {
   }
 
   /**
-   * If true, templates will be able to call him self directly or indirectly. Use with caution.
-   * Default is: false.
+   * If true, missing helper parameters will be resolve to their names.
    *
-   * @return If true, templates will be able to call him self directly or indirectly. Use with
-   *         caution. Default is: false.
+   * @param stringParams If true, missing helper parameters will be resolve to
+   *        their names.
+   * @return The handlebars object.
    */
-  public boolean allowInfiniteLoops() {
-    return allowInfiniteLoops;
+  public Handlebars stringParams(final boolean stringParams) {
+    setStringParams(stringParams);
+    return this;
   }
 
   /**
    * If true, templates will be able to call him self directly or indirectly. Use with caution.
    * Default is: false.
    *
-   * @param allowInfiniteLoops If true, templates will be able to call him self directly or
+   * @return If true, templates will be able to call him self directly or indirectly. Use with
+   *         caution. Default is: false.
+   */
+  public boolean infiniteLoops() {
+    return infiniteLoops;
+  }
+
+  /**
+   * If true, templates will be able to call him self directly or indirectly. Use with caution.
+   * Default is: false.
+   *
+   * @param infiniteLoops If true, templates will be able to call him self directly or
    *        indirectly.
    */
-  public void setAllowInfiniteLoops(final boolean allowInfiniteLoops) {
-    this.allowInfiniteLoops = allowInfiniteLoops;
+  public void setInfiniteLoops(final boolean infiniteLoops) {
+    this.infiniteLoops = infiniteLoops;
+  }
+
+  /**
+   * If true, templates will be able to call him self directly or indirectly. Use with caution.
+   * Default is: false.
+   *
+   * @param infiniteLoops If true, templates will be able to call him self directly or
+   *        indirectly.
+   * @return The handlebars object.
+   */
+  public Handlebars infiniteLoops(final boolean infiniteLoops) {
+    setInfiniteLoops(infiniteLoops);
+    return this;
   }
 
   /**

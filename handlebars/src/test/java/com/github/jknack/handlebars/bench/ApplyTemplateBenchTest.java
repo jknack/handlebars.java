@@ -57,7 +57,7 @@ public class ApplyTemplateBenchTest extends AbstractTest {
           "{{name}}{{#each kids}}{{>recursion}}{{/each}}");
 
       handlebars = new Handlebars(new MapTemplateLoader(templates));
-      handlebars.setAllowInfiniteLoops(true);
+      handlebars.setInfiniteLoops(true);
 
       helloWorld = handlebars.compileInline("Hello World!");
 

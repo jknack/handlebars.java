@@ -24,7 +24,7 @@ public class TemporalPartialTest {
   @Test
   public void temporalPartials() throws IOException {
     Handlebars handlebars = new Handlebars();
-    handlebars.setPrettyWhitespaces(true);
+    handlebars.setPrettyPrint(true);
 
     handlebars.registerHelper("item", new Helper<Item>() {
       @Override

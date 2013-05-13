@@ -290,7 +290,7 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
   @Override
   public Template visitTemplate(final TemplateContext ctx) {
     Template template = visitBody(ctx.body());
-    if (!handlebars.allowInfiniteLoops() && template instanceof BaseTemplate) {
+    if (!handlebars.infiniteLoops() && template instanceof BaseTemplate) {
       template = infiniteLoop(source, (BaseTemplate) template);
     }
     destroy();
@@ -431,7 +431,7 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
    * @return True, if tag instruction was processed.
    */
   private boolean hasTag() {
-    if (handlebars.prettyWhitespaces()) {
+    if (handlebars.prettyPrint()) {
       return hasTag == null ? false : hasTag.booleanValue();
     }
     return false;

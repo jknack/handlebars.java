@@ -161,7 +161,7 @@ public abstract class SpecTest {
     report.append(expected);
     long startCompile = System.currentTimeMillis();
     Handlebars handlebars = new Handlebars(new SpecResourceLocator(spec));
-    handlebars.setPrettyWhitespaces(true);
+    handlebars.setPrettyPrint(true);
     configure(handlebars);
     Template template = handlebars.compile("template");
     long endCompile = System.currentTimeMillis();
