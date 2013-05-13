@@ -328,6 +328,16 @@ public class Handlebars {
    */
   private ParserFactory parserFactory = new HbsParserFactory();
 
+  /**
+   * The start delimiter.
+   */
+  private String startDelimiter = DELIM_START;
+
+  /**
+   * The end delimiter.
+   */
+  private String endDelimiter = DELIM_END;
+
   {
     // make sure default helpers are registered
     registerBuiltinsHelpers(this);
@@ -358,7 +368,7 @@ public class Handlebars {
    * @throws IOException If the resource cannot be loaded.
    */
   public Template compile(final String location) throws IOException {
-    return compile(location, DELIM_START, DELIM_END);
+    return compile(location, startDelimiter, endDelimiter);
   }
 
   /**
@@ -383,7 +393,7 @@ public class Handlebars {
    * @throws IOException If the resource cannot be loaded.
    */
   public Template compileInline(final String input) throws IOException {
-    return compileInline(input, DELIM_START, DELIM_END);
+    return compileInline(input, startDelimiter, endDelimiter);
   }
 
   /**
@@ -411,7 +421,7 @@ public class Handlebars {
    * @throws IOException If the resource cannot be loaded.
    */
   public Template compile(final TemplateSource source) throws IOException {
-    return compile(source, DELIM_START, DELIM_END);
+    return compile(source, startDelimiter, endDelimiter);
   }
 
   /**
@@ -434,7 +444,7 @@ public class Handlebars {
   }
 
   /**
-   * Find a helper by it's name.
+   * Find a helper by name.
    *
    * @param <C> The helper runtime type.
    * @param name The helper's name. Required.
@@ -644,6 +654,46 @@ public class Handlebars {
    */
   public void setAllowInfiniteLoops(final boolean allowInfiniteLoops) {
     this.allowInfiniteLoops = allowInfiniteLoops;
+  }
+
+  /**
+   * Set the end delimiter.
+   *
+   * @param endDelimiter The end delimiter. Required.
+   */
+  public void setEndDelimiter(final String endDelimiter) {
+    this.endDelimiter = notEmpty(endDelimiter, "The endDelimiter is required.");
+  }
+
+  /**
+   * Set the end delimiter.
+   *
+   * @param endDelimiter The end delimiter. Required.
+   * @return This handlebars object.
+   */
+  public Handlebars endDelimiter(final String endDelimiter) {
+    setEndDelimiter(endDelimiter);
+    return this;
+  }
+
+  /**
+   * Set the start delimiter.
+   *
+   * @param startDelimiter The start delimiter. Required.
+   */
+  public void setStartDelimiter(final String startDelimiter) {
+    this.startDelimiter = notEmpty(startDelimiter, "The startDelimiter is required.");
+  }
+
+  /**
+   * Set the start delimiter.
+   *
+   * @param startDelimiter The start delimiter. Required.
+   * @return This handlebars object.
+   */
+  public Handlebars startDelimiter(final String startDelimiter) {
+    setStartDelimiter(startDelimiter);
+    return this;
   }
 
   /**

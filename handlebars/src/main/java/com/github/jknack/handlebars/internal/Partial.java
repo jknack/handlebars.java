@@ -128,7 +128,7 @@ class Partial extends BaseTemplate {
         source = partial(source, indent);
       }
 
-      Template template = handlebars.compile(source, Handlebars.DELIM_START, Handlebars.DELIM_END);
+      Template template = handlebars.compile(source);
       if (this.context.equals("this")) {
         template.apply(context, writer);
       } else {
