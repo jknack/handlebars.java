@@ -19,10 +19,19 @@ package com.github.jknack.handlebars.io;
 
 import java.io.IOException;
 
-import com.github.jknack.handlebars.Template;
-
 /**
- * A template loader can find the {@link TemplateSource} for a {@link Template}.
+ * <p>
+ * Strategy interface for loading resources from class path, file system, etc.
+ * </p>
+ * <h3>Templates prefix and suffix</h3>
+ * <p>
+ * A <code>TemplateLoader</code> provides two important properties:
+ * </p>
+ * <ul>
+ * <li>prefix: useful for setting a default prefix where templates are stored.</li>
+ * <li>suffix: useful for setting a default suffix or file extension for your templates. Default is:
+ * <code>'.hbs'</code></li>
+ * </ul>
  *
  * @author edgar.espina
  * @since 0.1.0
@@ -40,11 +49,11 @@ public interface TemplateLoader {
   String DEFAULT_SUFFIX = ".hbs";
 
   /**
-   * Get a template source for the given uri.
+   * Get a template source from location.
    *
    * @param location The location of the template source. Required.
    * @return A new template source.
-   * @throws IOException If the template's source can't be read.
+   * @throws IOException If the template's source can't be resolved.
    */
   TemplateSource sourceAt(final String location) throws IOException;
 
@@ -62,8 +71,7 @@ public interface TemplateLoader {
   String getPrefix();
 
   /**
-   * @return The suffix that gets appended to view names when building a
-   *         URI.
+   * @return The suffix that gets appended to view names when building a URI.
    */
   String getSuffix();
 

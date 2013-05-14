@@ -21,7 +21,6 @@ import static org.apache.commons.lang3.Validate.notEmpty;
 import static org.apache.commons.lang3.Validate.notNull;
 
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
@@ -54,7 +53,7 @@ public class MapTemplateLoader extends URLTemplateLoader {
   }
 
   @Override
-  public TemplateSource sourceAt(final String uri) throws IOException {
+  public TemplateSource sourceAt(final String uri) throws FileNotFoundException {
     notNull(uri, "The uri is required.");
     notEmpty(uri.toString(), "The uri is required.");
     String location = resolve(normalize(uri));
@@ -66,7 +65,7 @@ public class MapTemplateLoader extends URLTemplateLoader {
   }
 
   @Override
-  protected URL getResource(final String location) throws IOException {
+  protected URL getResource(final String location) {
     throw new UnsupportedOperationException();
   }
 

@@ -20,7 +20,6 @@ package com.github.jknack.handlebars.springmvc;
 import static org.apache.commons.lang3.Validate.notEmpty;
 import static org.apache.commons.lang3.Validate.notNull;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -125,7 +124,7 @@ public class HandlebarsViewResolver extends AbstractTemplateViewResolver
     try {
       view.setTemplate(handlebars.compile(url));
       view.setValueResolver(valueResolvers);
-    } catch (FileNotFoundException ex) {
+    } catch (IOException ex) {
       if (failOnMissingFile) {
         throw ex;
       }

@@ -19,7 +19,6 @@ package com.github.jknack.handlebars.helper;
 
 import static org.apache.commons.lang3.Validate.isTrue;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import com.github.jknack.handlebars.Handlebars;
@@ -57,8 +56,8 @@ public class BlockHelper implements Helper<Object> {
     if (template == null) {
       try {
         template = options.handlebars.compile(path);
-      } catch (FileNotFoundException ex) {
-        // partial not found
+      } catch (IOException ex) {
+        // assume partial not found
         Handlebars.debug(ex.getMessage());
         template = options.fn;
       }

@@ -23,7 +23,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 
-
 /**
  * <p>
  * Strategy interface for loading resources (i.e class path or file system resources)
@@ -62,13 +61,6 @@ import java.net.URL;
  */
 public abstract class URLTemplateLoader extends AbstractTemplateLoader {
 
-  /**
-   * Get a template source for the given uri.
-   *
-   * @param uri The location of the template source. Required.
-   * @return A new template source.
-   * @throws IOException If the template's source can't be read.
-   */
   @Override
   public TemplateSource sourceAt(final String uri) throws IOException {
     notEmpty(uri, "The uri is required.");
@@ -85,7 +77,7 @@ public abstract class URLTemplateLoader extends AbstractTemplateLoader {
    *
    * @param location The location of the template source. Required.
    * @return A new template resource.
-   * @throws IOException If the template's resource can't be resolved.
+   * @throws IOException If the url can't be resolved.
    */
   protected abstract URL getResource(String location) throws IOException;
 

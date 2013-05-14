@@ -22,7 +22,7 @@ import static org.apache.commons.lang3.Validate.notNull;
 
 /**
  * <p>
- * Strategy interface for loading resources (i.e class path or file system resources)
+ * Strategy interface for loading resources from class path, file system, etc.
  * </p>
  * <h3>Templates prefix and suffix</h3>
  * <p>

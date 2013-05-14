@@ -37,7 +37,7 @@ import org.slf4j.LoggerFactory;
  * <ul>
  * <li>If a {@link TemplateLoader} is able to resolve a {@link TemplateSource}, that
  * {@link TemplateSource} is considered the response.</li>
- * <li>If a {@link TemplateLoader} throws a {@link FileNotFoundException} exception the next
+ * <li>If a {@link TemplateLoader} throws a {@link IOException} exception the next
  * {@link TemplateLoader} in the chain will be used.</li>
  * </ul>
  *
@@ -71,7 +71,7 @@ public class CompositeTemplateLoader implements TemplateLoader {
     for (TemplateLoader delegate : delegates) {
       try {
         return delegate.sourceAt(location);
-      } catch (FileNotFoundException ex) {
+      } catch (IOException ex) {
         // try next loader in the chain.
         logger.trace("Unable to resolve: {}, trying next loader in the chain.", location);
       }

@@ -2,7 +2,6 @@ package com.github.jknack.handlebars.springmvc;
 
 import static org.junit.Assert.assertNotNull;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import org.junit.Test;
@@ -22,7 +21,7 @@ public class SpringTemplateLoaderTest {
     assertNotNull(source);
   }
 
-  @Test(expected = FileNotFoundException.class)
+  @Test(expected = IOException.class)
   public void fileNotFound() throws IOException {
     new SpringTemplateLoader(new DefaultResourceLoader()).sourceAt("missingFile");
   }

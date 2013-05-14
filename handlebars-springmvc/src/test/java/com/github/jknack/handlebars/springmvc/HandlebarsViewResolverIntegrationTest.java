@@ -4,7 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
-import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.Locale;
 
 import org.junit.Test;
@@ -49,7 +49,7 @@ public class HandlebarsViewResolverIntegrationTest {
     }
   }
 
-  @Test(expected = FileNotFoundException.class)
+  @Test(expected = IOException.class)
   public void failToResolve() throws Exception {
     try {
       assertNotNull(viewResolver);

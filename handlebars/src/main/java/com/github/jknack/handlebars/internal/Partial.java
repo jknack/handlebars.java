@@ -21,7 +21,6 @@ import static org.apache.commons.lang3.StringUtils.join;
 import static org.apache.commons.lang3.Validate.notEmpty;
 import static org.apache.commons.lang3.Validate.notNull;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
@@ -134,7 +133,7 @@ class Partial extends BaseTemplate {
       } else {
         template.apply(context.get(this.context), writer);
       }
-    } catch (FileNotFoundException ex) {
+    } catch (IOException ex) {
       String reason = String.format("The partial '%s' could not be found",
           loader.resolve(path));
       String message = String.format("%s:%s:%s: %s", filename, line, column, reason);

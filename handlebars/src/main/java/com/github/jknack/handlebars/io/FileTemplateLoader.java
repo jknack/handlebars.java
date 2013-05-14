@@ -24,7 +24,6 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 
-
 /**
  * Load templates from the file system. A base path must be specified at
  * creation time. The base path serve as template repository.

@@ -19,7 +19,6 @@ package com.github.jknack.handlebars.springmvc;
 
 import static org.apache.commons.lang3.Validate.notNull;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 
@@ -71,7 +70,7 @@ public class SpringTemplateLoader extends URLTemplateLoader {
   protected URL getResource(final String location) throws IOException {
     Resource resource = loader.getResource(location);
     if (!resource.exists()) {
-      throw new FileNotFoundException(location);
+      return null;
     }
     return resource.getURL();
   }

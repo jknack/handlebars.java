@@ -17,7 +17,6 @@
  */
 package com.github.jknack.handlebars.io;
 
-import java.io.IOException;
 import java.net.URL;
 
 
@@ -60,7 +59,7 @@ public class ClassPathTemplateLoader extends URLTemplateLoader {
   }
 
   @Override
-  protected URL getResource(final String location) throws IOException {
+  protected URL getResource(final String location) {
     return  getClass().getResource(location);
   }
 }
