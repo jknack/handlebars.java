@@ -365,7 +365,7 @@ The generated code looks like:
 Finally, it converts message patterns like: ```Hi {0}``` into ```Hi {{arg0}}```. This make possible to the [I18n](https://github.com/fnando/i18n-js) JS library to interpolate variables.
 
 ### string helpers
- Functions like abbreviate, capitalize, join, dateFormat, yesno, etc., are available from [StringHelpers] (https://github.com/jknack/handlebars.java/blob/master/handlebars/src/main/java/com/github/jknack/handlebars/StringHelpers.java).
+ Functions like abbreviate, capitalize, join, dateFormat, yesno, etc., are available from [StringHelpers] (https://github.com/jknack/handlebars.java/blob/master/handlebars/src/main/java/com/github/jknack/handlebars/helper/StringHelpers.java).
 
 
 ### TypeSafe Templates
