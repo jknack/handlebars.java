@@ -48,10 +48,10 @@ public class HelperMissingTest extends AbstractTest {
       @Override
       public CharSequence apply(final Object context, final Options options)
           throws IOException {
-        return options.fn.text();
+        return "empty";
       }
     });
-    shouldCompileTo("{{missing x}}", new Object(), helpers, "{{missing x}}");
+    shouldCompileTo("{{missing x}}", new Object(), helpers, "empty");
   }
 
   @Test

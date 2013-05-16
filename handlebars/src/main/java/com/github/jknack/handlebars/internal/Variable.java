@@ -31,6 +31,7 @@ import com.github.jknack.handlebars.Lambda;
 import com.github.jknack.handlebars.MissingValueResolver;
 import com.github.jknack.handlebars.Options;
 import com.github.jknack.handlebars.TagType;
+import com.github.jknack.handlebars.Template;
 
 /**
  * The most basic tag type is the variable. A {{name}} tag in a basic template
@@ -143,10 +144,11 @@ class Variable extends HelperResolver {
       throws IOException {
     Helper<Object> helper = helper(name);
     if (helper != null) {
-      Options options = new Options.Builder(handlebars, type, scope, this)
+      Options options = new Options.Builder(handlebars, type, scope, Template.EMPTY)
           .setParams(params(scope))
           .setHash(hash(scope))
           .build();
+
       CharSequence result = helper.apply(determineContext(scope), options);
       if (escape(result)) {
         writer.append(Handlebars.Utils.escapeExpression(result));
