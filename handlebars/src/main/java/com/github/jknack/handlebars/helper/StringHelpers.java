@@ -21,7 +21,11 @@ import static org.apache.commons.lang3.Validate.isTrue;
 import static org.apache.commons.lang3.Validate.notNull;
 
 import java.io.IOException;
+import java.math.RoundingMode;
 import java.text.DateFormat;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -493,6 +497,116 @@ public enum StringHelpers implements Helper<Object> {
    * </p>
    *
    * <pre>
+   *    {{numberFormat number ["format"] [locale=default]}}
+   * </pre>
+   *
+   * Format parameters is one of:
+   * <ul>
+   * <li>"integer": the integer number format</li>
+   * <li>"percent": the percent number format</li>
+   * <li>"currency": the decimal number format</li>
+   * <li>"pattern": a decimal pattern.</li>
+   * </ul>
+   * Otherwise, the default formatter will be used.
+   *
+   * <p>
+   * More options:
+   * </p>
+   * <ul>
+   * <li>groupingUsed: Set whether or not grouping will be used in this format.</li>
+   * <li>maximumFractionDigits: Sets the maximum number of digits allowed in the fraction portion of
+   * a number.</li>
+   * <li>maximumIntegerDigits: Sets the maximum number of digits allowed in the integer portion of a
+   * number</li>
+   * <li>minimumFractionDigits: Sets the minimum number of digits allowed in the fraction portion of
+   * a number</li>
+   * <li>minimumIntegerDigits: Sets the minimum number of digits allowed in the integer portion of a
+   * number.</li>
+   * <li>parseIntegerOnly: Sets whether or not numbers should be parsed as integers only.</li>
+   * <li>roundingMode: Sets the {@link java.math.RoundingMode} used in this NumberFormat.</li>
+   * </ul>
+   *
+   * @see NumberFormat
+   * @see DecimalFormat
+   */
+  numberFormat {
+    @Override
+    protected CharSequence safeApply(final Object value, final Options options) {
+      isTrue(value instanceof Number, "found '%s', expected 'number'", value);
+      Number number = (Number) value;
+      final NumberFormat numberFormat = build(options);
+
+      Boolean groupingUsed = options.hash("groupingUsed");
+      if (groupingUsed != null) {
+        numberFormat.setGroupingUsed(groupingUsed);
+      }
+
+      Integer maximumFractionDigits = options.hash("maximumFractionDigits");
+      if (maximumFractionDigits != null) {
+        numberFormat.setMaximumFractionDigits(maximumFractionDigits);
+      }
+
+      Integer maximumIntegerDigits = options.hash("maximumIntegerDigits");
+      if (maximumIntegerDigits != null) {
+        numberFormat.setMaximumIntegerDigits(maximumIntegerDigits);
+      }
+
+      Integer minimumFractionDigits = options.hash("minimumFractionDigits");
+      if (minimumFractionDigits != null) {
+        numberFormat.setMinimumFractionDigits(minimumFractionDigits);
+      }
+
+      Integer minimumIntegerDigits = options.hash("minimumIntegerDigits");
+      if (minimumIntegerDigits != null) {
+        numberFormat.setMinimumIntegerDigits(minimumIntegerDigits);
+      }
+
+      Boolean parseIntegerOnly = options.hash("parseIntegerOnly");
+      if (parseIntegerOnly != null) {
+        numberFormat.setParseIntegerOnly(parseIntegerOnly);
+      }
+
+      String roundingMode = options.hash("roundingMode");
+      if (roundingMode != null) {
+        numberFormat.setRoundingMode(RoundingMode.valueOf(roundingMode.toUpperCase().trim()));
+      }
+
+      return numberFormat.format(number);
+    }
+
+    /**
+     * Build a number format from options.
+     *
+     * @param options The helper options.
+     * @return The number format to use.
+     */
+    private NumberFormat build(final Options options) {
+      if (options.params.length == 0) {
+        return NumberStyle.DEFAULT.numberFormat(Locale.getDefault());
+      }
+      isTrue(options.params[0] instanceof String, "found '%s', expected 'string'",
+          options.params[0]);
+      String format = options.param(0);
+      String localeStr = options.param(1, Locale.getDefault().toString());
+      Locale locale = LocaleUtils.toLocale(localeStr);
+      try {
+        NumberStyle style = NumberStyle.valueOf(format.toUpperCase().trim());
+        return style.numberFormat(locale);
+      } catch (ArrayIndexOutOfBoundsException ex) {
+        return NumberStyle.DEFAULT.numberFormat(locale);
+      } catch (IllegalArgumentException ex) {
+        return new DecimalFormat(format, new DecimalFormatSymbols(locale));
+      }
+    }
+
+  },
+
+  /**
+   * <p>
+   * Usage:
+   * </p>
+   *
+   * <pre>
    *    {{now ["format"] [tz=timeZone|timeZoneId]}}
    * </pre>
    *
@@ -554,4 +668,61 @@ public enum StringHelpers implements Helper<Object> {
       helper.registerHelper(handlebars);
     }
   }
+}
+
+/**
+ * Number format styles.
+ *
+ * @author edgar.espina
+ * @since 1.0.1
+ */
+enum NumberStyle {
+
+  /**
+   * The default number format.
+   */
+  DEFAULT {
+    @Override
+    public NumberFormat numberFormat(final Locale locale) {
+      return NumberFormat.getInstance(locale);
+    }
+  },
+
+  /**
+   * The integer number format.
+   */
+  INTEGER {
+    @Override
+    public NumberFormat numberFormat(final Locale locale) {
+      return NumberFormat.getIntegerInstance(locale);
+    }
+  },
+
+  /**
+   * The currency number format.
+   */
+  CURRENCY {
+    @Override
+    public NumberFormat numberFormat(final Locale locale) {
+      return NumberFormat.getCurrencyInstance(locale);
+    }
+  },
+
+  /**
+   * The percent number format.
+   */
+  PERCENT {
+    @Override
+    public NumberFormat numberFormat(final Locale locale) {
+      return NumberFormat.getPercentInstance(locale);
+    }
+  };
+
+  /**
+   * Build a new number format.
+   *
+   * @param locale The locale to use.
+   * @return A new number format.
+   */
+  public abstract NumberFormat numberFormat(Locale locale);
 }
