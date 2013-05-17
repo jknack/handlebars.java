@@ -47,6 +47,23 @@ public class JacksonHelperTest {
   }
 
   @Test
+  public void toPrettyJSON() throws IOException {
+    Handlebars handlebars = new Handlebars();
+    handlebars.registerHelper("@json", JacksonHelper.INSTANCE);
+
+    Template template = handlebars.compileInline("{{@json this pretty=true}}");
+
+    CharSequence result = template.apply(new Blog("First Post", "..."));
+
+    assertEquals("{\n" +
+        "  \"title\" : \"First Post\",\n" +
+        "  \"body\" : \"...\",\n" +
+        "  \"comments\" : [ ]\n" +
+        "}",
+        result);
+  }
+
+  @Test
   public void toJSONViewInclusive() throws IOException {
     Handlebars handlebars = new Handlebars();
 

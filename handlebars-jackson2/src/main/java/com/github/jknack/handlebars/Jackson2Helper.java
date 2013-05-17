@@ -82,6 +82,14 @@ import com.fasterxml.jackson.databind.ObjectWriter;
  *  {{json model escapeHtml=true}}
  * </pre>
  *
+ * <p>
+ * Pretty printer:
+ * </p>
+ *
+ * <pre>
+ *  {{json model pretty=true}}
+ * </pre>
+ *
  * @author edgar.espina
  * @since 0.4.0
  */
@@ -163,8 +171,6 @@ public class Jackson2Helper implements Helper<Object> {
     String viewName = options.hash("view", "");
     JsonGenerator generator = null;
     try {
-      Boolean escapeHtml = options.hash("escapeHTML", Boolean.FALSE);
-
       final ObjectWriter writer;
       // do we need to use a view?
       if (!isEmpty(viewName)) {
@@ -183,13 +189,21 @@ public class Jackson2Helper implements Helper<Object> {
       // creates a json generator.
       generator = jsonFactory.createJsonGenerator(output);
 
+      Boolean escapeHtml = options.hash("escapeHTML", Boolean.FALSE);
       // do we need to escape html?
       if (escapeHtml) {
         generator.setCharacterEscapes(new HtmlEscapes());
       }
 
+      Boolean pretty = options.hash("pretty", Boolean.FALSE);
+
       // write the JSON output.
-      writer.writeValue(generator, context);
+      if (pretty) {
+        writer.withDefaultPrettyPrinter().writeValue(generator, context);
+      } else {
+        writer.writeValue(generator, context);
+      }
+
       generator.close();
 
       return new Handlebars.SafeString(output.getAndClear());

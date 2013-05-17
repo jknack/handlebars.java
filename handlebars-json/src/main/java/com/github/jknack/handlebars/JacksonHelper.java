@@ -32,6 +32,7 @@ import org.codehaus.jackson.io.CharacterEscapes;
 import org.codehaus.jackson.io.SegmentedStringWriter;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.ObjectWriter;
+import org.codehaus.jackson.util.DefaultPrettyPrinter;
 
 /**
  * A Jackson 2.x helper.
@@ -80,6 +81,14 @@ import org.codehaus.jackson.map.ObjectWriter;
  *
  * <pre>
  *  {{json model escapeHtml=true}}
+ * </pre>
+ *
+ * <p>
+ * Pretty printer:
+ * </p>
+ *
+ * <pre>
+ *  {{json model pretty=true}}
  * </pre>
  *
  * @author edgar.espina
@@ -162,8 +171,6 @@ public class JacksonHelper implements Helper<Object> {
     String viewName = options.hash("view", "");
     JsonGenerator generator = null;
     try {
-      Boolean escapeHtml = options.hash("escapeHTML", Boolean.FALSE);
-
       final ObjectWriter writer;
       // do we need to use a view?
       if (!isEmpty(viewName)) {
@@ -182,13 +189,20 @@ public class JacksonHelper implements Helper<Object> {
       // creates a json generator.
       generator = jsonFactory.createJsonGenerator(output);
 
+      Boolean escapeHtml = options.hash("escapeHTML", Boolean.FALSE);
       // do we need to escape html?
       if (escapeHtml) {
         generator.setCharacterEscapes(new HtmlEscapes());
       }
 
+      Boolean pretty = options.hash("pretty", Boolean.FALSE);
+      if (pretty) {
+        generator.setPrettyPrinter(new DefaultPrettyPrinter());
+      }
+
       // write the JSON output.
       writer.writeValue(generator, context);
+
       generator.close();
 
       return new Handlebars.SafeString(output.getAndClear());
