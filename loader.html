@@ -7,12 +7,12 @@ title: Where is my Mustache template?
   <h1>Where is my {{ "{{ Mustache " }}}} template?</h1>
 </div>
 <p>
-Learn how to load templates from the file system, classpath, web context and more.
+In this section you will learn how to load Mustache templates from the file system, classpath, web context and more.
 </p>
 
 <h2>The template loader</h2>
 <div class="highlight">
-Template are loaded using the<code>TemplateLoader</code>API, which looks as follows:
+Template are loaded using the <a href="https://github.com/jknack/handlebars.java/blob/master/handlebars/src/main/java/com/github/jknack/handlebars/io/TemplateLoader.java">TemplateLoader</a> API, which looks as follows:
 <pre>
 <span class="nt">public interface</span> TemplateLoader {
 
@@ -32,29 +32,35 @@ Template are loaded using the<code>TemplateLoader</code>API, which looks as foll
 </div>
 
 <h3>Prefix and Suffix</h3>
-These two properties control the<code>path</code>of a template.
+These two properties control the<code>absolute path</code>of a template.
 <ul>
 <li><strong>prefix</strong>: gets prepended to template names before being resolved.</li>
-<li><strong>suffix</strong>: gets appended to template names before being resolved.</li>
+<li><strong>suffix</strong>: gets appended to template names before being resolved. Default is: <strong>.hbs</strong></li>
 </ul>
 <div class="highlight">
-As example, template<code>hello</code>with<code>prefix=/site</code>and<code>suffix=.html</code>get resolved to<code>/site/hello.html</code>
+For example, a template<code>hello</code>with<code>prefix=/site</code>and<code>suffix=.html</code>get resolved to<code>/site/hello.html</code>
 <pre>
 Template template = handlebars.compile(<span class="s2">"hello"</span>);
 </pre>
-The same rules applies for<code>partials</code>
+The exactly same rules applies for<code>partials</code>
 <pre>
 {{ "{{> hello" }}}}
 </pre>
 </div>
 <p>
-So, as you can see, you don't need to add<code>prefix</code>(like a home directory) and<code>suffix</code>(like a file extension), the<code>TemplateLoader</code>does it for you.
+You don't need to add<code>prefix</code>(like a home directory) and<code>suffix</code>(like a file extension), the<code>TemplateLoader</code>does it for you.
+</p>
+<p>
+The default value of<code>prefix</code>depends on a specific implementation of<code>TemplateLoader</code>.
+</p>
+<p>
+The default value of<code>suffix</code>is <strong>.hbs</strong>, but as you saw before, you can change to<code>.html</code>or whatever make more sense to you (<strong>null</strong> included).
 </p>
 
 
 <h2>The template source</h2>
 <div class="highlight">
-A template source is a lightweight reference to a physical template stored somewhere. The<code>TemplateSource</code>class, looks as follows:
+A template source is a lightweight reference to a physical template stored somewhere. The <a href="https://github.com/jknack/handlebars.java/blob/master/handlebars/src/main/java/com/github/jknack/handlebars/io/TemplateSource.java">TemplateSource</a> class, looks as follows:
 <pre>
 <span class="nt">public interface</span> TemplateSource {
   String <span class="nf">content</span>() <span class="nt">throws</span> IOException;
@@ -72,11 +78,13 @@ You don't have to implement any of these classes, <a href="https://github.com/jk
 But if you want to store your templates in a database (for example), these are the two classes you need to implement.
 </p>
 
-<h2>The class path template loader</h2>
+<h2>The classpath template loader</h2>
 <p>
-The<code>ClassPathTemplateLoader</code>is the <strong>default</strong> template loader in <a href="https://github.com/jknack/handlebars.java">Handlebars.java</a>.
+The <a href="https://github.com/jknack/handlebars.java/blob/master/handlebars/src/main/java/com/github/jknack/handlebars/io/ClassPathTemplateLoader.java">ClassPathTemplateLoader</a> is the <strong>default</strong> template loader in <a href="https://github.com/jknack/handlebars.java">Handlebars.java</a>.
 If you don't set a template loader, <a href="https://github.com/jknack/handlebars.java">Handlebars.java</a> assume your templates are in the classpath.
 </p>
+
+<p>For example:</p>
 
 <div class="highlight">
 The default <strong>prefix</strong> is<code>/</code>(a.k.a root of classpath) and
@@ -107,8 +115,10 @@ handlebars.compile(<span class="s2">"hello"</span>); <span class="nf">// resolve
 
 <h2>The file template loader</h2>
 <p>
-The<code>FileTemplateLoader</code>load templates from a file system location. This template loader is useful if you need to make change to your templates after a deploy.
+The <a href="https://github.com/jknack/handlebars.java/blob/master/handlebars/src/main/java/com/github/jknack/handlebars/io/FileTemplateLoader.java">FileTemplateLoader</a> load templates from a file system location. This template loader is useful if you need to make change to your templates after a deploy.
 </p>
+
+<p>For example:</p>
 
 <div class="highlight">
 Setting <strong>prefix</strong> to the<code>/usr/share/templates</code>and<code>.html</code>as file extension.
@@ -122,8 +132,10 @@ handlebars.compile(<span class="s2">"hello"</span>); <span class="nf">// resolve
 
 <h2>The servlet context template loader</h2>
 <p>
-The<code>ServletContextTemplateLoader</code>load templates from a JavaEE Web Context.
+The <a href="https://github.com/jknack/handlebars.java/blob/master/handlebars/src/main/java/com/github/jknack/handlebars/io/ServletContextTemplateLoader.java">ServletContextTemplateLoader</a> load templates from a JavaEE Web Context.
 </p>
+
+<p>For example:</p>
 
 <div class="highlight">
 Setting <strong>prefix</strong> to the<code>root of the web context</code>and<code>.hbs</code>as file extension.
@@ -157,6 +169,24 @@ handlebars.compile(<span class="s2">"hello"</span>); <span class="nf">// resolve
 </pre>
 </div>
 
+<h2>The composite template loader</h2>
+<p>
+The <a href="https://github.com/jknack/handlebars.java/blob/master/handlebars/src/main/java/com/github/jknack/handlebars/io/CompositeTemplateLoader.java">CompositeTemplateLoader</a> let you combine two or more template loaders and makes possible multiples templates location for your application.
+</p>
+
+<p>For example:</p>
+<div class="highlight">
+Using <a href="https://github.com/jknack/handlebars.java/blob/master/handlebars/src/main/java/com/github/jknack/handlebars/io/ClassPathTemplateLoader.java">ClassPathTemplateLoader</a> loader within a <a href="https://github.com/jknack/handlebars.java/blob/master/handlebars/src/main/java/com/github/jknack/handlebars/io/FileTemplateLoader.java">FileTemplateLoader</a>:
+<pre>
+ClassPathTemplateLoader cploader = ...;
+FileTemplateLoader fsloader = ...;
+Handlebars handlebars = <span class="nt">new</span> Handlebars().with(cploader, fsloader);
+handlebars.compile(<span class="s2">"hello"</span>);
+</pre>
+</div>
+<p>
+Loaders are executed in the order they are provided, so the first <a href="https://github.com/jknack/handlebars.java/blob/master/handlebars/src/main/java/com/github/jknack/handlebars/io/TemplateLoader.java">TemplateLoader</a> that is able to resolved a template win.
+</p>
 <h1>Conclusion</h1>
 <p>
 The<code>TemplateLoader</code>and<code>TemplateSource</code>are two key abstractions in <a href="https://github.com/jknack/handlebars.java">Handlebars.java</a>, they both work together for
