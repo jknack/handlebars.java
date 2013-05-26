@@ -1,34 +1,23 @@
 ---
 layout: default
-title: The Context Stack in Handlebars.java
+title: The Mustache Context Stack in Handlebars.java
 version: 1.0.0
 ---
 
 <div>
-  <h1>The Context Stack in Handlebars.java</h1>
+  <h1>The {{ "{{ Mustache " }}}} Context Stack in Handlebars.java</h1>
 </div>
 <p>
 In this section you will learn how to interact with the Context Stack in <a href="https://github.com/jknack/handlebars.java">Handlebars.java</a>.
 </p>
 
 <h2>The Context Stack</h2>
-The context stack is where the data live. <a href="http://mustache.github.com/mustache.5.html">Mustache</a> is a contextual and stack based template engine.
+<a href="http://mustache.github.com/mustache.5.html">Mustache</a> is a contextual and stack based template engine. The context stack is where the your data live.
 <p>
-That means that a <strong>value</strong> will be resolved in the <strong>current context</strong>, 
-then if the value isn't present in the <strong>current context</strong>, it looks at the <strong>parent context</strong> until:
-</p>
-
-<ol>
-<li>we found the value, or</li>
-<li>we are at the root context and the value isn't there.</li>
-</ol>
-
-<p>If a value isn't in the context stack, null is returned and nothing is rendered. You will learn how to change this later.</p>
-
-<h2>The context class</h2>
-The<code>Context</code>class represent the <strong>context stack</strong> in <a href="https://github.com/jknack/handlebars.java">Handlebars.java</a>.
-You rarely need to instantiate a<code>Context</code>object, <a href="https://github.com/jknack/handlebars.java">Handlebars.java</a> does it for you
+The <a href="https://github.com/jknack/handlebars.java/blob/master/handlebars/src/main/java/com/github/jknack/handlebars/Context.java">Context</a> class represent the <strong>context stack</strong> in <a href="https://github.com/jknack/handlebars.java">Handlebars.java</a>.
+You rarely need to instantiate a<code>Context</code>object, bc <a href="https://github.com/jknack/handlebars.java">Handlebars.java</a> does it for you
 every time you call:
+</p>
 
 <div class="highlight">
 <pre>
@@ -38,12 +27,33 @@ every time you call:
 </pre>
 </div>
 <p>
-The<code>apply</code>method accepts a<code>Context</code> or an<code>Object</code>. The<code>Object</code>automatically convert that object into a<code>Context</code>. 
+The<code>apply</code>method accepts a<code>Context</code> or an<code>Object</code>. The<code>apply(Object)</code>function, automatically convert the object into a<code>Context</code>. 
+</p>
+
+<h2>Resolving values</h2>
+
+<div class="highlight">
+The resolution algorithm looks something like:
+<pre>
+  <span class="nt">while</span> (context != null && context.get(<span class="s2">"value"</span>) == null) {
+    context = context.parent;
+  }
+</pre>
+</div>
+
+<p>
+A <strong>value</strong> will be resolved in the <strong>current context</strong>.
+</p>
+<p>
+If the value isn't here, the <strong>parent context</strong> need to resolved the value.
+</p>
+<p>
+If the value isn't in the whole stack, the value is resolved to <strong>null</strong> and nothing will be rendered.
 </p>
 
 <h2>Extending the context stack</h2>
 <p>
-  A common use case in web application is to access to the logged user from a web page.
+  A common use case in web applications is to access to the logged user from a web page.
 </p>
 
 <div class="highlight">
@@ -83,14 +93,14 @@ We definitely fix the <strong>second</strong> drawback described before.
 </p>
 <p>
 The <strong>first</strong> one depends on your application architecture. For example,
-if you have a<code>hook</code>method where is the only place you merge the model with a view
-and of course you can access to the current logged user.
+if you have a<code>hook</code>method where you can globally merge the model with a view
+(and of course you can access to the current logged user).
 </p>
 
 <h2 id="resolvers">Value resolvers</h2>
 <p>
-A<code>ValueResolver</code>is responsible of extracting a single value from a source object (a.k.a context).
-By default, a<code>context</code>is able to extract values from <code>maps</code>and<code>JavaBean</code>objects.
+A<code>ValueResolver</code>is responsible of extracting a single value from a source object.
+By default, only <code>maps</code>and<code>JavaBean</code>objects are supported.
 </p>
 
 <h3>The JavaBeanValueResolver</h3>
@@ -159,7 +169,7 @@ Let you access to public methods.
 
 <h3>Using multiples value resolvers</h3>
 <p>
-You can combine any number of value resolvers according to the data your application has.
+You can combine any number of value resolvers according to your application data.
 </p>
 
 <div class="highlight">
@@ -209,30 +219,6 @@ Access to JavaBean, Map properties and instance fields:
 </pre>
 </div>
 
-<h2>Value resolver execution</h2>
-<p>Let's review how a<code>ValueResolver</code>looks like:</p>
-<div class="highlight">
-<pre>
-<span class="nt">public interface</span> ValueResolver {
-
-  Object UNRESOLVED = <span class="nt">new</span> Object();
-
-  Object <span class="nf">resolve</span>(Object context, String name);
-
-  Set&lt;Entry&lt;String, Object&gt;&gt; <span class="nf">propertySet</span>(Object context);
-}
-</pre>
-</div>
-
-The<code>resolve</code> method must return one of three values:
-<ol>
-<li><strong>None null value</strong>: The property exists and have a<code>none null</code>value.</li>
-<li><strong>A null value</strong>: The property exists and have a<code>null</code>value.</li>
-<li><strong>ValueResolver.UNRESOLVED</strong>: The property doesn't exist and can't be resolve. So, the next resolver in the chain (if any) will be executed.</li>
-</ol>
-
-<p>The<code>propertySet</code> method is used by the <strong>each</strong> helper for iterating over maps and objects.</p>
-
 <h1>Conclusion</h1>
 <p>The<code>Context</code>class does all the hard work: walk through the stack, resolve expressions, etc. This component isn't puggable and can't be set.</p>
 <p>
@@ -240,6 +226,6 @@ Where a<code>ValueResolver</code>extracts a single value from a source. You can 
 It plays an important role if your application deal with a custom data source.</p>
 <p>For example,
 if your service layer returns the widely used<code>JsonNode</code>from
-<a href="http://jackson.codehaus.org/">Jackson</a> a custom<code>ValueResolver</code>can access
-that object and gets values from it.
+<a href="http://jackson.codehaus.org/">Jackson</a> a custom <a href="https://github.com/jknack/handlebars.java/blob/master/handlebars/src/main/java/com/github/jknack/handlebars/Context.java">ValueResolver</a> can access
+to that object and extract values from it.
 </p>
