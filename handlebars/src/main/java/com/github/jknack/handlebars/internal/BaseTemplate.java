@@ -75,7 +75,7 @@ abstract class BaseTemplate implements Template {
   /**
    * A Handlebars.js lock.
    */
-  private static final Object JS_LOCK = new Object();
+  private final Object jsLock = new Object();
 
   /**
    * A pre-compiled JavaScript function.
@@ -90,7 +90,7 @@ abstract class BaseTemplate implements Template {
   /**
    * A shared scope with Handlebars.js objects.
    */
-  private static ScriptableObject sharedScope;
+  private ScriptableObject sharedScope;
 
   /**
    * {@inheritDoc}
@@ -287,7 +287,7 @@ abstract class BaseTemplate implements Template {
 
   @Override
   public String toJavaScript() throws IOException {
-    synchronized (JS_LOCK) {
+    synchronized (jsLock) {
       if (javaScript == null) {
         org.mozilla.javascript.Context ctx = null;
         try {
@@ -330,7 +330,7 @@ abstract class BaseTemplate implements Template {
    * @param ctx A rhino context.
    * @return A new scope where handlebars.js is present.
    */
-  private static Scriptable newScope(final org.mozilla.javascript.Context ctx) {
+  private Scriptable newScope(final org.mozilla.javascript.Context ctx) {
     Scriptable sharedScope = sharedScope(ctx);
     Scriptable scope = ctx.newObject(sharedScope);
     scope.setParentScope(null);
@@ -345,8 +345,7 @@ abstract class BaseTemplate implements Template {
    * @param ctx A rhino context.
    * @return A handlebars.js scope. Shared between executions.
    */
-  private static Scriptable
-      sharedScope(final org.mozilla.javascript.Context ctx) {
+  private Scriptable sharedScope(final org.mozilla.javascript.Context ctx) {
     if (sharedScope == null) {
       sharedScope = ctx.initStandardObjects();
       ctx.evaluateString(sharedScope, handlebarsScript(HBS_FILE), HBS_FILE, 1,
