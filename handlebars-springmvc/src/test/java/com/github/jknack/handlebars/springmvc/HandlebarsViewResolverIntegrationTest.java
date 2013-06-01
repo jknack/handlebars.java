@@ -96,6 +96,13 @@ public class HandlebarsViewResolverIntegrationTest {
   }
 
   @Test
+  public void setCustomHelper() throws Exception {
+    assertNotNull(viewResolver);
+    Handlebars handlebars = viewResolver.getHandlebars();
+    assertEquals("Spring Helper", handlebars.compileInline("{{setHelper}}").apply(new Object()));
+  }
+
+  @Test
   public void helperSource() throws Exception {
     assertNotNull(viewResolver);
     Handlebars handlebars = viewResolver.getHandlebars();

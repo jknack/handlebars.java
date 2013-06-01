@@ -246,6 +246,29 @@ public class HandlebarsViewResolver extends AbstractTemplateViewResolver
   }
 
   /**
+   * Register all the helpers in the map.
+   *
+   * @param helpers The helpers to be registered. Required.
+   * @see Handlebars#registerHelper(String, Helper)
+   */
+  public void setHelpers(final Map<String, Helper<?>> helpers) {
+    notNull(helpers, "The helpers are required.");
+    this.helpers.putAll(helpers);
+  }
+
+  /**
+   * Register all the helpers in the list. Each element of the list must be a helper source.
+   *
+   * @param helpers The helpers to be registered. Required.
+   * @see Handlebars#registerHelpers(Class)
+   * @see Handlebars#registerHelpers(Object)
+   */
+  public void setHelpers(final List<Object> helpers) {
+    notNull(helpers, "The helpers are required.");
+    this.helperSources.addAll(helpers);
+  }
+
+  /**
    * <p>
    * Register all the helper methods for the given helper source.
    * </p>
