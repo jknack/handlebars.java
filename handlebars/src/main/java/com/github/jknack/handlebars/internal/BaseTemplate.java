@@ -23,7 +23,6 @@ import static org.apache.commons.lang3.Validate.isTrue;
 import static org.apache.commons.lang3.Validate.notNull;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.Writer;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -348,8 +347,7 @@ abstract class BaseTemplate implements Template {
   private Scriptable sharedScope(final org.mozilla.javascript.Context ctx) {
     if (sharedScope == null) {
       sharedScope = ctx.initStandardObjects();
-      ctx.evaluateString(sharedScope, handlebarsScript(HBS_FILE), HBS_FILE, 1,
-          null);
+      ctx.evaluateString(sharedScope, handlebarsScript(HBS_FILE), HBS_FILE, 1, null);
     }
     return sharedScope;
   }
@@ -360,25 +358,11 @@ abstract class BaseTemplate implements Template {
    * @param location The handlebars.js location.
    * @return The resource content.
    */
-  private static String handlebarsScript(final String location) {
-    InputStream in = BaseTemplate.class.getResourceAsStream(location);
-    notNull(in, "Handlebars.js script not found at " + location);
+  private String handlebarsScript(final String location) {
     try {
-      int ch = in.read();
-      StringBuilder script = new StringBuilder();
-      while (ch != -1) {
-        script.append((char) ch);
-        ch = in.read();
-      }
-      return script.toString();
+      return Files.read(location);
     } catch (IOException ex) {
-      throw new IllegalStateException("Unable to read file " + location);
-    } finally {
-      try {
-        in.close();
-      } catch (IOException ex) {
-        throw new IllegalStateException("Unable to close file " + location);
-      }
+      throw new IllegalArgumentException("Unable to read file: " + location, ex);
     }
   }
 }

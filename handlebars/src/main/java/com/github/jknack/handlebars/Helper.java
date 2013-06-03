@@ -33,7 +33,7 @@ public interface Helper<T> {
   /**
    * Apply the helper to the context.
    *
-   * @param context The context object (param=0).
+   * @param context The context object.
    * @param options The options object.
    * @return A string result.
    * @throws IOException If a template cannot be loaded.
