@@ -28,6 +28,32 @@ lexer grammar HbsLexer;
     return true;
   }
 
+  private boolean comment(final String start, final String end) {
+    if (ahead(start + "!")) {
+      int offset = 0;
+      int level = -1;
+      while (!isEOF(offset)) {
+        if (ahead(end, offset)) {
+          if (level == 0) {
+            break;
+          } else {
+            level -= 1;
+          }
+        }
+        if (ahead(start, offset)) {
+          level += 1;
+        }
+        offset += 1;
+      }
+      offset += end.length();
+      // Since we found the text, increase the CharStream's index.
+      _input.seek(_input.index() + offset - 1);
+      getInterpreter().setCharPositionInLine(_tokenStartCharPositionInLine + offset - 1);
+      return true;
+    }
+    return false;
+  }
+
   private boolean tryToken(final String text) {
     if (ahead(text)) {
       // Since we found the text, increase the CharStream's index.
@@ -62,10 +88,11 @@ lexer grammar HbsLexer;
 }
 
 TEXT
-  : {consumeUntil(start)}?.;
+  : {consumeUntil(start)}? .
+  ;
 
-START_COMMENT
-  : {tryToken(start + "!")}? . -> pushMode(COMMENTS)
+COMMENT
+  : {comment(start, end)}? .
   ;
 
 START_AMP
@@ -232,11 +259,3 @@ ID_PART
 WS
  : [ \t\r\n] -> skip
  ;
-
-mode COMMENTS;
-
-END_COMMENT
-  : {tryToken(end)}? . ->popMode
-  ;
-
-COMMENT_CHAR: .;

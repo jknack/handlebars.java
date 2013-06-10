@@ -128,4 +128,4 @@ hashValue
   ;
 
 comment
-  : START_COMMENT COMMENT_CHAR+ END_COMMENT;
+  : COMMENT;

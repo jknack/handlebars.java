@@ -43,6 +43,7 @@ import com.github.jknack.handlebars.internal.HbsParser.BodyContext;
 import com.github.jknack.handlebars.internal.HbsParser.BoolHashContext;
 import com.github.jknack.handlebars.internal.HbsParser.BoolParamContext;
 import com.github.jknack.handlebars.internal.HbsParser.CharsHashContext;
+import com.github.jknack.handlebars.internal.HbsParser.CommentContext;
 import com.github.jknack.handlebars.internal.HbsParser.HashContext;
 import com.github.jknack.handlebars.internal.HbsParser.IntHashContext;
 import com.github.jknack.handlebars.internal.HbsParser.IntParamContext;
@@ -390,6 +391,11 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
       return list.iterator().next();
     }
     return list;
+  }
+
+  @Override
+  public Object visitComment(final CommentContext ctx) {
+    return Template.EMPTY;
   }
 
   @Override
