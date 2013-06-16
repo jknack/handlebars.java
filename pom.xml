@@ -21,6 +21,7 @@
     <module>handlebars-humanize</module>
     <module>handlebars-proto</module>
     <module>handlebars-guava-cache</module>
+    <module>handlebars-maven-plugin</module>
   </modules>
 
   <licenses>

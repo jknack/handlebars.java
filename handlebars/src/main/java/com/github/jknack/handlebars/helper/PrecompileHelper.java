@@ -28,10 +28,9 @@ import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Helper;
 import com.github.jknack.handlebars.Options;
 import com.github.jknack.handlebars.Template;
-import com.github.jknack.handlebars.io.TemplateLoader;
 
 /**
- * Precompiled a template to JavaScript using handlebars.js.
+ * Precompile a template to JavaScript using handlebars.js.
  *
  * @author edgar.espina
  * @since 0.6.0
@@ -72,6 +71,7 @@ public final class PrecompileHelper implements Helper<String> {
 
       @Override
       public void tail(final StringBuilder buffer) {
+        buffer.append("  return template;\n");
         buffer.append("});");
       }
     },
@@ -120,12 +120,15 @@ public final class PrecompileHelper implements Helper<String> {
      */
     public void registerTemplate(final StringBuilder buffer, final String name,
         final String function) {
-      buffer
-          .append("\n  var template = Handlebars.template, ")
-          .append("templates = Handlebars.templates = Handlebars.templates ")
-          .append("|| {};\n");
-      buffer.append("templates['").append(name).append("'] = template(")
-          .append(function).append(");\n");
+      buffer.append("\n  var template = Handlebars.template(").append(function).append(");\n");
+      String[] namespaces = {"templates", "partials" };
+      String separator = ";\n";
+      for (String namespace : namespaces) {
+        buffer.append("  var ").append(namespace).append(" = Handlebars.").append(namespace)
+            .append(" = Handlebars.").append(namespace).append(" || {};\n");
+        buffer.append("  ").append(namespace).append("['").append(name).append("'] = template")
+            .append(separator);
+      }
     }
 
     /**
@@ -182,12 +185,16 @@ public final class PrecompileHelper implements Helper<String> {
     String wrapperName = options.hash("wrapper", "anonymous");
     final JsWrapper wrapper = JsWrapper.wrapper(wrapperName);
     notNull(wrapper, "found '%s', expected: '%s'",
-        wrapperName,
-        StringUtils.join(JsWrapper.values(), ", ").toLowerCase());
+        wrapperName, StringUtils.join(JsWrapper.values(), ", ").toLowerCase());
 
     Handlebars handlebars = options.handlebars;
-    final TemplateLoader loader = handlebars.getLoader();
-    String name = path + loader.getSuffix();
+    String name = path;
+    if (name.startsWith("/")) {
+      name = name.substring(1);
+    }
+    if (wrapper == JsWrapper.AMD) {
+      name += handlebars.getLoader().getSuffix();
+    }
     Template template = handlebars.compile(path);
     String precompiled = template.toJavaScript();
     return new Handlebars.SafeString(wrapper.wrap(name, precompiled));

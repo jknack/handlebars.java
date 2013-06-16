@@ -1,6 +1,5 @@
 define('input.hbs', ['handlebars'], function(Handlebars) {
-  var template = Handlebars.template, templates = Handlebars.templates = Handlebars.templates || {};
-templates['input.hbs'] = template(function (Handlebars,depth0,helpers,partials,data) {
+  var template = Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
   this.compilerInfo = [4,'>= 1.0.0'];
 helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
   var buffer = "", functionType="function", escapeExpression=this.escapeExpression;
@@ -11,4 +10,9 @@ helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
     + "!";
   return buffer;
   });
+  var templates = Handlebars.templates = Handlebars.templates || {};
+  templates['input.hbs'] = template;
+  var partials = Handlebars.partials = Handlebars.partials || {};
+  partials['input.hbs'] = template;
+  return template;
 });

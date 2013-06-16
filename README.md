@@ -235,7 +235,7 @@ Output:
 <script type="text/javascript">
 (function() {
   var template = Handlebars.template, templates = Handlebars.templates = Handlebars.templates || {};
-templates['user.hbs'] = template(function (Handlebars,depth0,helpers,partials,data) {
+templates['user'] = template(function (Handlebars,depth0,helpers,partials,data) {
   helpers = helpers || Handlebars.helpers;
   var buffer = "", functionType="function", escapeExpression=this.escapeExpression;
 
@@ -250,10 +250,10 @@ templates['user.hbs'] = template(function (Handlebars,depth0,helpers,partials,da
 You can access to the precompiled template by:
 
 ```js
-var template = Handlebars.templates['user.hbs']
+var template = Handlebars.templates['user']
 ```
 
-For more information have a look at [Precompiling Templates](https://github.com/wycats/handlebars.js/) documentation
+For more information have a look at [Precompiling Templates](https://github.com/wycats/handlebars.js/) documentation. 
 
 Usage:
 ```
@@ -262,6 +262,8 @@ Usage:
 context: A template name. Required.
 
 wrapper: One of "anonymous", "amd" or "none". Default is: "anonymous" 
+
+There is a [maven plugin](https://github.com/jknack/handlebars.java/tree/master/handlebars-maven-plugin) available too.
 
 ### embedded
  The embedded helper allow you to "embedded" a handlebars template inside a ```<script>``` HTML tag:

@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <parent>
+    <groupId>com.github.jknack</groupId>
+    <artifactId>handlebars.java</artifactId>
+    <version>1.0.1-SNAPSHOT</version>
+  </parent>
+
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.github.jknack</groupId>
+  <artifactId>handlebars-maven-plugin</artifactId>
+  <packaging>maven-plugin</packaging>
+
+  <name>Handlebars template JS compiler</name>
+  <description>Compile Handlebars template to JavaScript</description>
+
+  <dependencies>
+    <dependency>
+      <groupId>com.github.jknack</groupId>
+      <artifactId>handlebars</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+
+    <!-- Servlet API -->
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>servlet-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-plugin-api</artifactId>
+      <version>3.0.4</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.maven.plugin-tools</groupId>
+      <artifactId>maven-plugin-annotations</artifactId>
+      <version>3.2</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.codehaus.plexus</groupId>
+      <artifactId>plexus-utils</artifactId>
+      <version>3.0.10</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.google.javascript</groupId>
+      <artifactId>closure-compiler</artifactId>
+      <version>v20130603</version>
+    </dependency>
+
+    <!-- Test dependencies -->
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+  </dependencies>
+
+  <properties>
+    <!-- use a valid phase during development and testing -->
+    <handlebars-plugin-phase>none</handlebars-plugin-phase>
+  </properties>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-plugin-plugin</artifactId>
+        <version>3.2</version>
+        <configuration>
+          <!-- see http://jira.codehaus.org/browse/MNG-5346 -->
+          <skipErrorNoDescriptorsFound>true</skipErrorNoDescriptorsFound>
+        </configuration>
+        <executions>
+          <execution>
+            <id>mojo-descriptor</id>
+            <goals>
+              <goal>descriptor</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>com.github.jknack</groupId>
+        <artifactId>handlebars-maven-plugin</artifactId>
+        <version>${project.version}</version>
+        <configuration>
+          <output>${basedir}/target/helpers.js</output>
+          <suffix>.html</suffix>
+          <prefix>${basedir}/src/test/templates</prefix>
+        </configuration>
+        <executions>
+          <execution>
+            <id>precompile</id>
+            <phase>${handlebars-plugin-phase}</phase>
+            <goals>
+              <goal>precompile</goal>
+            </goals>
+          </execution>
+
+          <!-- Minimize output -->
+          <execution>
+            <id>precompile-minimize</id>
+            <phase>${handlebars-plugin-phase}</phase>
+            <configuration>
+              <output>${basedir}/target/helpers-minimized.js</output>
+              <minimize>true</minimize>
+            </configuration>
+            <goals>
+              <goal>precompile</goal>
+            </goals>
+          </execution>
+
+          <!-- Include runtime -->
+          <execution>
+            <id>precompile-full</id>
+            <phase>${handlebars-plugin-phase}</phase>
+            <configuration>
+              <output>${basedir}/target/helpers-with-runtime.js</output>
+              <includeRuntime>true</includeRuntime>
+            </configuration>
+            <goals>
+              <goal>precompile</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+</project>
