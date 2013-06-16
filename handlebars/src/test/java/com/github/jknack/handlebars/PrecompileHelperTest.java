@@ -19,7 +19,9 @@ import com.github.jknack.handlebars.io.URLTemplateLoader;
 public class PrecompileHelperTest {
 
   URLTemplateLoader loader = new MapTemplateLoader()
-      .define("input", "Hi {{this}}!");
+      .define("input", "Hi {{this}}!")
+      .define("root", "{{> partial/child}}")
+      .define("partial/child", "CHILD!!!");
 
   Handlebars handlebars = new Handlebars(loader);
 
@@ -42,7 +44,19 @@ public class PrecompileHelperTest {
     assertEquals(IOUtils.toString(in).replace("\r\n", "\n"), js.replace("\r\n", "\n"));
 
     in.close();
+  }
 
+  @Test
+  public void precompileWithPartial() throws IOException {
+    String js =
+        handlebars.compileInline("{{precompile \"root\"}}").apply("Handlebar.js");
+
+    InputStream in =
+        getClass().getResourceAsStream("/partial.precompiled.js");
+
+    assertEquals(IOUtils.toString(in).replace("\r\n", "\n"), js.replace("\r\n", "\n"));
+
+    in.close();
   }
 
   @Parameters
