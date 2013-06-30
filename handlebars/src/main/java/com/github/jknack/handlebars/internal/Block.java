@@ -149,6 +149,8 @@ class Block extends HelperResolver {
         .setParams(params(currentScope))
         .setHash(hash(context))
         .build();
+    options.data(Context.PARAM_SIZE, this.params.size());
+
     CharSequence result = helper.apply(childContext, options);
     if (!isEmpty(result)) {
       writer.append(result);

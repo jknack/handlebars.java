@@ -11,11 +11,13 @@ var Handlebars = {};
  */
 Handlebars.registerHelper = function (name, helper) {
   /**
-   * Bridge between a Handlebars.java helper and a Handlebars.js helper.
-   * 'fn' will be invoked from Java using the regular helper notation.
+   * Bridge between a Java and JavaScript helpers.
    */
-  var fn = function (context, options) {
-    var args = [context];
+  var fn = function (context, arg0, options) {
+    var args = [];
+    if (arg0) {
+      args.push(arg0);
+    }
     for(var i = 0; i < options.params.length; i++) {
       args.push(options.params[i]);
     }

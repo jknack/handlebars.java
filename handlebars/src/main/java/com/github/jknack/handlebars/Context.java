@@ -240,6 +240,11 @@ public class Context {
   public static final String INVOCATION_STACK = Context.class.getName() + "#invocationStack";
 
   /**
+   * Number of parameters of a helper. Internal use.
+   */
+  public static final String PARAM_SIZE = Context.class.getName() + "#paramSize";
+
+  /**
    * The parent context. Optional.
    */
   private Context parent;

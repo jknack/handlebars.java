@@ -47,7 +47,7 @@ abstract class HelperResolver extends BaseTemplate {
   /**
    * The parameter list.
    */
-  private List<Object> params = Collections.emptyList();
+  protected List<Object> params = Collections.emptyList();
 
   /**
    * The hash object.

@@ -18,10 +18,12 @@
 package com.github.jknack.handlebars.internal.js;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import org.apache.commons.lang3.ClassUtils;
 import org.mozilla.javascript.NativeArray;
 import org.mozilla.javascript.NativeObject;
 import org.mozilla.javascript.Scriptable;
@@ -106,10 +108,11 @@ public class RhinoHandlebars extends HandlebarsJs {
      * Apply the helper to the context.
      *
      * @param context The context object.
+     * @param arg0 The helper first argument.
      * @param options The options object.
      * @return A string result.
      */
-    Object apply(Object context, OptionsJs options);
+    Object apply(Object context, Object arg0, OptionsJs options);
   }
 
   /**
@@ -190,15 +193,44 @@ public class RhinoHandlebars extends HandlebarsJs {
    */
   public void registerHelper(final String name, final JsHelper helper) {
     handlebars.registerHelper(name, new Helper<Object>() {
+      @SuppressWarnings({"rawtypes", "unchecked" })
       @Override
       public CharSequence apply(final Object context, final Options options) throws IOException {
-        Object result = helper.apply(new JsContext(options.context), new OptionsJs(options));
+        JsContext jsContext = new JsContext(options.context);
+        Object arg0 = context;
+        Integer paramSize = options.data(Context.PARAM_SIZE);
+        if (paramSize == 0) {
+          arg0 = null;
+        } else if (!isSupportedType(arg0)) {
+          if (Map.class.isInstance(arg0)) {
+            arg0 = hash((Map) arg0);
+          } else if (Collection.class.isInstance(arg0)) {
+            arg0 = new NativeArray(((Collection) arg0).toArray(new Object[0]));
+          }
+        }
+        Object result = helper.apply(jsContext, arg0, new OptionsJs(options));
         if (result instanceof CharSequence) {
           return (CharSequence) result;
         }
         return result == null ? null : result.toString();
       }
     });
+  }
+
+  /**
+   * True if the object is natively supported by Rhino.
+   *
+   * @param object An object.
+   * @return True if the object is natively supported by Rhino.
+   */
+  private static boolean isSupportedType(final Object object) {
+    if (object == null) {
+      return true;
+    }
+    if (CharSequence.class.isInstance(object)) {
+      return true;
+    }
+    return ClassUtils.isPrimitiveOrWrapper(object.getClass());
   }
 
   @Override

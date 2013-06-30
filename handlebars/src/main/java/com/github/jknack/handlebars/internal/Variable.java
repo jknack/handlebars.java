@@ -148,7 +148,7 @@ class Variable extends HelperResolver {
           .setParams(params(scope))
           .setHash(hash(scope))
           .build();
-
+      options.data(Context.PARAM_SIZE, this.params.size());
       CharSequence result = helper.apply(determineContext(scope), options);
       if (escape(result)) {
         writer.append(Handlebars.Utils.escapeExpression(result));
