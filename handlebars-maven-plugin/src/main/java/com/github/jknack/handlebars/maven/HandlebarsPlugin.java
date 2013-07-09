@@ -110,8 +110,7 @@ public class HandlebarsPlugin extends AbstractMojo {
   public void execute() throws MojoExecutionException, MojoFailureException {
     File basedir = new File(prefix);
     TemplateLoader loader = new FileTemplateLoader(basedir, suffix);
-    Handlebars handlebars = new Handlebars(loader)
-        .registerHelper("precompile", PrecompileHelper.INSTANCE);
+    Handlebars handlebars = new Handlebars(loader);
     File output = new File(this.output);
     PrintWriter writer = null;
     boolean error = true;
@@ -144,13 +143,17 @@ public class HandlebarsPlugin extends AbstractMojo {
         writer.append("// Source: ").append(file.getPath()).append("\n");
         writer.append(PrecompileHelper.INSTANCE.apply(templateName, opts)).append("\n\n");
       }
-      getLog().info("  templates were saved in: " + output);
       writer.flush();
       IOUtil.close(writer);
       if (minimize) {
         minimize(output);
       }
-      error = false;
+      if (files.size() > 0) {
+        getLog().info("  templates were saved in: " + output);
+        error = false;
+      } else {
+        getLog().warn("  no templates were found");
+      }
     } catch (IOException ex) {
       throw new MojoFailureException("Can't scan directory " + basedir, ex);
     } finally {
