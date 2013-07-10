@@ -126,17 +126,19 @@ public class HbsErrorReporter implements ANTLRErrorListener {
 
   @Override
   public void reportAmbiguity(final Parser recognizer, final DFA dfa, final int startIndex,
-      final int stopIndex, final BitSet ambigAlts, final ATNConfigSet configs) {
+      final int stopIndex, final boolean exact, final BitSet ambigAlts,
+      final ATNConfigSet configs) {
   }
 
   @Override
   public void reportAttemptingFullContext(final Parser recognizer, final DFA dfa,
-      final int startIndex, final int stopIndex, final ATNConfigSet configs) {
+      final int startIndex, final int stopIndex, final BitSet conflictingAlts,
+      final ATNConfigSet configs) {
   }
 
   @Override
   public void reportContextSensitivity(final Parser recognizer, final DFA dfa,
-      final int startIndex, final int stopIndex, final ATNConfigSet configs) {
+      final int startIndex, final int stopIndex, final int prediction, final ATNConfigSet configs) {
   }
 
 }
