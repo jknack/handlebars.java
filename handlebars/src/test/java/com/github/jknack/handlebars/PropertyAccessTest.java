@@ -14,8 +14,6 @@
 package com.github.jknack.handlebars;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -32,7 +30,7 @@ public class PropertyAccessTest {
     Handlebars handlebars = new Handlebars();
     Template template = handlebars.compileInline("{{array.[0]}}");
     Map<String, Object> context = new HashMap<String, Object>();
-    context.put("array", new String[] {"s1", "s2" });
+    context.put("array", new String[]{"s1", "s2" });
     assertEquals("s1", template.apply(context));
   }
 
@@ -46,48 +44,30 @@ public class PropertyAccessTest {
   }
 
   @Test
-  public void listArrayIndexOutOfBounds() throws IOException {
+  public void listArrayIndexOutOfBoundsShouldResolveAsEmpty() throws IOException {
     Handlebars handlebars = new Handlebars();
     Template template = handlebars.compileInline("{{list.[10]}}");
     Map<String, Object> context = new HashMap<String, Object>();
     context.put("list", Arrays.asList("s1", "s2"));
-    try {
-      assertEquals("s2", template.apply(context));
-      fail("An " + ArrayIndexOutOfBoundsException.class.getName()
-          + " is expected.");
-    } catch (HandlebarsException ex) {
-      assertTrue(ex.getCause() instanceof ArrayIndexOutOfBoundsException);
-    }
+    assertEquals("", template.apply(context));
   }
 
   @Test
-  public void listIndexOutOfBounds() throws IOException {
+  public void listIndexOutOfBoundsShouldResolveAsEmpty() throws IOException {
     Handlebars handlebars = new Handlebars();
     Template template = handlebars.compileInline("{{list.[10]}}");
     Map<String, Object> context = new HashMap<String, Object>();
     context.put("list", new ArrayList<String>(Arrays.asList("s1", "s2")));
-    try {
-      assertEquals("s2", template.apply(context));
-      fail("An " + IndexOutOfBoundsException.class.getName()
-          + " is expected.");
-    } catch (HandlebarsException ex) {
-      assertTrue(ex.getCause() instanceof IndexOutOfBoundsException);
-    }
+    assertEquals("", template.apply(context));
   }
 
   @Test
-  public void arrayIndexOutOfBounds() throws IOException {
+  public void arrayIndexOutOfBoundsShouldResolveAsEmpty() throws IOException {
     Handlebars handlebars = new Handlebars();
     Template template = handlebars.compileInline("{{list.[10]}}");
     Map<String, Object> context = new HashMap<String, Object>();
-    context.put("list", new String[] {"s1", "s2" });
-    try {
-      assertEquals("s2", template.apply(context));
-      fail("An " + ArrayIndexOutOfBoundsException.class.getName()
-          + " is expected.");
-    } catch (HandlebarsException ex) {
-      assertTrue(ex.getCause() instanceof ArrayIndexOutOfBoundsException);
-    }
+    context.put("list", new String[]{"s1", "s2" });
+    assertEquals("", template.apply(context));
   }
 
   @SuppressWarnings("unchecked")
@@ -108,7 +88,7 @@ public class PropertyAccessTest {
     Handlebars handlebars = new Handlebars();
     Template template = handlebars.compileInline("{{#if array.[0]}}S1{{/if}}");
     Map<String, Object> context = new HashMap<String, Object>();
-    context.put("array", new String[] {"s1", "s2" });
+    context.put("array", new String[]{"s1", "s2" });
     assertEquals("S1", template.apply(context));
   }
 
@@ -117,7 +97,7 @@ public class PropertyAccessTest {
     Handlebars handlebars = new Handlebars();
     Template template = handlebars.compileInline("{{#if array.[0]}}S1{{/if}}");
     Map<String, Object> context = new HashMap<String, Object>();
-    context.put("array", new String[] {"" });
+    context.put("array", new String[]{"" });
     assertEquals("", template.apply(context));
   }
 
