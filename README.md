@@ -470,6 +470,23 @@ handlebars.registerHelpers(HelperSource.class);
 
 ```
 
+#### With plain ```JavaScript```
+That's right since ```1.1.0``` you can write helpers in JavaScript:
+
+helpers.js:
+
+```javascript
+Handlebars.registerHelper('hello', function (context) {
+ return 'Hello ' + context;
+})
+```
+
+```java
+handlebars.registerHelpers(new File("helpers.js"));
+```
+Cool, isn't?
+
+
 ### Helper Options
 
 #### Parameters
