@@ -150,10 +150,13 @@ public class HighConcurrencyTemplateCacheTest {
     expect(future.get()).andThrow(new ExecutionException(new IllegalArgumentException()));
 
     Capture<TemplateSource> keyGet = new Capture<TemplateSource>();
+    Capture<TemplateSource> keyRemove = new Capture<TemplateSource>();
 
     ConcurrentMap<TemplateSource, Future<Pair<TemplateSource, Template>>> cache =
         createMock(ConcurrentMap.class);
+
     expect(cache.get(capture(keyGet))).andReturn(future);
+    expect(cache.remove(capture(keyRemove), eq(future))).andReturn(true);
 
     Parser parser = createMock(Parser.class);
 
@@ -209,10 +212,12 @@ public class HighConcurrencyTemplateCacheTest {
     expect(future.get()).andThrow(new ExecutionException(new Exception()));
 
     Capture<TemplateSource> keyGet = new Capture<TemplateSource>();
+    Capture<TemplateSource> keyRemove = new Capture<TemplateSource>();
 
     ConcurrentMap<TemplateSource, Future<Pair<TemplateSource, Template>>> cache =
         createMock(ConcurrentMap.class);
     expect(cache.get(capture(keyGet))).andReturn(future);
+    expect(cache.remove(capture(keyRemove), eq(future))).andReturn(true);
 
     Parser parser = createMock(Parser.class);
 
