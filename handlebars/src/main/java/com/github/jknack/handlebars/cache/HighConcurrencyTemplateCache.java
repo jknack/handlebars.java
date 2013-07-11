@@ -154,7 +154,7 @@ public class HighConcurrencyTemplateCache implements TemplateCache {
           // fall through and retry
           interrupted = true;
         } catch (ExecutionException ex) {
-          cache.remove(source, future);
+          if(future == null) cache.remove(source, futureTask);
           throw launderThrowable(source, ex.getCause());
         }
       }
