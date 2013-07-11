@@ -23,6 +23,7 @@ import static org.apache.commons.lang3.Validate.notNull;
 import java.util.BitSet;
 
 import org.antlr.v4.runtime.ANTLRErrorListener;
+import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CommonToken;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.IntStream;
@@ -31,6 +32,7 @@ import org.antlr.v4.runtime.RecognitionException;
 import org.antlr.v4.runtime.Recognizer;
 import org.antlr.v4.runtime.atn.ATNConfigSet;
 import org.antlr.v4.runtime.dfa.DFA;
+import org.antlr.v4.runtime.misc.Interval;
 import org.apache.commons.lang3.StringUtils;
 
 import com.github.jknack.handlebars.HandlebarsError;
@@ -82,13 +84,27 @@ public class HbsErrorReporter implements ANTLRErrorListener {
     int evidenceStat = message.length();
     String[] lines = lines(recognizer);
     underline(message, lines, line, column);
-    String prevLine = lines[Math.max(0, line - 2)];
-    String nextLine = lines[Math.min(lines.length - 1, line + 1)];
+    String prevLine = lineAt(lines, line > lines.length ? lines.length : line - 2);
+    String nextLine = lineAt(lines, line);
     String evidence = prevLine + "\n" + message.substring(evidenceStat) + "\n" + nextLine;
     message.append(stacktrace);
-    HandlebarsError error = new HandlebarsError(filename, line, column, reason,
-        evidence, message.toString());
+    HandlebarsError error = new HandlebarsError(filename, line, column, reason
+        .replace("<EOF>", "EOF"), evidence, message.toString());
     throw new HandlebarsException(error);
+  }
+
+  /**
+   * Get a line at the specified number (if possible).
+   *
+   * @param lines The lines.
+   * @param number The line number to extract.
+   * @return The line or an empty string.
+   */
+  private String lineAt(final String[] lines, final int number) {
+    if (number >= 0 && number < lines.length) {
+      return lines[number];
+    }
+    return "";
   }
 
   /**
@@ -101,7 +117,7 @@ public class HbsErrorReporter implements ANTLRErrorListener {
    */
   private void underline(final StringBuilder message, final String[] lines, final int line,
       final int charPositionInLine) {
-    String errorLine = lines[line - 1];
+    String errorLine = lines[Math.min(line - 1, lines.length - 1)];
     message.append(errorLine).append("\n");
     for (int i = 0; i < charPositionInLine; i++) {
       message.append(" ");
@@ -117,9 +133,15 @@ public class HbsErrorReporter implements ANTLRErrorListener {
    */
   private String[] lines(final Recognizer<?, ?> recognizer) {
     IntStream stream = recognizer.getInputStream();
-    String input = stream instanceof CommonTokenStream
-        ? ((CommonTokenStream) stream).getTokenSource().getInputStream().toString()
-        : stream.toString();
+    if (stream instanceof CommonTokenStream) {
+      stream = ((CommonTokenStream) stream).getTokenSource().getInputStream();
+    }
+    final String input;
+    if (stream instanceof CharStream) {
+      input = ((CharStream) stream).getText(new Interval(0, stream.size()));
+    } else {
+      input = stream.toString();
+    }
     String[] lines = input.split("\n");
     return lines;
   }
