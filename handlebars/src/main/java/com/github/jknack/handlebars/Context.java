@@ -566,10 +566,15 @@ public class Context {
       if (INT.matcher(idx).matches()) {
         // It is a number, check if the current value is a index base object.
         int pos = Integer.parseInt(idx);
-        if (current instanceof List) {
-          return ((List) current).get(pos);
-        } else if (current.getClass().isArray()) {
-          return Array.get(current, pos);
+        try {
+          if (current instanceof List) {
+            return ((List) current).get(pos);
+          } else if (current.getClass().isArray()) {
+            return Array.get(current, pos);
+          }
+        } catch (IndexOutOfBoundsException exception) {
+          // Index is outside of range, do as JS
+          return null;
         }
       }
       // It is not a index base object, defaults to string property lookup
