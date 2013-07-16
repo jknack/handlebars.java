@@ -733,6 +733,7 @@ public class Handlebars {
    */
   private void registerDynamicHelper(final Object source, final Class<?> clazz) {
     int size = helpers.size();
+    int replaced = 0;
     if (clazz != Object.class) {
       Set<String> overloaded = new HashSet<String>();
       // Keep backing up the inheritance hierarchy.
@@ -743,13 +744,17 @@ public class Handlebars {
         if (isPublic && CharSequence.class.isAssignableFrom(method.getReturnType())) {
           boolean isStatic = Modifier.isStatic(method.getModifiers());
           if (source != null || isStatic) {
+            if (helpers.containsKey(helperName)) {
+                replaced++;
+            }
             isTrue(overloaded.add(helperName), "name conflict found: " + helperName);
             registerHelper(helperName, new MethodHelper(method, source));
           }
         }
       }
     }
-    isTrue(size != helpers.size(), "No helper method was found in: " + clazz.getName());
+    isTrue((size + replaced) != helpers.size(),
+            "No helper method was found in: " + clazz.getName());
   }
 
   /**
