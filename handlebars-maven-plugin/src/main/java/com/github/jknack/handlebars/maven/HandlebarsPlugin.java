@@ -109,6 +109,7 @@ public class HandlebarsPlugin extends AbstractMojo {
   @Override
   public void execute() throws MojoExecutionException, MojoFailureException {
     File basedir = new File(prefix);
+    String realPrefix = basedir.getPath();
     TemplateLoader loader = new FileTemplateLoader(basedir, suffix);
     Handlebars handlebars = new Handlebars(loader);
     File output = new File(this.output);
@@ -120,21 +121,23 @@ public class HandlebarsPlugin extends AbstractMojo {
       if (includeRuntime) {
         IOUtil.copy(runtimeIS, writer);
       }
-      List<File> files = FileUtils.getFiles(basedir, "/**/*" + suffix, null);
+      List<File> files = FileUtils.getFiles(basedir, "**/*" + suffix, null);
       getLog().info("Compiling templates...");
       getLog().debug("Options:");
       getLog().debug("  output: " + output);
-      getLog().debug("  prefix: " + prefix);
+      getLog().debug("  prefix: " + realPrefix);
       getLog().debug("  suffix: " + suffix);
       getLog().debug("  minimize: " + minimize);
       getLog().debug("  includeRuntime: " + includeRuntime);
 
       Context nullContext = Context.newContext(null);
       for (File file : files) {
-        String templateName = file.getPath().replace(prefix, "").replace(suffix, "");
-        if (templateName.startsWith("/")) {
-          templateName = templateName.substring(1);
+        String templateName = file.getPath().replace(realPrefix, "").replace(suffix, "");
+        if (templateName.startsWith(File.separator)) {
+          templateName = templateName.substring(File.separator.length());
         }
+
+        templateName = templateName.replace(File.separator,"/");
         getLog().debug("compiling: " + templateName);
         Template template = handlebars.compileInline("{{precompile \"" + templateName + "\"}}");
         Options opts = new Options.Builder(handlebars, TagType.VAR, nullContext, template)
@@ -195,3 +198,4 @@ public class HandlebarsPlugin extends AbstractMojo {
   }
 
 }
+
