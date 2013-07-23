@@ -137,7 +137,7 @@ public class HandlebarsPlugin extends AbstractMojo {
           templateName = templateName.substring(File.separator.length());
         }
 
-        templateName = templateName.replace(File.separator,"/");
+        templateName = templateName.replace(File.separator, "/");
         getLog().debug("compiling: " + templateName);
         Template template = handlebars.compileInline("{{precompile \"" + templateName + "\"}}");
         Options opts = new Options.Builder(handlebars, TagType.VAR, nullContext, template)
@@ -198,4 +198,3 @@ public class HandlebarsPlugin extends AbstractMojo {
   }
 
 }
-
