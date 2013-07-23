@@ -27,8 +27,17 @@ import com.github.jknack.handlebars.Options;
 import com.github.jknack.handlebars.Template;
 
 /**
- * The block helper will replace its section with the partial of the
- * same name if it exists.
+ * <p>
+ * The block helper will replace its section with the partial of the same name if it exists.
+ * </p>
+ * <p>
+ * If <code>delete-after-merge</code> is set to <code>true</code>, the partial will be delete once
+ * applied it.
+ * </p>
+ *
+ * <pre>
+ *  {{block "title" [delete-after-merge=false]}}
+ * </pre>
  *
  * @author edgar.espina
  * @since 0.3.0
@@ -63,8 +72,11 @@ public class BlockHelper implements Helper<Object> {
       }
     }
     CharSequence result = options.apply(template);
-    // once applied, remove the template from current execution.
-    options.partial(path, null);
+    Boolean deletePartials = options.hash("delete-after-merge", false);
+    if (deletePartials) {
+      // once applied, remove the template from current execution.
+      options.partial(path, null);
+    }
     return result;
   }
 }
