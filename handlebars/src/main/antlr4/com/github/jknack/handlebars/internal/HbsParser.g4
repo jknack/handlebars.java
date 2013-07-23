@@ -60,7 +60,7 @@ block
     START_BLOCK nameStart=QID param* hash* END
     thenBody=body
     (
-     (UNLESS | START ELSE) END unlessBody=body
+     (inverseToken=UNLESS | START inverseToken=ELSE) END unlessBody=body
     )?
     END_BLOCK nameEnd=QID END
   ;

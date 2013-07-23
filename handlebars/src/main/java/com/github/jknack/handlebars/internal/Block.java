@@ -18,6 +18,7 @@
 package com.github.jknack.handlebars.internal;
 
 import static org.apache.commons.lang3.StringUtils.isEmpty;
+import static org.apache.commons.lang3.Validate.isTrue;
 import static org.apache.commons.lang3.Validate.notNull;
 
 import java.io.IOException;
@@ -88,6 +89,11 @@ class Block extends HelperResolver {
    * Inverse section for if/else clauses.
    */
   private Template inverse;
+
+  /**
+   * The inverse label: 'else' or '^'.
+   */
+  private String inverseLabel;
 
   /**
    * Creates a new {@link Block}.
@@ -189,10 +195,15 @@ class Block extends HelperResolver {
   /**
    * Set the inverse template.
    *
+   * @param inverseLabel One of 'else' or '^'. Required.
    * @param inverse The inverse template. Required.
    * @return This section.
    */
-  public Template inverse(final Template inverse) {
+  public Template inverse(final String inverseLabel, final Template inverse) {
+    notNull(inverseLabel, "The inverseLabel can't be null.");
+    isTrue(inverseLabel.equals("^") || inverseLabel.equals("else"),
+        "The inverseLabel must be one of '^' or 'else'.");
+    this.inverseLabel = inverseLabel;
     this.inverse = notNull(inverse, "The inverse's template is required.");
     return this;
   }
@@ -262,6 +273,7 @@ class Block extends HelperResolver {
     buffer.append(endDelimiter);
     if (complete) {
       buffer.append(body == null ? "" : body.text());
+      buffer.append(inverse == null ? "" : "{{" + inverseLabel + "}}" + inverse.text());
     } else {
       buffer.append("\n...\n");
     }

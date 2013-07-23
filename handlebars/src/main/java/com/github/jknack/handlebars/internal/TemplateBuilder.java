@@ -122,7 +122,8 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
     block.filename(source.filename());
     block.position(ctx.nameStart.getLine(), ctx.nameStart.getCharPositionInLine());
     String startDelim = ctx.start.getText();
-    block.startDelimiter(startDelim.substring(0, startDelim.length() - 1));
+    startDelim = startDelim.substring(0, startDelim.length() - 1);
+    block.startDelimiter(startDelim);
     block.endDelimiter(ctx.stop.getText());
 
     Template body = visitBody(ctx.thenBody);
@@ -132,7 +133,11 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
     if (ctx.unlessBody != null) {
       Template unless = visitBody(ctx.unlessBody);
       if (unless != null) {
-        block.inverse(unless);
+        String inverseLabel = ctx.inverseToken.getText();
+        if (inverseLabel.startsWith(startDelim)) {
+          inverseLabel = inverseLabel.substring(startDelim.length());
+        }
+        block.inverse(inverseLabel, unless);
       }
     }
     hasTag(true);
