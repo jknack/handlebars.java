@@ -2,6 +2,7 @@ package com.github.jknack.handlebars.helper;
 
 import static com.github.jknack.handlebars.helper.StringHelpers.abbreviate;
 import static com.github.jknack.handlebars.helper.StringHelpers.capitalize;
+import static com.github.jknack.handlebars.helper.StringHelpers.replace;
 import static com.github.jknack.handlebars.helper.StringHelpers.capitalizeFirst;
 import static com.github.jknack.handlebars.helper.StringHelpers.center;
 import static com.github.jknack.handlebars.helper.StringHelpers.cut;
@@ -278,6 +279,21 @@ public class StringHelpersTest extends AbstractTest {
         slugify.apply("  Joel is a slug  ", options));
 
     verify(options);
+  }
+  
+  @Test
+  public void replace() throws IOException {
+    Handlebars hbs = createMock(Handlebars.class);
+    Context ctx = createMock(Context.class);
+    Template fn = createMock(Template.class);
+
+    Options options = new Options.Builder(hbs, TagType.VAR, ctx, fn)
+        .setParams(new Object[]{"...", "rocks" })
+        .build();
+
+    assertEquals("replace", replace.name());
+    assertEquals("Handlebars rocks",
+    		replace.apply("Handlebars ...", options));
   }
 
   @Test
