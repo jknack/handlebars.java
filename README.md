@@ -1,4 +1,6 @@
 [![Build Status](https://secure.travis-ci.org/jknack/handlebars.java.png?branch=master)](https://travis-ci.org/jknack/handlebars.java)
+[![Coverage Status](https://coveralls.io/repos/trautonen/handlebars.java/badge.png)](https://coveralls.io/r/trautonen/handlebars.java)
+
 Handlebars.java
 ===============
 ## Logic-less and semantic Mustache templates with Java
