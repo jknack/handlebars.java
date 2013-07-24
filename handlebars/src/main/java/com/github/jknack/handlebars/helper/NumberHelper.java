@@ -25,104 +25,122 @@ import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Helper;
 import com.github.jknack.handlebars.Options;
 
+/**
+ * Commons number function helpers.
+ */
 public enum NumberHelper implements Helper<Object> {
 
-	/**
-	 * You can use the isEven helper to return a value only if the 
-	 * first argument is even. Otherwise return null.
-	 * 
-	 * <li class="{{isEven value "leftBox"}}">
-	 * 
-	 * If value is 2, the output will be "row-even".
-	 * 
-	 */
-	isEven {
-		@Override
-		public CharSequence safeApply(final Number value, Options options) {
-			return isEven(value) ? options.param(0).toString() : null;
-		}
+  /**
+   * You can use the isEven helper to return a value only if the first argument
+   * is even. Otherwise return null.
+   * 
+   * <li class="{{isEven value "leftBox"}}">
+   * 
+   * If value is 2, the output will be "leftBox".
+   * 
+   */
+  isEven {
+    @Override
+    public CharSequence safeApply(final Number value, final Options options) {
+      if (isEven(value)) {
+        return options.param(0).toString();
+      }
+      return null;
+    }
+  },
 
-	},
-	
-	/**
-	 * You can use the isOdd helper to return a value only if the 
-	 * first argument is odd. Otherwise return null.
-	 * 
-	 * <li class="{{isOdd value "rightBox"}}">
-	 * 
-	 * If value is 3, the output will be "row-odd".
-	 * 
-	 */
-	isOdd {
-		@Override
-		public CharSequence safeApply(final Number value, Options options) {
-			return !isEven(value) ? options.param(0).toString() : null;
-		}
+  /**
+   * You can use the isOdd helper to return a value only if the first argument
+   * is odd. Otherwise return null.
+   * 
+   * <li class="{{isOdd value "rightBox"}}">
+   * 
+   * If value is 3, the output will be "rightBox".
+   * 
+   */
+  isOdd {
+    @Override
+    public CharSequence safeApply(final Number value, final Options options) {
+      if (!isEven(value)) {
+        return options.param(0).toString();
+      }
+      return null;
+    }
+  },
 
-	},
-	
-	/**
-	 * You can use the stripes helper to return different value
-	 * if the passed argument is odd or even.
-	 * 
-	 * <tr class="{{stripes value "row-even" "row-odd"}}">
-	 * 
-	 * If value is 2, the output will be "row-even".
-	 * 
-	 */
-	stripes {
-		@Override
-		public CharSequence safeApply(final Number value, Options options) {
-			return isEven(value) ? options.param(0).toString() : options.param(1).toString();
-		}
+  /**
+   * You can use the stripes helper to return different value if the passed
+   * argument is odd or even.
+   * 
+   * <tr class="{{stripes value "row-even" "row-odd"}}">
+   * 
+   * If value is 2, the output will be "row-even".
+   * 
+   */
+  stripes {
+    @Override
+    public CharSequence safeApply(final Number value, final Options options) {
+      if (isEven(value)) {
+        return options.param(0).toString();
+      } else {
+        return options.param(1).toString();
+      }
+    }
+  };
 
-	};
+  @Override
+  public CharSequence apply(final Object context, final Options options)
+      throws IOException {
+    if (context instanceof Number) {
+      return safeApply((Number) context, options);
+    }
+    return null;
+  }
 
-	@Override
-	public CharSequence apply(final Object context, final Options options) throws IOException {
-		if (context instanceof Number) {
-			return safeApply((Number)context, options);
-		}
-		return null;
-	}
+  /**
+   * Apply the helper to the context.
+   * 
+   * @param value
+   *          The context object (param=0).
+   * @param options
+   *          The options object.
+   * @return A string result.
+   */
+  protected abstract CharSequence safeApply(final Number value,
+      final Options options);
 
-	/**
-	 * Apply the helper to the context.
-	 * 
-	 * @param context
-	 *          The context object (param=0).
-	 * @param options
-	 *          The options object.
-	 * @return A string result.
-	 */
-	protected abstract CharSequence safeApply(final Number value, final Options options);
+  /**
+   * Apply the helper to the context.
+   * 
+   * @param value
+   * @return true is even, false is odd
+   */
+  protected boolean isEven(final Number value) {
+    return value.intValue() % 2 == 0;
+  }
 
-	protected boolean isEven( Number value){
-		return value.intValue() % 2 == 0;
-	}
-	
-	/**
-	 * Register the helper in a handlebars instance.
-	 * 
-	 * @param handlebars
-	 *          A handlebars object. Required.
-	 */
-	public void registerHelper(final Handlebars handlebars) {
-		notNull(handlebars, "The handlebars is required.");
-		handlebars.registerHelper(this.name(), this);
-	}
+  /**
+   * Register the helper in a handlebars instance.
+   * 
+   * @param handlebars
+   *          A handlebars object. Required.
+   */
+  public void registerHelper(final Handlebars handlebars) {
+    notNull(handlebars, "The handlebars is required.");
+    handlebars.registerHelper(this.name(), this);
+  }
 
-	/**
-	 * Register all the number helpers.
-	 * 
-	 * @param handlebars
-	 *          The helper's owner. Required.
-	 */
-	public static void register(final Handlebars handlebars) {
-		notNull(handlebars, "A handlebars object is required.");
-		NumberHelper[] helpers = values();
-		for (NumberHelper helper : helpers) {
-			helper.registerHelper(handlebars);
-		}
-	}
+  /**
+   * Register all the number helpers.
+   * 
+   * @param handlebars
+   *          The helper's owner. Required.
+   */
+  public static void register(final Handlebars handlebars) {
+    notNull(handlebars, "A handlebars object is required.");
+    NumberHelper[] helpers = values();
+    for (NumberHelper helper : helpers) {
+      helper.registerHelper(handlebars);
+    }
+  }
 }

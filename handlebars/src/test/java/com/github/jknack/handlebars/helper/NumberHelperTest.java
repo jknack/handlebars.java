@@ -17,7 +17,7 @@ import com.github.jknack.handlebars.Options;
 import com.github.jknack.handlebars.TagType;
 import com.github.jknack.handlebars.Template;
 
-public class NumberHelperTest  extends AbstractTest {
+public class NumberHelperTest extends AbstractTest {
 
   @Test
   public void isOdd() throws IOException {
@@ -25,57 +25,49 @@ public class NumberHelperTest  extends AbstractTest {
     Context ctx = createMock(Context.class);
     Template fn = createMock(Template.class);
 
-    Options options = new Options.Builder(hbs, TagType.VAR, ctx, fn)
-        .setParams(new Object[]{"rightBox" })
-        .build();
+    Options options = new Options.Builder(hbs, TagType.VAR, ctx, fn).setParams(
+        new Object[] { "rightBox" }).build();
 
     assertEquals("isOdd", isOdd.name());
-    assertEquals("rightBox",
-    		isOdd.apply(3, options));
+    assertEquals("rightBox", isOdd.apply(3, options));
   }
-  
+
   @Test
   public void isEven() throws IOException {
     Handlebars hbs = createMock(Handlebars.class);
     Context ctx = createMock(Context.class);
     Template fn = createMock(Template.class);
 
-    Options options = new Options.Builder(hbs, TagType.VAR, ctx, fn)
-        .setParams(new Object[]{"leftBox" })
-        .build();
+    Options options = new Options.Builder(hbs, TagType.VAR, ctx, fn).setParams(
+        new Object[] {"leftBox"}).build();
 
     assertEquals("isEven", isEven.name());
-    assertEquals("leftBox",
-    		isEven.apply(2, options));
+    assertEquals("leftBox", isEven.apply(2, options));
   }
-  
+
   @Test
   public void stripesWithOddParameter() throws IOException {
     Handlebars hbs = createMock(Handlebars.class);
     Context ctx = createMock(Context.class);
     Template fn = createMock(Template.class);
 
-    Options options = new Options.Builder(hbs, TagType.VAR, ctx, fn)
-        .setParams(new Object[]{"leftBox", "rightBox" })
-        .build();
+    Options options = new Options.Builder(hbs, TagType.VAR, ctx, fn).setParams(
+        new Object[] {"leftBox", "rightBox"}).build();
 
     assertEquals("stripes", stripes.name());
-    assertEquals("leftBox",
-    		stripes.apply(2, options));
+    assertEquals("leftBox", stripes.apply(2, options));
   }
-  
+
   @Test
   public void stripesWithEvenParameter() throws IOException {
     Handlebars hbs = createMock(Handlebars.class);
     Context ctx = createMock(Context.class);
     Template fn = createMock(Template.class);
 
-    Options options = new Options.Builder(hbs, TagType.VAR, ctx, fn)
-        .setParams(new Object[]{"leftBox", "rightBox" })
-        .build();
+    Options options = new Options.Builder(hbs, TagType.VAR, ctx, fn).setParams(
+        new Object[] { "leftBox", "rightBox" }).build();
 
     assertEquals("stripes", stripes.name());
-    assertEquals("rightBox",
-    		stripes.apply(3, options));
+    assertEquals("rightBox", stripes.apply(3, options));
   }
 }

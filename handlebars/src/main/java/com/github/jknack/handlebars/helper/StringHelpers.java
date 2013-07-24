@@ -400,7 +400,7 @@ public enum StringHelpers implements Helper<Object> {
     }
 
   },
-  
+
   /**
    * Replaces each substring of this string that matches the literal target
    * sequence with the specified literal replacement sequence.
@@ -413,14 +413,14 @@ public enum StringHelpers implements Helper<Object> {
    * If value is "Handlebars ...", the output will be "Handlebars rocks".
    *
    */
-	replace {
-		@Override
-		public CharSequence safeApply(final Object value, final Options options) {
-			String target = (String) options.param(0, null);
-			String replacement = (String) options.param(1, null);
-			return value.toString().replace(target, replacement);
-		}
-	},
+  replace {
+    @Override
+    public CharSequence safeApply(final Object value, final Options options) {
+      String target = (String) options.param(0, null);
+      String replacement = (String) options.param(1, null);
+      return value.toString().replace(target, replacement);
+    }
+  },
 
   /**
    * Maps values for true, false and (optionally) null, to the strings "yes",
