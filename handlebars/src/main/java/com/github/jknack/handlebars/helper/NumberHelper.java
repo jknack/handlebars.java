@@ -33,11 +33,11 @@ public enum NumberHelper implements Helper<Object> {
   /**
    * You can use the isEven helper to return a value only if the first argument
    * is even. Otherwise return null.
-   * 
+   *
    * <li class="{{isEven value "leftBox"}}">
-   * 
+   *
    * If value is 2, the output will be "leftBox".
-   * 
+   *
    */
   isEven {
     @Override
@@ -52,11 +52,11 @@ public enum NumberHelper implements Helper<Object> {
   /**
    * You can use the isOdd helper to return a value only if the first argument
    * is odd. Otherwise return null.
-   * 
+   *
    * <li class="{{isOdd value "rightBox"}}">
-   * 
+   *
    * If value is 3, the output will be "rightBox".
-   * 
+   *
    */
   isOdd {
     @Override
@@ -71,11 +71,11 @@ public enum NumberHelper implements Helper<Object> {
   /**
    * You can use the stripes helper to return different value if the passed
    * argument is odd or even.
-   * 
+   *
    * <tr class="{{stripes value "row-even" "row-odd"}}">
-   * 
+   *
    * If value is 2, the output will be "row-even".
-   * 
+   *
    */
   stripes {
     @Override
@@ -99,7 +99,7 @@ public enum NumberHelper implements Helper<Object> {
 
   /**
    * Apply the helper to the context.
-   * 
+   *
    * @param value
    *          The context object (param=0).
    * @param options
@@ -111,8 +111,9 @@ public enum NumberHelper implements Helper<Object> {
 
   /**
    * Apply the helper to the context.
-   * 
+   *
    * @param value
+   *          The number value.
    * @return true is even, false is odd
    */
   protected boolean isEven(final Number value) {
@@ -121,7 +122,7 @@ public enum NumberHelper implements Helper<Object> {
 
   /**
    * Register the helper in a handlebars instance.
-   * 
+   *
    * @param handlebars
    *          A handlebars object. Required.
    */
@@ -132,7 +133,7 @@ public enum NumberHelper implements Helper<Object> {
 
   /**
    * Register all the number helpers.
-   * 
+   *
    * @param handlebars
    *          The helper's owner. Required.
    */
