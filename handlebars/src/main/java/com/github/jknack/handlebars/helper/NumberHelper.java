@@ -25,7 +25,7 @@ import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Helper;
 import com.github.jknack.handlebars.Options;
 
-public enum NumberHelper implements Helper<Number> {
+public enum NumberHelper implements Helper<Object> {
 
 	/**
 	 * You can use the isEven helper to return a value only if the 
@@ -39,7 +39,7 @@ public enum NumberHelper implements Helper<Number> {
 	isEven {
 		@Override
 		public CharSequence safeApply(final Number value, Options options) {
-			return value.intValue() % 2 == 0 ? options.param(0).toString() : null;
+			return isEven(value) ? options.param(0).toString() : null;
 		}
 
 	},
@@ -56,7 +56,7 @@ public enum NumberHelper implements Helper<Number> {
 	isOdd {
 		@Override
 		public CharSequence safeApply(final Number value, Options options) {
-			return value.intValue() % 2 == 0 ? null : options.param(0).toString();
+			return !isEven(value) ? options.param(0).toString() : null;
 		}
 
 	},
@@ -73,18 +73,17 @@ public enum NumberHelper implements Helper<Number> {
 	stripes {
 		@Override
 		public CharSequence safeApply(final Number value, Options options) {
-			return value.intValue() % 2 == 0 ? options.param(0).toString() : options.param(1).toString();
+			return isEven(value) ? options.param(0).toString() : options.param(1).toString();
 		}
 
 	};
 
 	@Override
-	public CharSequence apply(final Number context, final Options options) throws IOException {
-		if (options.isFalsy(context)) {
-			Object param = options.param(0, null);
-			return param == null ? null : param.toString();
+	public CharSequence apply(final Object context, final Options options) throws IOException {
+		if (context instanceof Number) {
+			return safeApply((Number)context, options);
 		}
-		return safeApply(context, options);
+		return null;
 	}
 
 	/**
@@ -96,8 +95,12 @@ public enum NumberHelper implements Helper<Number> {
 	 *          The options object.
 	 * @return A string result.
 	 */
-	protected abstract CharSequence safeApply(final Number context, final Options options);
+	protected abstract CharSequence safeApply(final Number value, final Options options);
 
+	protected boolean isEven( Number value){
+		return value.intValue() % 2 == 0;
+	}
+	
 	/**
 	 * Register the helper in a handlebars instance.
 	 * 
