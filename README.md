@@ -1,5 +1,5 @@
 [![Build Status](https://secure.travis-ci.org/jknack/handlebars.java.png?branch=master)](https://travis-ci.org/jknack/handlebars.java)
-[![Coverage Status](https://coveralls.io/repos/trautonen/handlebars.java/badge.png)](https://coveralls.io/r/trautonen/handlebars.java)
+[![Coverage Status](https://coveralls.io/repos/jknack/handlebars.java/badge.png)](https://coveralls.io/r/jknack/handlebars.java)
 
 Handlebars.java
 ===============
