@@ -1,0 +1,78 @@
+(function () {
+// Source: src/test/resources/partials/level1/level1.html
+
+  var template = Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
+  this.compilerInfo = [4,'>= 1.0.0'];
+helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
+  var buffer = "", stack1, functionType="function", escapeExpression=this.escapeExpression;
+
+
+  buffer += "<h1>I'm ";
+  if (stack1 = helpers.level1) { stack1 = stack1.call(depth0, {hash:{},data:data}); }
+  else { stack1 = depth0.level1; stack1 = typeof stack1 === functionType ? stack1.apply(depth0) : stack1; }
+  buffer += escapeExpression(stack1)
+    + "</h1>";
+  return buffer;
+  });
+  var templates = Handlebars.templates = Handlebars.templates || {};
+  templates['level1/level1'] = template;
+  var partials = Handlebars.partials = Handlebars.partials || {};
+  partials['level1/level1'] = template;
+
+
+// Source: src/test/resources/partials/partial/base.html
+
+  var template = Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
+  this.compilerInfo = [4,'>= 1.0.0'];
+helpers = this.merge(helpers, Handlebars.helpers); partials = this.merge(partials, Handlebars.partials); data = data || {};
+  var buffer = "", stack1, self=this;
+
+
+  buffer += "I'm the base partial\n";
+  stack1 = self.invokePartial(partials['partial/partial'], 'partial/partial', depth0, helpers, partials, data);
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  return buffer;
+  });
+  var templates = Handlebars.templates = Handlebars.templates || {};
+  templates['partial/base'] = template;
+  var partials = Handlebars.partials = Handlebars.partials || {};
+  partials['partial/base'] = template;
+
+
+// Source: src/test/resources/partials/partial/partial.html
+
+  var template = Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
+  this.compilerInfo = [4,'>= 1.0.0'];
+helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
+  
+
+
+  return "I'm the child partial";
+  });
+  var templates = Handlebars.templates = Handlebars.templates || {};
+  templates['partial/partial'] = template;
+  var partials = Handlebars.partials = Handlebars.partials || {};
+  partials['partial/partial'] = template;
+
+
+// Source: src/test/resources/partials/root.html
+
+  var template = Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
+  this.compilerInfo = [4,'>= 1.0.0'];
+helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
+  var buffer = "", functionType="function", escapeExpression=this.escapeExpression;
+
+
+  buffer += "Hello "
+    + escapeExpression((typeof depth0 === functionType ? depth0.apply(depth0) : depth0))
+    + "!";
+  return buffer;
+  });
+  var templates = Handlebars.templates = Handlebars.templates || {};
+  templates['root'] = template;
+  var partials = Handlebars.partials = Handlebars.partials || {};
+  partials['root'] = template;
+
+
+
+})();

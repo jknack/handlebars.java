@@ -1,0 +1,59 @@
+(function () {
+// Source: src/test/resources/i18nJs/i18njs.html
+
+  var template = Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
+  this.compilerInfo = [4,'>= 1.0.0'];
+helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
+  var buffer = "", stack1, options, functionType="function", escapeExpression=this.escapeExpression, helperMissing=helpers.helperMissing;
+
+
+  if (stack1 = helpers.i18nJs) { stack1 = stack1.call(depth0, {hash:{},data:data}); }
+  else { stack1 = depth0.i18nJs; stack1 = typeof stack1 === functionType ? stack1.apply(depth0) : stack1; }
+  buffer += escapeExpression(stack1)
+    + "\n";
+  options = {hash:{},data:data};
+  buffer += escapeExpression(((stack1 = helpers.i18n || depth0.i18n),stack1 ? stack1.call(depth0, "hello", options) : helperMissing.call(depth0, "i18n", "hello", options)))
+    + "\n";
+  options = {hash:{},data:data};
+  buffer += escapeExpression(((stack1 = helpers.i18n || depth0.i18n),stack1 ? stack1.call(depth0, "formatted", "Edgar!", options) : helperMissing.call(depth0, "i18n", "formatted", "Edgar!", options)))
+    + "\n";
+  return buffer;
+  });
+  var templates = Handlebars.templates = Handlebars.templates || {};
+  templates['i18njs'] = template;
+  var partials = Handlebars.partials = Handlebars.partials || {};
+  partials['i18njs'] = template;
+
+
+// i18nJs output:
+// register an empty i18nJs helper:
+Handlebars.registerHelper('i18nJs', function (arguments) {
+if (arguments.length > 1) {
+  I18n.locale=arguments[0];
+}
+return '';
+});
+
+// redirect i18n helper to i18n.js:
+Handlebars.registerHelper('i18n', function () {
+var key = arguments[0],
+  i18nOpts = {},
+  len = arguments.length - 1,  options = arguments[len];
+for(var i = 1; i < len; i++) {
+  i18nOpts['arg' + (i - 1)] = arguments[i];
+}
+i18nOpts.locale = options.hash.locale;
+return I18n.t(key, i18nOpts);
+});
+
+  I18n.defaultLocale = 'en_US';
+  I18n.locale = 'en_US';
+  I18n.translations = I18n.translations || {};
+  // English (United States)
+  I18n.translations['en_US'] = {
+    "hello": "Hi",
+    "formatted": "Hi {{arg0}}"
+  };
+
+
+})();

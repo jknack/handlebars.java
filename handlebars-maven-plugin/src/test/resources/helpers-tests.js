@@ -16,4 +16,10 @@ describe("Handlebars Helpers", function() {
       found = template({});
     expect(found).toBe("<h1>I'm </h1>");
   });
+
+  it("i18njs", function() {
+    var template = Handlebars.templates[this.description],
+      found = template({});
+    expect(found.replace(/^\s+|\s+$/g, '')).toBe("Hi\nHi Edgar!");
+  });
 });

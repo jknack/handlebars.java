@@ -21,13 +21,19 @@ usage
   <executions>
     <execution>
       <id>precompile</id>
-      <phase>generate-resources</phase>
+      <phase>prepare-package</phase>
       <goals>
         <goal>precompile</goal>
       </goals>
     </execution>
   </executions>
 </plugin>
+```
+
+or:
+
+```
+mvn handlebars:precompile
 ```
 
 configuration options

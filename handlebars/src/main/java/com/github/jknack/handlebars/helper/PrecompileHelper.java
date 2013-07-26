@@ -87,13 +87,6 @@ public final class PrecompileHelper implements Helper<String> {
       @Override
       public void tail(final StringBuilder buffer) {
       }
-
-      @Override
-      public void registerTemplate(final StringBuilder buffer,
-          final String name,
-          final String function) {
-        buffer.append(function);
-      }
     };
 
     /**

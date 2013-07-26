@@ -218,11 +218,13 @@ public enum I18nHelper implements Helper<String> {
      * </p>
      *
      * <pre>
-     *  {{i18nJs [locale] [bundle=messages]}}
+     *  {{i18nJs [locale] [bundle=messages] [wrap=true]}}
      * </pre>
      *
      * If locale argument is present it will translate that locale to JavaScript. Otherwise, the
      * default locale.
+     *
+     * Use wrap=true for wrapping the code with a script tag.
      *
      * @param localeName The locale's name. Optional.
      * @param options The helper's options. Not null.
@@ -233,9 +235,13 @@ public enum I18nHelper implements Helper<String> {
     public CharSequence apply(final String localeName, final Options options) throws IOException {
       Locale locale = LocaleUtils.toLocale(defaultString(localeName, defaultLocale.toString()));
       String baseName = options.hash("bundle", defaultBundle);
-      ResourceBundle bundle = ResourceBundle.getBundle(baseName, locale);
+      ClassLoader classLoader = options.hash("classLoader", getClass().getClassLoader());
+      ResourceBundle bundle = ResourceBundle.getBundle(baseName, locale, classLoader);
       StringBuilder buffer = new StringBuilder();
-      buffer.append("<script type='text/javascript'>\n");
+      Boolean wrap = options.hash("wrap", true);
+      if (wrap) {
+        buffer.append("<script type='text/javascript'>\n");
+      }
       buffer.append("  I18n.defaultLocale = '").append(defaultLocale).append("';\n");
       buffer.append("  I18n.locale = '").append(defaultLocale).append("';\n");
       buffer.append("  I18n.translations = I18n.translations || {};\n");
@@ -254,7 +260,11 @@ public enum I18nHelper implements Helper<String> {
         body.setLength(body.length() - separator.length());
         buffer.append(body);
       }
-      return new Handlebars.SafeString(buffer.append("\n  };\n").append("</script>\n"));
+      buffer.append("\n  };\n");
+      if (wrap) {
+        buffer.append("</script>\n");
+      }
+      return new Handlebars.SafeString(buffer);
     }
 
     /**

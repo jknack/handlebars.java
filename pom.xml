@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.github.jknack</groupId>
@@ -22,6 +23,7 @@
     <module>handlebars-proto</module>
     <module>handlebars-guava-cache</module>
     <module>handlebars-maven-plugin</module>
+    <module>handlebars-maven-plugin-tests</module>
   </modules>
 
   <licenses>
@@ -290,6 +292,13 @@
             </goals>
           </execution>
         </executions>
+      </plugin>
+
+      <!-- Deploy plugin -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-deploy-plugin</artifactId>
+        <version>2.7</version>
       </plugin>
 
     </plugins>

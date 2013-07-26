@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <parent>
+    <groupId>com.github.jknack</groupId>
+    <artifactId>handlebars.java</artifactId>
+    <version>1.1.1-SNAPSHOT</version>
+  </parent>
+
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.github.jknack</groupId>
+  <artifactId>handlebars-maven-plugin-tests</artifactId>
+
+  <name>Handlebars.js maven plugin tests</name>
+  <description>Tests suite for handlebars-maven-plugin</description>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>com.github.jknack</groupId>
+        <artifactId>handlebars-maven-plugin</artifactId>
+        <version>${project.version}</version>
+        <configuration>
+          <output>target/helpers.js</output>
+          <suffix>.html</suffix>
+        </configuration>
+        <executions>
+          <execution>
+            <id>precompile</id>
+            <goals>
+              <goal>precompile</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <!-- Deploy plugin -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-deploy-plugin</artifactId>
+        <configuration>
+          <skip>true</skip>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>

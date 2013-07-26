@@ -481,7 +481,7 @@ public class Handlebars {
     notNull(helper, "A helper is required.");
     Helper<Object> oldHelper = helpers.put(name, (Helper<Object>) helper);
     if (oldHelper != null) {
-      warn("Helper '%s': %s has been replaced by %s", name, oldHelper, helper);
+      warn("Helper '%s' has been replaced by '%s'", name, helper);
     }
     return this;
   }
@@ -1082,8 +1082,7 @@ public class Handlebars {
     handlebars.registerHelper(BlockHelper.NAME, BlockHelper.INSTANCE);
     handlebars.registerHelper(PartialHelper.NAME, PartialHelper.INSTANCE);
     handlebars.registerHelper(IncludeHelper.NAME, IncludeHelper.INSTANCE);
-    handlebars.registerHelper(PrecompileHelper.NAME,
-        PrecompileHelper.INSTANCE);
+    handlebars.registerHelper(PrecompileHelper.NAME, PrecompileHelper.INSTANCE);
     I18nHelper.registerHelpers(handlebars);
   }
 
