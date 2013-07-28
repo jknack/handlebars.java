@@ -216,10 +216,10 @@ public class HandlebarsPlugin extends AbstractMojo {
       } else {
         getLog().warn("  no templates were found");
       }
-    } catch (IOException ex) {
-      throw new MojoFailureException("Can't scan directory " + basedir, ex);
+    } catch (RuntimeException ex) {
+      throw new MojoExecutionException(ex.getMessage(), ex);
     } catch (Exception ex) {
-      throw new MojoFailureException("Unexpected error", ex);
+      throw new MojoFailureException(ex.getMessage(), ex);
     } finally {
       IOUtil.close(runtimeIS);
       IOUtil.close(writer);

@@ -30,6 +30,16 @@ import com.github.jknack.handlebars.io.URLTemplateSource;
 public class HighConcurrencyTemplateCacheTest {
 
   @Test
+  public void defaultConstructor() throws IOException {
+    new HighConcurrencyTemplateCache();
+  }
+
+  @Test(expected = NullPointerException.class)
+  public void creationWithNullCacheMustFail() throws IOException {
+    new HighConcurrencyTemplateCache(null);
+  }
+
+  @Test
   public void get() throws IOException {
     ConcurrentMap<TemplateSource, Future<Pair<TemplateSource, Template>>> cache =
         new ConcurrentHashMap<TemplateSource, Future<Pair<TemplateSource, Template>>>();
@@ -51,6 +61,72 @@ public class HighConcurrencyTemplateCacheTest {
     assertEquals(template, new HighConcurrencyTemplateCache(cache).get(source, parser));
 
     verify(parser, template);
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void interruptThreadOnInterruptedException() throws Exception {
+    assertEquals(false, Thread.currentThread().isInterrupted());
+    ConcurrentMap<TemplateSource, Future<Pair<TemplateSource, Template>>> cache =
+        createMock(ConcurrentHashMap.class);
+
+    TemplateSource source = new URLTemplateSource("/template.hbs", getClass().getResource(
+        "/template.hbs"));
+
+    Future<Pair<TemplateSource, Template>> future = createMock(Future.class);
+    // 1st try interrupt thread
+    expect(cache.get(source)).andReturn(future);
+    expect(future.get()).andThrow(new InterruptedException());
+
+    // 2nd success
+    Template template = createMock(Template.class);
+    Pair<TemplateSource, Template> pair = createMock(Pair.class);
+    expect(pair.getLeft()).andReturn(source);
+    expect(pair.getValue()).andReturn(template);
+    expect(cache.get(source)).andReturn(future);
+    expect(future.get()).andReturn(pair).times(2);
+
+    Parser parser = createMock(Parser.class);
+
+    replay(parser, template, cache, future, pair);
+
+    // 1st call, parse must be call it
+    assertEquals(template, new HighConcurrencyTemplateCache(cache).get(source, parser));
+    assertEquals(true, Thread.currentThread().isInterrupted());
+
+    verify(parser, template, cache, future, pair);
+  }
+
+  @Test(expected = Error.class)
+  @SuppressWarnings("unchecked")
+  public void errorShouldBeReThrow() throws Exception {
+    ConcurrentMap<TemplateSource, Future<Pair<TemplateSource, Template>>> cache =
+        createMock(ConcurrentHashMap.class);
+
+    TemplateSource source = new URLTemplateSource("/template.hbs", getClass().getResource(
+        "/template.hbs"));
+
+    Future<Pair<TemplateSource, Template>> future = createMock(Future.class);
+    // 1st try interrupt thread
+    expect(cache.get(source)).andReturn(future);
+    expect(future.get()).andThrow(new Error());
+
+    // 2nd success
+    Template template = createMock(Template.class);
+    Pair<TemplateSource, Template> pair = createMock(Pair.class);
+    expect(pair.getLeft()).andReturn(source);
+    expect(pair.getValue()).andReturn(template);
+    expect(cache.get(source)).andReturn(future);
+    expect(future.get()).andReturn(pair).times(2);
+
+    Parser parser = createMock(Parser.class);
+
+    replay(parser, template, cache, future, pair);
+
+    // 1st call, parse must be call it
+    assertEquals(template, new HighConcurrencyTemplateCache(cache).get(source, parser));
+
+    verify(parser, template, cache, future, pair);
   }
 
   @Test

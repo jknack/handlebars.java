@@ -541,13 +541,23 @@ public class Handlebars {
    * </ul>
    *
    * Only static methods will be registered as helpers.
+   * <p>Enums are supported too</p>
    *
-   * @param helperSource The helper source. Required.
+   * @param helperSource The helper source. Enums are supported. Required.
    * @return This handlebars object.
    */
+  @SuppressWarnings({"unchecked", "rawtypes" })
   public Handlebars registerHelpers(final Class<?> helperSource) {
     notNull(helperSource, "The helper source is required.");
-    registerDynamicHelper(null, helperSource);
+    if (Enum.class.isAssignableFrom(helperSource)) {
+      Enum[] helpers = ((Class<Enum>) helperSource).getEnumConstants();
+      for (Enum helper : helpers) {
+        isTrue(helper instanceof Helper, "'%s' isn't a helper.", helper.name());
+        registerHelper(helper.name(), (Helper) helper);
+      }
+    } else {
+      registerDynamicHelper(null, helperSource);
+    }
     return this;
   }
 
@@ -745,7 +755,7 @@ public class Handlebars {
           boolean isStatic = Modifier.isStatic(method.getModifiers());
           if (source != null || isStatic) {
             if (helpers.containsKey(helperName)) {
-                replaced++;
+              replaced++;
             }
             isTrue(overloaded.add(helperName), "name conflict found: " + helperName);
             registerHelper(helperName, new MethodHelper(method, source));
@@ -754,7 +764,7 @@ public class Handlebars {
       }
     }
     isTrue((size + replaced) != helpers.size(),
-            "No helper method was found in: " + clazz.getName());
+        "No helper method was found in: " + clazz.getName());
   }
 
   /**

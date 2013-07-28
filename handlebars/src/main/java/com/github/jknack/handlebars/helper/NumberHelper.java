@@ -42,10 +42,7 @@ public enum NumberHelper implements Helper<Object> {
   isEven {
     @Override
     public CharSequence safeApply(final Number value, final Options options) {
-      if (isEven(value)) {
-        return options.param(0).toString();
-      }
-      return null;
+      return isEven(value) ? options.param(0, "even") : null;
     }
   },
 
@@ -61,10 +58,7 @@ public enum NumberHelper implements Helper<Object> {
   isOdd {
     @Override
     public CharSequence safeApply(final Number value, final Options options) {
-      if (!isEven(value)) {
-        return options.param(0).toString();
-      }
-      return null;
+      return !isEven(value) ? options.param(0, "odd") : null;
     }
   },
 
@@ -80,11 +74,7 @@ public enum NumberHelper implements Helper<Object> {
   stripes {
     @Override
     public CharSequence safeApply(final Number value, final Options options) {
-      if (isEven(value)) {
-        return options.param(0).toString();
-      } else {
-        return options.param(1).toString();
-      }
+      return isEven(value) ? options.param(0, "even") : options.param(1, "odd");
     }
   };
 
@@ -101,9 +91,9 @@ public enum NumberHelper implements Helper<Object> {
    * Apply the helper to the context.
    *
    * @param value
-   *          The context object (param=0).
+   *        The context object (param=0).
    * @param options
-   *          The options object.
+   *        The options object.
    * @return A string result.
    */
   protected abstract CharSequence safeApply(final Number value,
@@ -113,7 +103,7 @@ public enum NumberHelper implements Helper<Object> {
    * Apply the helper to the context.
    *
    * @param value
-   *          The number value.
+   *        The number value.
    * @return true is even, false is odd
    */
   protected boolean isEven(final Number value) {
@@ -124,7 +114,7 @@ public enum NumberHelper implements Helper<Object> {
    * Register the helper in a handlebars instance.
    *
    * @param handlebars
-   *          A handlebars object. Required.
+   *        A handlebars object. Required.
    */
   public void registerHelper(final Handlebars handlebars) {
     notNull(handlebars, "The handlebars is required.");
@@ -135,7 +125,7 @@ public enum NumberHelper implements Helper<Object> {
    * Register all the number helpers.
    *
    * @param handlebars
-   *          The helper's owner. Required.
+   *        The helper's owner. Required.
    */
   public static void register(final Handlebars handlebars) {
     notNull(handlebars, "A handlebars object is required.");

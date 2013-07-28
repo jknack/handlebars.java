@@ -22,6 +22,16 @@ import com.github.jknack.handlebars.io.URLTemplateSource;
 public class ConcurrentMapTemplateCacheTest {
 
   @Test
+  public void defaultConstructor() throws IOException {
+    new ConcurrentMapTemplateCache();
+  }
+
+  @Test(expected = NullPointerException.class)
+  public void creationWithNullCacheMustFail() throws IOException {
+    new ConcurrentMapTemplateCache(null);
+  }
+
+  @Test
   public void get() throws IOException {
     ConcurrentMap<TemplateSource, Pair<TemplateSource, Template>> cache =
         new ConcurrentHashMap<TemplateSource, Pair<TemplateSource, Template>>();

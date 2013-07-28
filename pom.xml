@@ -260,12 +260,17 @@
           <maxmem>256m</maxmem>
           <aggregate>true</aggregate>
           <instrumentation>
+            <ignores>
+              <ignore>com.github.jknack.handlebars.server.*</ignore>
+            </ignores>
             <excludes>
               <exclude>com/github/jknack/handlebars/internal/Hbs*.class</exclude>
+              <exclude>com/github/jknack/handlebars/server/Hbs*.class</exclude>
             </excludes>
           </instrumentation>
         </configuration>
       </plugin>
+
       <plugin>
         <groupId>org.eluder.coveralls</groupId>
         <artifactId>coveralls-maven-plugin</artifactId>

@@ -1,73 +1,66 @@
 package com.github.jknack.handlebars.helper;
 
-import static com.github.jknack.handlebars.helper.NumberHelper.isEven;
-import static com.github.jknack.handlebars.helper.NumberHelper.isOdd;
-import static com.github.jknack.handlebars.helper.NumberHelper.stripes;
-import static org.easymock.EasyMock.createMock;
-import static org.junit.Assert.assertEquals;
-
 import java.io.IOException;
 
 import org.junit.Test;
 
 import com.github.jknack.handlebars.AbstractTest;
-import com.github.jknack.handlebars.Context;
 import com.github.jknack.handlebars.Handlebars;
-import com.github.jknack.handlebars.Options;
-import com.github.jknack.handlebars.TagType;
-import com.github.jknack.handlebars.Template;
 
 public class NumberHelperTest extends AbstractTest {
 
+  @Override
+  protected Handlebars newHandlebars() {
+    Handlebars handlebars = super.newHandlebars();
+    NumberHelper.register(handlebars);
+    return handlebars;
+  }
+
   @Test
   public void isOdd() throws IOException {
-    Handlebars hbs = createMock(Handlebars.class);
-    Context ctx = createMock(Context.class);
-    Template fn = createMock(Template.class);
+    shouldCompileTo("{{isOdd 3}}", $, "odd");
+  }
 
-    Options options = new Options.Builder(hbs, TagType.VAR, ctx, fn).setParams(
-        new Object[] { "rightBox" }).build();
+  @Test
+  public void isOddWithCustomValue() throws IOException {
+    shouldCompileTo("{{isOdd 3 \"rightBox\"}}", $, "rightBox");
+  }
 
-    assertEquals("isOdd", isOdd.name());
-    assertEquals("rightBox", isOdd.apply(3, options));
+  @Test
+  public void isOddWithNullValueMustReturnsEmptyString() throws IOException {
+    shouldCompileTo("{{isOdd nullreference}}", $, "");
   }
 
   @Test
   public void isEven() throws IOException {
-    Handlebars hbs = createMock(Handlebars.class);
-    Context ctx = createMock(Context.class);
-    Template fn = createMock(Template.class);
-
-    Options options = new Options.Builder(hbs, TagType.VAR, ctx, fn).setParams(
-        new Object[] {"leftBox"}).build();
-
-    assertEquals("isEven", isEven.name());
-    assertEquals("leftBox", isEven.apply(2, options));
+    shouldCompileTo("{{isEven 2}}", $, "even");
   }
 
   @Test
-  public void stripesWithOddParameter() throws IOException {
-    Handlebars hbs = createMock(Handlebars.class);
-    Context ctx = createMock(Context.class);
-    Template fn = createMock(Template.class);
-
-    Options options = new Options.Builder(hbs, TagType.VAR, ctx, fn).setParams(
-        new Object[] {"leftBox", "rightBox"}).build();
-
-    assertEquals("stripes", stripes.name());
-    assertEquals("leftBox", stripes.apply(2, options));
+  public void isEvenWithCustomValue() throws IOException {
+    shouldCompileTo("{{isEven 4 \"leftBox\"}}", $, "leftBox");
   }
 
   @Test
-  public void stripesWithEvenParameter() throws IOException {
-    Handlebars hbs = createMock(Handlebars.class);
-    Context ctx = createMock(Context.class);
-    Template fn = createMock(Template.class);
+  public void isEvenWithNullValueMustReturnsEmptyString() throws IOException {
+    shouldCompileTo("{{isEven nullreference}}", $, "");
+  }
 
-    Options options = new Options.Builder(hbs, TagType.VAR, ctx, fn).setParams(
-        new Object[] { "leftBox", "rightBox" }).build();
+  @Test
+  public void stripes() throws IOException {
+    shouldCompileTo("{{stripes 2}}", $, "even");
+    shouldCompileTo("{{stripes 3}}", $, "odd");
+  }
 
-    assertEquals("stripes", stripes.name());
-    assertEquals("rightBox", stripes.apply(3, options));
+  @Test
+  public void stripesCustomValue() throws IOException {
+    shouldCompileTo("{{stripes 2 \"row-even\"}}", $, "row-even");
+    shouldCompileTo("{{stripes 3 \"row-even\"}}", $, "odd");
+    shouldCompileTo("{{stripes 3 \"row-even\" \"row-odd\"}}", $, "row-odd");
+  }
+
+  @Test
+  public void stripesWithNullReference() throws IOException {
+    shouldCompileTo("{{stripes nullReference}}", $, "");
   }
 }

@@ -53,11 +53,10 @@ public class MethodValueResolver extends MemberValueResolver<Method> {
       if (cause instanceof RuntimeException) {
         throw (RuntimeException) cause;
       }
-      throw new IllegalStateException("Execution of '" + member.getName() + "'", cause);
+      throw new IllegalStateException("Execution of '" + member.getName() + "' failed", cause);
     } catch (IllegalAccessException ex) {
       throw new IllegalStateException(
-          "Shouldn't be illegal to access method '" + member.getName()
-              + "'", ex);
+          "Could not access method:  '" + member.getName() + "'", ex);
     }
   }
 

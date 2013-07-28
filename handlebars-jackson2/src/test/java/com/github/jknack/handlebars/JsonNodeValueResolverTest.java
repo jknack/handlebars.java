@@ -1,9 +1,15 @@
 package com.github.jknack.handlebars;
 
+import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -14,6 +20,12 @@ import org.junit.Test;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.BigIntegerNode;
+import com.fasterxml.jackson.databind.node.BinaryNode;
+import com.fasterxml.jackson.databind.node.DecimalNode;
+import com.fasterxml.jackson.databind.node.LongNode;
+import com.fasterxml.jackson.databind.node.NullNode;
+import com.fasterxml.jackson.databind.node.POJONode;
 
 public class JsonNodeValueResolverTest {
 
@@ -32,6 +44,119 @@ public class JsonNodeValueResolverTest {
     assertEquals("abc 678 6789 7.13 3.14 true",
         handlebars.compileInline("{{string}} {{int}} {{long}} {{float}} {{double}} {{bool}}")
             .apply(context(root)));
+  }
+
+  @Test
+  public void nullMustBeResolvedToUnresolved() {
+    assertEquals(ValueResolver.UNRESOLVED, JsonNodeValueResolver.INSTANCE.resolve(null, "nothing"));
+  }
+
+  @Test
+  public void resolveBinaryNode() {
+    String name = "binary";
+    byte[] result = new byte[]{1 };
+
+    JsonNode node = createMock(JsonNode.class);
+    BinaryNode value = BinaryNode.valueOf(result);
+    expect(node.get(name)).andReturn(value);
+
+    Object[] mocks = {node };
+
+    replay(mocks);
+
+    assertEquals(result, JsonNodeValueResolver.INSTANCE.resolve(node, name));
+
+    verify(mocks);
+  }
+
+  @Test
+  public void resolveNullNode() {
+    String name = "null";
+    Object result = ValueResolver.UNRESOLVED;
+
+    JsonNode node = createMock(JsonNode.class);
+    NullNode value = NullNode.instance;
+    expect(node.get(name)).andReturn(value);
+
+    Object[] mocks = {node };
+
+    replay(mocks);
+
+    assertEquals(result, JsonNodeValueResolver.INSTANCE.resolve(node, name));
+
+    verify(mocks);
+  }
+
+  @Test
+  public void resolveBigIntegerNode() {
+    String name = "bigInt";
+    BigInteger result = BigInteger.ONE;
+
+    JsonNode node = createMock(JsonNode.class);
+    JsonNode value = BigIntegerNode.valueOf(result);
+    expect(node.get(name)).andReturn(value);
+
+    Object[] mocks = {node };
+
+    replay(mocks);
+
+    assertEquals(result, JsonNodeValueResolver.INSTANCE.resolve(node, name));
+
+    verify(mocks);
+  }
+
+  @Test
+  public void resolveDecimalNode() {
+    String name = "decimal";
+    BigDecimal result = BigDecimal.TEN;
+
+    JsonNode node = createMock(JsonNode.class);
+    JsonNode value = DecimalNode.valueOf(result);
+    expect(node.get(name)).andReturn(value);
+
+    Object[] mocks = {node };
+
+    replay(mocks);
+
+    assertEquals(result, JsonNodeValueResolver.INSTANCE.resolve(node, name));
+
+    verify(mocks);
+  }
+
+  @Test
+  public void resolveLongNode() {
+    String name = "long";
+    Long result = 678L;
+
+    JsonNode node = createMock(JsonNode.class);
+    JsonNode value = LongNode.valueOf(result);
+    expect(node.get(name)).andReturn(value);
+
+    Object[] mocks = {node };
+
+    replay(mocks);
+
+    assertEquals(result, JsonNodeValueResolver.INSTANCE.resolve(node, name));
+
+    verify(mocks);
+  }
+
+  @Test
+  public void resolvePojoNode() {
+    String name = "pojo";
+    Object result = new Object();
+
+    JsonNode node = createMock(JsonNode.class);
+    JsonNode value = new POJONode(result);
+    expect(node.get(name)).andReturn(value);
+
+    Object[] mocks = {node };
+
+    replay(mocks);
+
+    assertEquals(result, JsonNodeValueResolver.INSTANCE.resolve(node, name));
+
+    verify(mocks);
   }
 
   @Test
@@ -74,10 +199,12 @@ public class JsonNodeValueResolverTest {
     Handlebars handlebars = new Handlebars();
 
     Map<String, Object> root = new HashMap<String, Object>();
-    root.put("array", new Object[] {1, 2, 3});
+    root.put("array", new Object[]{1, 2, 3 });
 
-    assertEquals("123", handlebars.compileInline("{{array.[0]}}{{array.[1]}}{{array.[2]}}").apply(context(root)));
-    assertEquals("123", handlebars.compileInline("{{#array}}{{this}}{{/array}}").apply(context(root)));
+    assertEquals("123",
+        handlebars.compileInline("{{array.[0]}}{{array.[1]}}{{array.[2]}}").apply(context(root)));
+    assertEquals("123",
+        handlebars.compileInline("{{#array}}{{this}}{{/array}}").apply(context(root)));
   }
 
   @Test
@@ -92,10 +219,11 @@ public class JsonNodeValueResolverTest {
     };
 
     Map<String, Object> root = new HashMap<String, Object>();
-    root.put("array", new Object[] {item});
+    root.put("array", new Object[]{item });
 
     assertEquals("pojo", handlebars.compileInline("{{array.[0].key}}").apply(context(root)));
-    assertEquals("pojo", handlebars.compileInline("{{#array}}{{key}}{{/array}}").apply(context(root)));
+    assertEquals("pojo",
+        handlebars.compileInline("{{#array}}{{key}}{{/array}}").apply(context(root)));
   }
 
   public static JsonNode node(final Object object) throws IOException {

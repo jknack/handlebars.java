@@ -40,8 +40,21 @@ public class FastStringWriterTest {
   @Test
   public void writeCharArrayWithOffsetAndLength() throws IOException {
     Writer writer = new FastStringWriter();
-    writer.write(new char[] {'h', 'e', 'l', 'l', 'o'}, 1, 3);
+    writer.write(new char[]{'h', 'e', 'l', 'l', 'o' }, 1, 3);
     assertEquals("ell", writer.toString());
+  }
+
+  @Test(expected = IndexOutOfBoundsException.class)
+  public void writeCharArrayWithBadOffsetAndLength() throws IOException {
+    Writer writer = new FastStringWriter();
+    writer.write(new char[]{'h', 'e', 'l', 'l', 'o' }, -1, 3);
+  }
+
+  @Test
+  public void writeCharArrayWithOffsetAndZeroLength() throws IOException {
+    Writer writer = new FastStringWriter();
+    writer.write(new char[]{'h', 'e', 'l', 'l', 'o' }, 1, 0);
+    assertEquals("", writer.toString());
   }
 
   @Test
