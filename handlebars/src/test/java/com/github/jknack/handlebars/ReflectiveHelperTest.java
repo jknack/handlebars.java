@@ -33,8 +33,8 @@ public class ReflectiveHelperTest extends AbstractTest {
   }
 
   @Test
-  public void testHelperAWithConextAndOptions() throws IOException {
-    shouldCompileTo("{{helperAWithConextAndOptions}}", $(), "helperAWithConextAndOptions");
+  public void testHelperAWithContextAndOptions() throws IOException {
+    shouldCompileTo("{{helperAWithContextAndOptions}}", $(), "helperAWithContextAndOptions");
   }
 
   @Test
@@ -138,10 +138,10 @@ public class ReflectiveHelperTest extends AbstractTest {
     return "helperAWithOptions";
   }
 
-  public String helperAWithConextAndOptions(final Hash hash, final Options options) {
+  public String helperAWithContextAndOptions(final Hash hash, final Options options) {
     assertNotNull(hash);
     assertNotNull(options);
-    return "helperAWithConextAndOptions";
+    return "helperAWithContextAndOptions";
   }
 
   public StringBuilder helperWithParams(final String context, final boolean p0, final int p1) {
