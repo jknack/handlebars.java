@@ -41,6 +41,7 @@ import org.slf4j.Logger;
 
 import com.github.jknack.handlebars.cache.NullTemplateCache;
 import com.github.jknack.handlebars.cache.TemplateCache;
+import com.github.jknack.handlebars.helper.AssignHelper;
 import com.github.jknack.handlebars.helper.BlockHelper;
 import com.github.jknack.handlebars.helper.EachHelper;
 import com.github.jknack.handlebars.helper.EmbeddedHelper;
@@ -1093,6 +1094,7 @@ public class Handlebars {
     handlebars.registerHelper(PartialHelper.NAME, PartialHelper.INSTANCE);
     handlebars.registerHelper(IncludeHelper.NAME, IncludeHelper.INSTANCE);
     handlebars.registerHelper(PrecompileHelper.NAME, PrecompileHelper.INSTANCE);
+    handlebars.registerHelper(AssignHelper.NAME, AssignHelper.INSTANCE);
     I18nHelper.registerHelpers(handlebars);
   }
 
