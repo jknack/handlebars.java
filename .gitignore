@@ -10,3 +10,7 @@ target
 .settings
 bin
 dependency-reduced-pom.xml
+
+# IDE Project Files #
+*.iml
+*.idea
