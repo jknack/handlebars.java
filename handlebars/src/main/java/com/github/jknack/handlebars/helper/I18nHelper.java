@@ -17,7 +17,7 @@
  */
 package com.github.jknack.handlebars.helper;
 
-import static org.apache.commons.lang3.StringUtils.defaultString;
+import static org.apache.commons.lang3.StringUtils.defaultIfEmpty;
 import static org.apache.commons.lang3.Validate.isTrue;
 import static org.apache.commons.lang3.Validate.notEmpty;
 import static org.apache.commons.lang3.Validate.notNull;
@@ -233,7 +233,7 @@ public enum I18nHelper implements Helper<String> {
      */
     @Override
     public CharSequence apply(final String localeName, final Options options) throws IOException {
-      Locale locale = LocaleUtils.toLocale(defaultString(localeName, defaultLocale.toString()));
+      Locale locale = LocaleUtils.toLocale(defaultIfEmpty(localeName, defaultLocale.toString()));
       String baseName = options.hash("bundle", defaultBundle);
       ClassLoader classLoader = options.hash("classLoader", getClass().getClassLoader());
       ResourceBundle bundle = ResourceBundle.getBundle(baseName, locale, classLoader);
@@ -242,10 +242,10 @@ public enum I18nHelper implements Helper<String> {
       if (wrap) {
         buffer.append("<script type='text/javascript'>\n");
       }
+      buffer.append("  // ").append(locale.getDisplayName()).append("\n");
       buffer.append("  I18n.defaultLocale = '").append(defaultLocale).append("';\n");
       buffer.append("  I18n.locale = '").append(defaultLocale).append("';\n");
       buffer.append("  I18n.translations = I18n.translations || {};\n");
-      buffer.append("  // ").append(locale.getDisplayName()).append("\n");
       buffer.append("  I18n.translations['").append(locale.toString()).append("'] = {\n");
       StringBuilder body = new StringBuilder();
       String separator = ",\n";
