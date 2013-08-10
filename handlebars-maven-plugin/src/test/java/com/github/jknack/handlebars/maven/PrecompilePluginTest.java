@@ -18,25 +18,11 @@ import org.junit.Test;
 
 import com.google.common.collect.Lists;
 
-public class HandlebarsPluginTest {
-
-  @Test
-  public void i18nJs() throws Exception {
-    HandlebarsPlugin plugin = new HandlebarsPlugin();
-    plugin.setPrefix("src/test/resources/i18nJs");
-    plugin.setSuffix(".html");
-    plugin.setOutput("target/helpers-i18njs.js");
-    plugin.setProject(newProject());
-
-    plugin.execute();
-
-    assertEquals(FileUtils.fileRead("src/test/resources/helpers-i18njs.expected"),
-        FileUtils.fileRead("target/helpers-i18njs.js"));
-  }
+public class PrecompilePluginTest {
 
   @Test
   public void outputDirMustBeCreated() throws Exception {
-    HandlebarsPlugin plugin = new HandlebarsPlugin();
+    PrecompilePlugin plugin = new PrecompilePlugin();
     plugin.setPrefix("src/test/resources/helpers");
     plugin.setSuffix(".html");
     plugin.setOutput("target/newdir/helpers.js");
@@ -47,7 +33,7 @@ public class HandlebarsPluginTest {
 
   @Test
   public void missingHelperMustBeSilent() throws Exception {
-    HandlebarsPlugin plugin = new HandlebarsPlugin();
+    PrecompilePlugin plugin = new PrecompilePlugin();
     plugin.setPrefix("src/test/resources/missing-helper");
     plugin.setSuffix(".html");
     plugin.setOutput("target/missing-helpers.js");
@@ -58,7 +44,7 @@ public class HandlebarsPluginTest {
 
   @Test
   public void noFileMustBeCreatedIfNoTemplatesWereFound() throws Exception {
-    HandlebarsPlugin plugin = new HandlebarsPlugin();
+    PrecompilePlugin plugin = new PrecompilePlugin();
     plugin.setPrefix("src/test/resources/no templates");
     plugin.setSuffix(".html");
     plugin.setOutput("target/no-helpers.js");
@@ -71,7 +57,7 @@ public class HandlebarsPluginTest {
 
   @Test(expected = MojoExecutionException.class)
   public void mustFailOnInvalidInputDirectory() throws Exception {
-    HandlebarsPlugin plugin = new HandlebarsPlugin();
+    PrecompilePlugin plugin = new PrecompilePlugin();
     plugin.setPrefix("src/test/resources/missing");
     plugin.setSuffix(".html");
     plugin.setOutput("target/no-helpers.js");
@@ -82,7 +68,7 @@ public class HandlebarsPluginTest {
 
   @Test(expected = MojoExecutionException.class)
   public void mustFailOnMissingFile() throws Exception {
-    HandlebarsPlugin plugin = new HandlebarsPlugin();
+    PrecompilePlugin plugin = new PrecompilePlugin();
     plugin.setPrefix("src/test/resources/ioexception");
     plugin.setSuffix(".html");
     plugin.setOutput("target/no-helpers.js");
@@ -99,7 +85,7 @@ public class HandlebarsPluginTest {
         new DependencyResolutionRequiredException(artifact));
     replay(project, artifact);
 
-    HandlebarsPlugin plugin = new HandlebarsPlugin();
+    PrecompilePlugin plugin = new PrecompilePlugin();
     plugin.setPrefix("src/test/resources/no templates");
     plugin.setSuffix(".html");
     plugin.setOutput("target/no-helpers.js");
@@ -110,7 +96,7 @@ public class HandlebarsPluginTest {
 
   @Test
   public void fileWithRuntimeMustBeLargerThanNormalFiles() throws Exception {
-    HandlebarsPlugin withoutRT = new HandlebarsPlugin();
+    PrecompilePlugin withoutRT = new PrecompilePlugin();
     withoutRT.setPrefix("src/test/resources/helpers");
     withoutRT.setSuffix(".html");
     withoutRT.setOutput("target/without-rt-helpers.js");
@@ -118,7 +104,7 @@ public class HandlebarsPluginTest {
 
     withoutRT.execute();
 
-    HandlebarsPlugin withRT = new HandlebarsPlugin();
+    PrecompilePlugin withRT = new PrecompilePlugin();
     withRT.setPrefix("src/test/resources/helpers");
     withRT.setSuffix(".html");
     withRT.setOutput("target/with-rt-helpers.js");
@@ -134,7 +120,7 @@ public class HandlebarsPluginTest {
 
   @Test
   public void normalFileShouleBeLargerThanMinimizedFiles() throws Exception {
-    HandlebarsPlugin withoutRT = new HandlebarsPlugin();
+    PrecompilePlugin withoutRT = new PrecompilePlugin();
     withoutRT.setPrefix("src/test/resources/helpers");
     withoutRT.setSuffix(".html");
     withoutRT.setOutput("target/helpers-normal.js");
@@ -142,7 +128,7 @@ public class HandlebarsPluginTest {
 
     withoutRT.execute();
 
-    HandlebarsPlugin withRT = new HandlebarsPlugin();
+    PrecompilePlugin withRT = new PrecompilePlugin();
     withRT.setPrefix("src/test/resources/helpers");
     withRT.setSuffix(".html");
     withRT.setOutput("target/helpers.min.js");
@@ -157,22 +143,8 @@ public class HandlebarsPluginTest {
   }
 
   @Test
-  public void i18nJsCustomLocale() throws Exception {
-    HandlebarsPlugin plugin = new HandlebarsPlugin();
-    plugin.setPrefix("src/test/resources/i18nJsCustomLocale");
-    plugin.setSuffix(".html");
-    plugin.setOutput("target/helpers-i18njs-custom.js");
-    plugin.setProject(newProject(new File("src/test/messages").getAbsolutePath()));
-
-    plugin.execute();
-
-    assertEquals(FileUtils.fileRead("src/test/resources/helpers-i18njs-custom.expected"),
-        FileUtils.fileRead("target/helpers-i18njs-custom.js"));
-  }
-
-  @Test
   public void partials() throws Exception {
-    HandlebarsPlugin plugin = new HandlebarsPlugin();
+    PrecompilePlugin plugin = new PrecompilePlugin();
     plugin.setPrefix("src/test/resources/partials");
     plugin.setSuffix(".html");
     plugin.setOutput("target/helpers.js");
