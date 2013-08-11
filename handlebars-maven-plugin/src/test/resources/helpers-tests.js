@@ -20,6 +20,6 @@ describe("Handlebars Helpers", function() {
   it("i18njs", function() {
     var template = Handlebars.templates[this.description],
       found = template({});
-    expect(found.replace(/^\s+|\s+$/g, '')).toBe("Hi\nHi Edgar!");
+    expect(found.replace(/^\s+|\s+$/g, '')).toBe("Hi\nHi Edgar!\n[a, b, c]");
   });
 });

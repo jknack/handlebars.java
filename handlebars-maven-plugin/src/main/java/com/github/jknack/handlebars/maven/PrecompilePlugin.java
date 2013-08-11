@@ -39,7 +39,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.net.URL;
-import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -260,20 +259,6 @@ public class PrecompilePlugin extends HandlebarsPlugin {
     handlebars.registerHelper(I18nHelper.i18nJs.name(), new Helper<String>() {
       @Override
       public CharSequence apply(final String context, final Options options) throws IOException {
-        Map<String, Object> hash = options.hash;
-        hash.put("wrap", false);
-        if (classpath.length > 0) {
-          hash.put("classLoader",
-              new URLClassLoader(classpath, getClass().getClassLoader()));
-        }
-
-        Options opts = new Options.Builder(options.handlebars, options.tagType, options.context,
-            options.fn)
-            .setHash(hash)
-            .setInverse(options.inverse)
-            .setParams(options.params)
-            .build();
-
         StringBuilder output = new StringBuilder();
         output.append("// i18nJs output:\n");
         output.append("// register an empty i18nJs helper:\n");
@@ -291,7 +276,6 @@ public class PrecompilePlugin extends HandlebarsPlugin {
             + "}\n"
             + "i18nOpts.locale = options.hash.locale;\n"
             + "return I18n.t(key, i18nOpts);"));
-        output.append(I18nHelper.i18nJs.apply(context, opts));
         extras.add(output);
         return null;
       }
