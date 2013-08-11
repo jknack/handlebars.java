@@ -12,8 +12,6 @@ public class Issue213 extends AbstractTest {
   public void args() throws IOException {
     shouldCompileTo("{{i18nJs bundle=\"args\" wrap=false}}", null,
         "  // English (United States)\n" +
-            "  I18n.defaultLocale = 'en_US';\n" +
-            "  I18n.locale = 'en_US';\n" +
             "  I18n.translations = I18n.translations || {};\n" +
             "  I18n.translations['en_US'] = {\n" +
             "    \"arg3\": \"{{arg0}}, {{arg1}}, {{arg2}}\",\n" +
