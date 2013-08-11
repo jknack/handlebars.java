@@ -1,7 +1,6 @@
 package com.github.jknack.handlebars;
 
 import java.io.IOException;
-import java.util.Locale;
 
 import org.junit.Test;
 
@@ -40,11 +39,8 @@ public class I18NHelperTest extends AbstractTest {
 
   @Test
   public void defaultI18nJs() throws IOException {
-    String defaultLocale = Locale.getDefault().toString();
     String expected = "<script type='text/javascript'>\n" +
         "  // Spanish (Argentina)\n" +
-        "  I18n.defaultLocale = '" + defaultLocale + "';\n" +
-        "  I18n.locale = '" + defaultLocale + "';\n" +
         "  I18n.translations = I18n.translations || {};\n" +
         "  I18n.translations['es_AR'] = {\n" +
         "    \"hello\": \"Hola\",\n" +
