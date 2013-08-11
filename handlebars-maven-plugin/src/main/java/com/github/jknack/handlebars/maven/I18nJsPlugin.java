@@ -147,7 +147,7 @@ public class I18nJsPlugin extends HandlebarsPlugin {
       if (!merge) {
         FileUtils.fileWrite(new File(output, bundleName + ".js"), wrap(bundleName, buffer, amd));
         buffer.setLength(0);
-        getLog().debug("  =>" + bundleName + ".js");
+        getLog().debug("  => " + bundleName + ".js");
       } else {
         buffer.append("\n");
       }
