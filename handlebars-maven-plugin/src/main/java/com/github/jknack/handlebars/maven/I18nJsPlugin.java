@@ -37,8 +37,10 @@ import static org.apache.commons.lang3.Validate.notNull;
 import java.io.File;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Set;
@@ -54,6 +56,8 @@ import com.github.jknack.handlebars.Options;
 import com.github.jknack.handlebars.TagType;
 import com.github.jknack.handlebars.Template;
 import com.github.jknack.handlebars.helper.I18nHelper;
+
+import edu.emory.mathcs.backport.java.util.Collections;
 
 /**
  * Convert {@link ResourceBundle} to JavaScript using the I18n.js API.
@@ -115,7 +119,7 @@ public class I18nJsPlugin extends HandlebarsPlugin {
     StringBuilder buffer = new StringBuilder();
 
     // 1. find all the bundles
-    Iterable<File> bundles = bundles(this.bundle, classpath);
+    List<File> bundles = bundles(this.bundle, classpath);
 
     // 2. hash for i18njs helper
     Map<String, Object> hash = new HashMap<String, Object>();
@@ -126,6 +130,7 @@ public class I18nJsPlugin extends HandlebarsPlugin {
     // 3. get the base name from the bundle
     String basename = FileUtils.removePath(this.bundle.replace(".", "/"));
 
+    Collections.sort(bundles);
     for (File bundle : bundles) {
       // bundle name
       String bundleName = FileUtils.removeExtension(bundle.getName());
@@ -181,13 +186,13 @@ public class I18nJsPlugin extends HandlebarsPlugin {
    * @return Some resource bundles.
    * @throws Exception If something goes wrong.
    */
-  private Iterable<File> bundles(final String bundle, final URL[] classpath) throws Exception {
+  private List<File> bundles(final String bundle, final URL[] classpath) throws Exception {
     Set<File> bundles = new LinkedHashSet<File>();
     for (URL url : classpath) {
       File dir = new File(url.toURI());
       bundles.addAll(FileUtils.getFiles(dir, bundle.replace(".", "/") + "*.properties", null));
     }
-    return bundles;
+    return new ArrayList<File>(bundles);
   }
 
   /**
