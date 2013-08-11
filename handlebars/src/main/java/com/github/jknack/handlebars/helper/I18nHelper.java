@@ -198,7 +198,7 @@ public enum I18nHelper implements Helper<String> {
     /**
      * The message format pattern.
      */
-    private final Pattern pattern = Pattern.compile("\\{(\\d+.*)\\}");
+    private final Pattern pattern = Pattern.compile("\\{(\\d+)\\}");
 
     /**
      * <p>
