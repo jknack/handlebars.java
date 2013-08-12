@@ -49,7 +49,7 @@ configuration options
 * minimize: True, to minimize the output file with the google closure compiler. Default is: ```false```.
 * includeRuntime: True, if you want to include the ```handlebars.runtime.js``` in the final output. Default is: ```false```.
 
-i18n.js
+i18njs
 ======
 Convert [Java Resource Bundles](docs.oracle.com/javase/6/docs/api/java/util/ResourceBundle.html) to JavaScript using the i18n.js API.
 
@@ -69,10 +69,10 @@ usage
   </configuration>
   <executions>
     <execution>
-      <id>i18n.js</id>
+      <id>i18njs</id>
       <phase>prepare-package</phase>
       <goals>
-        <goal>i18n.js</goal>
+        <goal>i18njs</goal>
       </goals>
     </execution>
   </executions>
@@ -82,7 +82,7 @@ usage
 or:
 
 ```
-mvn handlebars:i18n.js
+mvn handlebars:i18njs
 ```
 
 configuration options
