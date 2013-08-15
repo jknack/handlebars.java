@@ -17,6 +17,9 @@ helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
   options = {hash:{},data:data};
   buffer += escapeExpression(((stack1 = helpers.i18n || depth0.i18n),stack1 ? stack1.call(depth0, "formatted", "Edgar!", options) : helperMissing.call(depth0, "i18n", "formatted", "Edgar!", options)))
     + "\n";
+  options = {hash:{},data:data};
+  buffer += escapeExpression(((stack1 = helpers.i18n || depth0.i18n),stack1 ? stack1.call(depth0, "args", "a", "b", "c", options) : helperMissing.call(depth0, "i18n", "args", "a", "b", "c", options)))
+    + "\n";
   return buffer;
   });
   var templates = Handlebars.templates = Handlebars.templates || {};
@@ -46,14 +49,6 @@ i18nOpts.locale = options.hash.locale;
 return I18n.t(key, i18nOpts);
 });
 
-  I18n.defaultLocale = 'en_US';
-  I18n.locale = 'en_US';
-  I18n.translations = I18n.translations || {};
-  // English (United States)
-  I18n.translations['en_US'] = {
-    "hello": "Hi",
-    "formatted": "Hi {{arg0}}"
-  };
 
 
 })();

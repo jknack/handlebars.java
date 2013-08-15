@@ -1,15 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
   <parent>
     <groupId>com.github.jknack</groupId>
     <artifactId>handlebars.java</artifactId>
-    <version>1.1.1</version>
+    <version>1.1.2-SNAPSHOT</version>
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.github.jknack</groupId>
   <artifactId>handlebars-maven-plugin-tests</artifactId>
+  <packaging>war</packaging>
 
   <name>Handlebars.js maven plugin tests</name>
   <description>Tests suite for handlebars-maven-plugin</description>
@@ -20,16 +22,22 @@
         <groupId>com.github.jknack</groupId>
         <artifactId>handlebars-maven-plugin</artifactId>
         <version>${project.version}</version>
-        <configuration>
-          <output>target/helpers.js</output>
-          <suffix>.html</suffix>
-        </configuration>
         <executions>
+          <execution>
+            <id>i18njs</id>
+            <goals>
+              <goal>i18njs</goal>
+            </goals>
+          </execution>
+
           <execution>
             <id>precompile</id>
             <goals>
               <goal>precompile</goal>
             </goals>
+            <configuration>
+              <suffix>.html</suffix>
+            </configuration>
           </execution>
         </executions>
       </plugin>
