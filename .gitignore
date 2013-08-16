@@ -11,6 +11,9 @@ target
 bin
 dependency-reduced-pom.xml
 
-# IDE Project Files #
+# OSX
+*.DS_Store
+
+# IntelliJ IDE Project Files #
 *.iml
 *.idea

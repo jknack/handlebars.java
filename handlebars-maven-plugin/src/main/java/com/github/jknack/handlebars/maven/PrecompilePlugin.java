@@ -95,6 +95,12 @@ public class PrecompilePlugin extends HandlebarsPlugin {
   private String suffix = ".hbs";
 
   /**
+   * The template files to precompile
+   */
+  @Parameter
+  private List<String> templates;
+
+  /**
    * The output file.
    */
   @Parameter(defaultValue = "${project.build.directory}/${project.build.finalName}/js/helpers.js")
@@ -156,7 +162,19 @@ public class PrecompilePlugin extends HandlebarsPlugin {
         runtimeIS = getClass().getResourceAsStream("/handlebars.runtime.js");
         IOUtil.copy(runtimeIS, writer);
       }
-      List<File> files = FileUtils.getFiles(basedir, "**/*" + suffix, null);
+
+      List<File> files;
+      if (templates != null && templates.size() > 0) {
+        files = new ArrayList<File>();
+        for (String templateName : templates) {
+          File file = FileUtils.getFile(basedir + "/" + templateName + suffix);
+          if (file.exists()) {
+            files.add(file);
+          }
+        }
+      } else {
+        files = FileUtils.getFiles(basedir, "**/*" + suffix, null);
+      }
       Collections.sort(files);
       getLog().info("Compiling templates...");
       getLog().debug("Options:");
@@ -363,6 +381,17 @@ public class PrecompilePlugin extends HandlebarsPlugin {
    */
   public void setSuffix(final String suffix) {
     this.suffix = suffix;
+  }
+
+  /**
+   *
+   * @param template the template filename
+   */
+  public void addTemplate(final String template) {
+    if (templates == null) {
+      this.templates = new ArrayList<String>();
+    }
+    this.templates.add(template);
   }
 
 }
