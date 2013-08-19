@@ -35,6 +35,22 @@ public class PrecompilePluginTest {
   }
 
   @Test
+  public void chooseSpecificFiles() throws Exception {
+    PrecompilePlugin plugin = new PrecompilePlugin();
+    plugin.setPrefix("src/test/resources/templates");
+    plugin.setSuffix(".hbs");
+    plugin.setOutput("target/specific-files.js");
+    plugin.addTemplate("a");
+    plugin.addTemplate("c");
+    plugin.setProject(newProject());
+
+    plugin.execute();
+
+    assertEquals(FileUtils.fileRead("src/test/resources/specific-files.expected"),
+        FileUtils.fileRead("target/specific-files.js"));
+  }
+
+  @Test
   public void outputDirMustBeCreated() throws Exception {
     PrecompilePlugin plugin = new PrecompilePlugin();
     plugin.setPrefix("src/test/resources/helpers");

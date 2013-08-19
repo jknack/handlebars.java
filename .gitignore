@@ -10,3 +10,10 @@ target
 .settings
 bin
 dependency-reduced-pom.xml
+
+# OSX
+*.DS_Store
+
+# IntelliJ IDE Project Files #
+*.iml
+*.idea
