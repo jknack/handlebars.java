@@ -1,12 +1,18 @@
-package handlebarsjs.spec;
+package com.github.jknack.handlebars.helper;
 
 import java.io.IOException;
 
 import org.junit.Test;
 
 import com.github.jknack.handlebars.AbstractTest;
+import com.github.jknack.handlebars.Handlebars;
 
 public class IncludeTest extends AbstractTest {
+
+  @Override
+  protected Handlebars newHandlebars() {
+    return super.newHandlebars().registerHelper(IncludeHelper.NAME, IncludeHelper.INSTANCE);
+  }
 
   @Test
   public void include() throws IOException {

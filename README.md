@@ -1023,6 +1023,7 @@ Hello {{#child}}{{this.value}}{{/child}}
 ## Want to contribute?
 * Fork the project on Github.
 * Wandering what to work on? See task/bug list and pick up something you would like to work on.
+* Do you want to donate one or more helpers? See [handlebars=helpers](https://github.com/jknack/handlebars.java/tree/master/handlebars-helpers) a repository for community's helpers.
 * Create an issue or fix one from [issues list](https://github.com/jknack/handlebars.java/issues).
 * If you know the answer to a question posted to our [mailing list](https://groups.google.com/forum/#!forum/handlebarsjava) - don't hesitate to write a reply.
 * Share your ideas or ask questions on [mailing list](https://groups.google.com/forum/#!forum/handlebarsjava) - don't hesitate to write a reply - that helps us improve javadocs/FAQ.

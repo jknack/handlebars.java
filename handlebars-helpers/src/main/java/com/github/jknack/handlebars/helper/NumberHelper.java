@@ -27,6 +27,8 @@ import com.github.jknack.handlebars.Options;
 
 /**
  * Commons number function helpers.
+ *
+ * @author https://github.com/Jarlakxen
  */
 public enum NumberHelper implements Helper<Object> {
 
