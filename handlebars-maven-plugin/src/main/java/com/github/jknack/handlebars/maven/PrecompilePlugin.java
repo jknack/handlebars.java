@@ -95,7 +95,7 @@ public class PrecompilePlugin extends HandlebarsPlugin {
   private String suffix = ".hbs";
 
   /**
-   * The template files to precompile
+   * The template files to precompile.
    */
   @Parameter
   private List<String> templates;
@@ -167,7 +167,7 @@ public class PrecompilePlugin extends HandlebarsPlugin {
       if (templates != null && templates.size() > 0) {
         files = new ArrayList<File>();
         for (String templateName : templates) {
-          File file = FileUtils.getFile(basedir + "/" + templateName + suffix);
+          File file = FileUtils.getFile(basedir + File.separator + templateName + suffix);
           if (file.exists()) {
             files.add(file);
           }

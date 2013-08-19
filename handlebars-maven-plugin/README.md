@@ -15,13 +15,6 @@ usage
   <groupId>com.github.jknack</groupId>
   <artifactId>handlebars-maven-plugin</artifactId>
   <version>${handlebars-version}</version>
-  <configuration>
-    <output>${project.build.directory}/${project.build.finalName}/js/helpers.js</output>
-    <prefix>${basedir}/src/main/webapp</prefix>
-    <suffix>.hbs</suffix>
-    <minimize>false</minimize>
-    <includeRuntime>false</includeRuntime>
-  </configuration>
   <executions>
     <execution>
       <id>precompile</id>
@@ -29,6 +22,17 @@ usage
       <goals>
         <goal>precompile</goal>
       </goals>
+      <configuration>
+        <output>${project.build.directory}/${project.build.finalName}/js/helpers.js</output>
+        <prefix>${basedir}/src/main/webapp</prefix>
+        <suffix>.hbs</suffix>
+        <minimize>false</minimize>
+        <includeRuntime>false</includeRuntime>
+        <templates>
+          <template>mytemplateA</template>
+          <template>mytemplateB</template>
+        </templates>
+      </configuration>
     </execution>
   </executions>
 </plugin>
@@ -48,6 +52,7 @@ configuration options
 * suffix: The file extension. Default is: ```.hbs```.
 * minimize: True, to minimize the output file with the google closure compiler. Default is: ```false```.
 * includeRuntime: True, if you want to include the ```handlebars.runtime.js``` in the final output. Default is: ```false```.
+* templates: The specific list of templates to process. Optional. By default all the templates will be processed.
 
 i18njs
 ======
@@ -61,12 +66,6 @@ usage
   <groupId>com.github.jknack</groupId>
   <artifactId>handlebars-maven-plugin</artifactId>
   <version>${handlebars-version}</version>
-  <configuration>
-    <output>${project.build.directory}/${project.build.finalName}/js</output>
-    <bundle>messages</bundle>
-    <merge>false</merge>
-    <amd>false</amd>
-  </configuration>
   <executions>
     <execution>
       <id>i18njs</id>
@@ -74,6 +73,12 @@ usage
       <goals>
         <goal>i18njs</goal>
       </goals>
+      <configuration>
+        <output>${project.build.directory}/${project.build.finalName}/js</output>
+        <bundle>messages</bundle>
+        <merge>false</merge>
+        <amd>false</amd>
+      </configuration>
     </execution>
   </executions>
 </plugin>
