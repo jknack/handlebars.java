@@ -12,9 +12,20 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+import org.junit.Assume;
+import org.junit.Before;
 import org.junit.Test;
 
 public class ToJavaScriptTest extends AbstractTest {
+
+  /**
+   * TravisCI fails with threads while running tests.
+   */
+  @Before
+  public void setup() {
+    boolean travisCI = Boolean.valueOf(System.getenv("TRAVIS"));
+    Assume.assumeTrue(!travisCI);
+  }
 
   public static void assertConcurrent(final String message,
       final Runnable test, final int numThreads, final int maxTimeoutSeconds)
