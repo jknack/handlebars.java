@@ -1,6 +1,6 @@
 language: java
 jdk:
-  - openjdk6
   - openjdk7
+  - openjdk6
 after_success:
-  - mvn cobertura:cobertura coveralls:cobertura
+  - mvn clean cobertura:cobertura coveralls:cobertura -DdryRun=true
