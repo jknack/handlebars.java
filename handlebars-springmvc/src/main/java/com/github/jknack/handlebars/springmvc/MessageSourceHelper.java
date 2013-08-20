@@ -32,18 +32,18 @@ import com.github.jknack.handlebars.springmvc.locale.LocaleResolver;
  * A helper that delegates to a {@link MessageSource} instance.
  * </p>
  * Usage:
- *
+ * 
  * <pre>
  *  {{message "code" args* [default="default message"] }}
  * </pre>
- *
+ * 
  * Where:
  * <ul>
  * <li>code: String literal. Required.</li>
  * <li>args: Object. Optional</li>
  * <li>default: A default message. Optional.</li>
  * </ul>
- *
+ * 
  * @author edgar.espina
  * @since 0.5.5
  */
@@ -53,7 +53,7 @@ public class MessageSourceHelper implements Helper<String> {
    * A message source. Required.
    */
   private MessageSource messageSource;
-  
+
   /**
    * the locale resolver. Required.
    */
@@ -61,12 +61,15 @@ public class MessageSourceHelper implements Helper<String> {
 
   /**
    * Creates a new {@link MessageSourceHelperTest}.
-   *
-   * @param messageSource The message source. Required.
+   * 
+   * @param messageSource
+   *          The message source. Required.
    */
-  public MessageSourceHelper(final MessageSource messageSource, final LocaleResolver localeResolver) {
+  public MessageSourceHelper(final MessageSource messageSource,
+      final LocaleResolver localeResolver) {
     this.messageSource = notNull(messageSource, "A message source is required.");
-    this.localeResolver = notNull(localeResolver, "A locale resolver is required.");
+    this.localeResolver = notNull(localeResolver,
+        "A locale resolver is required.");
   }
 
   @Override
@@ -74,6 +77,7 @@ public class MessageSourceHelper implements Helper<String> {
       throws IOException {
     Object[] args = options.params;
     String defaultMessage = options.hash("default");
-    return messageSource.getMessage(code, args, defaultMessage, localeResolver.getCurrent(options));
+    return messageSource.getMessage(code, args, defaultMessage,
+        localeResolver.getCurrent(options));
   }
 }

@@ -13,10 +13,10 @@ import com.github.jknack.handlebars.Options;
  * @see LocaleContextHolder#getLocale()
  */
 public class LocaleContextHolderResolver implements LocaleResolver {
- 
+
   @Override
   public Locale getCurrent(Options options) {
     return LocaleContextHolder.getLocale();
   }
-  
+
 }
