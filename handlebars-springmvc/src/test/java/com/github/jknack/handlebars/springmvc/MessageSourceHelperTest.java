@@ -23,6 +23,7 @@ import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Options;
 import com.github.jknack.handlebars.TagType;
 import com.github.jknack.handlebars.Template;
+import com.github.jknack.handlebars.springmvc.locale.LocaleContextHolderResolver;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({Options.class, MessageSourceHelper.class, Context.class })
@@ -30,7 +31,7 @@ public class MessageSourceHelperTest {
 
   @Test(expected = NullPointerException.class)
   public void nullMessageSource() {
-    new MessageSourceHelper(null);
+    new MessageSourceHelper(null, null);
   }
 
   @Test
@@ -53,7 +54,7 @@ public class MessageSourceHelperTest {
         .setParams(params)
         .setHash(hash)
         .build();
-
+    
     MessageSource messageSource = createMock(MessageSource.class);
     expect(messageSource.getMessage(eq(code), eq(params), eq(defaultMessage),
         isA(Locale.class))).andReturn(message);
@@ -61,7 +62,7 @@ public class MessageSourceHelperTest {
     replay(messageSource, hash);
 
     CharSequence result =
-        new MessageSourceHelper(messageSource).apply(code, options);
+        new MessageSourceHelper(messageSource, new LocaleContextHolderResolver()).apply(code, options);
     assertEquals(message, result);
 
     verify(messageSource, hash);
@@ -87,7 +88,7 @@ public class MessageSourceHelperTest {
         .setParams(params)
         .setHash(hash)
         .build();
-
+    
     MessageSource messageSource = createMock(MessageSource.class);
     expect(messageSource.getMessage(eq(code), eq(params), eq(defaultMessage),
         isA(Locale.class))).andReturn(message);
@@ -95,7 +96,7 @@ public class MessageSourceHelperTest {
     replay(messageSource, hash);
 
     CharSequence result =
-        new MessageSourceHelper(messageSource).apply(code, options);
+        new MessageSourceHelper(messageSource, new LocaleContextHolderResolver()).apply(code, options);
     assertEquals(message, result);
 
     verify(messageSource, hash);
@@ -121,7 +122,7 @@ public class MessageSourceHelperTest {
         .setParams(params)
         .setHash(hash)
         .build();
-
+    
     MessageSource messageSource = createMock(MessageSource.class);
     expect(messageSource.getMessage(eq(code), eq(params), eq(defaultMessage),
         isA(Locale.class))).andReturn(message);
@@ -129,7 +130,7 @@ public class MessageSourceHelperTest {
     replay(messageSource, hash);
 
     CharSequence result =
-        new MessageSourceHelper(messageSource).apply(code, options);
+        new MessageSourceHelper(messageSource, new LocaleContextHolderResolver()).apply(code, options);
     assertEquals(message, result);
 
     verify(messageSource, hash);
