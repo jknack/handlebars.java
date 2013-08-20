@@ -10,6 +10,7 @@ import static com.github.jknack.handlebars.helper.StringHelpers.defaultIfEmpty;
 import static com.github.jknack.handlebars.helper.StringHelpers.ljust;
 import static com.github.jknack.handlebars.helper.StringHelpers.lower;
 import static com.github.jknack.handlebars.helper.StringHelpers.rjust;
+import static com.github.jknack.handlebars.helper.StringHelpers.substring;
 import static com.github.jknack.handlebars.helper.StringHelpers.slugify;
 import static com.github.jknack.handlebars.helper.StringHelpers.stringFormat;
 import static com.github.jknack.handlebars.helper.StringHelpers.stripTags;
@@ -237,6 +238,36 @@ public class StringHelpersTest extends AbstractTest {
         rjust.apply("Handlebars.java", options));
 
     verify(options);
+  }
+  
+  @Test
+  public void substringWithStart() throws IOException {
+    Handlebars hbs = createMock(Handlebars.class);
+    Context ctx = createMock(Context.class);
+    Template fn = createMock(Template.class);
+
+    Options options = new Options.Builder(hbs, TagType.VAR, ctx, fn)
+        .setParams(new Object[]{11})
+        .build();
+
+    assertEquals("substring", substring.name());
+    assertEquals("java",
+        substring.apply("Handlebars.java", options));
+  }
+  
+  @Test
+  public void substringWithStartAndEnd() throws IOException {
+    Handlebars hbs = createMock(Handlebars.class);
+    Context ctx = createMock(Context.class);
+    Template fn = createMock(Template.class);
+
+    Options options = new Options.Builder(hbs, TagType.VAR, ctx, fn)
+        .setParams(new Object[]{0, 10})
+        .build();
+
+    assertEquals("substring", substring.name());
+    assertEquals("Handlebars",
+        substring.apply("Handlebars.java", options));
   }
 
   @Test
