@@ -15,7 +15,7 @@ import com.github.jknack.handlebars.Options;
 public class LocaleContextHolderResolver implements LocaleResolver {
 
   @Override
-  public Locale getCurrent(Options options) {
+  public Locale getCurrent(final Options options) {
     return LocaleContextHolder.getLocale();
   }
 

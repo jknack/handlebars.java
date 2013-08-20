@@ -64,6 +64,7 @@ public class MessageSourceHelper implements Helper<String> {
    *
    * @param messageSource
    *          The message source. Required.
+   * @param localeResolver
    */
   public MessageSourceHelper(final MessageSource messageSource,
       final LocaleResolver localeResolver) {

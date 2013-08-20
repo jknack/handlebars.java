@@ -69,7 +69,7 @@ public class HandlebarsViewResolver extends AbstractTemplateViewResolver
    * The locale resolver. The default resolver is LocaleContextHolderResolver.
    */
   private LocaleResolver localeResolver = new LocaleContextHolderResolver();
-  
+
   /**
    * Fail on missing file. Default is: true.
    */
@@ -228,13 +228,13 @@ public class HandlebarsViewResolver extends AbstractTemplateViewResolver
     this.valueResolvers = notEmpty(valueResolvers,
         "At least one value-resolver must be present.");
   }
-  
+
   /**
    * Set the locale resolver.
    *
    * @param localeResolver The value locale resolver.
    */
-  public void setLocaleResolver(LocaleResolver localeResolver) {
+  public void setLocaleResolver(final LocaleResolver localeResolver) {
     this.localeResolver = notNull(localeResolver,
         "the locale-resolver must be present.");
   }
