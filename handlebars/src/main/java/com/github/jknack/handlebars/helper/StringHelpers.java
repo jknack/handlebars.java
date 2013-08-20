@@ -223,7 +223,7 @@ public enum StringHelpers implements Helper<Object> {
       return StringUtils.leftPad(value.toString(), size, pad);
     }
   },
-  
+
   /**
    * Returns a new <code>CharSequence</code> that is a subsequence of this sequence.
    * The subsequence starts with the <code>char</code> value at the specified index and
