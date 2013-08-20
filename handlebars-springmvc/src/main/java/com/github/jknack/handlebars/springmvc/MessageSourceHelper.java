@@ -32,18 +32,18 @@ import com.github.jknack.handlebars.springmvc.locale.LocaleResolver;
  * A helper that delegates to a {@link MessageSource} instance.
  * </p>
  * Usage:
- *
+ * 
  * <pre>
  *  {{message "code" args* [default="default message"] }}
  * </pre>
- *
+ * 
  * Where:
  * <ul>
  * <li>code: String literal. Required.</li>
  * <li>args: Object. Optional</li>
  * <li>default: A default message. Optional.</li>
  * </ul>
- *
+ * 
  * @author edgar.espina
  * @since 0.5.5
  */
@@ -61,10 +61,11 @@ public class MessageSourceHelper implements Helper<String> {
 
   /**
    * Creates a new {@link MessageSourceHelperTest}.
-   *
+   * 
    * @param messageSource
    *          The message source. Required.
    * @param localeResolver
+   *          The locale resolver. Required.
    */
   public MessageSourceHelper(final MessageSource messageSource,
       final LocaleResolver localeResolver) {

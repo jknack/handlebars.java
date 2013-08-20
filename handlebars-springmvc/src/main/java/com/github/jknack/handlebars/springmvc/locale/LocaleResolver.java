@@ -14,6 +14,7 @@ public interface LocaleResolver {
    * Retrive the curren locale.
    *
    * @param options
+   *          This is the context that the locale resolve receives
    * @return get the locale
    */
   Locale getCurrent(final Options options);
