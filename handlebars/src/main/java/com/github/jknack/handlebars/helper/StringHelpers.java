@@ -237,9 +237,9 @@ public enum StringHelpers implements Helper<Object> {
    * </pre>
    *
    * If value is Handlebars.java, the output will be "java".
-   * 
+   *
    * or
-   * 
+   *
    * <pre>
    * {{substring value 0 10 }}
    * </pre>
@@ -250,7 +250,7 @@ public enum StringHelpers implements Helper<Object> {
     @Override
     protected CharSequence safeApply(final Object value, final Options options) {
       validIndex(options.params, 0, "Required start offset: ");
-      
+
       String str = value.toString();
       Integer start = options.param(0);
       Integer end = options.param(1, str.length());
