@@ -26,7 +26,7 @@ import com.github.jknack.handlebars.Template;
 import com.github.jknack.handlebars.springmvc.locale.LocaleContextHolderResolver;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({Options.class, MessageSourceHelper.class, Context.class })
+@PrepareForTest({ Options.class, MessageSourceHelper.class, Context.class })
 public class MessageSourceHelperTest {
 
   @Test(expected = NullPointerException.class)
@@ -51,18 +51,17 @@ public class MessageSourceHelperTest {
     Template fn = createMock(Template.class);
 
     Options options = new Options.Builder(hbs, TagType.VAR, ctx, fn)
-        .setParams(params)
-        .setHash(hash)
-        .build();
-    
+        .setParams(params).setHash(hash).build();
+
     MessageSource messageSource = createMock(MessageSource.class);
-    expect(messageSource.getMessage(eq(code), eq(params), eq(defaultMessage),
-        isA(Locale.class))).andReturn(message);
+    expect(
+        messageSource.getMessage(eq(code), eq(params), eq(defaultMessage),
+            isA(Locale.class))).andReturn(message);
 
     replay(messageSource, hash);
 
-    CharSequence result =
-        new MessageSourceHelper(messageSource, new LocaleContextHolderResolver()).apply(code, options);
+    CharSequence result = new MessageSourceHelper(messageSource,
+        new LocaleContextHolderResolver()).apply(code, options);
     assertEquals(message, result);
 
     verify(messageSource, hash);
@@ -75,7 +74,7 @@ public class MessageSourceHelperTest {
     String defaultMessage = null;
 
     // Options
-    Object[] params = {1, 2, 3 };
+    Object[] params = { 1, 2, 3 };
     @SuppressWarnings("unchecked")
     Map<String, Object> hash = createMock(Map.class);
     expect(hash.get("default")).andReturn(defaultMessage);
@@ -85,18 +84,17 @@ public class MessageSourceHelperTest {
     Template fn = createMock(Template.class);
 
     Options options = new Options.Builder(hbs, TagType.VAR, ctx, fn)
-        .setParams(params)
-        .setHash(hash)
-        .build();
-    
+        .setParams(params).setHash(hash).build();
+
     MessageSource messageSource = createMock(MessageSource.class);
-    expect(messageSource.getMessage(eq(code), eq(params), eq(defaultMessage),
-        isA(Locale.class))).andReturn(message);
+    expect(
+        messageSource.getMessage(eq(code), eq(params), eq(defaultMessage),
+            isA(Locale.class))).andReturn(message);
 
     replay(messageSource, hash);
 
-    CharSequence result =
-        new MessageSourceHelper(messageSource, new LocaleContextHolderResolver()).apply(code, options);
+    CharSequence result = new MessageSourceHelper(messageSource,
+        new LocaleContextHolderResolver()).apply(code, options);
     assertEquals(message, result);
 
     verify(messageSource, hash);
@@ -109,7 +107,7 @@ public class MessageSourceHelperTest {
     String defaultMessage = "Aca viene el 3";
 
     // Options
-    Object[] params = {1, 2, 3 };
+    Object[] params = { 1, 2, 3 };
     @SuppressWarnings("unchecked")
     Map<String, Object> hash = createMock(Map.class);
     expect(hash.get("default")).andReturn(defaultMessage);
@@ -119,18 +117,17 @@ public class MessageSourceHelperTest {
     Template fn = createMock(Template.class);
 
     Options options = new Options.Builder(hbs, TagType.VAR, ctx, fn)
-        .setParams(params)
-        .setHash(hash)
-        .build();
-    
+        .setParams(params).setHash(hash).build();
+
     MessageSource messageSource = createMock(MessageSource.class);
-    expect(messageSource.getMessage(eq(code), eq(params), eq(defaultMessage),
-        isA(Locale.class))).andReturn(message);
+    expect(
+        messageSource.getMessage(eq(code), eq(params), eq(defaultMessage),
+            isA(Locale.class))).andReturn(message);
 
     replay(messageSource, hash);
 
-    CharSequence result =
-        new MessageSourceHelper(messageSource, new LocaleContextHolderResolver()).apply(code, options);
+    CharSequence result = new MessageSourceHelper(messageSource,
+        new LocaleContextHolderResolver()).apply(code, options);
     assertEquals(message, result);
 
     verify(messageSource, hash);
