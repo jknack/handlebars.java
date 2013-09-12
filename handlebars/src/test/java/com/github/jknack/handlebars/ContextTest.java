@@ -234,7 +234,7 @@ public class ContextTest {
 
 	  Context.newBuilder("blah").combine(new HashMap<String, String>());
 	  Context.newBuilder("blah").combine(new HashMap<String, Object>());
-	  Context.newBuilder("blah").combine(new HashMap<String, Map>());
+	  Context.newBuilder("blah").combine(new HashMap<String, Map<String,Object>>());
   }
 
 }
