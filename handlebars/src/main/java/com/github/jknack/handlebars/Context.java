@@ -173,7 +173,7 @@ public class Context {
      * @param model The model data.
      * @return This builder.
      */
-    public Builder combine(final Map<String, Object> model) {
+    public Builder combine(final Map<String, ?> model) {
       context.combine(model);
       return this;
     }
@@ -336,8 +336,8 @@ public class Context {
    * @param model The model attributes.
    */
   @SuppressWarnings({"unchecked" })
-  private void combine(final Map<String, Object> model) {
-    Map<String, Object> map = (Map<String, Object>) extendedContext.model;
+  private void combine(final Map<String, ?> model) {
+    Map<String, Object> map =  (Map<String, Object>) extendedContext.model;
     map.putAll(model);
   }
 

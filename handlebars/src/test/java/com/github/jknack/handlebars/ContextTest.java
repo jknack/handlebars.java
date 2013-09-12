@@ -229,5 +229,12 @@ public class ContextTest {
             .combine(new HashMap<String, Object>()).build();
     assertEquals("child2", child2.get("this"));
   }
+  
+  public void testCombineGenerics() {
+
+	  Context.newBuilder("blah").combine(new HashMap<String, String>());
+	  Context.newBuilder("blah").combine(new HashMap<String, Object>());
+	  Context.newBuilder("blah").combine(new HashMap<String, Map>());
+  }
 
 }
