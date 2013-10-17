@@ -171,6 +171,9 @@ public class HandlebarsViewResolver extends AbstractTemplateViewResolver
               else if (helperSource instanceof InputStream) {
                   handlebars.registerHelpers("InputStream", (InputStream) helperSource);
               }
+              else if (helperSource instanceof String) {
+                  handlebars.registerHelpers("String", (String) helperSource);
+              }
               else if (helperSource instanceof Class) {
                   handlebars.registerHelpers((Class<?>) helperSource);
               } else {
