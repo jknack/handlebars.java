@@ -20,7 +20,8 @@ package com.github.jknack.handlebars.springmvc;
 import static org.apache.commons.lang3.Validate.notEmpty;
 import static org.apache.commons.lang3.Validate.notNull;
 
-import java.io.IOException;
+import java.io.*;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -155,14 +156,32 @@ public class HandlebarsViewResolver extends AbstractTemplateViewResolver
     for (Entry<String, Helper<?>> entry : helpers.entrySet()) {
       handlebars.registerHelper(entry.getKey(), entry.getValue());
     }
-    // copy helper sources
-    for (Object helperSource : helperSources) {
-      if (helperSource instanceof Class) {
-        handlebars.registerHelpers((Class<?>) helperSource);
-      } else {
-        handlebars.registerHelpers(helperSource);
+      // copy helper sources and create helpers from javascript if necessary
+      try {
+          for (Object helperSource : helperSources) {
+              if (helperSource instanceof File) {
+                  handlebars.registerHelpers((File) helperSource);
+              }
+              else if (helperSource instanceof URI) {
+                  handlebars.registerHelpers((URI) helperSource);
+              }
+              else if (helperSource instanceof Reader) {
+                  handlebars.registerHelpers("Reader", (Reader) helperSource);
+              }
+              else if (helperSource instanceof InputStream) {
+                  handlebars.registerHelpers("InputStream", (InputStream) helperSource);
+              }
+              else if (helperSource instanceof Class) {
+                  handlebars.registerHelpers((Class<?>) helperSource);
+              } else {
+                  handlebars.registerHelpers(helperSource);
+              }
+          }
       }
-    }
+      catch (Exception ex) {
+
+      }
+
     // clear the local helpers
     helpers.clear();
     helpers = null;
@@ -263,7 +282,7 @@ public class HandlebarsViewResolver extends AbstractTemplateViewResolver
    * @see Handlebars#registerHelpers(Class)
    * @see Handlebars#registerHelpers(Object)
    */
-  public void setHelpers(final List<Object> helpers) {
+  public void setHelperSources(final List<Object> helpers) {
     notNull(helpers, "The helpers are required.");
     this.helperSources.addAll(helpers);
   }
