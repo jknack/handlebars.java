@@ -20,7 +20,6 @@ package com.github.jknack.handlebars.springmvc;
 import static org.apache.commons.lang3.Validate.notEmpty;
 import static org.apache.commons.lang3.Validate.notNull;
 
-import java.io.*;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -157,32 +156,26 @@ public class HandlebarsViewResolver extends AbstractTemplateViewResolver
       handlebars.registerHelper(entry.getKey(), entry.getValue());
     }
       // copy helper sources and create helpers from javascript if necessary
-      try {
-          for (Object helperSource : helperSources) {
-              if (helperSource instanceof File) {
-                  handlebars.registerHelpers((File) helperSource);
-              }
-              else if (helperSource instanceof URI) {
-                  handlebars.registerHelpers((URI) helperSource);
-              }
-              else if (helperSource instanceof Reader) {
-                  handlebars.registerHelpers("Reader", (Reader) helperSource);
-              }
-              else if (helperSource instanceof InputStream) {
-                  handlebars.registerHelpers("InputStream", (InputStream) helperSource);
-              }
-              else if (helperSource instanceof String) {
-                  handlebars.registerHelpers("String", (String) helperSource);
-              }
-              else if (helperSource instanceof Class) {
-                  handlebars.registerHelpers((Class<?>) helperSource);
-              } else {
-                  handlebars.registerHelpers(helperSource);
-              }
-          }
+        try {
+            for (Object helperSource : helperSources) {
+                if (helperSource instanceof File) {
+                    handlebars.registerHelpers((File) helperSource);}
+                else if (helperSource instanceof URI) {
+                    handlebars.registerHelpers((URI) helperSource);}
+                else if (helperSource instanceof Reader) {
+                    handlebars.registerHelpers("Reader", (Reader) helperSource);}
+                else if (helperSource instanceof InputStream) {
+                    handlebars.registerHelpers("InputStream", (InputStream) helperSource);}
+                else if (helperSource instanceof String) {
+                    handlebars.registerHelpers("String", (String) helperSource);}
+                else if (helperSource instanceof Class) {
+                    handlebars.registerHelpers((Class<?>) helperSource);} 
+                else {
+                    handlebars.registerHelpers(helperSource);}
+            }
       }
       catch (Exception ex) {
-
+          System.out.println(ex.getMessage());
       }
 
     // clear the local helpers
