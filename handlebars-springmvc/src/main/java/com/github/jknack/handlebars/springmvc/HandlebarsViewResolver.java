@@ -164,25 +164,25 @@ public class HandlebarsViewResolver extends AbstractTemplateViewResolver
             for (Object helperSource : helperSources) {
                 if (helperSource instanceof File) {
                     handlebars.registerHelpers((File) helperSource); 
-                    }
+                }
                 else if (helperSource instanceof URI) {
                     handlebars.registerHelpers((URI) helperSource); 
-                    }
+                }
                 else if (helperSource instanceof Reader) {
                     handlebars.registerHelpers("Reader", (Reader) helperSource); 
-                    }
+                }
                 else if (helperSource instanceof InputStream) {
                     handlebars.registerHelpers("InputStream", (InputStream) helperSource); 
-                    }
+                }
                 else if (helperSource instanceof String) {
                     handlebars.registerHelpers("String", (String) helperSource); 
-                    }
+                }
                 else if (helperSource instanceof Class) {
                     handlebars.registerHelpers((Class<?>) helperSource); 
-                    } 
+                } 
                 else {
                     handlebars.registerHelpers(helperSource); 
-                    }
+                }
             }
       }
       catch (Exception ex) {
