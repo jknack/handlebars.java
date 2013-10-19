@@ -175,11 +175,10 @@ public class HandlebarsViewResolver extends AbstractTemplateViewResolver
         } else if (helperSource instanceof Class) {
           handlebars.registerHelpers((Class<?>) helperSource);
         } else {
-          handlebars.registerHelpers(helperSource); 
+          handlebars.registerHelpers(helperSource);
         }
       }
-    }
-    catch (Exception ex) {
+    } catch (Exception ex) {
       System.out.println(ex.getMessage());
     }
 
