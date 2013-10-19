@@ -20,6 +20,10 @@ package com.github.jknack.handlebars.springmvc;
 import static org.apache.commons.lang3.Validate.notEmpty;
 import static org.apache.commons.lang3.Validate.notNull;
 
+import java.io.File;
+import java.io.Reader;
+import java.io.InputStream;
+import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
