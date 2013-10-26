@@ -19,6 +19,7 @@ package com.github.jknack.handlebars.helper;
 
 import static org.apache.commons.lang3.Validate.isTrue;
 import static org.apache.commons.lang3.Validate.notNull;
+import static org.apache.commons.lang3.Validate.validIndex;
 
 import java.io.IOException;
 import java.math.RoundingMode;
@@ -220,6 +221,40 @@ public enum StringHelpers implements Helper<Object> {
       notNull(size, "found 'null', expected 'size'");
       String pad = options.hash("pad", " ");
       return StringUtils.leftPad(value.toString(), size, pad);
+    }
+  },
+
+  /**
+   * Returns a new <code>CharSequence</code> that is a subsequence of this sequence.
+   * The subsequence starts with the <code>char</code> value at the specified index and
+   * ends with the <code>char</code> value at index <tt>end - 1</tt>
+   * Argument: start offset
+   *           end offset
+   * For example:
+   *
+   * <pre>
+   * {{substring value 11 }}
+   * </pre>
+   *
+   * If value is Handlebars.java, the output will be "java".
+   *
+   * or
+   *
+   * <pre>
+   * {{substring value 0 10 }}
+   * </pre>
+   *
+   * If value is Handlebars.java, the output will be "Handlebars".
+   */
+  substring {
+    @Override
+    protected CharSequence safeApply(final Object value, final Options options) {
+      validIndex(options.params, 0, "Required start offset: ");
+
+      String str = value.toString();
+      Integer start = options.param(0);
+      Integer end = options.param(1, str.length());
+      return str.subSequence(start, end);
     }
   },
 
