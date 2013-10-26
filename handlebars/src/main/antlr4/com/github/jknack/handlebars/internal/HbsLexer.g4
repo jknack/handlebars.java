@@ -13,14 +13,14 @@ lexer grammar HbsLexer;
     this.end = end;
   }
 
-  private boolean isNotSpace(int ch) {
-    return ch != ' ' && ch != '\t';
+  private boolean isWhite(int ch) {
+    return ch == ' ' || ch == '\t' || ch == '\r' || ch == '\n';
   }
 
   private boolean consumeUntil(final String token) {
     int offset = 0;
     while(!isEOF(offset) && !ahead(token, offset) &&
-      isNotSpace(_input.LA(offset + 1))) {
+      !isWhite(_input.LA(offset + 1))) {
       offset+=1;
     }
     if (offset == 0) {
