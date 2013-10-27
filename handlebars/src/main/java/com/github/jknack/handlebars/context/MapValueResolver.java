@@ -18,6 +18,7 @@
 package com.github.jknack.handlebars.context;
 
 import java.util.Collections;
+import java.util.EnumMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -37,12 +38,21 @@ public enum MapValueResolver implements ValueResolver {
    */
   INSTANCE;
 
-  @SuppressWarnings("rawtypes")
+  @SuppressWarnings({"rawtypes", "unchecked" })
   @Override
   public Object resolve(final Object context, final String name) {
     Object value = null;
     if (context instanceof Map) {
       value = ((Map) context).get(name);
+      // fallback to EnumMap
+      if (value == null && context instanceof EnumMap) {
+        EnumMap emap = (EnumMap) context;
+        if (emap.size() > 0) {
+          Enum first = (Enum) emap.keySet().iterator().next();
+          Enum key = Enum.valueOf(first.getClass(), name);
+          value = emap.get(key);
+        }
+      }
     }
     return value == null ? UNRESOLVED : value;
   }
