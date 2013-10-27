@@ -33,7 +33,6 @@ import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.github.jknack.handlebars.context.MapValueResolver;
 import com.github.jknack.handlebars.io.TemplateSource;
 
 /**
@@ -465,7 +464,8 @@ public class Context {
         if (value == null && path.length > 1) {
           // for complex keys, a new data context need to be created per invocation,
           // bc data might changes per execution.
-          Context dataContext = Context.newBuilder(data).resolver(MapValueResolver.INSTANCE)
+          Context dataContext = Context.newBuilder(data)
+              .resolver(this.resolver)
               .build();
           // don't extend the lookup further.
           dataContext.data = null;
