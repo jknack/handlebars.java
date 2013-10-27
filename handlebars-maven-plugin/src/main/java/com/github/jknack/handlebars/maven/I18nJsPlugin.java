@@ -98,6 +98,12 @@ public class I18nJsPlugin extends HandlebarsPlugin {
   @Parameter
   private boolean amd;
 
+  /**
+   * Character encoding. Default is: UTF-8.
+   */
+  @Parameter(defaultValue = "UTF-8")
+  private String encoding = "UTF-8";
+
   @Override
   protected void doExecute() throws Exception {
     notNull(bundle, "The bundle's name parameter is required.");
@@ -150,7 +156,8 @@ public class I18nJsPlugin extends HandlebarsPlugin {
       buffer.append(I18nHelper.i18nJs.apply(locale, options));
 
       if (!merge) {
-        FileUtils.fileWrite(new File(output, bundleName + ".js"), wrap(bundleName, buffer, amd));
+        FileUtils.fileWrite(new File(output, bundleName + ".js"), encoding,
+            wrap(bundleName, buffer, amd));
         buffer.setLength(0);
         getLog().debug("  => " + bundleName + ".js");
       } else {

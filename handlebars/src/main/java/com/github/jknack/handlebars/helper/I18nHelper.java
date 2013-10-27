@@ -31,7 +31,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.LocaleUtils;
-import org.apache.commons.lang3.StringEscapeUtils;
 
 import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Helper;
@@ -279,7 +278,7 @@ public enum I18nHelper implements Helper<String> {
         matcher.appendReplacement(result, "{{arg" + matcher.group(1) + "}}");
       }
       matcher.appendTail(result);
-      return StringEscapeUtils.escapeEcmaScript(result.toString());
+      return result.toString();
     }
   };
 
