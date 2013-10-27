@@ -118,6 +118,18 @@ public class PrecompilePlugin extends HandlebarsPlugin {
   @Parameter
   private boolean minimize;
 
+  /**
+   * True, if the output should be in the AMD format. Default is false.
+   */
+  @Parameter
+  private boolean amd;
+
+  /**
+   * The encoding char set. Default is: UTF-8.
+   */
+  @Parameter
+  private String encoding = "UTF-8";
+
   @Override
   protected void doExecute() throws Exception {
     notNull(prefix, "The prefix parameter is required.");
@@ -157,7 +169,7 @@ public class PrecompilePlugin extends HandlebarsPlugin {
         parent.mkdirs();
       }
 
-      writer = new PrintWriter(output);
+      writer = new PrintWriter(output, encoding);
       if (includeRuntime) {
         runtimeIS = getClass().getResourceAsStream("/handlebars.runtime.js");
         IOUtil.copy(runtimeIS, writer);
@@ -184,7 +196,9 @@ public class PrecompilePlugin extends HandlebarsPlugin {
       getLog().debug("  minimize: " + minimize);
       getLog().debug("  includeRuntime: " + includeRuntime);
 
-      writer.append("(function () {\n");
+      if (!amd) {
+        writer.append("(function () {\n");
+      }
       Context nullContext = Context.newContext(null);
       for (File file : files) {
         String templateName = file.getPath().replace(realPrefix, "").replace(suffix, "");
@@ -198,7 +212,7 @@ public class PrecompilePlugin extends HandlebarsPlugin {
 
         Template template = handlebars.compileInline("{{precompile \"" + templateName + "\"}}");
         Map<String, Object> hash = new HashMap<String, Object>();
-        hash.put("wrapper", "none");
+        hash.put("wrapper", amd ? "amd" : "none");
         Options opts = new Options
             .Builder(handlebars, TagType.VAR, nullContext, template)
                 .setHash(hash)
@@ -211,7 +225,9 @@ public class PrecompilePlugin extends HandlebarsPlugin {
       for (CharSequence extra : extras) {
         writer.append(extra).append("\n");
       }
-      writer.append("\n})();");
+      if (!amd) {
+        writer.append("\n})();");
+      }
       writer.flush();
       IOUtil.close(writer);
       if (minimize) {
@@ -367,6 +383,13 @@ public class PrecompilePlugin extends HandlebarsPlugin {
    */
   public void setOutput(final String output) {
     this.output = output;
+  }
+
+  /**
+   * @param amd True, if the output should be in the AMD format. Default is false.
+   */
+  public void setAmd(final boolean amd) {
+    this.amd = amd;
   }
 
   /**

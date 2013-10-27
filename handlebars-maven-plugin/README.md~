@@ -28,8 +28,6 @@ usage
         <suffix>.hbs</suffix>
         <minimize>false</minimize>
         <includeRuntime>false</includeRuntime>
-        <amd>false</amd>
-        <encoding>UTF-8</encoding>
         <templates>
           <template>mytemplateA</template>
           <template>mytemplateB</template>
@@ -80,7 +78,6 @@ usage
         <bundle>messages</bundle>
         <merge>false</merge>
         <amd>false</amd>
-        <encoding>UTF-8</encoding>
       </configuration>
     </execution>
   </executions>
