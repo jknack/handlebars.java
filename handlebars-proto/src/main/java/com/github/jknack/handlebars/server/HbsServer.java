@@ -115,6 +115,11 @@ public class HbsServer {
         usage = "set the content's type header, default is: " + CONTENT_TYPE,
         metaVar = " ")
     public String contentType = CONTENT_TYPE;
+
+    @Option(name = "-encoding", aliases = "-e",
+        usage = "set the charset used it while rendering, default is: UTF-8",
+        metaVar = " ")
+    public String encoding = "UTF-8";
   }
 
   public static void main(final String[] args) throws Exception {

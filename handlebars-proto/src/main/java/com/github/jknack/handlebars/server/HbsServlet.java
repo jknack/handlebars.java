@@ -118,10 +118,11 @@ public class HbsServlet extends HttpServlet {
 
       Object model = model(request);
 
-      writer = response.getWriter();
       String output = template.apply(model);
-      writer.write(output);
+      response.setCharacterEncoding(args.encoding);
       response.setContentType(args.contentType);
+      writer = response.getWriter();
+      writer.write(output);
     } catch (HandlebarsException ex) {
       handlebarsError(ex, response);
     } catch (JsonParseException ex) {
