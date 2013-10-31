@@ -200,7 +200,7 @@ public class RhinoHandlebars extends HandlebarsJs {
         Object arg0 = context;
         Integer paramSize = options.data(Context.PARAM_SIZE);
         if (paramSize == 0) {
-          arg0 = null;
+          arg0 = "___NOT_SET_";
         } else if (!isSupportedType(arg0)) {
           if (Map.class.isInstance(arg0)) {
             arg0 = hash((Map) arg0);
