@@ -494,7 +494,7 @@ public enum StringHelpers implements Helper<Object> {
    * </p>
    *
    * <pre>
-   *    {{dateFormat date ["format"] [tz=timeZone|timeZoneId]}}
+   *    {{dateFormat date ["format"] [format="format"][tz=timeZone|timeZoneId]}}
    * </pre>
    *
    * Format parameters is one of:
@@ -506,6 +506,7 @@ public enum StringHelpers implements Helper<Object> {
    * <li>"pattern": a date pattern.</li>
    * </ul>
    * Otherwise, the default formatter will be used.
+   * The format option can be specified as a parameter or hash (a.k.a named parameter).
    */
   dateFormat {
     /**
@@ -527,7 +528,7 @@ public enum StringHelpers implements Helper<Object> {
       isTrue(value instanceof Date, "found '%s', expected 'date'", value);
       Date date = (Date) value;
       final DateFormat dateFormat;
-      Object pattern = options.param(0, "medium");
+      Object pattern = options.param(0, options.hash("format", "medium"));
       String localeStr = options.param(1, Locale.getDefault().toString());
       Locale locale = LocaleUtils.toLocale(localeStr);
       Integer style = styles.get(pattern);
