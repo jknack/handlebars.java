@@ -27,49 +27,51 @@ import com.github.jknack.handlebars.Helper;
 import com.github.jknack.handlebars.Options;
 
 /**
- * Formatter for Joda
+ * Handlebars Helper for JodaTime ReadableInstance objects.
  *
  * @author @mrhanlon https://github.com/mrhanlon
  */
 public enum JodaHelper implements Helper<ReadableInstant> {
-  
+
   /**
-   * A Helper for pattern-formatted <code>ReadableInstance</code>.  Pattern
-   * usage <a href="http://joda-time.sourceforge.net/apidocs/org/joda/time/format/DateTimeFormat.html">here</a>.
-   * Defaults to <code>M d y, H:m:s z</code>, for example <code>11 15 1995, 14:32:10 CST</code>.
+   * A Helper for pattern-formatted <code>ReadableInstance</code>. Pattern usage
+   * is as specified in {@link DateTimeFormat}. Defaults to
+   * <code>M d y, H:m:s z</code>, for example
+   * <code>11 15 1995, 14:32:10 CST</code>.
    */
   jodaPatternHelper {
 
     @Override
-    protected CharSequence safeApply(ReadableInstant time, Options options) {
+    protected CharSequence safeApply(final ReadableInstant time, final Options options) {
       String pattern = options.param(0, "M d y, H:m:s z");
       return DateTimeFormat.forPattern(pattern).print(time);
     }
-    
+
   },
-  
+
   /**
-   * A Helper for style-formatted <code>ReadableInstant</code>.  Style usage
-   * <a href="http://joda-time.sourceforge.net/apidocs/org/joda/time/format/DateTimeFormat.html">here</a>.
-   * Defaults to <code>MM</code>, for example 
+   * A Helper for style-formatted <code>ReadableInstant</code>. Style usage is
+   * as specified in {@link DateTimeFormat}. Defaults to <code>MM</code>,
+   * for example
    */
   jodaStyleHelper {
 
     @Override
-    protected CharSequence safeApply(ReadableInstant time, Options options) {
+    protected CharSequence safeApply(final ReadableInstant time, final Options options) {
       String style = options.param(0, "MM");
       return DateTimeFormat.forStyle(style).print(time);
     }
-    
+
   },
- 
+
   /**
    * A Helper for ISO-formatted <code>ReadableInstant</code>.
+   * Usages is detailed in {@link ISODateTimeFormat}.
    */
   jodaISOHelper {
 
     @Override
-    protected CharSequence safeApply(ReadableInstant time, Options options) {
+    protected CharSequence safeApply(final ReadableInstant time, final Options options) {
       boolean includeMillis = options.param(1, false);
       if (includeMillis) {
         return ISODateTimeFormat.dateTime().print(time);
@@ -77,23 +79,22 @@ public enum JodaHelper implements Helper<ReadableInstant> {
         return ISODateTimeFormat.dateTimeNoMillis().print(time);
       }
     }
-    
+
   };
-  
-  private JodaHelper() {
-    
-  }
 
   @Override
   public CharSequence apply(final ReadableInstant time, final Options options) throws IOException {
     return safeApply(time, options);
   }
-  
+
   /**
-   * 
+   * Apply the helper to the context.
+   *
    * @param time
+   *          The JodaTime ReadableInstant.
    * @param options
-   * @return
+   *          Any formatting options, such as the Pattern, Style, or ISO format.
+   * @return The String result.
    */
   protected abstract CharSequence safeApply(final ReadableInstant time, final Options options);
 
