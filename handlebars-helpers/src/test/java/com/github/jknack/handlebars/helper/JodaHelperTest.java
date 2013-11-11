@@ -45,7 +45,7 @@ public class JodaHelperTest extends AbstractTest {
     handlebars.registerHelper("jodaISOHelper", JodaHelper.jodaISOHelper);
     return handlebars;
   }
-  
+
   @Test
   public void testPattern() {
     DateTime dateTime = new DateTime().withDate(1995, 7, 4).withTime(14, 32, 12, 0);
@@ -55,7 +55,7 @@ public class JodaHelperTest extends AbstractTest {
       Assert.fail("IOException thrown");
     }
   }
-  
+
   @Test
   public void testBadPattern() {
     DateTime dateTime = new DateTime().withDate(1995, 7, 4).withTime(14, 32, 12, 0);
@@ -69,7 +69,7 @@ public class JodaHelperTest extends AbstractTest {
       Assert.assertEquals("Illegal pattern component: q", t.getMessage());
     }
   }
-  
+
   @Test
   public void testStyle() {
     DateTime dateTime = new DateTime().withDate(1995, 7, 4).withTime(14, 32, 12, 0);
@@ -79,7 +79,7 @@ public class JodaHelperTest extends AbstractTest {
       Assert.fail("IOException thrown");
     }
   }
-  
+
   @Test
   public void testBadStyle() {
     DateTime dateTime = new DateTime().withDate(1995, 7, 4).withTime(14, 32, 12, 0);
@@ -92,7 +92,7 @@ public class JodaHelperTest extends AbstractTest {
       Assert.assertEquals("Invalid style character: Q", t.getMessage());
     }
   }
-  
+
   @Test
   public void testISO() {
     DateTime dateTime = new DateTime().withDate(1995, 7, 4).withTime(14, 32, 12, 0).withZoneRetainFields(DateTimeZone.UTC);
@@ -101,6 +101,6 @@ public class JodaHelperTest extends AbstractTest {
     } catch (IOException e) {
       Assert.fail("IOException thrown");
     }
-    
+
   }
 }
