@@ -20,6 +20,13 @@
       <artifactId>handlebars</artifactId>
       <version>${project.version}</version>
     </dependency>
+    
+    <dependency>
+      <groupId>joda-time</groupId>
+      <artifactId>joda-time</artifactId>
+      <version>2.3</version>
+      <optional>true</optional>
+    </dependency>
 
     <!-- Servlet API -->
     <dependency>
