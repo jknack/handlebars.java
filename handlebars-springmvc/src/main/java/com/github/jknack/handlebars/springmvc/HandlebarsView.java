@@ -91,4 +91,9 @@ public class HandlebarsView extends AbstractTemplateView {
     this.valueResolvers = notEmpty(valueResolvers,
         "At least one value-resolver must be present.");
   }
+
+  @Override
+  protected boolean isContextRequired() {
+    return false;
+  }
 }
