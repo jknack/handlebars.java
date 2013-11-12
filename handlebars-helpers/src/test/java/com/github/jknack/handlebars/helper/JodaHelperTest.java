@@ -40,30 +40,24 @@ public class JodaHelperTest extends AbstractTest {
   @Override
   protected Handlebars newHandlebars() {
     Handlebars handlebars = super.newHandlebars();
-    handlebars.registerHelper("jodaPatternHelper", JodaHelper.jodaPatternHelper);
-    handlebars.registerHelper("jodaStyleHelper", JodaHelper.jodaStyleHelper);
-    handlebars.registerHelper("jodaISOHelper", JodaHelper.jodaISOHelper);
+    handlebars.registerHelper("jodaPatternHelper", JodaHelper.jodaPattern);
+    handlebars.registerHelper("jodaStyleHelper", JodaHelper.jodaStyle);
+    handlebars.registerHelper("jodaISOHelper", JodaHelper.jodaISO);
     return handlebars;
   }
 
   @Test
-  public void testPattern() {
+  public void testPattern() throws IOException {
     DateTime dateTime = new DateTime().withDate(1995, 7, 4).withTime(14, 32, 12, 0);
-    try {
-      shouldCompileTo("{{jodaPatternHelper this \"y-MMM-d H:m:s\"}}", dateTime, "1995-Jul-4 14:32:12");
-    } catch (IOException e) {
-      Assert.fail("IOException thrown");
-    }
+    shouldCompileTo("{{jodaPatternHelper this \"y-MMM-d H:m:s\"}}", dateTime, "1995-Jul-4 14:32:12");
   }
 
   @Test
-  public void testBadPattern() {
+  public void testBadPattern() throws IOException {
     DateTime dateTime = new DateTime().withDate(1995, 7, 4).withTime(14, 32, 12, 0);
     try {
       shouldCompileTo("{{jodaPatternHelper this \"qwerty\"}}", dateTime, "1995-Jul-4 14:32:12");
       Assert.fail("Exception should have thrown!");
-    } catch (IOException e) {
-      Assert.fail("IOException thrown");
     } catch (HandlebarsException e) {
       Throwable t = e.getCause();
       Assert.assertEquals("Illegal pattern component: q", t.getMessage());
@@ -71,22 +65,16 @@ public class JodaHelperTest extends AbstractTest {
   }
 
   @Test
-  public void testStyle() {
+  public void testStyle() throws IOException {
     DateTime dateTime = new DateTime().withDate(1995, 7, 4).withTime(14, 32, 12, 0);
-    try {
-      shouldCompileTo("{{jodaStyleHelper this \"SS\"}}", dateTime, "7/4/95 2:32 PM");
-    } catch (IOException e) {
-      Assert.fail("IOException thrown");
-    }
+    shouldCompileTo("{{jodaStyleHelper this \"SS\"}}", dateTime, "7/4/95 2:32 PM");
   }
 
   @Test
-  public void testBadStyle() {
+  public void testBadStyle() throws IOException {
     DateTime dateTime = new DateTime().withDate(1995, 7, 4).withTime(14, 32, 12, 0);
     try {
       shouldCompileTo("{{jodaStyleHelper this \"QS\"}}", dateTime, "");
-    } catch (IOException e) {
-      Assert.fail("IOException thrown");
     } catch (HandlebarsException e) {
       Throwable t = e.getCause();
       Assert.assertEquals("Invalid style character: Q", t.getMessage());
@@ -94,13 +82,8 @@ public class JodaHelperTest extends AbstractTest {
   }
 
   @Test
-  public void testISO() {
+  public void testISO() throws IOException {
     DateTime dateTime = new DateTime().withDate(1995, 7, 4).withTime(14, 32, 12, 0).withZoneRetainFields(DateTimeZone.UTC);
-    try {
-      shouldCompileTo("{{jodaISOHelper this}}", dateTime, "1995-07-04T14:32:12Z");
-    } catch (IOException e) {
-      Assert.fail("IOException thrown");
-    }
-
+    shouldCompileTo("{{jodaISOHelper this}}", dateTime, "1995-07-04T14:32:12Z");
   }
 }
