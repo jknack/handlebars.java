@@ -39,7 +39,7 @@ public enum JodaHelper implements Helper<ReadableInstant> {
    * <code>M d y, H:m:s z</code>, for example
    * <code>11 15 1995, 14:32:10 CST</code>.
    */
-  jodaPatternHelper {
+  jodaPattern {
 
     @Override
     protected CharSequence safeApply(final ReadableInstant time, final Options options) {
@@ -54,7 +54,7 @@ public enum JodaHelper implements Helper<ReadableInstant> {
    * as specified in {@link DateTimeFormat}. Defaults to <code>MM</code>,
    * for example
    */
-  jodaStyleHelper {
+  jodaStyle {
 
     @Override
     protected CharSequence safeApply(final ReadableInstant time, final Options options) {
@@ -68,7 +68,7 @@ public enum JodaHelper implements Helper<ReadableInstant> {
    * A Helper for ISO-formatted <code>ReadableInstant</code>.
    * Usages is detailed in {@link ISODateTimeFormat}.
    */
-  jodaISOHelper {
+  jodaISO {
 
     @Override
     protected CharSequence safeApply(final ReadableInstant time, final Options options) {
