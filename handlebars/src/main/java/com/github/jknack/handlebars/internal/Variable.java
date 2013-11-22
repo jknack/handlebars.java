@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.github.jknack.handlebars.Context;
+import com.github.jknack.handlebars.EscapingStrategy;
 import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Helper;
 import com.github.jknack.handlebars.Lambda;
@@ -78,6 +79,11 @@ class Variable extends HelperResolver {
   private String endDelimiter;
 
   /**
+   * The escaping strategy.
+   */
+  private EscapingStrategy escapingStrategy;
+
+  /**
    * Creates a new {@link Variable}.
    *
    * @param handlebars The handlebars instance.
@@ -106,9 +112,10 @@ class Variable extends HelperResolver {
       final Object value, final TagType type, final List<Object> params,
       final Map<String, Object> hash) {
     super(handlebars);
-    missingValueResolver = handlebars.getMissingValueResolver();
+    this.missingValueResolver = handlebars.getMissingValueResolver();
+    this.escapingStrategy = handlebars.getEscapingStrategy();
     this.name = name.trim();
-    constant = value;
+    this.constant = value;
     this.type = type;
     params(params);
     hash(hash);
@@ -151,7 +158,7 @@ class Variable extends HelperResolver {
       options.data(Context.PARAM_SIZE, this.params.size());
       CharSequence result = helper.apply(determineContext(scope), options);
       if (escape(result)) {
-        writer.append(Handlebars.Utils.escapeExpression(result));
+        writer.append(escapingStrategy.escape(result));
       } else if (result != null) {
         writer.append(result);
       }
@@ -169,7 +176,7 @@ class Variable extends HelperResolver {
         String stringValue = value.toString();
         // TODO: Add formatter hook
         if (escape(value)) {
-          writer.append(Handlebars.Utils.escapeExpression(stringValue));
+          writer.append(escapingStrategy.escape(stringValue));
         } else {
           // DON'T escape none String values.
           writer.append(stringValue);

@@ -329,6 +329,11 @@ public class Handlebars {
   private MissingValueResolver missingValueResolver = MissingValueResolver.NULL;
 
   /**
+   * The escaping strategy.
+   */
+  private EscapingStrategy escapingStrategy = EscapingStrategy.HTML_ENTITY;
+
+  /**
    * The parser factory. Required.
    */
   private ParserFactory parserFactory = new HbsParserFactory();
@@ -794,6 +799,15 @@ public class Handlebars {
   }
 
   /**
+   * The escaping strategy.
+   *
+   * @return The escaping strategy.
+   */
+  public EscapingStrategy getEscapingStrategy() {
+    return escapingStrategy;
+  }
+
+  /**
    * If true, missing helper parameters will be resolve to their names.
    *
    * @return If true, missing helper parameters will be resolve to their names.
@@ -976,6 +990,18 @@ public class Handlebars {
   public Handlebars with(final MissingValueResolver missingValueResolver) {
     this.missingValueResolver = notNull(missingValueResolver,
         "The missing value resolver is required.");
+    return this;
+  }
+
+  /**
+   * Set a new {@link EscapingStrategy}.
+   *
+   * @param escapingStrategy The escaping strategy. Required.
+   * @return This handlebars object.
+   */
+  public Handlebars with(final EscapingStrategy escapingStrategy) {
+    this.escapingStrategy = notNull(escapingStrategy,
+        "The escaping strategy is required.");
     return this;
   }
 
