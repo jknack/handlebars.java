@@ -51,7 +51,7 @@ public interface EscapingStrategy {
     }
   };
 
-  /** Escape variable for CSV */
+  /** Escape variable for CSV. */
   EscapingStrategy CSV = new EscapingStrategy() {
     @Override
     public String escape(final CharSequence value) {
@@ -59,7 +59,7 @@ public interface EscapingStrategy {
     }
   };
 
-  /** Escape variable for XML */
+  /** Escape variable for XML. */
   EscapingStrategy XML = new EscapingStrategy() {
     @Override
     public String escape(final CharSequence value) {
@@ -67,7 +67,7 @@ public interface EscapingStrategy {
     }
   };
 
-  /** Escape variable for JavaScript */
+  /** Escape variable for JavaScript. */
   EscapingStrategy JS = new EscapingStrategy() {
     @Override
     public String escape(final CharSequence value) {
