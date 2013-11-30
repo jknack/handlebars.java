@@ -44,7 +44,7 @@ public class HelperMissingTest extends AbstractTest {
 
   @Test
   public void helperMissingOverride() throws IOException {
-    Hash helpers = $(Handlebars.HELPER_MISSING, new Helper<Object>() {
+    Hash helpers = $(HelperRegistry.HELPER_MISSING, new Helper<Object>() {
       @Override
       public CharSequence apply(final Object context, final Options options)
           throws IOException {
@@ -56,7 +56,7 @@ public class HelperMissingTest extends AbstractTest {
 
   @Test
   public void blockHelperMissingOverride() throws IOException {
-    Hash helpers = $(Handlebars.HELPER_MISSING, new Helper<Object>() {
+    Hash helpers = $(HelperRegistry.HELPER_MISSING, new Helper<Object>() {
       @Override
       public CharSequence apply(final Object context, final Options options)
           throws IOException {

@@ -10,8 +10,8 @@ import com.github.jknack.handlebars.Handlebars;
 public class IncludeTest extends AbstractTest {
 
   @Override
-  protected Handlebars newHandlebars() {
-    return super.newHandlebars().registerHelper(IncludeHelper.NAME, IncludeHelper.INSTANCE);
+  protected void configure(final Handlebars handlebars) {
+    handlebars.registerHelper(IncludeHelper.NAME, IncludeHelper.INSTANCE);
   }
 
   @Test
@@ -47,9 +47,10 @@ public class IncludeTest extends AbstractTest {
     Hash partials = $("hobby",
         "{{parentcontext.name}} has hobby {{hobbyname}} and lives in {{town}}");
 
-    shouldCompileToWithPartials(string, hash, partials, "Dennis has hobby swimming and lives in berlin " +
-        "Dennis has hobby dancing and lives in berlin " +
-        "Dennis has hobby movies and lives in berlin ");
+    shouldCompileToWithPartials(string, hash, partials,
+        "Dennis has hobby swimming and lives in berlin " +
+            "Dennis has hobby dancing and lives in berlin " +
+            "Dennis has hobby movies and lives in berlin ");
   }
 
   @Test
@@ -63,9 +64,10 @@ public class IncludeTest extends AbstractTest {
     Hash partials = $("hobby",
         "{{name}} has hobby {{hobbyname}} and lives in {{town}}");
 
-    shouldCompileToWithPartials(string, hash, partials, "Dennis has hobby swimming and lives in berlin " +
-        "Dennis has hobby dancing and lives in berlin " +
-        "Dennis has hobby movies and lives in berlin ");
+    shouldCompileToWithPartials(string, hash, partials,
+        "Dennis has hobby swimming and lives in berlin " +
+            "Dennis has hobby dancing and lives in berlin " +
+            "Dennis has hobby movies and lives in berlin ");
   }
 
   @Test
@@ -79,8 +81,9 @@ public class IncludeTest extends AbstractTest {
     Hash partials = $("hobby",
         "{{../name}} has hobby {{hobbyname}} and lives in {{../town}}");
 
-    shouldCompileToWithPartials(string, hash, partials, "Dennis has hobby swimming and lives in berlin " +
-        "Dennis has hobby dancing and lives in berlin " +
-        "Dennis has hobby movies and lives in berlin ");
+    shouldCompileToWithPartials(string, hash, partials,
+        "Dennis has hobby swimming and lives in berlin " +
+            "Dennis has hobby dancing and lives in berlin " +
+            "Dennis has hobby movies and lives in berlin ");
   }
 }

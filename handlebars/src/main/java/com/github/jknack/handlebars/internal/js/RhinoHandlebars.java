@@ -33,6 +33,7 @@ import org.mozilla.javascript.tools.ToolErrorReporter;
 import com.github.jknack.handlebars.Context;
 import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Helper;
+import com.github.jknack.handlebars.HelperRegistry;
 import com.github.jknack.handlebars.Options;
 import com.github.jknack.handlebars.internal.Files;
 import com.github.jknack.handlebars.js.HandlebarsJs;
@@ -179,10 +180,10 @@ public class RhinoHandlebars extends HandlebarsJs {
   /**
    * Creates a new {@link RhinoHandlebars}.
    *
-   * @param handlebars The handlebars object.
+   * @param helperRegistry The handlebars object.
    */
-  public RhinoHandlebars(final Handlebars handlebars) {
-    super(handlebars);
+  public RhinoHandlebars(final HelperRegistry helperRegistry) {
+    super(helperRegistry);
   }
 
   /**
@@ -192,7 +193,7 @@ public class RhinoHandlebars extends HandlebarsJs {
    * @param helper The helper object. Required.
    */
   public void registerHelper(final String name, final JsHelper helper) {
-    handlebars.registerHelper(name, new Helper<Object>() {
+    registry.registerHelper(name, new Helper<Object>() {
       @SuppressWarnings({"rawtypes", "unchecked" })
       @Override
       public CharSequence apply(final Object context, final Options options) throws IOException {

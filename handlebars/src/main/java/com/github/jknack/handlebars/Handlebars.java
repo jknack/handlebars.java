@@ -27,13 +27,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.lang.reflect.Array;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 import java.net.URI;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
@@ -42,23 +38,21 @@ import org.slf4j.Logger;
 import com.github.jknack.handlebars.cache.NullTemplateCache;
 import com.github.jknack.handlebars.cache.TemplateCache;
 import com.github.jknack.handlebars.helper.BlockHelper;
+import com.github.jknack.handlebars.helper.DefaultHelperRegistry;
 import com.github.jknack.handlebars.helper.EachHelper;
 import com.github.jknack.handlebars.helper.EmbeddedHelper;
 import com.github.jknack.handlebars.helper.I18nHelper;
 import com.github.jknack.handlebars.helper.IfHelper;
-import com.github.jknack.handlebars.helper.MethodHelper;
 import com.github.jknack.handlebars.helper.PartialHelper;
 import com.github.jknack.handlebars.helper.PrecompileHelper;
 import com.github.jknack.handlebars.helper.UnlessHelper;
 import com.github.jknack.handlebars.helper.WithHelper;
-import com.github.jknack.handlebars.internal.Files;
 import com.github.jknack.handlebars.internal.HbsParserFactory;
 import com.github.jknack.handlebars.io.ClassPathTemplateLoader;
 import com.github.jknack.handlebars.io.CompositeTemplateLoader;
 import com.github.jknack.handlebars.io.StringTemplateSource;
 import com.github.jknack.handlebars.io.TemplateLoader;
 import com.github.jknack.handlebars.io.TemplateSource;
-import com.github.jknack.handlebars.js.HandlebarsJs;
 
 /**
  * <p>
@@ -106,7 +100,7 @@ import com.github.jknack.handlebars.js.HandlebarsJs;
  * @author edgar.espina
  * @since 0.1.0
  */
-public class Handlebars {
+public class Handlebars implements HelperRegistry {
 
   /**
    * A {@link SafeString} tell {@link Handlebars} that the content should not be
@@ -272,11 +266,6 @@ public class Handlebars {
   }
 
   /**
-   * The missing helper's name.
-   */
-  public static final String HELPER_MISSING = "helperMissing";
-
-  /**
    * The default start delimiter.
    */
   public static final String DELIM_START = "{{";
@@ -314,8 +303,7 @@ public class Handlebars {
   /**
    * The helper registry.
    */
-  private final Map<String, Helper<Object>> helpers =
-      new HashMap<String, Helper<Object>>();
+  private HelperRegistry registry = new DefaultHelperRegistry();
 
   /**
    * If true, templates will be able to call him self directly or indirectly. Use with caution.
@@ -342,11 +330,6 @@ public class Handlebars {
    * The end delimiter.
    */
   private String endDelimiter = DELIM_END;
-
-  /**
-   * A Handlebars.js implementation.
-   */
-  private HandlebarsJs handlebarsJs = HandlebarsJs.create(this);
 
   {
     // make sure default helpers are registered
@@ -460,10 +443,9 @@ public class Handlebars {
    * @param name The helper's name. Required.
    * @return A helper or null if it's not found.
    */
-  @SuppressWarnings("unchecked")
+  @Override
   public <C> Helper<C> helper(final String name) {
-    notEmpty(name, "A helper's name is required.");
-    return (Helper<C>) helpers.get(name);
+    return registry.helper(name);
   }
 
   /**
@@ -474,14 +456,9 @@ public class Handlebars {
    * @param helper The helper object. Required.
    * @return This handlebars.
    */
-  @SuppressWarnings("unchecked")
+  @Override
   public <H> Handlebars registerHelper(final String name, final Helper<H> helper) {
-    notEmpty(name, "A helper's name is required.");
-    notNull(helper, "A helper is required.");
-    Helper<Object> oldHelper = helpers.put(name, (Helper<Object>) helper);
-    if (oldHelper != null) {
-      warn("Helper '%s' has been replaced by '%s'", name, helper);
-    }
+    registry.registerHelper(name, helper);
     return this;
   }
 
@@ -511,10 +488,9 @@ public class Handlebars {
    * @param helperSource The helper source. Required.
    * @return This handlebars object.
    */
+  @Override
   public Handlebars registerHelpers(final Object helperSource) {
-    notNull(helperSource, "The helper source is required.");
-    isTrue(!(helperSource instanceof String), "java.lang.String isn't a helper source.");
-    registerDynamicHelper(helperSource, helperSource.getClass());
+    registry.registerHelpers(helperSource);
     return this;
   }
 
@@ -545,18 +521,9 @@ public class Handlebars {
    * @param helperSource The helper source. Enums are supported. Required.
    * @return This handlebars object.
    */
-  @SuppressWarnings({"unchecked", "rawtypes" })
+  @Override
   public Handlebars registerHelpers(final Class<?> helperSource) {
-    notNull(helperSource, "The helper source is required.");
-    if (Enum.class.isAssignableFrom(helperSource)) {
-      Enum[] helpers = ((Class<Enum>) helperSource).getEnumConstants();
-      for (Enum helper : helpers) {
-        isTrue(helper instanceof Helper, "'%s' isn't a helper.", helper.name());
-        registerHelper(helper.name(), (Helper) helper);
-      }
-    } else {
-      registerDynamicHelper(null, helperSource);
-    }
+    registry.registerHelpers(helperSource);
     return this;
   }
 
@@ -589,8 +556,10 @@ public class Handlebars {
    * @return This handlebars object.
    * @throws Exception If the JavaScript helpers can't be registered.
    */
+  @Override
   public Handlebars registerHelpers(final URI location) throws Exception {
-    return registerHelpers(location.getPath(), Files.read(location.toString()));
+    registry.registerHelpers(location);
+    return this;
   }
 
   /**
@@ -622,148 +591,124 @@ public class Handlebars {
    * @return This handlebars object.
    * @throws Exception If the JavaScript helpers can't be registered.
    */
+  @Override
   public Handlebars registerHelpers(final File input) throws Exception {
-    return registerHelpers(input.getAbsolutePath(), Files.read(input));
-  }
-
-  /**
-   * <p>
-   * Register helpers from a JavaScript source.
-   * </p>
-   * <p>
-   * A JavaScript source file looks like:
-   * </p>
-   *
-   * <pre>
-   *  Handlebars.registerHelper('hey', function (context) {
-   *    return 'Hi ' + context.name;
-   *  });
-   *  ...
-   *  Handlebars.registerHelper('hey', function (context, options) {
-   *    return 'Hi ' + context.name + options.hash['x'];
-   *  });
-   *  ...
-   *  Handlebars.registerHelper('hey', function (context, p1, p2, options) {
-   *    return 'Hi ' + context.name + p1 + p2 + options.hash['x'];
-   *  });
-   *  ...
-   * </pre>
-   *
-   * To keep your helpers reusable between server and client avoid DOM manipulation.
-   *
-   * @param filename The file name (just for debugging purpose). Required.
-   * @param source The JavaScript source. Required.
-   * @return This handlebars object.
-   * @throws Exception If the JavaScript helpers can't be registered.
-   */
-  public Handlebars registerHelpers(final String filename, final Reader source) throws Exception {
-    return registerHelpers(filename, Files.read(source));
-  }
-
-  /**
-   * <p>
-   * Register helpers from a JavaScript source.
-   * </p>
-   * <p>
-   * A JavaScript source file looks like:
-   * </p>
-   *
-   * <pre>
-   *  Handlebars.registerHelper('hey', function (context) {
-   *    return 'Hi ' + context.name;
-   *  });
-   *  ...
-   *  Handlebars.registerHelper('hey', function (context, options) {
-   *    return 'Hi ' + context.name + options.hash['x'];
-   *  });
-   *  ...
-   *  Handlebars.registerHelper('hey', function (context, p1, p2, options) {
-   *    return 'Hi ' + context.name + p1 + p2 + options.hash['x'];
-   *  });
-   *  ...
-   * </pre>
-   *
-   * To keep your helpers reusable between server and client avoid DOM manipulation.
-   *
-   * @param filename The file name (just for debugging purpose). Required.
-   * @param source The JavaScript source. Required.
-   * @return This handlebars object.
-   * @throws Exception If the JavaScript helpers can't be registered.
-   */
-  public Handlebars registerHelpers(final String filename, final InputStream source)
-      throws Exception {
-    return registerHelpers(filename, Files.read(source));
-  }
-
-  /**
-   * <p>
-   * Register helpers from a JavaScript source.
-   * </p>
-   * <p>
-   * A JavaScript source file looks like:
-   * </p>
-   *
-   * <pre>
-   *  Handlebars.registerHelper('hey', function (context) {
-   *    return 'Hi ' + context.name;
-   *  });
-   *  ...
-   *  Handlebars.registerHelper('hey', function (context, options) {
-   *    return 'Hi ' + context.name + options.hash['x'];
-   *  });
-   *  ...
-   *  Handlebars.registerHelper('hey', function (context, p1, p2, options) {
-   *    return 'Hi ' + context.name + p1 + p2 + options.hash['x'];
-   *  });
-   *  ...
-   * </pre>
-   *
-   * To keep your helpers reusable between server and client avoid DOM manipulation.
-   *
-   * @param filename The file name (just for debugging purpose). Required.
-   * @param source The JavaScript source. Required.
-   * @return This handlebars object.
-   * @throws Exception If the JavaScript helpers can't be registered.
-   */
-  public Handlebars registerHelpers(final String filename, final String source) throws Exception {
-    notNull(filename, "The filename is required.");
-    notEmpty(source, "The source is required.");
-    handlebarsJs.registerHelpers(filename, source);
+    registry.registerHelpers(input);
     return this;
   }
 
   /**
    * <p>
-   * Register all the helper methods for the given helper source.
+   * Register helpers from a JavaScript source.
+   * </p>
+   * <p>
+   * A JavaScript source file looks like:
    * </p>
    *
-   * @param source The helper source.
-   * @param clazz The helper source class.
+   * <pre>
+   *  Handlebars.registerHelper('hey', function (context) {
+   *    return 'Hi ' + context.name;
+   *  });
+   *  ...
+   *  Handlebars.registerHelper('hey', function (context, options) {
+   *    return 'Hi ' + context.name + options.hash['x'];
+   *  });
+   *  ...
+   *  Handlebars.registerHelper('hey', function (context, p1, p2, options) {
+   *    return 'Hi ' + context.name + p1 + p2 + options.hash['x'];
+   *  });
+   *  ...
+   * </pre>
+   *
+   * To keep your helpers reusable between server and client avoid DOM manipulation.
+   *
+   * @param filename The file name (just for debugging purpose). Required.
+   * @param source The JavaScript source. Required.
+   * @return This handlebars object.
+   * @throws Exception If the JavaScript helpers can't be registered.
    */
-  private void registerDynamicHelper(final Object source, final Class<?> clazz) {
-    int size = helpers.size();
-    int replaced = 0;
-    if (clazz != Object.class) {
-      Set<String> overloaded = new HashSet<String>();
-      // Keep backing up the inheritance hierarchy.
-      Method[] methods = clazz.getDeclaredMethods();
-      for (Method method : methods) {
-        boolean isPublic = Modifier.isPublic(method.getModifiers());
-        String helperName = method.getName();
-        if (isPublic && CharSequence.class.isAssignableFrom(method.getReturnType())) {
-          boolean isStatic = Modifier.isStatic(method.getModifiers());
-          if (source != null || isStatic) {
-            if (helpers.containsKey(helperName)) {
-              replaced++;
-            }
-            isTrue(overloaded.add(helperName), "name conflict found: " + helperName);
-            registerHelper(helperName, new MethodHelper(method, source));
-          }
-        }
-      }
-    }
-    isTrue((size + replaced) != helpers.size(),
-        "No helper method was found in: " + clazz.getName());
+  @Override
+  public Handlebars registerHelpers(final String filename, final Reader source) throws Exception {
+    registry.registerHelpers(filename, source);
+    return this;
+  }
+
+  /**
+   * <p>
+   * Register helpers from a JavaScript source.
+   * </p>
+   * <p>
+   * A JavaScript source file looks like:
+   * </p>
+   *
+   * <pre>
+   *  Handlebars.registerHelper('hey', function (context) {
+   *    return 'Hi ' + context.name;
+   *  });
+   *  ...
+   *  Handlebars.registerHelper('hey', function (context, options) {
+   *    return 'Hi ' + context.name + options.hash['x'];
+   *  });
+   *  ...
+   *  Handlebars.registerHelper('hey', function (context, p1, p2, options) {
+   *    return 'Hi ' + context.name + p1 + p2 + options.hash['x'];
+   *  });
+   *  ...
+   * </pre>
+   *
+   * To keep your helpers reusable between server and client avoid DOM manipulation.
+   *
+   * @param filename The file name (just for debugging purpose). Required.
+   * @param source The JavaScript source. Required.
+   * @return This handlebars object.
+   * @throws Exception If the JavaScript helpers can't be registered.
+   */
+  @Override
+  public Handlebars registerHelpers(final String filename, final InputStream source)
+      throws Exception {
+    registry.registerHelpers(filename, source);
+    return this;
+  }
+
+  /**
+   * <p>
+   * Register helpers from a JavaScript source.
+   * </p>
+   * <p>
+   * A JavaScript source file looks like:
+   * </p>
+   *
+   * <pre>
+   *  Handlebars.registerHelper('hey', function (context) {
+   *    return 'Hi ' + context.name;
+   *  });
+   *  ...
+   *  Handlebars.registerHelper('hey', function (context, options) {
+   *    return 'Hi ' + context.name + options.hash['x'];
+   *  });
+   *  ...
+   *  Handlebars.registerHelper('hey', function (context, p1, p2, options) {
+   *    return 'Hi ' + context.name + p1 + p2 + options.hash['x'];
+   *  });
+   *  ...
+   * </pre>
+   *
+   * To keep your helpers reusable between server and client avoid DOM manipulation.
+   *
+   * @param filename The file name (just for debugging purpose). Required.
+   * @param source The JavaScript source. Required.
+   * @return This handlebars object.
+   * @throws Exception If the JavaScript helpers can't be registered.
+   */
+  @Override
+  public Handlebars registerHelpers(final String filename, final String source) throws Exception {
+    registry.registerHelpers(filename, source);
+    return this;
+  }
+
+  @Override
+  public Set<Entry<String, Helper<?>>> helpers() {
+    return registry.helpers();
   }
 
   /**
@@ -829,7 +774,7 @@ public class Handlebars {
    *        Default is: false.
    * @return This handlebars object.
    */
-  public Handlebars prettyPrint(final boolean prettyPrint) {
+  public HelperRegistry prettyPrint(final boolean prettyPrint) {
     setPrettyPrint(prettyPrint);
     return this;
   }
@@ -851,7 +796,7 @@ public class Handlebars {
    *        their names.
    * @return The handlebars object.
    */
-  public Handlebars stringParams(final boolean stringParams) {
+  public HelperRegistry stringParams(final boolean stringParams) {
     setStringParams(stringParams);
     return this;
   }
@@ -886,7 +831,7 @@ public class Handlebars {
    *        indirectly.
    * @return The handlebars object.
    */
-  public Handlebars infiniteLoops(final boolean infiniteLoops) {
+  public HelperRegistry infiniteLoops(final boolean infiniteLoops) {
     setInfiniteLoops(infiniteLoops);
     return this;
   }
@@ -951,7 +896,7 @@ public class Handlebars {
    * @param parserFactory A parser factory. Required.
    * @return This handlebars object.
    */
-  public Handlebars with(final ParserFactory parserFactory) {
+  public HelperRegistry with(final ParserFactory parserFactory) {
     this.parserFactory = notNull(parserFactory, "A parserFactory is required.");
     return this;
   }
@@ -962,7 +907,7 @@ public class Handlebars {
    * @param cache The template cache. Required.
    * @return This handlebars object.
    */
-  public Handlebars with(final TemplateCache cache) {
+  public HelperRegistry with(final TemplateCache cache) {
     this.cache = notNull(cache, "The template loader is required.");
     return this;
   }
@@ -979,6 +924,18 @@ public class Handlebars {
     return this;
   }
 
+  /**
+   * Set the helper registry. This operation will override will remove any previously registered
+   * helper.
+   *
+   * @param registry The helper registry. Required.
+   * @return This handlebars object.
+   */
+  public Handlebars with(final HelperRegistry registry) {
+    this.registry = notNull(registry, "The registry is required.");
+
+    return this;
+  }
   /**
    * Return a parser factory.
    *

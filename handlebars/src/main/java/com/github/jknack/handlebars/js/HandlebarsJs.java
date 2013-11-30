@@ -19,7 +19,7 @@ package com.github.jknack.handlebars.js;
 
 import static org.apache.commons.lang3.Validate.notNull;
 
-import com.github.jknack.handlebars.Handlebars;
+import com.github.jknack.handlebars.HelperRegistry;
 import com.github.jknack.handlebars.internal.js.RhinoHandlebars;
 
 /**
@@ -34,15 +34,15 @@ public abstract class HandlebarsJs {
   /**
    * The handlebars instance. Required.
    */
-  protected final Handlebars handlebars;
+  protected final HelperRegistry registry;
 
   /**
-   * Creates a new {@link Handlebars} object.
+   * Creates a new {@link HelperRegistry} object.
    *
-   * @param handlebars The {@link Handlebars} instance. Required.
+   * @param helperRegistry The {@link HelperRegistry} instance. Required.
    */
-  public HandlebarsJs(final Handlebars handlebars) {
-    this.handlebars = notNull(handlebars, "The handlebars is required.");
+  public HandlebarsJs(final HelperRegistry helperRegistry) {
+    this.registry = notNull(helperRegistry, "The helper registry is required.");
   }
 
   /**
@@ -79,10 +79,10 @@ public abstract class HandlebarsJs {
   /**
    * Creates a {@link HandlebarsJs} object.
    *
-   * @param handlebars The handlebars object. Required.
+   * @param helperRegistry The helperRegistry object. Required.
    * @return A new {@link HandlebarsJs} object.
    */
-  public static HandlebarsJs create(final Handlebars handlebars) {
-    return new RhinoHandlebars(handlebars);
+  public static HandlebarsJs create(final HelperRegistry helperRegistry) {
+    return new RhinoHandlebars(helperRegistry);
   }
 }

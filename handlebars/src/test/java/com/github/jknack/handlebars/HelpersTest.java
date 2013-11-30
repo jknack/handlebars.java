@@ -36,7 +36,7 @@ public class HelpersTest extends SpecTest {
   }
 
   @Override
-  protected Handlebars configure(final Handlebars handlebars) {
+  protected HelperRegistry configure(final Handlebars handlebars) {
     handlebars.registerHelper("list", new Helper<List<Object>>() {
       @Override
       public CharSequence apply(final List<Object> list, final Options options)

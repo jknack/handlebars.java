@@ -108,6 +108,7 @@ public class AbstractTest {
       loader.define(entry.getKey(), (String) entry.getValue());
     }
     Handlebars handlebars = newHandlebars().with(loader);
+    configure(handlebars);
     handlebars.setStringParams(stringParams);
 
     for (Entry<String, Object> entry : helpers.entrySet()) {
@@ -127,6 +128,9 @@ public class AbstractTest {
     }
     Template t = handlebars.compileInline(template);
     return t;
+  }
+
+  protected void configure(final Handlebars handlebars) {
   }
 
   protected Handlebars newHandlebars() {

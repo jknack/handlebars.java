@@ -44,6 +44,7 @@ import org.slf4j.LoggerFactory;
 
 import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Helper;
+import com.github.jknack.handlebars.HelperRegistry;
 import com.github.jknack.handlebars.HumanizeHelper;
 import com.github.jknack.handlebars.Jackson2Helper;
 import com.github.jknack.handlebars.MarkdownHelper;
@@ -163,7 +164,7 @@ public class HbsServer {
      * Helper wont work in the stand-alone version, so we add a default helper
      * that render the plain text.
      */
-    handlebars.registerHelper(Handlebars.HELPER_MISSING, new Helper<Object>() {
+    handlebars.registerHelper(HelperRegistry.HELPER_MISSING, new Helper<Object>() {
       @Override
       public CharSequence apply(final Object context,
           final com.github.jknack.handlebars.Options options)

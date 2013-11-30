@@ -11,7 +11,6 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
-import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Handlebars.Utils;
 
 /**

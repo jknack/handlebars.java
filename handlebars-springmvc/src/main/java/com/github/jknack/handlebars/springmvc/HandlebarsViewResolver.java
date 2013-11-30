@@ -20,12 +20,15 @@ package com.github.jknack.handlebars.springmvc;
 import static org.apache.commons.lang3.Validate.notEmpty;
 import static org.apache.commons.lang3.Validate.notNull;
 
+import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.io.InputStream;
+import java.io.Reader;
+import java.net.URI;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationContext;
@@ -35,7 +38,9 @@ import org.springframework.web.servlet.view.AbstractUrlBasedView;
 
 import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Helper;
+import com.github.jknack.handlebars.HelperRegistry;
 import com.github.jknack.handlebars.ValueResolver;
+import com.github.jknack.handlebars.helper.DefaultHelperRegistry;
 import com.github.jknack.handlebars.io.TemplateLoader;
 import com.github.jknack.handlebars.io.URLTemplateLoader;
 
@@ -46,7 +51,7 @@ import com.github.jknack.handlebars.io.URLTemplateLoader;
  * @since 0.1
  */
 public class HandlebarsViewResolver extends AbstractTemplateViewResolver
-    implements InitializingBean {
+    implements InitializingBean, HelperRegistry {
 
   /**
    * The default content type.
@@ -71,12 +76,7 @@ public class HandlebarsViewResolver extends AbstractTemplateViewResolver
   /**
    * The helper registry.
    */
-  private Map<String, Helper<?>> helpers = new HashMap<String, Helper<?>>();
-
-  /**
-   * The helper source list.
-   */
-  private List<Object> helperSources = new ArrayList<Object>();
+  private HelperRegistry registry = new DefaultHelperRegistry();
 
   /**
    * Creates a new {@link HandlebarsViewResolver}.
@@ -151,23 +151,8 @@ public class HandlebarsViewResolver extends AbstractTemplateViewResolver
     // Creates a new handlebars object.
     handlebars = notNull(createHandlebars(templateLoader),
         "A handlebars object is required.");
-    // Copy all the helpers
-    for (Entry<String, Helper<?>> entry : helpers.entrySet()) {
-      handlebars.registerHelper(entry.getKey(), entry.getValue());
-    }
-    // copy helper sources
-    for (Object helperSource : helperSources) {
-      if (helperSource instanceof Class) {
-        handlebars.registerHelpers((Class<?>) helperSource);
-      } else {
-        handlebars.registerHelpers(helperSource);
-      }
-    }
-    // clear the local helpers
-    helpers.clear();
-    helpers = null;
-    helperSources.clear();
-    helperSources = null;
+
+    handlebars.with(registry);
 
     // Add a message source helper
     handlebars.registerHelper("message", new MessageSourceHelper(
@@ -233,19 +218,6 @@ public class HandlebarsViewResolver extends AbstractTemplateViewResolver
   }
 
   /**
-   * Register a Handlebars helper.
-   *
-   * @param name The helper's name. Required.
-   * @param helper The helper instance. Required.
-   * @return This view resolver.
-   */
-  public HandlebarsViewResolver registerHelper(final String name,
-      final Helper<?> helper) {
-    helpers.put(name, helper);
-    return this;
-  }
-
-  /**
    * Register all the helpers in the map.
    *
    * @param helpers The helpers to be registered. Required.
@@ -253,7 +225,9 @@ public class HandlebarsViewResolver extends AbstractTemplateViewResolver
    */
   public void setHelpers(final Map<String, Helper<?>> helpers) {
     notNull(helpers, "The helpers are required.");
-    this.helpers.putAll(helpers);
+    for (Entry<String, Helper<?>> helper : helpers.entrySet()) {
+      registry.registerHelper(helper.getKey(), helper.getValue());
+    }
   }
 
   /**
@@ -265,7 +239,9 @@ public class HandlebarsViewResolver extends AbstractTemplateViewResolver
    */
   public void setHelpers(final List<Object> helpers) {
     notNull(helpers, "The helpers are required.");
-    this.helperSources.addAll(helpers);
+    for (Object helper : helpers) {
+      registry.registerHelpers(helper);
+    }
   }
 
   /**
@@ -286,8 +262,8 @@ public class HandlebarsViewResolver extends AbstractTemplateViewResolver
    * <li>A method can/can't be static</li>
    * <li>The method's name became the helper's name</li>
    * <li>Context, parameters and options are all optionals</li>
-   * <li>If context and options are present they must be the first and last arguments
-   * of the method</li>
+   * <li>If context and options are present they must be the first and last arguments of
+   * the method</li>
    * </ul>
    *
    * Instance and static mehtods will be registered as helpers.
@@ -295,9 +271,9 @@ public class HandlebarsViewResolver extends AbstractTemplateViewResolver
    * @param helperSource The helper source. Required.
    * @return This handlebars object.
    */
+  @Override
   public HandlebarsViewResolver registerHelpers(final Object helperSource) {
-    notNull(helperSource, "The helper source is required.");
-    helperSources.add(helperSource);
+    registry.registerHelpers(helperSource);
     return this;
   }
 
@@ -319,8 +295,8 @@ public class HandlebarsViewResolver extends AbstractTemplateViewResolver
    * <li>A method can/can't be static</li>
    * <li>The method's name became the helper's name</li>
    * <li>Context, parameters and options are all optionals</li>
-   * <li>If context and options are present they must be the first and last arguments
-   * of the method</li>
+   * <li>If context and options are present they must be the first and last arguments of
+   * the method</li>
    * </ul>
    *
    * Only static mehtods will be registered as helpers.
@@ -328,9 +304,58 @@ public class HandlebarsViewResolver extends AbstractTemplateViewResolver
    * @param helperSource The helper source. Required.
    * @return This handlebars object.
    */
+  @Override
   public HandlebarsViewResolver registerHelpers(final Class<?> helperSource) {
-    notNull(helperSource, "The helper source is required.");
-    helperSources.add(helperSource);
+    registry.registerHelpers(helperSource);
+    return this;
+  }
+
+  @Override
+  public <C> Helper<C> helper(final String name) {
+    return registry.helper(name);
+  }
+
+  @Override
+  public Set<Entry<String, Helper<?>>> helpers() {
+    return registry.helpers();
+  }
+
+  @Override
+  public <H> HandlebarsViewResolver registerHelper(final String name, final Helper<H> helper) {
+    registry.registerHelper(name, helper);
+    return this;
+  }
+
+  @Override
+  public HandlebarsViewResolver registerHelpers(final URI location) throws Exception {
+    registry.registerHelpers(location);
+    return this;
+  }
+
+  @Override
+  public HandlebarsViewResolver registerHelpers(final File input) throws Exception {
+    registry.registerHelpers(input);
+    return this;
+  }
+
+  @Override
+  public HandlebarsViewResolver registerHelpers(final String filename, final Reader source)
+      throws Exception {
+    registry.registerHelpers(filename, source);
+    return this;
+  }
+
+  @Override
+  public HandlebarsViewResolver registerHelpers(final String filename, final InputStream source)
+      throws Exception {
+    registry.registerHelpers(filename, source);
+    return this;
+  }
+
+  @Override
+  public HandlebarsViewResolver registerHelpers(final String filename, final String source)
+      throws Exception {
+    registry.registerHelpers(filename, source);
     return this;
   }
 }

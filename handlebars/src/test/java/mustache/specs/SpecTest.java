@@ -39,6 +39,7 @@ import org.yaml.snakeyaml.constructor.Constructor;
 
 import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.HandlebarsException;
+import com.github.jknack.handlebars.HelperRegistry;
 import com.github.jknack.handlebars.Template;
 import com.github.jknack.handlebars.custom.Blog;
 import com.github.jknack.handlebars.custom.Comment;
@@ -192,7 +193,7 @@ public abstract class SpecTest {
     }
   }
 
-  protected Handlebars configure(final Handlebars handlebars) {
+  protected HelperRegistry configure(final Handlebars handlebars) {
     return handlebars;
   }
 

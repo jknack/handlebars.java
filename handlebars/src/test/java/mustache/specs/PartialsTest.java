@@ -25,6 +25,7 @@ import java.util.List;
 import org.junit.runners.Parameterized.Parameters;
 
 import com.github.jknack.handlebars.Handlebars;
+import com.github.jknack.handlebars.HelperRegistry;
 import com.github.jknack.handlebars.TemplateNotFoundTest;
 
 /**
@@ -56,7 +57,7 @@ public class PartialsTest extends SpecTest {
   }
 
   @Override
-  protected Handlebars configure(final Handlebars handlebars) {
+  protected HelperRegistry configure(final Handlebars handlebars) {
     handlebars.setInfiniteLoops(true);
     return super.configure(handlebars);
   }

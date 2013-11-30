@@ -57,6 +57,7 @@ import org.codehaus.plexus.util.IOUtil;
 import com.github.jknack.handlebars.Context;
 import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Helper;
+import com.github.jknack.handlebars.HelperRegistry;
 import com.github.jknack.handlebars.Options;
 import com.github.jknack.handlebars.TagType;
 import com.github.jknack.handlebars.Template;
@@ -254,7 +255,7 @@ public class PrecompilePlugin extends HandlebarsPlugin {
    * @param handlebars The handlebars object.
    */
   private void silentHelpers(final Handlebars handlebars) {
-    handlebars.registerHelper(Handlebars.HELPER_MISSING, new Helper<Object>() {
+    handlebars.registerHelper(HelperRegistry.HELPER_MISSING, new Helper<Object>() {
       @Override
       public CharSequence apply(final Object context, final Options options) throws IOException {
         return null;

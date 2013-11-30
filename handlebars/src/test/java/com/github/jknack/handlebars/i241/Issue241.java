@@ -12,9 +12,8 @@ import com.github.jknack.handlebars.helper.StringHelpers;
 public class Issue241 extends AbstractTest {
 
   @Override
-  protected Handlebars newHandlebars() {
-    return super.newHandlebars()
-          .registerHelper("dateFormat", StringHelpers.dateFormat);
+  protected void configure(final Handlebars handlebars) {
+    handlebars.registerHelper("dateFormat", StringHelpers.dateFormat);
   }
 
   @Test

@@ -35,6 +35,7 @@ import org.antlr.v4.runtime.tree.TerminalNode;
 import com.github.jknack.handlebars.Context;
 import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Helper;
+import com.github.jknack.handlebars.HelperRegistry;
 import com.github.jknack.handlebars.TagType;
 import com.github.jknack.handlebars.Template;
 import com.github.jknack.handlebars.internal.HbsParser.AmpvarContext;
@@ -201,7 +202,7 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
     Helper<Object> helper = handlebars.helper(varName);
     if (helper == null && (params.size() > 0 || hash.size() > 0)) {
       Helper<Object> helperMissing =
-          handlebars.helper(Handlebars.HELPER_MISSING);
+          handlebars.helper(HelperRegistry.HELPER_MISSING);
       if (helperMissing == null) {
         reportError(null, name.getLine(), name.getCharPositionInLine(), "could not find helper: '"
             + varName + "'");

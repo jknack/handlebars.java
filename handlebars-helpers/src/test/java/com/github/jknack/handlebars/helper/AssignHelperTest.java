@@ -13,8 +13,8 @@ import com.github.jknack.handlebars.Handlebars;
 public class AssignHelperTest extends AbstractTest {
 
   @Override
-  protected Handlebars newHandlebars() {
-    return super.newHandlebars().registerHelper(AssignHelper.NAME, AssignHelper.INSTANCE);
+  protected void configure(final Handlebars handlebars) {
+    handlebars.registerHelper(AssignHelper.NAME, AssignHelper.INSTANCE);
   }
 
   @Test

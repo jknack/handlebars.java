@@ -5,12 +5,18 @@ import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 import static org.junit.Assert.assertEquals;
 
+import java.io.IOException;
+import java.util.Set;
+import java.util.regex.Pattern;
+
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.util.FileUtils;
 import org.junit.Test;
 
+import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 
 public class I18nJsPluginTest {
 
@@ -22,11 +28,11 @@ public class I18nJsPluginTest {
 
     plugin.execute();
 
-    assertEquals(FileUtils.fileRead("src/test/resources/messages.expected.js"),
-        FileUtils.fileRead("target/messages.js"));
+    assertEquals(tokens("src/test/resources/messages.expected.js"),
+        tokens("target/messages.js"));
 
-    assertEquals(FileUtils.fileRead("src/test/resources/messages_es_AR.expected.js"),
-        FileUtils.fileRead("target/messages_es_AR.js"));
+    assertEquals(tokens("src/test/resources/messages_es_AR.expected.js"),
+        tokens("target/messages_es_AR.js"));
   }
 
   @Test
@@ -51,11 +57,11 @@ public class I18nJsPluginTest {
 
     plugin.execute();
 
-    assertEquals(FileUtils.fileRead("src/test/resources/messages-amd.expected.js"),
-        FileUtils.fileRead("target/messages.js"));
+    assertEquals(tokens("src/test/resources/messages-amd.expected.js"),
+        tokens("target/messages.js"));
 
-    assertEquals(FileUtils.fileRead("src/test/resources/messages_es_AR-amd.expected.js"),
-        FileUtils.fileRead("target/messages_es_AR.js"));
+    assertEquals(tokens("src/test/resources/messages_es_AR-amd.expected.js"),
+        tokens("target/messages_es_AR.js"));
   }
 
   @Test
@@ -67,8 +73,8 @@ public class I18nJsPluginTest {
 
     plugin.execute();
 
-    assertEquals(FileUtils.fileRead("src/test/resources/messages-merged.js"),
-        FileUtils.fileRead("target/messages.js"));
+    assertEquals(tokens("src/test/resources/messages-merged.js"),
+        tokens("target/messages.js"));
   }
 
   @Test
@@ -81,8 +87,8 @@ public class I18nJsPluginTest {
 
     plugin.execute();
 
-    assertEquals(FileUtils.fileRead("src/test/resources/messages-merged-amd.js"),
-        FileUtils.fileRead("target/messages.js"));
+    assertEquals(tokens("src/test/resources/messages-merged-amd.js"),
+        tokens("target/messages.js"));
   }
 
   private MavenProject newProject(final String... classpath)
@@ -91,5 +97,13 @@ public class I18nJsPluginTest {
     expect(project.getRuntimeClasspathElements()).andReturn(Lists.newArrayList(classpath));
     replay(project);
     return project;
+  }
+
+  /**
+   * Matches on tokens and avoid errors between Java 6.x and Java 7.x.
+   */
+  private Set<String> tokens(final String filename) throws IOException {
+    String content = FileUtils.fileRead(filename);
+    return Sets.newLinkedHashSet(Splitter.on(Pattern.compile("\\s|,")).split(content));
   }
 }
