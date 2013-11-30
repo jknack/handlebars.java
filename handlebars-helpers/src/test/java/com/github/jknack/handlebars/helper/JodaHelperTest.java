@@ -19,10 +19,9 @@ package com.github.jknack.handlebars.helper;
 
 import java.io.IOException;
 
-import junit.framework.Assert;
-
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
+import org.junit.Assert;
 import org.junit.Test;
 
 import com.github.jknack.handlebars.AbstractTest;
