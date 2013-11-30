@@ -10,6 +10,7 @@ import java.util.Locale;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.web.servlet.View;
@@ -21,7 +22,12 @@ import com.github.jknack.handlebars.Handlebars;
 public class HandlebarsViewResolverIntegrationTest {
 
   @Autowired
+  @Qualifier("viewResolver")
   HandlebarsViewResolver viewResolver;
+
+  @Autowired
+  @Qualifier("viewResolverWithoutMessageHelper")
+  HandlebarsViewResolver viewResolverWithoutMessageHelper;
 
   @Test
   public void getHandlebars() throws Exception {
@@ -107,5 +113,17 @@ public class HandlebarsViewResolverIntegrationTest {
     assertNotNull(viewResolver);
     Handlebars handlebars = viewResolver.getHandlebars();
     assertEquals("helper source!", handlebars.compileInline("{{helperSource}}").apply(new Object()));
+  }
+
+  @Test
+  public void viewResolverWithMessageHelper() throws Exception {
+    assertNotNull(viewResolver);
+    assertNotNull(viewResolver.helper("message"));
+  }
+
+  @Test
+  public void viewResolverWithoutMessageHelper() throws Exception {
+    assertNotNull(viewResolverWithoutMessageHelper);
+    assertNull(viewResolverWithoutMessageHelper.helper("message"));
   }
 }

@@ -43,6 +43,11 @@ public class HandlebarsApp {
     return messageSource;
   }
 
+  @Bean
+  public HandlebarsViewResolver viewResolverWithoutMessageHelper() {
+    return new HandlebarsViewResolver().withoutMessageHelper();
+  }
+
   public static CharSequence helperSource() {
     return "helper source!";
   }

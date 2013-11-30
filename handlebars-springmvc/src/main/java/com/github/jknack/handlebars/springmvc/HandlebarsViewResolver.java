@@ -32,6 +32,7 @@ import java.util.Set;
 
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.MessageSource;
 import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.view.AbstractTemplateViewResolver;
 import org.springframework.web.servlet.view.AbstractUrlBasedView;
@@ -77,6 +78,9 @@ public class HandlebarsViewResolver extends AbstractTemplateViewResolver
    * The helper registry.
    */
   private HelperRegistry registry = new DefaultHelperRegistry();
+
+  /** True, if the message helper (based on {@link MessageSource}) should be registered. */
+  private boolean registerMessageHelper = true;
 
   /**
    * Creates a new {@link HandlebarsViewResolver}.
@@ -146,17 +150,18 @@ public class HandlebarsViewResolver extends AbstractTemplateViewResolver
   @Override
   public void afterPropertiesSet() {
     // Creates a new template loader.
-    URLTemplateLoader templateLoader =
-        createTemplateLoader(getApplicationContext());
+    URLTemplateLoader templateLoader = createTemplateLoader(getApplicationContext());
+
     // Creates a new handlebars object.
     handlebars = notNull(createHandlebars(templateLoader),
         "A handlebars object is required.");
 
     handlebars.with(registry);
 
-    // Add a message source helper
-    handlebars.registerHelper("message", new MessageSourceHelper(
-        getApplicationContext()));
+    if (registerMessageHelper) {
+      // Add a message source helper
+      handlebars.registerHelper("message", new MessageSourceHelper(getApplicationContext()));
+    }
   }
 
   /**
@@ -262,11 +267,11 @@ public class HandlebarsViewResolver extends AbstractTemplateViewResolver
    * <li>A method can/can't be static</li>
    * <li>The method's name became the helper's name</li>
    * <li>Context, parameters and options are all optionals</li>
-   * <li>If context and options are present they must be the first and last arguments of
-   * the method</li>
+   * <li>If context and options are present they must be the first and last arguments
+   *    of the method</li>
    * </ul>
    *
-   * Instance and static mehtods will be registered as helpers.
+   * Instance and static methods will be registered as helpers.
    *
    * @param helperSource The helper source. Required.
    * @return This handlebars object.
@@ -295,11 +300,11 @@ public class HandlebarsViewResolver extends AbstractTemplateViewResolver
    * <li>A method can/can't be static</li>
    * <li>The method's name became the helper's name</li>
    * <li>Context, parameters and options are all optionals</li>
-   * <li>If context and options are present they must be the first and last arguments of
-   * the method</li>
+   * <li>If context and options are present they must be the first and last arguments
+   *    of the method</li>
    * </ul>
    *
-   * Only static mehtods will be registered as helpers.
+   * Only static methods will be registered as helpers.
    *
    * @param helperSource The helper source. Required.
    * @return This handlebars object.
@@ -357,5 +362,27 @@ public class HandlebarsViewResolver extends AbstractTemplateViewResolver
       throws Exception {
     registry.registerHelpers(filename, source);
     return this;
+  }
+
+  /**
+   * Same as {@link #setRegisterMessageHelper(boolean)} with a false argument. The message helper
+   * wont be registered when you call this method.
+   *
+   * @return This handlebars view resolver.
+   */
+  public HandlebarsViewResolver withoutMessageHelper() {
+    setRegisterMessageHelper(false);
+    return this;
+  }
+
+  /**
+   * True, if the message helper (based on {@link MessageSource}) should be registered. Default is:
+   * true.
+   *
+   * @param registerMessageHelper True, if the message helper (based on {@link MessageSource})
+   *        should be registered. Default is: true.
+   */
+  public void setRegisterMessageHelper(final boolean registerMessageHelper) {
+    this.registerMessageHelper = registerMessageHelper;
   }
 }
