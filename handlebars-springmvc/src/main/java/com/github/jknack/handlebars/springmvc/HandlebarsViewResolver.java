@@ -43,6 +43,8 @@ import com.github.jknack.handlebars.ValueResolver;
 import com.github.jknack.handlebars.helper.DefaultHelperRegistry;
 import com.github.jknack.handlebars.io.TemplateLoader;
 import com.github.jknack.handlebars.io.URLTemplateLoader;
+import com.github.jknack.handlebars.springmvc.locale.LocaleContextHolderResolver;
+import com.github.jknack.handlebars.springmvc.locale.LocaleResolver;
 
 /**
  * A Handlebars {@link ViewResolver view resolver}.
@@ -67,6 +69,11 @@ public class HandlebarsViewResolver extends AbstractTemplateViewResolver
    * The value's resolvers.
    */
   private ValueResolver[] valueResolvers = ValueResolver.VALUE_RESOLVERS;
+
+  /**
+   * The locale resolver. The default resolver is LocaleContextHolderResolver.
+   */
+  private LocaleResolver localeResolver = new LocaleContextHolderResolver();
 
   /**
    * Fail on missing file. Default is: true.
@@ -156,7 +163,7 @@ public class HandlebarsViewResolver extends AbstractTemplateViewResolver
 
     // Add a message source helper
     handlebars.registerHelper("message", new MessageSourceHelper(
-        getApplicationContext()));
+        getApplicationContext(), localeResolver));
   }
 
   /**
@@ -205,6 +212,16 @@ public class HandlebarsViewResolver extends AbstractTemplateViewResolver
   public void setValueResolvers(final ValueResolver... valueResolvers) {
     this.valueResolvers = notEmpty(valueResolvers,
         "At least one value-resolver must be present.");
+  }
+
+  /**
+   * Set the locale resolver.
+   *
+   * @param localeResolver The value locale resolver.
+   */
+  public void setLocaleResolver(final LocaleResolver localeResolver) {
+    this.localeResolver = notNull(localeResolver,
+        "the locale-resolver must be present.");
   }
 
   /**

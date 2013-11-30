@@ -20,13 +20,12 @@ package com.github.jknack.handlebars.springmvc;
 import static org.apache.commons.lang3.Validate.notNull;
 
 import java.io.IOException;
-import java.util.Locale;
 
 import org.springframework.context.MessageSource;
-import org.springframework.context.i18n.LocaleContextHolder;
 
 import com.github.jknack.handlebars.Helper;
 import com.github.jknack.handlebars.Options;
+import com.github.jknack.handlebars.springmvc.locale.LocaleResolver;
 
 /**
  * <p>
@@ -44,12 +43,9 @@ import com.github.jknack.handlebars.Options;
  * <li>args: Object. Optional</li>
  * <li>default: A default message. Optional.</li>
  * </ul>
- * This helper have a strong dependency to local-thread-bound variable for
- * accessing to the current user locale.
  *
  * @author edgar.espina
  * @since 0.5.5
- * @see LocaleContextHolder#getLocale()
  */
 public class MessageSourceHelper implements Helper<String> {
 
@@ -59,12 +55,23 @@ public class MessageSourceHelper implements Helper<String> {
   private MessageSource messageSource;
 
   /**
+   * the locale resolver. Required.
+   */
+  private LocaleResolver localeResolver;
+
+  /**
    * Creates a new {@link MessageSourceHelperTest}.
    *
-   * @param messageSource The message source. Required.
+   * @param messageSource
+   *          The message source. Required.
+   * @param localeResolver
+   *          The locale resolver. Required.
    */
-  public MessageSourceHelper(final MessageSource messageSource) {
+  public MessageSourceHelper(final MessageSource messageSource,
+      final LocaleResolver localeResolver) {
     this.messageSource = notNull(messageSource, "A message source is required.");
+    this.localeResolver = notNull(localeResolver,
+        "A locale resolver is required.");
   }
 
   @Override
@@ -72,15 +79,7 @@ public class MessageSourceHelper implements Helper<String> {
       throws IOException {
     Object[] args = options.params;
     String defaultMessage = options.hash("default");
-    return messageSource.getMessage(code, args, defaultMessage, currentLocale());
-  }
-
-  /**
-   * Resolve the current user locale.
-   *
-   * @return The current user locale.
-   */
-  protected Locale currentLocale() {
-    return LocaleContextHolder.getLocale();
+    return messageSource.getMessage(code, args, defaultMessage,
+        localeResolver.getCurrent(options));
   }
 }
