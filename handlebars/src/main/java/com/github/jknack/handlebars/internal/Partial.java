@@ -131,7 +131,7 @@ class Partial extends BaseTemplate {
       if (this.context.equals("this")) {
         template.apply(context, writer);
       } else {
-        template.apply(context.get(this.context), writer);
+        template.apply(Context.newContext(context, context.get(this.context)), writer);
       }
     } catch (IOException ex) {
       String reason = String.format("The partial '%s' could not be found",
