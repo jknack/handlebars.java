@@ -197,7 +197,7 @@ Please note you don't have to specified the extension file.
  See the [built-in helper documentation](http://handlebarsjs.com/block_helpers.html).
 
 ### block and partial
- Block and partial helpers work together to provide you [Template Inheritance](http://thejohnfreeman.com/blog/2012/03/23/template-inheritance-for-handlebars.html).
+ Block and partial helpers work together to provide you [Template Inheritance](http://jknack.github.io/handlebars.java/reuse.html).
 
 Usage:
 ```
@@ -1040,9 +1040,9 @@ Hello {{#child}}{{this.value}}{{/child}}
 ## Related Projects
  * [Handlebars.js](http://handlebarsjs.com/)
  * [Try Handlebars.js](http://tryhandlebarsjs.com/)
- * [Mustache](mustache.github.com)
+ * [Mustache](http://mustache.github.io/)
  * [Humanize](https://github.com/mfornos/humanize)
- * [ANTLRv4](http://http://www.antlr.org/)
+ * [ANTLRv4](http://www.antlr.org/)
 
 ## Author
  [Edgar Espina] (https://twitter.com/edgarespina)
