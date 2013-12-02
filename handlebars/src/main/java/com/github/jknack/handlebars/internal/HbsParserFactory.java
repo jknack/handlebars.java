@@ -91,7 +91,12 @@ public class HbsParserFactory implements ParserFactory {
           // remove unnecessary spaces and new lines?
           if (handlebars.prettyPrint()) {
             logger.debug("Applying Mustache spec");
-            new ParseTreeWalker().walk(new SpaceTrimmer(), tree);
+            new ParseTreeWalker().walk(new MustacheSpec(), tree);
+          }
+
+          if (lexer.whiteSpaceControl) {
+            logger.debug("Applying white spaces control");
+            new ParseTreeWalker().walk(new WhiteSpaceControl(), tree);
           }
 
           /**

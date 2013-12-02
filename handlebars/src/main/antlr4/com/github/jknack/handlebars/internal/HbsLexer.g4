@@ -7,6 +7,8 @@ lexer grammar HbsLexer;
 
   String end = "}}";
 
+  boolean whiteSpaceControl;
+
   public HbsLexer(CharStream input, String start, String end) {
     this(input);
     this.start = start;
@@ -58,6 +60,40 @@ lexer grammar HbsLexer;
     return false;
   }
 
+  private boolean startToken(final String delim) {
+    boolean matches = tryToken(delim + "~");
+    if (matches) {
+      whiteSpaceControl = true;
+    }
+    return matches || tryToken(delim);
+  }
+
+  private boolean startToken(final String delim, String subtype) {
+    boolean matches = tryToken(delim + subtype);
+    if (!matches) {
+      matches = tryToken(delim + "~" + subtype);
+      if (matches) {
+        whiteSpaceControl = true;
+      }
+    }
+    return matches;
+  }
+
+  private boolean endToken(final String delim) {
+    return endToken(delim, "");
+  }
+
+  private boolean endToken(final String delim, String subtype) {
+    boolean matches = tryToken(subtype + delim);
+    if (!matches) {
+      matches = tryToken(subtype + "~" + delim);
+      if (matches) {
+        whiteSpaceControl = true;
+      }
+    }
+    return matches;
+  }
+
   private boolean tryToken(final String text) {
     if (ahead(text)) {
       // Since we found the text, increase the CharStream's index.
@@ -100,35 +136,35 @@ COMMENT
   ;
 
 START_AMP
- : {tryToken(start + "&")}? . -> pushMode(VAR)
+ : {startToken(start, "&")}? . -> pushMode(VAR)
  ;
 
 START_T
- : {tryToken(start + "{")}? . -> pushMode(VAR)
+ : {startToken(start, "{")}? . -> pushMode(VAR)
  ;
 
 UNLESS
- : {tryToken(start + "^")}? . -> pushMode(VAR)
+ : {startToken(start, "^")}? . -> pushMode(VAR)
  ;
 
 START_BLOCK
- : {tryToken(start + "#")}? . -> pushMode(VAR)
+ : {startToken(start, "#")}? . -> pushMode(VAR)
  ;
 
 START_DELIM
- : {tryToken(start + "=")}? . -> pushMode(SET_DELIMS)
+ : {startToken(start, "=")}? . -> pushMode(SET_DELIMS)
  ;
 
 START_PARTIAL
- : {tryToken(start + ">")}? . -> pushMode(PARTIAL)
+ : {startToken(start, ">")}? . -> pushMode(PARTIAL)
  ;
 
 END_BLOCK
- : {tryToken(start + "/")}? . -> pushMode(VAR)
+ : {startToken(start, "/")}? . -> pushMode(VAR)
  ;
 
 START
- : {tryToken(start)}? . -> pushMode(VAR)
+ : {startToken(start)}? . -> pushMode(VAR)
  ;
 
 SPACE
@@ -145,7 +181,7 @@ NL
 mode SET_DELIMS;
 
 END_DELIM
-  : {tryToken("=" + end)}? . -> popMode
+  : {endToken("=" + end)}? . -> popMode
   ;
 
 WS_DELIM
@@ -176,11 +212,11 @@ WS_PATH
 mode VAR;
 
 END_T
- : {tryToken("}" + end)}? . -> popMode
+ : {endToken(end, "}")}? . -> popMode
  ;
 
 END
- : {tryToken(end)}? . -> mode(DEFAULT_MODE)
+ : {endToken(end)}? . -> mode(DEFAULT_MODE)
  ;
 
 DOUBLE_STRING
@@ -210,7 +246,7 @@ BOOLEAN
 
 ELSE
   :
-    'else'
+   '~'? 'else' '~'?
   ;
 
 QID

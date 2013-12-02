@@ -59,12 +59,14 @@ block
   :
     START_BLOCK nameStart=QID param* hash* END
     thenBody=body
-    (
-     (inverseToken=UNLESS | START inverseToken=ELSE) END unlessBody=body
-    )?
+    elseBlock?
     END_BLOCK nameEnd=QID END
   ;
 
+elseBlock
+  :
+    (inverseToken=UNLESS | START inverseToken=ELSE) END unlessBody=body
+  ;
 unless
   :
     UNLESS nameStart=QID END

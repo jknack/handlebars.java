@@ -42,7 +42,7 @@ import com.github.jknack.handlebars.internal.HbsParser.VarContext;
  * @author edgar.espina
  * @since 0.10.0
  */
-public class SpaceTrimmer extends HbsParserBaseListener {
+public class MustacheSpec extends HbsParserBaseListener {
 
   /**
    * Track if the current line has real text (not spaces).

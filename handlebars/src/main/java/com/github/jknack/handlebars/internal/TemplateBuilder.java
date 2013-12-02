@@ -45,6 +45,7 @@ import com.github.jknack.handlebars.internal.HbsParser.BoolHashContext;
 import com.github.jknack.handlebars.internal.HbsParser.BoolParamContext;
 import com.github.jknack.handlebars.internal.HbsParser.CharsHashContext;
 import com.github.jknack.handlebars.internal.HbsParser.CommentContext;
+import com.github.jknack.handlebars.internal.HbsParser.ElseBlockContext;
 import com.github.jknack.handlebars.internal.HbsParser.HashContext;
 import com.github.jknack.handlebars.internal.HbsParser.IntHashContext;
 import com.github.jknack.handlebars.internal.HbsParser.IntParamContext;
@@ -131,10 +132,11 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
     if (body != null) {
       block.body(body);
     }
-    if (ctx.unlessBody != null) {
-      Template unless = visitBody(ctx.unlessBody);
+    ElseBlockContext elseBlock = ctx.elseBlock();
+    if (elseBlock != null) {
+      Template unless = visitBody(elseBlock.unlessBody);
       if (unless != null) {
-        String inverseLabel = ctx.inverseToken.getText();
+        String inverseLabel = elseBlock.inverseToken.getText();
         if (inverseLabel.startsWith(startDelim)) {
           inverseLabel = inverseLabel.substring(startDelim.length());
         }
