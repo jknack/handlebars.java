@@ -72,6 +72,11 @@ public class DefaultHelperRegistry implements HelperRegistry {
    */
   private HandlebarsJs handlebarsJs = HandlebarsJs.create(this);
 
+  {
+    // make sure default helpers are registered
+    registerBuiltinsHelpers(this);
+  }
+
   @SuppressWarnings("unchecked")
   @Override
   public <C> Helper<C> helper(final String name) {
@@ -200,6 +205,24 @@ public class DefaultHelperRegistry implements HelperRegistry {
     }
     isTrue((size + replaced) != helpers.size(),
         "No helper method was found in: " + clazz.getName());
+  }
+
+  /**
+   * Register built-in helpers.
+   *
+   * @param registry The handlebars instance.
+   */
+  private static void registerBuiltinsHelpers(final HelperRegistry registry) {
+    registry.registerHelper(WithHelper.NAME, WithHelper.INSTANCE);
+    registry.registerHelper(IfHelper.NAME, IfHelper.INSTANCE);
+    registry.registerHelper(UnlessHelper.NAME, UnlessHelper.INSTANCE);
+    registry.registerHelper(EachHelper.NAME, EachHelper.INSTANCE);
+    registry.registerHelper(EmbeddedHelper.NAME, EmbeddedHelper.INSTANCE);
+    registry.registerHelper(BlockHelper.NAME, BlockHelper.INSTANCE);
+    registry.registerHelper(PartialHelper.NAME, PartialHelper.INSTANCE);
+    registry.registerHelper(PrecompileHelper.NAME, PrecompileHelper.INSTANCE);
+    registry.registerHelper("i18n", I18nHelper.i18n);
+    registry.registerHelper("i18nJs", I18nHelper.i18nJs);
   }
 
 }

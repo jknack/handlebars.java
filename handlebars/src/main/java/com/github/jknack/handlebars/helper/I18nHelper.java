@@ -20,7 +20,6 @@ package com.github.jknack.handlebars.helper;
 import static org.apache.commons.lang3.StringUtils.defaultIfEmpty;
 import static org.apache.commons.lang3.Validate.isTrue;
 import static org.apache.commons.lang3.Validate.notEmpty;
-import static org.apache.commons.lang3.Validate.notNull;
 
 import java.io.IOException;
 import java.text.MessageFormat;
@@ -292,24 +291,4 @@ public enum I18nHelper implements Helper<String> {
    */
   protected String defaultBundle = "messages";
 
-  /**
-   * Register this helper.
-   *
-   * @param handlebars A handlebars object. Required.
-   */
-  public void registerHelper(final Handlebars handlebars) {
-    notNull(handlebars, "The handlebars is required.");
-    handlebars.registerHelper(name(), this);
-  }
-
-  /**
-   * Register all the helpers.
-   *
-   * @param handlebars A handlebars object. Required.
-   */
-  public static void registerHelpers(final Handlebars handlebars) {
-    for (I18nHelper helper : values()) {
-      helper.registerHelper(handlebars);
-    }
-  }
 }

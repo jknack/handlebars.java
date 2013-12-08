@@ -37,16 +37,7 @@ import org.slf4j.Logger;
 
 import com.github.jknack.handlebars.cache.NullTemplateCache;
 import com.github.jknack.handlebars.cache.TemplateCache;
-import com.github.jknack.handlebars.helper.BlockHelper;
 import com.github.jknack.handlebars.helper.DefaultHelperRegistry;
-import com.github.jknack.handlebars.helper.EachHelper;
-import com.github.jknack.handlebars.helper.EmbeddedHelper;
-import com.github.jknack.handlebars.helper.I18nHelper;
-import com.github.jknack.handlebars.helper.IfHelper;
-import com.github.jknack.handlebars.helper.PartialHelper;
-import com.github.jknack.handlebars.helper.PrecompileHelper;
-import com.github.jknack.handlebars.helper.UnlessHelper;
-import com.github.jknack.handlebars.helper.WithHelper;
 import com.github.jknack.handlebars.internal.HbsParserFactory;
 import com.github.jknack.handlebars.io.ClassPathTemplateLoader;
 import com.github.jknack.handlebars.io.CompositeTemplateLoader;
@@ -335,11 +326,6 @@ public class Handlebars implements HelperRegistry {
    * The end delimiter.
    */
   private String endDelimiter = DELIM_END;
-
-  {
-    // make sure default helpers are registered
-    registerBuiltinsHelpers(this);
-  }
 
   /**
    * Creates a new {@link Handlebars} with no cache.
@@ -1059,23 +1045,6 @@ public class Handlebars implements HelperRegistry {
    */
   public static void error(final String message) {
     logger.error(message);
-  }
-
-  /**
-   * Register built-in helpers.
-   *
-   * @param handlebars The handlebars instance.
-   */
-  private static void registerBuiltinsHelpers(final Handlebars handlebars) {
-    handlebars.registerHelper(WithHelper.NAME, WithHelper.INSTANCE);
-    handlebars.registerHelper(IfHelper.NAME, IfHelper.INSTANCE);
-    handlebars.registerHelper(UnlessHelper.NAME, UnlessHelper.INSTANCE);
-    handlebars.registerHelper(EachHelper.NAME, EachHelper.INSTANCE);
-    handlebars.registerHelper(EmbeddedHelper.NAME, EmbeddedHelper.INSTANCE);
-    handlebars.registerHelper(BlockHelper.NAME, BlockHelper.INSTANCE);
-    handlebars.registerHelper(PartialHelper.NAME, PartialHelper.INSTANCE);
-    handlebars.registerHelper(PrecompileHelper.NAME, PrecompileHelper.INSTANCE);
-    I18nHelper.registerHelpers(handlebars);
   }
 
 }
