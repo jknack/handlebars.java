@@ -25,9 +25,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.ResourceBundle;
 import java.util.Set;
 
 import org.springframework.beans.factory.InitializingBean;
@@ -42,6 +46,8 @@ import com.github.jknack.handlebars.Helper;
 import com.github.jknack.handlebars.HelperRegistry;
 import com.github.jknack.handlebars.ValueResolver;
 import com.github.jknack.handlebars.helper.DefaultHelperRegistry;
+import com.github.jknack.handlebars.helper.I18nHelper;
+import com.github.jknack.handlebars.helper.I18nSource;
 import com.github.jknack.handlebars.io.TemplateLoader;
 import com.github.jknack.handlebars.io.URLTemplateLoader;
 
@@ -81,6 +87,12 @@ public class HandlebarsViewResolver extends AbstractTemplateViewResolver
 
   /** True, if the message helper (based on {@link MessageSource}) should be registered. */
   private boolean registerMessageHelper = true;
+
+  /**
+   * If true, the i18n helpers will use a {@link MessageSource} instead of a plain
+   * {@link ResourceBundle} .
+   */
+  private boolean bindI18nToMessageSource;
 
   /**
    * Creates a new {@link HandlebarsViewResolver}.
@@ -162,6 +174,40 @@ public class HandlebarsViewResolver extends AbstractTemplateViewResolver
       // Add a message source helper
       handlebars.registerHelper("message", new MessageSourceHelper(getApplicationContext()));
     }
+
+    if (bindI18nToMessageSource) {
+      I18nSource i18nSource = createI18nSource(getApplicationContext());
+
+      I18nHelper.i18n.setSource(i18nSource);
+      I18nHelper.i18nJs.setSource(i18nSource);
+    }
+  }
+
+  /**
+   * Creates a new i18n source.
+   *
+   * @param context The application context.
+   * @return A new i18n source.
+   */
+  private static I18nSource createI18nSource(final ApplicationContext context) {
+    return new I18nSource() {
+      @Override
+      public String message(final String key, final Locale locale, final Object... args) {
+        return context.getMessage(key, args, locale);
+      }
+
+      @Override
+      public String[] keys(final String basename, final Locale locale) {
+        ResourceBundle bundle = ResourceBundle.getBundle(basename, locale);
+        Enumeration<String> keys = bundle.getKeys();
+        List<String> result = new ArrayList<String>();
+        while (keys.hasMoreElements()) {
+          String key = keys.nextElement();
+          result.add(key);
+        }
+        return result.toArray(new String[result.size()]);
+      }
+    };
   }
 
   /**
@@ -268,7 +314,7 @@ public class HandlebarsViewResolver extends AbstractTemplateViewResolver
    * <li>The method's name became the helper's name</li>
    * <li>Context, parameters and options are all optionals</li>
    * <li>If context and options are present they must be the first and last arguments
-   *    of the method</li>
+   * of the method</li>
    * </ul>
    *
    * Instance and static methods will be registered as helpers.
@@ -300,8 +346,8 @@ public class HandlebarsViewResolver extends AbstractTemplateViewResolver
    * <li>A method can/can't be static</li>
    * <li>The method's name became the helper's name</li>
    * <li>Context, parameters and options are all optionals</li>
-   * <li>If context and options are present they must be the first and last arguments
-   *    of the method</li>
+   * <li>If context and options are present they must be the first and last arguments of
+   * the method</li>
    * </ul>
    *
    * Only static methods will be registered as helpers.
@@ -384,5 +430,13 @@ public class HandlebarsViewResolver extends AbstractTemplateViewResolver
    */
   public void setRegisterMessageHelper(final boolean registerMessageHelper) {
     this.registerMessageHelper = registerMessageHelper;
+  }
+
+  /**
+   * @param bindI18nToMessageSource If true, the i18n helpers will use a {@link MessageSource}
+   *        instead of a plain {@link ResourceBundle}. Default is: false.
+   */
+  public void setBindI18nToMessageSource(final boolean bindI18nToMessageSource) {
+    this.bindI18nToMessageSource = bindI18nToMessageSource;
   }
 }

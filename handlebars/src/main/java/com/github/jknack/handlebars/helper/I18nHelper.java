@@ -20,10 +20,13 @@ package com.github.jknack.handlebars.helper;
 import static org.apache.commons.lang3.StringUtils.defaultIfEmpty;
 import static org.apache.commons.lang3.Validate.isTrue;
 import static org.apache.commons.lang3.Validate.notEmpty;
+import static org.apache.commons.lang3.Validate.notNull;
 
 import java.io.IOException;
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.regex.Matcher;
@@ -155,15 +158,11 @@ public enum I18nHelper implements Helper<String> {
       Locale locale = LocaleUtils
           .toLocale((String) options.hash("locale", defaultLocale.toString()));
       String baseName = options.hash("bundle", defaultBundle);
-      ResourceBundle bundle = ResourceBundle.getBundle(baseName, locale);
-      isTrue(bundle.containsKey(key), "no message found: '%s' for locale '%s' using '%s'.", key,
-          locale, baseName);
-      String message = bundle.getString(key);
-      if (options.params.length == 0) {
-        return message;
-      }
-      MessageFormat format = new MessageFormat(message, locale);
-      return format.format(options.params);
+      ClassLoader classLoader = options.hash("classLoader", getClass().getClassLoader());
+      I18nSource localSource = source == null
+          ? new DefI18nSource(baseName, locale, classLoader) : source;
+
+      return localSource.message(key, locale, options.params);
     }
   },
 
@@ -234,7 +233,8 @@ public enum I18nHelper implements Helper<String> {
       Locale locale = LocaleUtils.toLocale(defaultIfEmpty(localeName, defaultLocale.toString()));
       String baseName = options.hash("bundle", defaultBundle);
       ClassLoader classLoader = options.hash("classLoader", getClass().getClassLoader());
-      ResourceBundle bundle = ResourceBundle.getBundle(baseName, locale, classLoader);
+      I18nSource localSource = source == null
+          ? new DefI18nSource(baseName, locale, classLoader) : source;
       StringBuilder buffer = new StringBuilder();
       Boolean wrap = options.hash("wrap", true);
       if (wrap) {
@@ -245,10 +245,9 @@ public enum I18nHelper implements Helper<String> {
       buffer.append("  I18n.translations['").append(locale.toString()).append("'] = {\n");
       StringBuilder body = new StringBuilder();
       String separator = ",\n";
-      Enumeration<String> keys = bundle.getKeys();
-      while (keys.hasMoreElements()) {
-        String key = keys.nextElement();
-        String message = message(bundle.getString(key));
+      String[] keys = localSource.keys(baseName, locale);
+      for (String key : keys) {
+        String message = message(localSource.message(key, locale));
         body.append("    \"").append(key).append("\": ");
         body.append("\"").append(message).append("\"").append(separator);
       }
@@ -291,4 +290,56 @@ public enum I18nHelper implements Helper<String> {
    */
   protected String defaultBundle = "messages";
 
+  /** The message source to use. */
+  protected I18nSource source;
+
+  /**
+   * Set the message source.
+   *
+   * @param source The message source. Required.
+   */
+  public void setSource(final I18nSource source) {
+    this.source = notNull(source, "The i18n source is required.");
+  }
 }
+
+/** Default implementation of I18nSource. */
+class DefI18nSource implements I18nSource {
+
+  /** The resource bundle. */
+  private ResourceBundle bundle;
+
+  /**
+   * Creates a new {@link DefI18nSource}.
+   *
+   * @param baseName The base name.
+   * @param locale The locale.
+   * @param classLoader The classloader.
+   */
+  public DefI18nSource(final String baseName, final Locale locale, final ClassLoader classLoader) {
+    bundle = ResourceBundle.getBundle(baseName, locale, classLoader);
+  }
+
+  @Override
+  public String[] keys(final String basename, final Locale locale) {
+    Enumeration<String> keys = bundle.getKeys();
+    List<String> result = new ArrayList<String>();
+    while (keys.hasMoreElements()) {
+      String key = keys.nextElement();
+      result.add(key);
+    }
+    return result.toArray(new String[result.size()]);
+  }
+
+  @Override
+  public String message(final String key, final Locale locale, final Object... args) {
+    isTrue(bundle.containsKey(key), "no message found: '%s' for locale '%s'.", key, locale);
+    String message = bundle.getString(key);
+    if (args.length == 0) {
+      return message;
+    }
+    MessageFormat format = new MessageFormat(message, locale);
+    return format.format(args);
+  }
+
+};

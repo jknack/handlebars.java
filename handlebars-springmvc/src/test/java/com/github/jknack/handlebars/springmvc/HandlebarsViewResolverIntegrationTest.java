@@ -7,6 +7,7 @@ import static org.junit.Assert.assertNull;
 import java.io.IOException;
 import java.util.Locale;
 
+import org.junit.ComparisonFailure;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -75,23 +76,64 @@ public class HandlebarsViewResolverIntegrationTest {
   public void messageHelper() throws Exception {
     assertNotNull(viewResolver);
     Handlebars handlebars = viewResolver.getHandlebars();
-    assertEquals("Handlebars Spring MVC!", handlebars.compileInline("{{message \"hello\"}}").apply(new Object()));
+    assertEquals("Handlebars Spring MVC!",
+        handlebars.compileInline("{{message \"hello\"}}").apply(new Object()));
+    assertEquals("Handlebars Spring MVC!",
+        handlebars.compileInline("{{i18n \"hello\"}}").apply(new Object()));
   }
-
 
   @Test
   public void messageHelperWithParams() throws Exception {
     assertNotNull(viewResolver);
     Handlebars handlebars = viewResolver.getHandlebars();
-    assertEquals("Hello Handlebars!", handlebars.compileInline("{{message \"hello.0\" \"Handlebars\"}}").apply(new Object()));
-    assertEquals("Hello Spring MVC!", handlebars.compileInline("{{message \"hello.0\" \"Spring MVC\"}}").apply(new Object()));
+    assertEquals("Hello Handlebars!",
+        handlebars.compileInline("{{message \"hello.0\" \"Handlebars\"}}").apply(new Object()));
+    assertEquals("Hello Handlebars!",
+        handlebars.compileInline("{{i18n \"hello.0\" \"Handlebars\"}}").apply(new Object()));
+
+    assertEquals("Hello Spring MVC!",
+        handlebars.compileInline("{{message \"hello.0\" \"Spring MVC\"}}").apply(new Object()));
+    assertEquals("Hello Spring MVC!",
+        handlebars.compileInline("{{i18n \"hello.0\" \"Spring MVC\"}}").apply(new Object()));
+  }
+
+  @Test
+  public void i18nJs() throws Exception {
+    // maven classpath
+    String expected = "<script type='text/javascript'>\n" +
+        "  // Spanish (Argentina)\n" +
+        "  I18n.translations = I18n.translations || {};\n" +
+        "  I18n.translations['es_AR'] = {\n" +
+        "    \"hello\": \"Handlebars Spring MVC!\",\n" +
+        "    \"hello.0\": \"Hello {{arg0}}!\"\n" +
+        "  };\n" +
+        "</script>\n";
+
+    assertNotNull(viewResolver);
+    Handlebars handlebars = viewResolver.getHandlebars();
+    String output = handlebars.compileInline("{{i18nJs \"es_AR\"}}").apply(new Object());
+    try {
+      // maven classpath
+      assertEquals(expected, output);
+    } catch (ComparisonFailure ex) {
+      // eclipse classpath
+      assertEquals("<script type='text/javascript'>\n" +
+          "  // Spanish (Argentina)\n" +
+          "  I18n.translations = I18n.translations || {};\n" +
+          "  I18n.translations['es_AR'] = {\n" +
+          "    \"hello\": \"Hola\",\n" +
+          "    \"hello.0\": \"Hello {{arg0}}!\"\n" +
+          "  };\n" +
+          "</script>\n", output);
+    }
   }
 
   @Test
   public void messageHelperWithDefaultValue() throws Exception {
     assertNotNull(viewResolver);
     Handlebars handlebars = viewResolver.getHandlebars();
-    assertEquals("hey", handlebars.compileInline("{{message \"hi\" default='hey'}}").apply(new Object()));
+    assertEquals("hey",
+        handlebars.compileInline("{{message \"hi\" default='hey'}}").apply(new Object()));
   }
 
   @Test

@@ -33,6 +33,8 @@ public class HandlebarsApp {
     // no cache for testing
     viewResolver.setCache(false);
 
+    viewResolver.setBindI18nToMessageSource(true);
+
     return viewResolver;
   }
 
