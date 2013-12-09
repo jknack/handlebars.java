@@ -635,7 +635,7 @@ In short from a helper you can throw an Exception and Handlebars.java will add t
         .combine("user", user)
         .combine(moreData)
         .build();
-    template.apply(user);
+    template.apply(context);
     context.destroy();
   }
  ```
