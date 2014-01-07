@@ -134,7 +134,7 @@ public class I18nJsPlugin extends HandlebarsPlugin {
       hash.put("classLoader", new URLClassLoader(classpath, getClass().getClassLoader()));
     }
     // 3. get the base name from the bundle
-    String basename = FileUtils.removePath(this.bundle.replace(".", "/"));
+    String basename = FileUtils.removePath(this.bundle.replace(".", FileUtils.FS));
 
     Collections.sort(bundles);
     for (File bundle : bundles) {
@@ -195,9 +195,11 @@ public class I18nJsPlugin extends HandlebarsPlugin {
    */
   private List<File> bundles(final String bundle, final URL[] classpath) throws Exception {
     Set<File> bundles = new LinkedHashSet<File>();
+    String fs = FileUtils.FS;
     for (URL url : classpath) {
       File dir = new File(url.toURI());
-      bundles.addAll(FileUtils.getFiles(dir, bundle.replace(".", "/") + "*.properties", null));
+      bundles.addAll(FileUtils.getFiles(dir, bundle.replace(".", FileUtils.FS) + "*.properties",
+          null));
     }
     return new ArrayList<File>(bundles);
   }
