@@ -270,7 +270,8 @@ public enum I18nHelper implements Helper<String> {
      * @return A valid I18n message.
      */
     private String message(final String message) {
-      Matcher matcher = pattern.matcher(message);
+      String escapedMessage = Handlebars.Utils.escapeExpression(message);
+      Matcher matcher = pattern.matcher(escapedMessage);
       StringBuffer result = new StringBuffer();
       while (matcher.find()) {
         matcher.appendReplacement(result, "{{arg" + matcher.group(1) + "}}");
