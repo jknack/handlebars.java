@@ -17,7 +17,11 @@
  */
 package com.github.jknack.handlebars.context;
 
+import static org.apache.commons.lang3.text.WordUtils.capitalize;
+
 import java.lang.reflect.Method;
+
+import org.apache.commons.lang3.StringUtils;
 
 import com.github.jknack.handlebars.ValueResolver;
 
@@ -38,6 +42,11 @@ public class JavaBeanValueResolver extends MethodValueResolver {
    * The 'get' prefix.
    */
   private static final String GET_PREFIX = "get";
+
+  /**
+   * The '-' character
+   */
+  private static final String UNDERSCORE = "_";
 
   /**
    * The default value resolver.
@@ -65,8 +74,14 @@ public class JavaBeanValueResolver extends MethodValueResolver {
   private static String javaBeanMethod(final String prefix,
       final String name) {
     StringBuilder buffer = new StringBuilder(prefix);
-    buffer.append(name);
-    buffer.setCharAt(prefix.length(), Character.toUpperCase(name.charAt(0)));
+    if (StringUtils.isBlank(name) || !name.contains(UNDERSCORE)) {
+        buffer.append(capitalize(name));
+    } else {
+        // contains '_'
+        for (String item : name.split(UNDERSCORE)) {
+            buffer.append(capitalize(item));
+        }
+    }
     return buffer.toString();
   }
 
