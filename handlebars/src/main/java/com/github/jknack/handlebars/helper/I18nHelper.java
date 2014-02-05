@@ -240,7 +240,7 @@ public enum I18nHelper implements Helper<String> {
       if (wrap) {
         buffer.append("<script type='text/javascript'>\n");
       }
-      buffer.append("  // ").append(locale.getDisplayName()).append("\n");
+      buffer.append("  /* ").append(locale.getDisplayName()).append(" */\n");
       buffer.append("  I18n.translations = I18n.translations || {};\n");
       buffer.append("  I18n.translations['").append(locale.toString()).append("'] = {\n");
       StringBuilder body = new StringBuilder();
