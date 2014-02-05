@@ -101,7 +101,7 @@ public class HandlebarsViewResolverIntegrationTest {
   public void i18nJs() throws Exception {
     // maven classpath
     String expected = "<script type='text/javascript'>\n" +
-        "  // Spanish (Argentina)\n" +
+        "  /* Spanish (Argentina) */\n" +
         "  I18n.translations = I18n.translations || {};\n" +
         "  I18n.translations['es_AR'] = {\n" +
         "    \"hello\": \"Handlebars Spring MVC!\",\n" +
@@ -118,7 +118,7 @@ public class HandlebarsViewResolverIntegrationTest {
     } catch (ComparisonFailure ex) {
       // eclipse classpath
       assertEquals("<script type='text/javascript'>\n" +
-          "  // Spanish (Argentina)\n" +
+          "  /* Spanish (Argentina) */\n" +
           "  I18n.translations = I18n.translations || {};\n" +
           "  I18n.translations['es_AR'] = {\n" +
           "    \"hello\": \"Hola\",\n" +
