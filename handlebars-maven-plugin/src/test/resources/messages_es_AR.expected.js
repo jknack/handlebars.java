@@ -1,5 +1,5 @@
 (function() {
-  // Spanish (Argentina)
+  /* Spanish (Argentina) */
   I18n.translations = I18n.translations || {};
   I18n.translations['es_AR'] = {
     "hello": "Hola",

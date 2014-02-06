@@ -24,7 +24,7 @@ public class Issue230 {
     plugin.execute();
 
     assertEquals("(function() {\n" +
-        "  // English (United States)\n" +
+        "  /* English (United States) */\n" +
         "  I18n.translations = I18n.translations || {};\n" +
         "  I18n.translations['en_US'] = {\n" +
         "    \"pagination_top_of_page\": \"Inicio de la página\"\n" +
