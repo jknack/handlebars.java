@@ -4,21 +4,18 @@
   var template = Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
   this.compilerInfo = [4,'>= 1.0.0'];
 helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
-  var buffer = "", stack1, options, functionType="function", escapeExpression=this.escapeExpression, helperMissing=helpers.helperMissing;
+  var buffer = "", stack1, helper, options, functionType="function", escapeExpression=this.escapeExpression, helperMissing=helpers.helperMissing;
 
 
-  if (stack1 = helpers.i18nJs) { stack1 = stack1.call(depth0, {hash:{},data:data}); }
-  else { stack1 = depth0.i18nJs; stack1 = typeof stack1 === functionType ? stack1.apply(depth0) : stack1; }
+  if (helper = helpers.i18nJs) { stack1 = helper.call(depth0, {hash:{},data:data}); }
+  else { helper = (depth0 && depth0.i18nJs); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
   buffer += escapeExpression(stack1)
-    + "\n";
-  options = {hash:{},data:data};
-  buffer += escapeExpression(((stack1 = helpers.i18n || depth0.i18n),stack1 ? stack1.call(depth0, "hello", options) : helperMissing.call(depth0, "i18n", "hello", options)))
-    + "\n";
-  options = {hash:{},data:data};
-  buffer += escapeExpression(((stack1 = helpers.i18n || depth0.i18n),stack1 ? stack1.call(depth0, "formatted", "Edgar!", options) : helperMissing.call(depth0, "i18n", "formatted", "Edgar!", options)))
-    + "\n";
-  options = {hash:{},data:data};
-  buffer += escapeExpression(((stack1 = helpers.i18n || depth0.i18n),stack1 ? stack1.call(depth0, "args", "a", "b", "c", options) : helperMissing.call(depth0, "i18n", "args", "a", "b", "c", options)))
+    + "\n"
+    + escapeExpression((helper = helpers.i18n || (depth0 && depth0.i18n),options={hash:{},data:data},helper ? helper.call(depth0, "hello", options) : helperMissing.call(depth0, "i18n", "hello", options)))
+    + "\n"
+    + escapeExpression((helper = helpers.i18n || (depth0 && depth0.i18n),options={hash:{},data:data},helper ? helper.call(depth0, "formatted", "Edgar!", options) : helperMissing.call(depth0, "i18n", "formatted", "Edgar!", options)))
+    + "\n"
+    + escapeExpression((helper = helpers.i18n || (depth0 && depth0.i18n),options={hash:{},data:data},helper ? helper.call(depth0, "args", "a", "b", "c", options) : helperMissing.call(depth0, "i18n", "args", "a", "b", "c", options)))
     + "\n";
   return buffer;
   });

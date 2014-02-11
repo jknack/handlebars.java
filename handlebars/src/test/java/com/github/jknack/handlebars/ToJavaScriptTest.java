@@ -78,7 +78,7 @@ public class ToJavaScriptTest extends AbstractTest {
           long start = System.currentTimeMillis();
           String js = template.toJavaScript();
           long end = System.currentTimeMillis();
-          assertEquals(1128, js.length());
+          assertEquals(1258, js.length());
           System.out.printf("Single execution: %s took: %sms\n", execution++, end - start);
         } catch (IOException e) {
           throw new IllegalArgumentException(e);
@@ -99,7 +99,7 @@ public class ToJavaScriptTest extends AbstractTest {
           long start = System.currentTimeMillis();
           String js = template.toJavaScript();
           long end = System.currentTimeMillis();
-          assertEquals(1128, js.length());
+          assertEquals(1258, js.length());
           System.out.printf("Shared execution: %s took: %sms\n", execution++, end - start);
         } catch (IOException e) {
           throw new IllegalArgumentException(e);
