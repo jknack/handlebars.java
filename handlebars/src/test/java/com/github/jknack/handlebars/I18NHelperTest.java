@@ -46,7 +46,7 @@ public class I18NHelperTest extends AbstractTest {
   @Test
   public void defaultI18nJs() throws IOException {
     String expected = "<script type='text/javascript'>\n" +
-        "  // Spanish (Argentina)\n" +
+        "  /* Spanish (Argentina) */\n" +
         "  I18n.translations = I18n.translations || {};\n" +
         "  I18n.translations['es_AR'] = {\n" +
         "    \"hello\": \"Hola\",\n" +

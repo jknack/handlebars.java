@@ -1,5 +1,5 @@
 define('messages_es_AR', ['i18n'], function (I18n) {
-  // Spanish (Argentina)
+  /* Spanish (Argentina) */
   I18n.translations = I18n.translations || {};
   I18n.translations['es_AR'] = {
     "hello": "Hola",
