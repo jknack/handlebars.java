@@ -57,6 +57,11 @@ public enum MapValueResolver implements ValueResolver {
     return value == null ? UNRESOLVED : value;
   }
 
+  @Override
+  public Object resolve(final Object context) {
+    return UNRESOLVED;
+  }
+
   @SuppressWarnings({"unchecked", "rawtypes" })
   @Override
   public Set<Entry<String, Object>> propertySet(final Object context) {

@@ -113,6 +113,17 @@ public class Context {
     }
 
     @Override
+    public Object resolve(final Object context) {
+      for (ValueResolver resolver : resolvers) {
+        Object value = resolver.resolve(context);
+        if (value != UNRESOLVED) {
+          return value == null ? NULL : value;
+        }
+      }
+      return null;
+    }
+
+    @Override
     public Set<Entry<String, Object>> propertySet(final Object context) {
       Set<Entry<String, Object>> propertySet = new LinkedHashSet<Map.Entry<String, Object>>();
       for (ValueResolver resolver : resolvers) {
@@ -336,7 +347,7 @@ public class Context {
    */
   @SuppressWarnings({"unchecked" })
   private void combine(final Map<String, ?> model) {
-    Map<String, Object> map =  (Map<String, Object>) extendedContext.model;
+    Map<String, Object> map = (Map<String, Object>) extendedContext.model;
     map.putAll(model);
   }
 
@@ -440,18 +451,18 @@ public class Context {
   public Object get(final String key) {
     // '.' or 'this'
     if (MUSTACHE_THIS.equals(key) || THIS.equals(key)) {
-      return model;
+      return internalGet(model);
     }
     // '..'
     if (key.equals(PARENT)) {
-      return parent == null ? null : parent.model;
+      return parent == null ? null : internalGet(parent.model);
     }
     // '../'
     if (key.startsWith(PARENT_ATTR)) {
       return parent == null ? null : parent.get(key.substring(PARENT_ATTR.length()));
     }
     String[] path = toPath(key);
-    Object value = get(path);
+    Object value = internalGet(path);
     if (value == null) {
       // No luck, check the extended context.
       value = get(extendedContext, key);
@@ -515,6 +526,15 @@ public class Context {
   }
 
   /**
+   * @param candidate resolve a candidate object.
+   * @return A resolved value or the current value if there isn't a resolved value.
+   */
+  private Object internalGet(final Object candidate) {
+    Object resolved = resolver.resolve(candidate);
+    return resolved == null ? candidate : resolved;
+  }
+
+  /**
    * Iterate over the qualified path and return a value. The value can be
    * null, {@link #NULL} or not null. If the value is <code>null</code>, the
    * value isn't present and the lookup algorithm will searchin for the value in
@@ -525,7 +545,7 @@ public class Context {
    * @param path The qualified path.
    * @return The value inside the stack for the given path.
    */
-  private Object get(final String[] path) {
+  private Object internalGet(final String... path) {
     Object current = model;
     // Resolve 'this' to the current model.
     int start = path[0].equals(THIS) ? 1 : 0;

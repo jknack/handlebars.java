@@ -77,8 +77,12 @@ public class AbstractTest {
       final Hash helpers, final Hash partials, final String expected, final String message)
       throws IOException {
     Template t = compile(template, helpers, partials);
-    String result = t.apply(context);
+    String result = t.apply(configureContext(context));
     assertEquals("'" + expected + "' should === '" + result + "': " + message, expected, result);
+  }
+
+  protected Object configureContext(final Object context) {
+    return context;
   }
 
   public Template compile(final String template) throws IOException {

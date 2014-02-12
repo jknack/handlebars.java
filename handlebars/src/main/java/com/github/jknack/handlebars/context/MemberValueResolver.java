@@ -75,6 +75,11 @@ public abstract class MemberValueResolver<M extends Member>
     return invokeMember(member, context);
   }
 
+  @Override
+  public Object resolve(final Object context) {
+    return UNRESOLVED;
+  }
+
   /**
    * Find a {@link Member} in the given class.
    *
