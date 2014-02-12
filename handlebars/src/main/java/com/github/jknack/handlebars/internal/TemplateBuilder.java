@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.antlr.v4.runtime.CommonToken;
+import org.antlr.v4.runtime.RuleContext;
 import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
@@ -43,7 +44,8 @@ import com.github.jknack.handlebars.internal.HbsParser.BlockContext;
 import com.github.jknack.handlebars.internal.HbsParser.BodyContext;
 import com.github.jknack.handlebars.internal.HbsParser.BoolHashContext;
 import com.github.jknack.handlebars.internal.HbsParser.BoolParamContext;
-import com.github.jknack.handlebars.internal.HbsParser.CharsHashContext;
+import com.github.jknack.handlebars.internal.HbsParser.CharHashContext;
+import com.github.jknack.handlebars.internal.HbsParser.CharParamContext;
 import com.github.jknack.handlebars.internal.HbsParser.CommentContext;
 import com.github.jknack.handlebars.internal.HbsParser.ElseBlockContext;
 import com.github.jknack.handlebars.internal.HbsParser.HashContext;
@@ -262,17 +264,38 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
   }
 
   @Override
-  public Object visitCharsHash(final CharsHashContext ctx) {
-    return ctx.getText().replace("\\\'", "\'");
+  public Object visitCharHash(final CharHashContext ctx) {
+    return charLiteral(ctx);
   }
 
   @Override
   public Object visitStringHash(final StringHashContext ctx) {
-    return ctx.getText().replace("\\\"", "\"");
+    return stringLiteral(ctx);
   }
 
   @Override
   public Object visitStringParam(final StringParamContext ctx) {
+    return stringLiteral(ctx);
+  }
+
+  @Override
+  public Object visitCharParam(final CharParamContext ctx) {
+    return charLiteral(ctx);
+  }
+
+  /**
+   * @param ctx The char literal context.
+   * @return A char literal.
+   */
+  private String charLiteral(final RuleContext ctx) {
+    return ctx.getText().replace("\\\'", "\'");
+  }
+
+  /**
+   * @param ctx The string literal context.
+   * @return A string literal.
+   */
+  private String stringLiteral(final RuleContext ctx) {
     return ctx.getText().replace("\\\"", "\"");
   }
 

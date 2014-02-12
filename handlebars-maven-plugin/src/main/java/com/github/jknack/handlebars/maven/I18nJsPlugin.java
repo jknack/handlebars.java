@@ -195,7 +195,6 @@ public class I18nJsPlugin extends HandlebarsPlugin {
    */
   private List<File> bundles(final String bundle, final URL[] classpath) throws Exception {
     Set<File> bundles = new LinkedHashSet<File>();
-    String fs = FileUtils.FS;
     for (URL url : classpath) {
       File dir = new File(url.toURI());
       bundles.addAll(FileUtils.getFiles(dir, bundle.replace(".", FileUtils.FS) + "*.properties",
