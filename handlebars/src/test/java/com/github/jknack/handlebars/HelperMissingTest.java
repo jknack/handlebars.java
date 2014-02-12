@@ -16,6 +16,26 @@ public class HelperMissingTest extends AbstractTest {
     shouldCompileTo("{{missing}}", new Object(), "");
   }
 
+  @Test
+  public void helperMissingName() throws IOException {
+    shouldCompileTo("{{varx 7}}", $, $(HelperRegistry.HELPER_MISSING, new Helper<Object>() {
+      @Override
+      public CharSequence apply(final Object context, final Options options) throws IOException {
+        return options.helperName;
+      }
+    }), "varx");
+  }
+
+  @Test
+  public void helperBlockMissingName() throws IOException {
+    shouldCompileTo("{{#varz 7}}{{/varz}}", $, $(HelperRegistry.HELPER_MISSING, new Helper<Object>() {
+      @Override
+      public CharSequence apply(final Object context, final Options options) throws IOException {
+        return options.helperName;
+      }
+    }), "varz");
+  }
+
   /**
    * Mustache fallback.
    *

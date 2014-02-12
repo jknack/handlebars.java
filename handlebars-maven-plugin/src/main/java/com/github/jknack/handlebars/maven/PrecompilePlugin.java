@@ -215,7 +215,7 @@ public class PrecompilePlugin extends HandlebarsPlugin {
         Map<String, Object> hash = new HashMap<String, Object>();
         hash.put("wrapper", amd ? "amd" : "none");
         Options opts = new Options
-            .Builder(handlebars, TagType.VAR, nullContext, template)
+            .Builder(handlebars, PrecompileHelper.NAME, TagType.VAR, nullContext, template)
                 .setHash(hash)
                 .build();
 

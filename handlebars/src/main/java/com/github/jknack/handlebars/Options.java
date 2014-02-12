@@ -17,6 +17,7 @@
  */
 package com.github.jknack.handlebars;
 
+import static org.apache.commons.lang3.Validate.notEmpty;
 import static org.apache.commons.lang3.Validate.notNull;
 
 import java.io.IOException;
@@ -75,10 +76,13 @@ public class Options {
      */
     private Template inverse = Template.EMPTY;
 
+    /** Empty params. */
+    private static Object[] EMPTY_PARAMS = {};
+
     /**
      * The parameters. Not null.
      */
-    private Object[] params = {};
+    private Object[] params = EMPTY_PARAMS;
 
     /**
      * The hash options. Not null.
@@ -90,17 +94,22 @@ public class Options {
      */
     private TagType tagType;
 
+    /** The name of the helper. */
+    private String helperName;
+
     /**
      * Creates a new {@link Builder}.
      *
      * @param handlebars A handlebars object. Required.
+     * @param helperName The name of the helper. Required.
      * @param tagType The {@link TagType} from where the helper was called.
      * @param context A context object. Required.
      * @param fn A template object. Required.
      */
-    public Builder(final Handlebars handlebars, final TagType tagType, final Context context,
-        final Template fn) {
+    public Builder(final Handlebars handlebars, final String helperName, final TagType tagType,
+        final Context context, final Template fn) {
       this.handlebars = notNull(handlebars, "The handlebars is required.");
+      this.helperName = notEmpty(helperName, "The helperName is required.");
       this.tagType = notNull(tagType, "The tag type is required.");
       this.context = notNull(context, "The context is required.");
       this.fn = notNull(fn, "The fn template is required.");
@@ -112,7 +121,8 @@ public class Options {
      * @return A new {@link Options} object.
      */
     public Options build() {
-      Options options = new Options(handlebars, tagType, context, fn, inverse, params, hash);
+      Options options = new Options(handlebars, helperName, tagType, context, fn, inverse, params,
+          hash);
       // clear out references
       handlebars = null;
       tagType = null;
@@ -193,10 +203,14 @@ public class Options {
    */
   public final TagType tagType;
 
+  /** The name of the helper. */
+  public final String helperName;
+
   /**
    * Creates a new Handlebars {@link Options}.
    *
    * @param handlebars The handlebars instance. Required.
+   * @param helperName The name of the helper. Required.
    * @param tagType The {@link TagType} from where the helper was called.
    * @param context The current context. Required.
    * @param fn The template function. Required.
@@ -204,10 +218,11 @@ public class Options {
    * @param params The parameters. Required.
    * @param hash The optional hash. Required.
    */
-  public Options(final Handlebars handlebars, final TagType tagType, final Context context,
-      final Template fn, final Template inverse, final Object[] params,
+  public Options(final Handlebars handlebars, final String helperName, final TagType tagType,
+      final Context context, final Template fn, final Template inverse, final Object[] params,
       final Map<String, Object> hash) {
     this.handlebars = notNull(handlebars, "The handlebars is required.");
+    this.helperName = notEmpty(helperName, "The helperName is required.");
     this.tagType = notNull(tagType, "The tag type is required.");
     this.context = notNull(context, "The context is required");
     this.fn = notNull(fn, "The template is required.");

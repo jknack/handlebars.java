@@ -149,7 +149,8 @@ public class I18nJsPlugin extends HandlebarsPlugin {
       // set bundle name
       hash.put("bundle", this.bundle);
 
-      Options options = new Options.Builder(handlebars, TagType.VAR, context, Template.EMPTY)
+      Options options = new Options.Builder(handlebars, I18nHelper.i18nJs.name(), TagType.VAR,
+          context, Template.EMPTY)
           .setHash(hash)
           .build();
       // convert to JS

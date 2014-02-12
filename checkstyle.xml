@@ -127,7 +127,9 @@
           <property name="max" value="100"/>
         </module>
         <module name="MethodLength"/>
-        <module name="ParameterNumber"/>
+        <module name="ParameterNumber">
+          <property name="max" value="8"/>
+        </module>
 
 
         <!-- Checks for whitespace                               -->
@@ -182,7 +184,7 @@
         <module name="VisibilityModifier">
           <property name="packageAllowed" value="true"/>
           <property name="protectedAllowed" value="true"/>
-          <property name="publicMemberPattern" value="handlebars|fn|inverse|params|tagType|hash|context|line|column|evidence|reason|message|filename"/>
+          <property name="publicMemberPattern" value="handlebars|fn|inverse|params|tagType|hash|context|line|column|evidence|reason|message|filename|helperName"/>
         </module>
 
 

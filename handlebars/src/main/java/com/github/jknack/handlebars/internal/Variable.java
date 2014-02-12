@@ -151,7 +151,7 @@ class Variable extends HelperResolver {
       throws IOException {
     Helper<Object> helper = helper(name);
     if (helper != null) {
-      Options options = new Options.Builder(handlebars, type, scope, Template.EMPTY)
+      Options options = new Options.Builder(handlebars, name, type, scope, Template.EMPTY)
           .setParams(params(scope))
           .setHash(hash(scope))
           .build();
