@@ -6,4 +6,4 @@ define('messages_es_AR', ['i18n'], function (I18n) {
     "formatted": "Hi {{arg0}}",
     "args": "[{{arg0}}, {{arg1}}, {{arg2}}]"
   };
-};
+});

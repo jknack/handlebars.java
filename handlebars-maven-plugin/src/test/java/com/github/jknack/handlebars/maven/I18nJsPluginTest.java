@@ -5,6 +5,7 @@ import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 import static org.junit.Assert.assertEquals;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Set;
 import java.util.regex.Pattern;
@@ -33,6 +34,8 @@ public class I18nJsPluginTest {
 
     assertEquals(tokens("src/test/resources/messages_es_AR.expected.js"),
         tokens("target/messages_es_AR.js"));
+
+    FileUtils.copyFile(new File("target/messages.js"), new File("target/messages-tests.js"));
   }
 
   @Test

@@ -181,7 +181,7 @@ public class I18nJsPlugin extends HandlebarsPlugin {
    */
   private String wrap(final String filename, final CharSequence body, final boolean amd) {
     if (amd) {
-      return String.format("define('%s', ['i18n'], function (I18n) {\n%s};\n", filename, body);
+      return String.format("define('%s', ['i18n'], function (I18n) {\n%s});\n", filename, body);
     }
     return String.format("(function() {\n%s})();\n", body.toString());
   }

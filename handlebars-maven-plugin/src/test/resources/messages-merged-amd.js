@@ -15,4 +15,4 @@ define('messages', ['i18n'], function (I18n) {
     "args": "[{{arg0}}, {{arg1}}, {{arg2}}]"
   };
 
-};
+});

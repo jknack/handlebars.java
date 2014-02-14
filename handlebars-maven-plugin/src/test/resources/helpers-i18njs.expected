@@ -28,9 +28,7 @@ helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
 // i18nJs output:
 // register an empty i18nJs helper:
 Handlebars.registerHelper('i18nJs', function (arguments) {
-if (arguments.length > 1) {
-  I18n.locale=arguments[0];
-}
+I18n.locale = arguments[0] || "en_US";
 return '';
 });
 

@@ -44,6 +44,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.logging.Level;
 
@@ -297,9 +298,8 @@ public class PrecompilePlugin extends HandlebarsPlugin {
         StringBuilder output = new StringBuilder();
         output.append("// i18nJs output:\n");
         output.append("// register an empty i18nJs helper:\n");
-        output.append(registerHelper(I18nHelper.i18nJs.name(), "if (arguments.length > 1) {\n"
-            + "  I18n.locale=arguments[0];\n"
-            + "}\n"
+        output.append(registerHelper(I18nHelper.i18nJs.name(),
+            "I18n.locale = arguments[0] || \"" + Locale.getDefault() + "\";\n"
             + "return '';", "arguments"));
         output.append("// redirect i18n helper to i18n.js:\n");
         output.append(registerHelper(I18nHelper.i18n.name(), "var key = arguments[0],\n"
