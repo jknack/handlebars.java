@@ -193,7 +193,7 @@ public class Handlebars implements HelperRegistry {
         return Array.getLength(value) == 0;
       }
       if (value instanceof Number) {
-        return ((Number) value).intValue() == 0;
+        return ((Number) value).doubleValue() == 0;
       }
       return false;
     }
