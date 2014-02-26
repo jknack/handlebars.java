@@ -49,7 +49,7 @@ public class MessageSourceHelperTest {
     Context ctx = createMock(Context.class);
     Template fn = createMock(Template.class);
 
-    Options options = new Options.Builder(hbs, TagType.VAR, ctx, fn)
+    Options options = new Options.Builder(hbs, "messageSource", TagType.VAR, ctx, fn)
         .setParams(params)
         .setHash(hash)
         .build();
@@ -83,7 +83,7 @@ public class MessageSourceHelperTest {
     Context ctx = createMock(Context.class);
     Template fn = createMock(Template.class);
 
-    Options options = new Options.Builder(hbs, TagType.VAR, ctx, fn)
+    Options options = new Options.Builder(hbs, "messageSource", TagType.VAR, ctx, fn)
         .setParams(params)
         .setHash(hash)
         .build();
@@ -117,7 +117,7 @@ public class MessageSourceHelperTest {
     Context ctx = createMock(Context.class);
     Template fn = createMock(Template.class);
 
-    Options options = new Options.Builder(hbs, TagType.VAR, ctx, fn)
+    Options options = new Options.Builder(hbs, "messageSource", TagType.VAR, ctx, fn)
         .setParams(params)
         .setHash(hash)
         .build();

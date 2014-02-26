@@ -1,5 +1,5 @@
 (function() {
-  // English (United States)
+  /* English (United States) */
   I18n.translations = I18n.translations || {};
   I18n.translations['en_US'] = {
     "hello": "Hi",
@@ -7,7 +7,7 @@
     "args": "[{{arg0}}, {{arg1}}, {{arg2}}]"
   };
 
-  // Spanish (Argentina)
+  /* Spanish (Argentina) */
   I18n.translations = I18n.translations || {};
   I18n.translations['es_AR'] = {
     "hello": "Hola",

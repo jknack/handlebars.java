@@ -84,7 +84,7 @@ abstract class BaseTemplate implements Template {
   /**
    * Handlerbars.js version.
    */
-  private static final String HBS_FILE = "/handlebars-1.0.0.js";
+  private static final String HBS_FILE = "/handlebars-v1.3.0.js";
 
   /**
    * A shared scope with Handlebars.js objects.

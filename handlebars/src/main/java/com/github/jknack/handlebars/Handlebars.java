@@ -193,7 +193,7 @@ public class Handlebars implements HelperRegistry {
         return Array.getLength(value) == 0;
       }
       if (value instanceof Number) {
-        return ((Number) value).intValue() == 0;
+        return ((Number) value).doubleValue() == 0;
       }
       return false;
     }
@@ -774,7 +774,7 @@ public class Handlebars implements HelperRegistry {
    *        Default is: false.
    * @return This handlebars object.
    */
-  public HelperRegistry prettyPrint(final boolean prettyPrint) {
+  public Handlebars prettyPrint(final boolean prettyPrint) {
     setPrettyPrint(prettyPrint);
     return this;
   }
@@ -796,7 +796,7 @@ public class Handlebars implements HelperRegistry {
    *        their names.
    * @return The handlebars object.
    */
-  public HelperRegistry stringParams(final boolean stringParams) {
+  public Handlebars stringParams(final boolean stringParams) {
     setStringParams(stringParams);
     return this;
   }
@@ -831,7 +831,7 @@ public class Handlebars implements HelperRegistry {
    *        indirectly.
    * @return The handlebars object.
    */
-  public HelperRegistry infiniteLoops(final boolean infiniteLoops) {
+  public Handlebars infiniteLoops(final boolean infiniteLoops) {
     setInfiniteLoops(infiniteLoops);
     return this;
   }
@@ -896,7 +896,7 @@ public class Handlebars implements HelperRegistry {
    * @param parserFactory A parser factory. Required.
    * @return This handlebars object.
    */
-  public HelperRegistry with(final ParserFactory parserFactory) {
+  public Handlebars with(final ParserFactory parserFactory) {
     this.parserFactory = notNull(parserFactory, "A parserFactory is required.");
     return this;
   }
@@ -907,7 +907,7 @@ public class Handlebars implements HelperRegistry {
    * @param cache The template cache. Required.
    * @return This handlebars object.
    */
-  public HelperRegistry with(final TemplateCache cache) {
+  public Handlebars with(final TemplateCache cache) {
     this.cache = notNull(cache, "The template loader is required.");
     return this;
   }

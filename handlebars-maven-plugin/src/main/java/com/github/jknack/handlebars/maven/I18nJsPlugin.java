@@ -149,7 +149,8 @@ public class I18nJsPlugin extends HandlebarsPlugin {
       // set bundle name
       hash.put("bundle", this.bundle);
 
-      Options options = new Options.Builder(handlebars, TagType.VAR, context, Template.EMPTY)
+      Options options = new Options.Builder(handlebars, I18nHelper.i18nJs.name(), TagType.VAR,
+          context, Template.EMPTY)
           .setHash(hash)
           .build();
       // convert to JS
@@ -180,7 +181,7 @@ public class I18nJsPlugin extends HandlebarsPlugin {
    */
   private String wrap(final String filename, final CharSequence body, final boolean amd) {
     if (amd) {
-      return String.format("define('%s', ['i18n'], function (I18n) {\n%s};\n", filename, body);
+      return String.format("define('%s', ['i18n'], function (I18n) {\n%s});\n", filename, body);
     }
     return String.format("(function() {\n%s})();\n", body.toString());
   }
@@ -195,7 +196,6 @@ public class I18nJsPlugin extends HandlebarsPlugin {
    */
   private List<File> bundles(final String bundle, final URL[] classpath) throws Exception {
     Set<File> bundles = new LinkedHashSet<File>();
-    String fs = FileUtils.FS;
     for (URL url : classpath) {
       File dir = new File(url.toURI());
       bundles.addAll(FileUtils.getFiles(dir, bundle.replace(".", FileUtils.FS) + "*.properties",

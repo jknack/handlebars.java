@@ -170,6 +170,6 @@
   </dependencies>
 
   <properties>
-    <antlr-version>4.1</antlr-version>
+    <antlr-version>4.2</antlr-version>
   </properties>
 </project>

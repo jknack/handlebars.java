@@ -110,6 +110,7 @@ partial
 param
   :
     DOUBLE_STRING #stringParam
+  | SINGLE_STRING #charParam
   | INT           #intParam
   | BOOLEAN       #boolParam
   | QID           #refPram
@@ -123,7 +124,7 @@ hash
 hashValue
   :
     DOUBLE_STRING #stringHash
-  | SINGLE_STRING #charsHash
+  | SINGLE_STRING #charHash
   | INT           #intHash
   | BOOLEAN       #boolHash
   | QID           #refHash

@@ -62,6 +62,14 @@ public enum JsonNodeValueResolver implements ValueResolver {
     return value == null ? UNRESOLVED : value;
   }
 
+  @Override
+  public Object resolve(final Object context) {
+    if (context instanceof JsonNode) {
+      return resolve((JsonNode) context);
+    }
+    return UNRESOLVED;
+  }
+
   /**
    * Resolve a {@link JsonNode} object to a primitive value.
    *

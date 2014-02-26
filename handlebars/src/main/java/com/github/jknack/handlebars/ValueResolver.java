@@ -56,6 +56,19 @@ public interface ValueResolver {
   Object resolve(Object context, String name);
 
   /**
+   * Resolve the the context object by optionally converting the value if necessary.
+   * If a {@link #UNRESOLVED} is returned, the {@link Context context stack} will continue with
+   * the next value resolver in the chain.
+   *
+   * @param context The context object. Not null.
+   * @return A {@link #UNRESOLVED} is returned, the {@link Context context
+   *         stack} will continue with the next value resolver in the chain.
+   *         Otherwise, it returns the associated value.
+   */
+  Object resolve(Object context);
+
+
+  /**
    * List all the properties and their values for the given object.
    *
    * @param context The context object. Not null.

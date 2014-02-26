@@ -2,18 +2,18 @@ package com.github.jknack.handlebars.helper;
 
 import static com.github.jknack.handlebars.helper.StringHelpers.abbreviate;
 import static com.github.jknack.handlebars.helper.StringHelpers.capitalize;
-import static com.github.jknack.handlebars.helper.StringHelpers.replace;
 import static com.github.jknack.handlebars.helper.StringHelpers.capitalizeFirst;
 import static com.github.jknack.handlebars.helper.StringHelpers.center;
 import static com.github.jknack.handlebars.helper.StringHelpers.cut;
 import static com.github.jknack.handlebars.helper.StringHelpers.defaultIfEmpty;
 import static com.github.jknack.handlebars.helper.StringHelpers.ljust;
 import static com.github.jknack.handlebars.helper.StringHelpers.lower;
+import static com.github.jknack.handlebars.helper.StringHelpers.replace;
 import static com.github.jknack.handlebars.helper.StringHelpers.rjust;
-import static com.github.jknack.handlebars.helper.StringHelpers.substring;
 import static com.github.jknack.handlebars.helper.StringHelpers.slugify;
 import static com.github.jknack.handlebars.helper.StringHelpers.stringFormat;
 import static com.github.jknack.handlebars.helper.StringHelpers.stripTags;
+import static com.github.jknack.handlebars.helper.StringHelpers.substring;
 import static com.github.jknack.handlebars.helper.StringHelpers.upper;
 import static com.github.jknack.handlebars.helper.StringHelpers.wordWrap;
 import static com.github.jknack.handlebars.helper.StringHelpers.yesno;
@@ -239,14 +239,14 @@ public class StringHelpersTest extends AbstractTest {
 
     verify(options);
   }
-  
+
   @Test
   public void substringWithStart() throws IOException {
     Handlebars hbs = createMock(Handlebars.class);
     Context ctx = createMock(Context.class);
     Template fn = createMock(Template.class);
 
-    Options options = new Options.Builder(hbs, TagType.VAR, ctx, fn)
+    Options options = new Options.Builder(hbs, substring.name(), TagType.VAR, ctx, fn)
         .setParams(new Object[]{11})
         .build();
 
@@ -254,14 +254,14 @@ public class StringHelpersTest extends AbstractTest {
     assertEquals("java",
         substring.apply("Handlebars.java", options));
   }
-  
+
   @Test
   public void substringWithStartAndEnd() throws IOException {
     Handlebars hbs = createMock(Handlebars.class);
     Context ctx = createMock(Context.class);
     Template fn = createMock(Template.class);
 
-    Options options = new Options.Builder(hbs, TagType.VAR, ctx, fn)
+    Options options = new Options.Builder(hbs, substring.name(), TagType.VAR, ctx, fn)
         .setParams(new Object[]{0, 10})
         .build();
 
@@ -311,14 +311,14 @@ public class StringHelpersTest extends AbstractTest {
 
     verify(options);
   }
-  
+
   @Test
   public void replace() throws IOException {
     Handlebars hbs = createMock(Handlebars.class);
     Context ctx = createMock(Context.class);
     Template fn = createMock(Template.class);
 
-    Options options = new Options.Builder(hbs, TagType.VAR, ctx, fn)
+    Options options = new Options.Builder(hbs, replace.name(), TagType.VAR, ctx, fn)
         .setParams(new Object[]{"...", "rocks" })
         .build();
 
@@ -333,7 +333,7 @@ public class StringHelpersTest extends AbstractTest {
     Context ctx = createMock(Context.class);
     Template fn = createMock(Template.class);
 
-    Options options = new Options.Builder(hbs, TagType.VAR, ctx, fn)
+    Options options = new Options.Builder(hbs, stringFormat.name(), TagType.VAR, ctx, fn)
         .setParams(new Object[]{"handlebars.java" })
         .build();
 
@@ -349,7 +349,7 @@ public class StringHelpersTest extends AbstractTest {
     Context ctx = createMock(Context.class);
     Template fn = createMock(Template.class);
 
-    Options options = new Options.Builder(hbs, TagType.VAR, ctx, fn)
+    Options options = new Options.Builder(hbs, stringFormat.name(), TagType.VAR, ctx, fn)
         .setParams(new Object[]{10.0 / 3.0 })
         .build();
 

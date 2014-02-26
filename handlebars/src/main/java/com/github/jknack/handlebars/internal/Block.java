@@ -121,36 +121,38 @@ class Block extends HelperResolver {
     if (body == null) {
       return;
     }
+    final String helperName;
     Helper<Object> helper = helper(name);
     Template template = body;
     final Object childContext;
     Context currentScope = context;
     if (helper == null) {
       childContext = transform(context.get(name));
-      final String hname;
       if (inverted) {
-        hname = UnlessHelper.NAME;
+        helperName = UnlessHelper.NAME;
       } else if (childContext instanceof Iterable) {
-        hname = EachHelper.NAME;
+        helperName = EachHelper.NAME;
       } else if (childContext instanceof Boolean) {
-        hname = IfHelper.NAME;
+        helperName = IfHelper.NAME;
       } else if (childContext instanceof Lambda) {
-        hname = WithHelper.NAME;
+        helperName = WithHelper.NAME;
         template = Lambdas
             .compile(handlebars,
                 (Lambda<Object, Object>) childContext,
                 context, template,
                 startDelimiter, endDelimiter);
       } else {
-        hname = WithHelper.NAME;
+        helperName = WithHelper.NAME;
         currentScope = Context.newContext(context, childContext);
       }
       // A built-in helper might be override it.
-      helper = handlebars.helper(hname);
+      helper = handlebars.helper(helperName);
     } else {
+      helperName = name;
       childContext = transform(determineContext(context));
     }
-    Options options = new Options.Builder(handlebars, TagType.SECTION, currentScope, template)
+    Options options = new Options.Builder(handlebars, helperName, TagType.SECTION, currentScope,
+        template)
         .setInverse(inverse == null ? Template.EMPTY : inverse)
         .setParams(params(currentScope))
         .setHash(hash(context))
