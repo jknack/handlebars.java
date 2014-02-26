@@ -235,7 +235,7 @@ class Partial extends BaseTemplate {
       .append('>')
       .append(path);
 
-    if(!context.equals("this")) {
+    if (!context.equals("this")) {
       buffer
         .append(' ')
         .append(context);
