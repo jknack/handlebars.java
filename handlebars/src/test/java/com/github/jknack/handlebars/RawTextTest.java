@@ -88,6 +88,11 @@ public class RawTextTest extends AbstractTest {
   }
 
   @Test
+  public void partialWithThisContext() throws IOException {
+    assertEquals("hello {{>user this}}!", compile("hello {{>user this}}!", $(), $("user", "{{user}}")).text());
+  }
+
+  @Test
   public void helper() throws IOException {
     assertEquals("hello {{with context arg0 hash=hash0}}!",
         compile("hello {{with context arg0 hash=hash0}}!")

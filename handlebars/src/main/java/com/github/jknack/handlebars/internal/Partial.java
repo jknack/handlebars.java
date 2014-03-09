@@ -88,7 +88,7 @@ class Partial extends BaseTemplate {
   public Partial(final Handlebars handlebars, final String path, final String context) {
     this.handlebars = notNull(handlebars, "The handlebars is required.");
     this.path = notEmpty(path, "The path is required.");
-    this.context = notEmpty(context, "The context is required.");
+    this.context = context;
   }
 
   @Override
@@ -128,7 +128,7 @@ class Partial extends BaseTemplate {
       }
 
       Template template = handlebars.compile(source);
-      if (this.context.equals("this")) {
+      if (this.context == null || this.context.equals("this")) {
         template.apply(context, writer);
       } else {
         template.apply(Context.newContext(context, context.get(this.context)), writer);
@@ -235,10 +235,8 @@ class Partial extends BaseTemplate {
       .append('>')
       .append(path);
 
-    if (!context.equals("this")) {
-      buffer
-        .append(' ')
-        .append(context);
+    if (context != null) {
+      buffer.append(' ').append(context);
     }
 
     buffer.append(endDelimiter);
