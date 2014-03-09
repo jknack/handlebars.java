@@ -95,6 +95,17 @@ public class HandlebarsViewResolver extends AbstractTemplateViewResolver
   private boolean bindI18nToMessageSource;
 
   /**
+   * If true, templates will be deleted once applied. Useful, in some advanced template inheritance
+   * use cases.  Used by <code>{{#block}} helper</code>. Default is: false.
+   * At any time you can override the default setup with:
+   * <pre>
+   * {{#block "footer" delete-after-merge=true}}
+   * </pre>
+   *
+   */
+  private boolean deletePartialAfterMerge;
+
+  /**
    * Creates a new {@link HandlebarsViewResolver}.
    *
    * @param viewClass The view's class. Required.
@@ -181,6 +192,9 @@ public class HandlebarsViewResolver extends AbstractTemplateViewResolver
       I18nHelper.i18n.setSource(i18nSource);
       I18nHelper.i18nJs.setSource(i18nSource);
     }
+
+    // set delete partial after merge
+    handlebars.setDeletePartialAfterMerge(deletePartialAfterMerge);
   }
 
   /**
@@ -438,5 +452,20 @@ public class HandlebarsViewResolver extends AbstractTemplateViewResolver
    */
   public void setBindI18nToMessageSource(final boolean bindI18nToMessageSource) {
     this.bindI18nToMessageSource = bindI18nToMessageSource;
+  }
+
+  /**
+   * If true, templates will be deleted once applied. Useful, in some advanced template inheritance
+   * use cases.  Used by <code>{{#block}} helper</code>. Default is: false.
+   * At any time you can override the default setup with:
+   * <pre>
+   * {{#block "footer" delete-after-merge=true}}
+   * </pre>
+   *
+   * @param deletePartialAfterMerge True for clearing up templates once they got applied. Used by
+   *      <code>{{#block}} helper</code>.
+   */
+  public void setDeletePartialAfterMerge(final boolean deletePartialAfterMerge) {
+    this.deletePartialAfterMerge = deletePartialAfterMerge;
   }
 }

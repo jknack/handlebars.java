@@ -303,6 +303,16 @@ public class Handlebars implements HelperRegistry {
   private boolean infiniteLoops;
 
   /**
+   * If true, templates will be deleted once applied. Useful, in some advanced template inheritance
+   * use cases. Default is: false.
+   * At any time you can override the default setup with:
+   * <pre>
+   * {{#block "footer" delete-after-merge=true}}
+   * </pre>
+   */
+  private boolean deletePartialAfterMerge;
+
+  /**
    * The missing value resolver strategy.
    */
   private MissingValueResolver missingValueResolver = MissingValueResolver.NULL;
@@ -834,6 +844,54 @@ public class Handlebars implements HelperRegistry {
   public Handlebars infiniteLoops(final boolean infiniteLoops) {
     setInfiniteLoops(infiniteLoops);
     return this;
+  }
+
+  /**
+   * If true, templates will be deleted once applied. Useful, in some advanced template inheritance
+   * use cases.  Used by <code>{{#block}} helper</code>. Default is: false.
+   * At any time you can override the default setup with:
+   * <pre>
+   * {{#block "footer" delete-after-merge=true}}
+   * </pre>
+   *
+   * @return True for clearing up templates once they got applied. Used by
+   *      <code>{{#block}} helper</code>.
+   */
+  public boolean deletePartialAfterMerge() {
+    return deletePartialAfterMerge;
+  }
+
+  /**
+   * If true, templates will be deleted once applied. Useful, in some advanced template inheritance
+   * use cases.  Used by <code>{{#block}} helper</code>. Default is: false.
+   * At any time you can override the default setup with:
+   * <pre>
+   * {{#block "footer" delete-after-merge=true}}
+   * </pre>
+   *
+   * @param deletePartialAfterMerge True for clearing up templates once they got applied. Used by
+   *    <code>{{#block}} helper</code>.
+   *
+   * @return This handlebars object.
+   */
+  public Handlebars deletePartialAfterMerge(final boolean deletePartialAfterMerge) {
+    setDeletePartialAfterMerge(deletePartialAfterMerge);
+    return this;
+  }
+
+  /**
+   * If true, templates will be deleted once applied. Useful, in some advanced template inheritance
+   * use cases.  Used by <code>{{#block}} helper</code>. Default is: false.
+   * At any time you can override the default setup with:
+   * <pre>
+   * {{#block "footer" delete-after-merge=true}}
+   * </pre>
+   *
+   * @param deletePartialAfterMerge True for clearing up templates once they got applied. Used by
+   *    <code>{{#block}} helper</code>.
+   */
+  public void setDeletePartialAfterMerge(final boolean deletePartialAfterMerge) {
+    this.deletePartialAfterMerge = deletePartialAfterMerge;
   }
 
   /**

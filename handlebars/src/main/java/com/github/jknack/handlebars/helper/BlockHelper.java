@@ -72,7 +72,8 @@ public class BlockHelper implements Helper<Object> {
       }
     }
     CharSequence result = options.apply(template);
-    Boolean deletePartials = options.hash("delete-after-merge", false);
+    Boolean deletePartials = options.hash("delete-after-merge",
+        options.handlebars.deletePartialAfterMerge());
     if (deletePartials) {
       // once applied, remove the template from current execution.
       options.partial(path, null);
