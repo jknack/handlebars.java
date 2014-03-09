@@ -231,11 +231,18 @@ class Partial extends BaseTemplate {
 
   @Override
   public String text() {
-    return new StringBuilder(startDelimiter)
-        .append('>')
-        .append(path)
-        .append(endDelimiter)
-        .toString();
+    StringBuilder buffer = new StringBuilder(startDelimiter)
+      .append('>')
+      .append(path);
+
+    if (!context.equals("this")) {
+      buffer
+        .append(' ')
+        .append(context);
+    }
+
+    buffer.append(endDelimiter);
+    return buffer.toString();
   }
 
   /**
