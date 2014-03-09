@@ -19,7 +19,9 @@ package com.github.jknack.handlebars.internal;
 
 import static org.apache.commons.lang3.Validate.notNull;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -30,6 +32,7 @@ import com.github.jknack.handlebars.Context;
 import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Helper;
 import com.github.jknack.handlebars.HelperRegistry;
+import com.github.jknack.handlebars.TagType;
 import com.github.jknack.handlebars.Template;
 
 /**
@@ -74,8 +77,9 @@ abstract class HelperResolver extends BaseTemplate {
    *
    * @param context The current context.
    * @return A hash object with values in the current context.
+   * @throws IOException If param can't be applied.
    */
-  protected Map<String, Object> hash(final Context context) {
+  protected Map<String, Object> hash(final Context context) throws IOException {
     Map<String, Object> result = new LinkedHashMap<String, Object>();
     for (Entry<String, Object> entry : hash.entrySet()) {
       Object value = entry.getValue();
@@ -90,8 +94,9 @@ abstract class HelperResolver extends BaseTemplate {
    *
    * @param scope The current context.
    * @return A parameter list with values in the current context.
+   * @throws IOException If param can't be applied.
    */
-  protected Object[] params(final Context scope) {
+  protected Object[] params(final Context scope) throws IOException {
     if (params.size() <= 1) {
       return PARAMS;
     }
@@ -111,8 +116,9 @@ abstract class HelperResolver extends BaseTemplate {
    *
    * @param context The current context.
    * @return The current context.
+   * @throws IOException If param can't be applied.
    */
-  protected Object determineContext(final Context context) {
+  protected Object determineContext(final Context context) throws IOException {
     if (params.size() == 0) {
       return context.model();
     }
@@ -218,4 +224,12 @@ abstract class HelperResolver extends BaseTemplate {
     return "";
   }
 
+  @Override
+  protected void collect(final Collection<String> result, final TagType tagType) {
+    for(Object param : this.params) {
+      if (param instanceof Variable) {
+        ((Variable) param).collect(result, tagType);
+      }
+    }
+  }
 }

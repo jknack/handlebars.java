@@ -318,6 +318,7 @@ class Block extends HelperResolver {
     if (tagType == TagType.SECTION) {
       result.add(name);
     }
+    super.collect(result, tagType);
   }
 
   @Override

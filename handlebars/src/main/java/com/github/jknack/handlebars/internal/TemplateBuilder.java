@@ -56,10 +56,12 @@ import com.github.jknack.handlebars.internal.HbsParser.ParamContext;
 import com.github.jknack.handlebars.internal.HbsParser.PartialContext;
 import com.github.jknack.handlebars.internal.HbsParser.RefHashContext;
 import com.github.jknack.handlebars.internal.HbsParser.RefPramContext;
+import com.github.jknack.handlebars.internal.HbsParser.SexprContext;
 import com.github.jknack.handlebars.internal.HbsParser.SpacesContext;
 import com.github.jknack.handlebars.internal.HbsParser.StatementContext;
 import com.github.jknack.handlebars.internal.HbsParser.StringHashContext;
 import com.github.jknack.handlebars.internal.HbsParser.StringParamContext;
+import com.github.jknack.handlebars.internal.HbsParser.SubexpressionContext;
 import com.github.jknack.handlebars.internal.HbsParser.TemplateContext;
 import com.github.jknack.handlebars.internal.HbsParser.TextContext;
 import com.github.jknack.handlebars.internal.HbsParser.TvarContext;
@@ -113,18 +115,20 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
 
   @Override
   public Template visitBlock(final BlockContext ctx) {
-    String nameStart = ctx.nameStart.getText();
+    SexprContext sexpr = ctx.sexpr();
+    Token nameStart = sexpr.QID().getSymbol();
+    String name = nameStart.getText();
     String nameEnd = ctx.nameEnd.getText();
-    if (!nameStart.equals(nameEnd)) {
+    if (!name.equals(nameEnd)) {
       reportError(null, ctx.nameEnd.getLine(), ctx.nameEnd.getCharPositionInLine()
-          , String.format("found: '%s', expected: '%s'", nameEnd, nameStart));
+          , String.format("found: '%s', expected: '%s'", nameEnd, name));
     }
 
     hasTag(true);
-    Block block = new Block(handlebars, nameStart, false, params(ctx.param()),
-        hash(ctx.hash()));
+    Block block = new Block(handlebars, name, false, params(sexpr.param()),
+        hash(sexpr.hash()));
     block.filename(source.filename());
-    block.position(ctx.nameStart.getLine(), ctx.nameStart.getCharPositionInLine());
+    block.position(nameStart.getLine(), nameStart.getCharPositionInLine());
     String startDelim = ctx.start.getText();
     startDelim = startDelim.substring(0, startDelim.length() - 1);
     block.startDelimiter(startDelim);
@@ -171,21 +175,26 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
   @Override
   public Template visitVar(final VarContext ctx) {
     hasTag(false);
-    return newVar(ctx.QID().getSymbol(), TagType.VAR, params(ctx.param()), hash(ctx.hash()),
+    SexprContext sexpr = ctx.sexpr();
+    return newVar(sexpr.QID().getSymbol(), TagType.VAR, params(sexpr.param()), hash(sexpr.hash()),
         ctx.start.getText(), ctx.stop.getText());
   }
 
   @Override
   public Template visitTvar(final TvarContext ctx) {
     hasTag(false);
-    return newVar(ctx.QID().getSymbol(), TagType.TRIPLE_VAR, params(ctx.param()), hash(ctx.hash()),
+    SexprContext sexpr = ctx.sexpr();
+    return newVar(sexpr.QID().getSymbol(), TagType.TRIPLE_VAR, params(sexpr.param()),
+        hash(sexpr.hash()),
         ctx.start.getText(), ctx.stop.getText());
   }
 
   @Override
   public Template visitAmpvar(final AmpvarContext ctx) {
     hasTag(false);
-    return newVar(ctx.QID().getSymbol(), TagType.AMP_VAR, params(ctx.param()), hash(ctx.hash()),
+    SexprContext sexpr = ctx.sexpr();
+    return newVar(sexpr.QID().getSymbol(), TagType.AMP_VAR, params(sexpr.param()),
+        hash(sexpr.hash()),
         ctx.start.getText(), ctx.stop.getText());
   }
 
@@ -204,7 +213,8 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
       final Map<String, Object> hash, final String startDelimiter, final String endDelimiter) {
     String varName = name.getText();
     Helper<Object> helper = handlebars.helper(varName);
-    if (helper == null && (params.size() > 0 || hash.size() > 0)) {
+    if (helper == null
+        && ((params.size() > 0 || hash.size() > 0) || varType == TagType.SUB_EXPRESSION)) {
       Helper<Object> helperMissing =
           handlebars.helper(HelperRegistry.HELPER_MISSING);
       if (helperMissing == null) {
@@ -256,6 +266,13 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
   @Override
   public Object visitBoolParam(final BoolParamContext ctx) {
     return Boolean.valueOf(ctx.getText());
+  }
+
+  @Override
+  public Object visitSubexpression(final SubexpressionContext ctx) {
+    SexprContext sexpr = ctx.sexpr();
+    return newVar(sexpr.QID().getSymbol(), TagType.SUB_EXPRESSION, params(sexpr.param()),
+        hash(sexpr.hash()), ctx.start.getText(), ctx.stop.getText());
   }
 
   @Override

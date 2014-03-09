@@ -190,6 +190,7 @@ class Variable extends HelperResolver {
     if (this.type == tagType) {
       result.add(name);
     }
+    super.collect(result, tagType);
   }
 
   /**

@@ -57,16 +57,22 @@ newline
 
 block
   :
-    START_BLOCK nameStart=QID param* hash* END
+    START_BLOCK sexpr END
     thenBody=body
     elseBlock?
     END_BLOCK nameEnd=QID END
+  ;
+
+sexpr
+  :
+    QID param* hash*
   ;
 
 elseBlock
   :
     (inverseToken=UNLESS | START inverseToken=ELSE) END unlessBody=body
   ;
+
 unless
   :
     UNLESS nameStart=QID END
@@ -76,17 +82,17 @@ unless
 
 tvar
   :
-   START_T QID param* hash* END_T
+   START_T sexpr END_T
   ;
 
 ampvar
   :
-   START_AMP QID param* hash* END
+   START_AMP sexpr END
   ;
 
 var
   :
-   START QID param* hash* END
+   START sexpr END
   ;
 
 delimiters
@@ -114,6 +120,7 @@ param
   | INT           #intParam
   | BOOLEAN       #boolParam
   | QID           #refPram
+  | LP sexpr RP #subexpression
   ;
 
 hash

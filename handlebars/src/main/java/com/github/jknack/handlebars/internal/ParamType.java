@@ -17,6 +17,8 @@
  */
 package com.github.jknack.handlebars.internal;
 
+import java.io.IOException;
+
 import com.github.jknack.handlebars.Context;
 
 /**
@@ -105,7 +107,21 @@ enum ParamType {
     Object doParse(final Context scope, final Object param) {
       return scope.get((String) param);
     }
-  };
+  },
+
+  SUB_EXPRESSION {
+    @Override
+    boolean apply(final Object param) {
+      return param instanceof Variable;
+    }
+
+    @Override
+    Object doParse(final Context context, final Object param) throws IOException {
+      Variable var = (Variable) param;
+      return var.apply(context);
+    }
+  }
+  ;
 
   /**
    * True if the current strategy applies for the given value.
@@ -121,8 +137,9 @@ enum ParamType {
    * @param context The context.
    * @param param The candidate param.
    * @return A parsed value.
+   * @throws IOException If param can't be applied.
    */
-  abstract Object doParse(Context context, Object param);
+  abstract Object doParse(Context context, Object param) throws IOException;
 
   /**
    * Parse the given parameter to a runtime representation.
@@ -130,8 +147,9 @@ enum ParamType {
    * @param context The current context.
    * @param param The candidate parameter.
    * @return The parameter value at runtime.
+   * @throws IOException If param can't be applied.
    */
-  public static Object parse(final Context context, final Object param) {
+  public static Object parse(final Context context, final Object param) throws IOException {
     return get(param).doParse(context, param);
   }
 

@@ -44,6 +44,12 @@ public enum TagType {
   TRIPLE_VAR,
 
   /**
+   * Same as {@link #VAR} but can be invoked from inside a helper:
+   * <code>{{helper (subexpression)}}</code>.
+   */
+  SUB_EXPRESSION,
+
+  /**
    * <p>
    * Sections render blocks of text one or more times, depending on the value of the key in the
    * current context.

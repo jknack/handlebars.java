@@ -15,6 +15,11 @@ public class TagTypeTest extends AbstractTest {
     public CharSequence apply(final Object context, final Options options) throws IOException {
       return options.tagType.name();
     }
+  }, "vowels", new Helper<Object>() {
+    @Override
+    public CharSequence apply(final Object context, final Options options) throws IOException {
+      return options.helperName;
+    }
   });
 
   @Test
@@ -44,6 +49,8 @@ public class TagTypeTest extends AbstractTest {
     assertTrue(TagType.AMP_VAR.inline());
 
     assertTrue(TagType.TRIPLE_VAR.inline());
+
+    assertTrue(TagType.SUB_EXPRESSION.inline());
   }
 
   @Test
@@ -55,6 +62,12 @@ public class TagTypeTest extends AbstractTest {
   public void collectVar() throws IOException {
     assertEquals(Arrays.asList("a", "z", "k"), compile("{{#hello}}{{a}}{{&b}}{{z}}{{/hello}}{{k}}")
         .collect(TagType.VAR));
+  }
+
+  @Test
+  public void collectSubexpression() throws IOException {
+    assertEquals(Arrays.asList("tag"), compile("{{vowels (tag)}}", helpers)
+        .collect(TagType.SUB_EXPRESSION));
   }
 
   @Test
@@ -77,9 +90,17 @@ public class TagTypeTest extends AbstractTest {
   }
 
   @Test
+  public void collectSectionWithSubExpression() throws IOException {
+    assertEquals(Arrays.asList("tag"), compile("{{#hello}}{{vowels (tag)}}{{/hello}}", helpers)
+        .collect(TagType.SUB_EXPRESSION));
+  }
+
+  @Test
   public void collectSectionAndVars() throws IOException {
-    assertEquals(Arrays.asList("hello", "a", "b", "z", "k"),
-        compile("{{#hello}}{{a}}{{&b}}{{z}}{{/hello}}{{k}}")
-            .collect(TagType.SECTION, TagType.VAR, TagType.TRIPLE_VAR, TagType.AMP_VAR));
+    assertEquals(
+        Arrays.asList("hello", "a", "b", "z", "k", "vowels", "tag"),
+        compile("{{#hello}}{{a}}{{&b}}{{z}}{{/hello}}{{k}}{{vowels (tag)}}", helpers)
+            .collect(TagType.SECTION, TagType.VAR, TagType.TRIPLE_VAR, TagType.AMP_VAR,
+                TagType.SUB_EXPRESSION));
   }
 }
