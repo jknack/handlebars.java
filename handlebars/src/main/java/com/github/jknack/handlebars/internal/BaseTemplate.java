@@ -37,9 +37,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
-import org.mozilla.javascript.Scriptable;
-import org.mozilla.javascript.ScriptableObject;
-import org.mozilla.javascript.tools.ToolErrorReporter;
 
 import com.github.jknack.handlebars.Context;
 import com.github.jknack.handlebars.HandlebarsError;
@@ -80,16 +77,6 @@ abstract class BaseTemplate implements Template {
    * A pre-compiled JavaScript function.
    */
   private String javaScript;
-
-  /**
-   * Handlerbars.js version.
-   */
-  private static final String HBS_FILE = "/handlebars-v1.3.0.js";
-
-  /**
-   * A shared scope with Handlebars.js objects.
-   */
-  private ScriptableObject sharedScope;
 
   /**
    * {@inheritDoc}
@@ -174,7 +161,7 @@ abstract class BaseTemplate implements Template {
 
   @Override
   public String toString() {
-    return text();
+    return filename;
   }
 
   /**
@@ -285,84 +272,13 @@ abstract class BaseTemplate implements Template {
   }
 
   @Override
-  public String toJavaScript() throws IOException {
+  public String toJavaScript() {
     synchronized (jsLock) {
       if (javaScript == null) {
-        org.mozilla.javascript.Context ctx = null;
-        try {
-          ctx = newContext();
-
-          Scriptable scope = newScope(ctx);
-          scope.put("template", scope, text());
-
-          String js = "Handlebars.precompile(template);";
-          Object precompiled = ctx.evaluateString(scope, js, filename, 1,
-              null);
-
-          javaScript = (String) precompiled;
-        } finally {
-          if (ctx != null) {
-            org.mozilla.javascript.Context.exit();
-          }
-        }
+        javaScript = JSEngine.RHINO.toJavaScript(this);
       }
       return javaScript;
     }
   }
 
-  /**
-   * Creates a new Rhino Context.
-   *
-   * @return A Rhino Context.
-   */
-  private org.mozilla.javascript.Context newContext() {
-    org.mozilla.javascript.Context ctx = org.mozilla.javascript.Context.enter();
-    ctx.setOptimizationLevel(-1);
-    ctx.setErrorReporter(new ToolErrorReporter(false));
-    ctx.setLanguageVersion(org.mozilla.javascript.Context.VERSION_1_8);
-    return ctx;
-  }
-
-  /**
-   * Creates a new scope where handlebars.js is present.
-   *
-   * @param ctx A rhino context.
-   * @return A new scope where handlebars.js is present.
-   */
-  private Scriptable newScope(final org.mozilla.javascript.Context ctx) {
-    Scriptable sharedScope = sharedScope(ctx);
-    Scriptable scope = ctx.newObject(sharedScope);
-    scope.setParentScope(null);
-    scope.setPrototype(sharedScope);
-
-    return scope;
-  }
-
-  /**
-   * Creates a initialize the handlebars.js scope.
-   *
-   * @param ctx A rhino context.
-   * @return A handlebars.js scope. Shared between executions.
-   */
-  private Scriptable sharedScope(final org.mozilla.javascript.Context ctx) {
-    if (sharedScope == null) {
-      sharedScope = ctx.initStandardObjects();
-      ctx.evaluateString(sharedScope, handlebarsScript(HBS_FILE), HBS_FILE, 1, null);
-    }
-    return sharedScope;
-  }
-
-  /**
-   * Load the handlebars.js file from the given location.
-   *
-   * @param location The handlebars.js location.
-   * @return The resource content.
-   */
-  private String handlebarsScript(final String location) {
-    try {
-      return Files.read(location);
-    } catch (IOException ex) {
-      throw new IllegalArgumentException("Unable to read file: " + location, ex);
-    }
-  }
 }

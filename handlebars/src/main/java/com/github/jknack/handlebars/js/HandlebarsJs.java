@@ -19,6 +19,8 @@ package com.github.jknack.handlebars.js;
 
 import static org.apache.commons.lang3.Validate.notNull;
 
+import org.apache.commons.lang3.ClassUtils;
+
 import com.github.jknack.handlebars.HelperRegistry;
 import com.github.jknack.handlebars.internal.js.RhinoHandlebars;
 
@@ -83,6 +85,16 @@ public abstract class HandlebarsJs {
    * @return A new {@link HandlebarsJs} object.
    */
   public static HandlebarsJs create(final HelperRegistry helperRegistry) {
-    return new RhinoHandlebars(helperRegistry);
+    try {
+      ClassUtils.getClass("org.mozilla.javascript.Context");
+      return new RhinoHandlebars(helperRegistry);
+    } catch (final Exception ex) {
+      return new HandlebarsJs(helperRegistry) {
+        @Override
+        public void registerHelpers(final String filename, final String source) throws Exception {
+          throw new IllegalStateException("Rhino isn't on the classpath", ex);
+        }
+      };
+    }
   }
 }

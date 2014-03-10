@@ -95,15 +95,11 @@ public class ToJavaScriptTest extends AbstractTest {
 
       @Override
       public void run() {
-        try {
-          long start = System.currentTimeMillis();
-          String js = template.toJavaScript();
-          long end = System.currentTimeMillis();
-          assertEquals(1258, js.length());
-          System.out.printf("Shared execution: %s took: %sms\n", execution++, end - start);
-        } catch (IOException e) {
-          throw new IllegalArgumentException(e);
-        }
+        long start = System.currentTimeMillis();
+        String js = template.toJavaScript();
+        long end = System.currentTimeMillis();
+        assertEquals(1258, js.length());
+        System.out.printf("Shared execution: %s took: %sms\n", execution++, end - start);
       }
     }, 10, 2000);
   }

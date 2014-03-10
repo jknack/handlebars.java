@@ -109,6 +109,9 @@ enum ParamType {
     }
   },
 
+  /**
+   * Sub-expression are inner-helper invocations.
+   */
   SUB_EXPRESSION {
     @Override
     boolean apply(final Object param) {
@@ -120,8 +123,7 @@ enum ParamType {
       Variable var = (Variable) param;
       return var.apply(context);
     }
-  }
-  ;
+  };
 
   /**
    * True if the current strategy applies for the given value.

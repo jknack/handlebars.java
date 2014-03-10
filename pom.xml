@@ -24,6 +24,7 @@
     <module>handlebars-guava-cache</module>
     <module>handlebars-maven-plugin</module>
     <module>handlebars-maven-plugin-tests</module>
+    <module>integration-tests</module>
   </modules>
 
   <licenses>

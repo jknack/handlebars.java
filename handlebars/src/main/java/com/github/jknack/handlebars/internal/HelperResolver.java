@@ -226,7 +226,7 @@ abstract class HelperResolver extends BaseTemplate {
 
   @Override
   protected void collect(final Collection<String> result, final TagType tagType) {
-    for(Object param : this.params) {
+    for (Object param : this.params) {
       if (param instanceof Variable) {
         ((Variable) param).collect(result, tagType);
       }

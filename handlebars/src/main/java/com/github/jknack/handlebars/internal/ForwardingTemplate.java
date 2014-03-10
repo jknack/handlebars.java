@@ -110,7 +110,7 @@ class ForwardingTemplate implements Template {
   }
 
   @Override
-  public String toJavaScript() throws IOException {
+  public String toJavaScript() {
     return template.toJavaScript();
   }
 

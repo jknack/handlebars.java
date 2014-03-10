@@ -137,12 +137,12 @@ public interface Template {
   String text();
 
   /**
-   * Return a pre-compiled JavaScript version of this template.
+   * Convert this template to JavaScript template (a.k.a precompiled template). Compilation is done
+   * by handlebars.js and a JS Engine (usually Rhino).
    *
    * @return A pre-compiled JavaScript version of this template.
-   * @throws IOException If compilation fails.
    */
-  String toJavaScript() throws IOException;
+  String toJavaScript();
 
   /**
    * Creates a new {@link TypeSafeTemplate}.
