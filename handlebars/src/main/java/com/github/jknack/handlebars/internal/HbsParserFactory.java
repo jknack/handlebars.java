@@ -18,7 +18,6 @@
 package com.github.jknack.handlebars.internal;
 
 import java.io.IOException;
-import java.io.Reader;
 
 import org.antlr.v4.runtime.ANTLRErrorListener;
 import org.antlr.v4.runtime.ANTLRInputStream;
@@ -47,7 +46,6 @@ import com.github.jknack.handlebars.io.TemplateSource;
  */
 public class HbsParserFactory implements ParserFactory {
 
-
   /**
    * The logging system.
    */
@@ -69,55 +67,47 @@ public class HbsParserFactory implements ParserFactory {
 
       @Override
       public Template parse(final TemplateSource source) throws IOException {
-        Reader reader = null;
-        try {
-          logger.debug("About to parse: {}", source);
-          final ANTLRErrorListener errorReporter = new HbsErrorReporter(source.filename());
+        logger.debug("About to parse: {}", source);
+        final ANTLRErrorListener errorReporter = new HbsErrorReporter(source.filename());
 
-          reader = source.reader();
-          // 1. Lexer
-          final HbsLexer lexer = newLexer(newStream(source.filename(), reader),
-              startDelimiter, endDelimiter);
-          configure(lexer, errorReporter);
+        // 1. Lexer
+        final HbsLexer lexer = newLexer(newStream(source.filename(), source.content()),
+            startDelimiter, endDelimiter);
+        configure(lexer, errorReporter);
 
-          // 2. Parser
-          final HbsParser parser = newParser(lexer);
-          configure(parser, errorReporter);
+        // 2. Parser
+        final HbsParser parser = newParser(lexer);
+        configure(parser, errorReporter);
 
-          logger.debug("Building AST");
-          // 3. Parse
-          ParseTree tree = parser.template();
+        logger.debug("Building AST");
+        // 3. Parse
+        ParseTree tree = parser.template();
 
-          // remove unnecessary spaces and new lines?
-          if (handlebars.prettyPrint()) {
-            logger.debug("Applying Mustache spec");
-            new ParseTreeWalker().walk(new MustacheSpec(), tree);
-          }
-
-          if (lexer.whiteSpaceControl) {
-            logger.debug("Applying white spaces control");
-            new ParseTreeWalker().walk(new WhiteSpaceControl(), tree);
-          }
-
-          /**
-           * Build the AST.
-           */
-          TemplateBuilder builder = new TemplateBuilder(handlebars, source) {
-            @Override
-            protected void reportError(final CommonToken offendingToken, final int line,
-                final int column,
-                final String message) {
-              errorReporter.syntaxError(parser, offendingToken, line, column, message, null);
-            }
-          };
-          logger.debug("Creating templates");
-          Template template = builder.visit(tree);
-          return template;
-        } finally {
-          if (reader != null) {
-            reader.close();
-          }
+        // remove unnecessary spaces and new lines?
+        if (handlebars.prettyPrint()) {
+          logger.debug("Applying Mustache spec");
+          new ParseTreeWalker().walk(new MustacheSpec(), tree);
         }
+
+        if (lexer.whiteSpaceControl) {
+          logger.debug("Applying white spaces control");
+          new ParseTreeWalker().walk(new WhiteSpaceControl(), tree);
+        }
+
+        /**
+         * Build the AST.
+         */
+        TemplateBuilder builder = new TemplateBuilder(handlebars, source) {
+          @Override
+          protected void reportError(final CommonToken offendingToken, final int line,
+              final int column,
+              final String message) {
+            errorReporter.syntaxError(parser, offendingToken, line, column, message, null);
+          }
+        };
+        logger.debug("Creating templates");
+        Template template = builder.visit(tree);
+        return template;
       }
 
     };
@@ -127,13 +117,13 @@ public class HbsParserFactory implements ParserFactory {
    * Creates a new {@link ANTLRInputStream}.
    *
    * @param filename The file's name.
-   * @param reader A reader.
+   * @param content A content.
    * @return A new {@link ANTLRInputStream}.
    * @throws IOException If the reader can't be open.
    */
-  private ANTLRInputStream newStream(final String filename, final Reader reader)
+  private ANTLRInputStream newStream(final String filename, final String content)
       throws IOException {
-    ANTLRInputStream stream = new ANTLRInputStream(reader);
+    ANTLRInputStream stream = new ANTLRInputStream(content);
     stream.name = filename;
     return stream;
   }

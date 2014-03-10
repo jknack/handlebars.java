@@ -18,7 +18,6 @@
 package com.github.jknack.handlebars.io;
 
 import java.io.IOException;
-import java.io.Reader;
 
 /**
  * The template source. Implementation of {@link TemplateSource} must implement
@@ -37,15 +36,6 @@ public interface TemplateSource {
    * @throws IOException If the template can't read.
    */
   String content() throws IOException;
-
-  /**
-   * The template content as a {@link Reader}. Clients of this method must close the {@link Reader}.
-   *
-   * @return The template content as a {@link Reader}.Clients of this method must close the
-   *         {@link Reader}.
-   * @throws IOException If the template can't read.
-   */
-  Reader reader() throws IOException;
 
   /**
    * The file's name.

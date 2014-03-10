@@ -20,8 +20,6 @@ package com.github.jknack.handlebars.io;
 import static org.apache.commons.lang3.Validate.notNull;
 
 import java.io.IOException;
-import java.io.Reader;
-import java.io.StringReader;
 
 
 /**
@@ -62,11 +60,6 @@ public class StringTemplateSource extends AbstractTemplateSource {
   @Override
   public String content() throws IOException {
     return content;
-  }
-
-  @Override
-  public Reader reader() throws IOException {
-    return new StringReader(content);
   }
 
   @Override

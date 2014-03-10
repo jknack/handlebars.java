@@ -7,7 +7,6 @@ import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
-import java.io.Reader;
 
 import org.junit.Test;
 
@@ -23,20 +22,6 @@ public class ForwardingTemplateSourceTest {
     assertEquals("abc", new ForwardingTemplateSource(source).content());
 
     verify(source);
-  }
-
-  @Test
-  public void reader() throws IOException {
-    Reader reader = createMock(Reader.class);
-
-    TemplateSource source = createMock(TemplateSource.class);
-    expect(source.reader()).andReturn(reader);
-
-    replay(source, reader);
-
-    assertEquals(reader, new ForwardingTemplateSource(source).reader());
-
-    verify(source, reader);
   }
 
   @Test

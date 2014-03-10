@@ -22,12 +22,13 @@ import org.powermock.modules.junit4.PowerMockRunner;
 public class URLTemplateSourceTest {
 
   @Test
-  public void content() throws IOException {
+  public void content() throws Exception {
     String content = "...";
 
     URLTemplateSource templateSource = PowerMock.createPartialMockForAllMethodsExcept(
         URLTemplateSource.class, "content");
-    expect(templateSource.reader()).andReturn(new StringReader(content));
+
+    PowerMock.expectPrivate(templateSource, "reader").andReturn(new StringReader(content));
 
     Object[] mocks = {templateSource };
 

@@ -20,7 +20,6 @@ package com.github.jknack.handlebars.io;
 import static org.apache.commons.lang3.Validate.notNull;
 
 import java.io.IOException;
-import java.io.Reader;
 
 /**
  * A template source which forwards all its method calls to another template source..
@@ -47,11 +46,6 @@ public class ForwardingTemplateSource extends AbstractTemplateSource {
   @Override
   public String content() throws IOException {
     return source.content();
-  }
-
-  @Override
-  public Reader reader() throws IOException {
-    return source.reader();
   }
 
   @Override

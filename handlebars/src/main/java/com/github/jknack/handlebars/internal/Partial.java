@@ -22,8 +22,6 @@ import static org.apache.commons.lang3.Validate.notEmpty;
 import static org.apache.commons.lang3.Validate.notNull;
 
 import java.io.IOException;
-import java.io.Reader;
-import java.io.StringReader;
 import java.io.Writer;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -171,11 +169,6 @@ class Partial extends BaseTemplate {
    */
   private static TemplateSource partial(final TemplateSource source, final String indent) {
     return new TemplateSource() {
-      @Override
-      public Reader reader() throws IOException {
-        return new StringReader(content());
-      }
-
       @Override
       public long lastModified() {
         return source.lastModified();
