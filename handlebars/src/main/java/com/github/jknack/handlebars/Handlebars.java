@@ -403,7 +403,7 @@ public class Handlebars implements HelperRegistry {
       final String endDelimiter) throws IOException {
     notNull(input, "The input is required.");
     String filename = "inline@" + Integer.toHexString(Math.abs(input.hashCode()));
-    return compile(new StringTemplateSource(loader.resolve(filename), input),
+    return compile(new StringTemplateSource(filename, input),
         startDelimiter, endDelimiter);
   }
 
