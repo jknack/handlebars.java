@@ -197,7 +197,11 @@ abstract class HelperResolver extends BaseTemplate {
       StringBuilder buffer = new StringBuilder();
       String sep = " ";
       for (Object param : params) {
-        buffer.append(param).append(sep);
+        if (param instanceof BaseTemplate) {
+          buffer.append(((BaseTemplate) param).text()).append(sep);
+        } else {
+          buffer.append(param).append(sep);
+        }
       }
       buffer.setLength(buffer.length() - sep.length());
       return buffer.toString();

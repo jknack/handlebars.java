@@ -84,12 +84,14 @@ public class RawTextTest extends AbstractTest {
 
   @Test
   public void partialWithContext() throws IOException {
-    assertEquals("hello {{>user context}}!", compile("hello {{>user context}}!", $(), $("user", "{{user}}")).text());
+    assertEquals("hello {{>user context}}!",
+        compile("hello {{>user context}}!", $(), $("user", "{{user}}")).text());
   }
 
   @Test
   public void partialWithThisContext() throws IOException {
-    assertEquals("hello {{>user this}}!", compile("hello {{>user this}}!", $(), $("user", "{{user}}")).text());
+    assertEquals("hello {{>user this}}!",
+        compile("hello {{>user this}}!", $(), $("user", "{{user}}")).text());
   }
 
   @Test
@@ -105,4 +107,5 @@ public class RawTextTest extends AbstractTest {
         compile("hello {{#with context arg0 hash=hash0}}hah{{/with}}!")
             .text());
   }
+
 }
