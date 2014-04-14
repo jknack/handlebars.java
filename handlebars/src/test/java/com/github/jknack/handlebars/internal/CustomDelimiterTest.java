@@ -20,12 +20,12 @@ public class CustomDelimiterTest extends AbstractTest {
 
   @Test
   public void variable() throws Exception {
-    assertEquals("+-+test-+-", compile("{{=+-+ -+-=}}+-+test-+-").text());
+    assertEquals("+-+test+-+", compile("{{=+-+ +-+=}}+-+test+-+").text());
   }
 
   @Test
   public void variableUnescaped() throws Exception {
-    assertEquals("+-+&test-+-", compile("{{=+-+ -+-=}}+-+&test-+-").text());
+    assertEquals("+-+&test+-+", compile("{{=+-+ +-+=}}+-+&test+-+").text());
   }
 
   @Test

@@ -99,7 +99,7 @@ public class HbsParserTest {
   public void setDelim() {
     parse("{{=<% %>=}}<%hello%><%={{ }}=%>{{reset}}");
     parse("{{= | | =}}<|#lambda|-|/lambda|>");
-    parse("{{=+-+ -+-=}}+-+test-+-");
+    parse("{{=+-+ +-+=}}+-+test+-+");
   }
 
   private ParseTree parse(final String input) {
@@ -107,8 +107,14 @@ public class HbsParserTest {
   }
 
   private ParseTree parse(final String input, final String start, final String delim) {
+    HbsErrorReporter errorReporter = new HbsErrorReporter("test.hbs");
+
     final HbsLexer lexer = new HbsLexer(new ANTLRInputStream(input), start, delim);
+    lexer.removeErrorListeners();
+    lexer.addErrorListener(errorReporter);
+
     CommonTokenStream tokens = new CommonTokenStream(lexer);
+
     HbsParser parser = new HbsParser(tokens) {
       @Override
       void setStart(final String start) {
@@ -120,6 +126,8 @@ public class HbsParserTest {
         lexer.end = end;
       }
     };
+    parser.removeErrorListeners();
+    parser.addErrorListener(errorReporter);
     ParseTree tree = parser.template();
     if (printTokens) {
       String[] tokenNames = lexer.getTokenNames();

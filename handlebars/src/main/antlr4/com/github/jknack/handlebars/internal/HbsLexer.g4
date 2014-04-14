@@ -282,6 +282,7 @@ ID_SUFFIX
     ID_ESCAPE
   | ID_START
   | ID_PART
+  | '-'
   ;
 
 fragment
