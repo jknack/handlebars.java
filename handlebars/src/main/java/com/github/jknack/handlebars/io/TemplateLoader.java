@@ -75,4 +75,20 @@ public interface TemplateLoader {
    */
   String getSuffix();
 
+  /**
+   * Set the prefix that gets prepended to view names when building a URI.
+   *
+   * @param prefix The prefix that gets prepended to view names when building a
+   *        URI.
+   */
+  void setPrefix(final String prefix);
+
+  /**
+   * Set the suffix that gets appended to view names when building a URI.
+   *
+   * @param suffix The suffix that gets appended to view names when building a
+   *        URI.
+   */
+  void setSuffix(final String suffix);
+
 }

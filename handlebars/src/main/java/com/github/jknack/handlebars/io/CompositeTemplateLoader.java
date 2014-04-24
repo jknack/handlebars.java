@@ -103,6 +103,16 @@ public class CompositeTemplateLoader implements TemplateLoader {
     throw new UnsupportedOperationException();
   }
 
+  @Override
+  public void setPrefix(final String prefix) {
+    throw new UnsupportedOperationException();
+  }
+
+  @Override
+  public void setSuffix(final String suffix) {
+    throw new UnsupportedOperationException();
+  }
+
   /**
    * Returns the delegates template loaders.
    *
