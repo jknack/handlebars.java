@@ -39,8 +39,14 @@ statement
   | ampvar
   | unless
   | partial
+  | escape
   | comment
   | delimiters
+  ;
+
+escape
+  :
+    ESC_VAR
   ;
 
 text

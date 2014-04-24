@@ -60,6 +60,27 @@ lexer grammar HbsLexer;
     return false;
   }
 
+  private boolean varEscape(final String start, final String end) {
+    if (ahead("\\" + start)) {
+      int offset = start.length();
+      while (!isEOF(offset)) {
+        if (ahead(end, offset)) {
+          break;
+        }
+        if (ahead(start, offset)) {
+          return false;
+        }
+        offset += 1;
+      }
+      offset += end.length();
+      // Since we found the text, increase the CharStream's index.
+      _input.seek(_input.index() + offset - 1);
+      getInterpreter().setCharPositionInLine(_tokenStartCharPositionInLine + offset - 1);
+      return true;
+    }
+    return false;
+  }
+
   private boolean startToken(final String delim) {
     boolean matches = tryToken(delim + "~");
     if (matches) {
@@ -126,6 +147,10 @@ lexer grammar HbsLexer;
     return true;
   }
 }
+
+ESC_VAR
+  : {varEscape(start, end)}? .
+  ;
 
 TEXT
   : {consumeUntil(start)}? .

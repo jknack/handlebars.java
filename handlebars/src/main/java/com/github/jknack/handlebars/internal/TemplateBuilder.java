@@ -48,6 +48,7 @@ import com.github.jknack.handlebars.internal.HbsParser.CharHashContext;
 import com.github.jknack.handlebars.internal.HbsParser.CharParamContext;
 import com.github.jknack.handlebars.internal.HbsParser.CommentContext;
 import com.github.jknack.handlebars.internal.HbsParser.ElseBlockContext;
+import com.github.jknack.handlebars.internal.HbsParser.EscapeContext;
 import com.github.jknack.handlebars.internal.HbsParser.HashContext;
 import com.github.jknack.handlebars.internal.HbsParser.IntHashContext;
 import com.github.jknack.handlebars.internal.HbsParser.IntParamContext;
@@ -178,6 +179,13 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
     SexprContext sexpr = ctx.sexpr();
     return newVar(sexpr.QID().getSymbol(), TagType.VAR, params(sexpr.param()), hash(sexpr.hash()),
         ctx.start.getText(), ctx.stop.getText());
+  }
+
+  @Override
+  public Object visitEscape(final EscapeContext ctx) {
+    String text = ctx.ESC_VAR().getText().substring(1);
+    line.append(text);
+    return new Text(text, "\\");
   }
 
   @Override
@@ -427,7 +435,7 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
             list.add(candidate);
             prev = candidate;
           } else {
-            ((Text) prev).append(((Text) candidate).text());
+            ((Text) prev).append(((Text) candidate).textWithoutEscapeChar());
           }
         } else {
           list.add(candidate);

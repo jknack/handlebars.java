@@ -14,8 +14,11 @@ import java.util.concurrent.TimeUnit;
 
 import org.junit.Assume;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
+//TODO: Re-enabled me later
+@Ignore
 public class ToJavaScriptTest extends AbstractTest {
 
   /**

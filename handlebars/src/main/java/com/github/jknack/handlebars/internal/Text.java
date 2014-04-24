@@ -37,17 +37,38 @@ class Text extends BaseTemplate {
    */
   private String text;
 
+  /** The escape's char or empty. */
+  private String escapeChar;
+
+  /**
+   * Creates a new {@link Text}.
+   *
+   * @param text The text content. Required.
+   * @param escapeChar The escape char or empty.
+   */
+  public Text(final String text, final String escapeChar) {
+    this.text = notNull(text, "The text content is required.");
+    this.escapeChar = escapeChar;
+  }
+
   /**
    * Creates a new {@link Text}.
    *
    * @param text The text content. Required.
    */
   public Text(final String text) {
-    this.text = notNull(text, "The text content is required.");
+    this(text, "");
   }
 
   @Override
   public String text() {
+    return escapeChar + text;
+  }
+
+  /**
+   * @return Same as {@link #text()} without the escape char.
+   */
+  public String textWithoutEscapeChar() {
     return text;
   }
 
