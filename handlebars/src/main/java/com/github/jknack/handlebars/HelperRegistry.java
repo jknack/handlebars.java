@@ -78,6 +78,15 @@ public interface HelperRegistry {
   <H> HelperRegistry registerHelper(String name, Helper<H> helper);
 
   /**
+   * Register the special helper missing in the registry.
+   *
+   * @param <H> The helper runtime type.
+   * @param helper The helper object. Required.
+   * @return This handlebars.
+   */
+  <H> HelperRegistry registerHelperMissing(final Helper<H> helper);
+
+  /**
    * <p>
    * Register all the helper methods for the given helper source.
    * </p>

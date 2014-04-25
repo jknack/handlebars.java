@@ -770,7 +770,9 @@ Handlebars hbs = new Handlebars()
   .with(new MyCache());
 ```
 
-### Using a MissingValueResolver
+### Using a MissingValueResolver (@deprecated)
+NOTE: MissingValueResolver is available in ```<= 1.3.0```. For ```> 1.3.0``` use [Helper Missing](https://github.com/jknack/handlebars.java#helper-missing).
+
  A ```MissingValueResolver``` let you use default values for ```{{variable}}``` expressions resolved to ```null```.
  
 ```java
@@ -785,10 +787,10 @@ Handlebars hbs = new Handlebars()
 
 ### Helper Missing
  By default, Handlebars.java throws an ```java.lang.IllegalArgumentException()``` if a helper cannot be resolved.
- You can override the default behaviour by providing a ```helperMissing``` helper. Example:
+ You can override the default behaviour by providing a special helper: ```helperMissing```. Example:
 
 ```java
-  handlebars.registerHelper(Handlebars.HELPER_MISSING, new Helper<Object>() {
+  handlebars.registerHelperMissing(new Helper<Object>() {
     @Override
     public CharSequence apply(final Object context, final Options options) throws IOException {
       return options.fn.text();

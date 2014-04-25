@@ -64,6 +64,16 @@ public interface Template {
       return "";
     }
 
+    @Override
+    public String filename() {
+      return "";
+    }
+
+    @Override
+    public int[] position() {
+      return new int[] {0, 0};
+    }
+
     @SuppressWarnings({"rawtypes", "unchecked" })
     @Override
     public <T> TypeSafeTemplate<T> as() {
@@ -188,4 +198,15 @@ public interface Template {
    * @return A list with tag names.
    */
   List<String> collect(TagType... tagType);
+
+  /**
+   * @return The template file's name.
+   */
+  String filename();
+
+  /**
+   * @return The line and column where the template was found.
+   * @return
+   */
+  int[] position();
 }

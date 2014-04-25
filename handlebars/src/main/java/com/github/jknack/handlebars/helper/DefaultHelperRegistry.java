@@ -96,6 +96,11 @@ public class DefaultHelperRegistry implements HelperRegistry {
     return this;
   }
 
+  @Override
+  public <H> HelperRegistry registerHelperMissing(final Helper<H> helper) {
+    return registerHelper(Handlebars.HELPER_MISSING, helper);
+  }
+
   @SuppressWarnings("rawtypes")
   @Override
   public HelperRegistry registerHelpers(final Object helperSource) {

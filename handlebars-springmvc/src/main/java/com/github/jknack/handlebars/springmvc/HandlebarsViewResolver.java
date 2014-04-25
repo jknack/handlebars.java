@@ -392,6 +392,12 @@ public class HandlebarsViewResolver extends AbstractTemplateViewResolver
   }
 
   @Override
+  public <H> HandlebarsViewResolver registerHelperMissing(final Helper<H> helper) {
+    registry.registerHelperMissing(helper);
+    return this;
+  }
+
+  @Override
   public HandlebarsViewResolver registerHelpers(final URI location) throws Exception {
     registry.registerHelpers(location);
     return this;

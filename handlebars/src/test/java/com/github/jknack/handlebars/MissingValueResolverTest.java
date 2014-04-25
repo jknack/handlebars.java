@@ -11,26 +11,28 @@ public class MissingValueResolverTest {
   @Test
   public void useMissingValue() throws IOException {
     final Object hash = new Object();
-    Handlebars handlebars = new Handlebars().with(new MissingValueResolver() {
+    Handlebars handlebars = new Handlebars().registerHelperMissing(new Helper<Object>() {
       @Override
-      public String resolve(final Object context, final String var) {
+      public CharSequence apply(final Object context, final Options options) throws IOException {
         assertEquals(hash, context);
-        assertEquals("missingVar", var);
+        assertEquals("missingVar", options.helperName);
         return "(none)";
       }
     });
+
     assertEquals("(none)", handlebars.compileInline("{{missingVar}}").apply(hash));
   }
 
   @Test(expected = HandlebarsException.class)
   public void throwExceptionOnMissingValue() throws IOException {
     final Object hash = new Object();
-    Handlebars handlebars = new Handlebars().with(new MissingValueResolver() {
+    Handlebars handlebars = new Handlebars().registerHelperMissing(new Helper<Object>() {
       @Override
-      public String resolve(final Object context, final String var) {
-        throw new IllegalStateException("Missing variable: " + var);
+      public CharSequence apply(final Object context, final Options options) throws IOException {
+        throw new IllegalStateException("Missing variable: " + options.helperName);
       }
     });
+
     handlebars.compileInline("{{missingVar}}").apply(hash);
   }
 }

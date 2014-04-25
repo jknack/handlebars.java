@@ -73,18 +73,6 @@ public class Issue266 {
   }
 
   @Test
-  public void withMissingValueResolver() {
-    MissingValueResolver valueResolver = createMock(MissingValueResolver.class);
-
-    replay(valueResolver);
-
-    Handlebars handlebars = new Handlebars().with(valueResolver);
-    assertNotNull(handlebars);
-
-    verify(valueResolver);
-  }
-
-  @Test
   public void withHelperRegistry() {
     HelperRegistry registry = createMock(HelperRegistry.class);
 

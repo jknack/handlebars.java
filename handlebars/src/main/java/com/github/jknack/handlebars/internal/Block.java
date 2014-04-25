@@ -321,8 +321,4 @@ class Block extends HelperResolver {
     super.collect(result, tagType);
   }
 
-  @Override
-  public String toString() {
-    return text(false);
-  }
 }

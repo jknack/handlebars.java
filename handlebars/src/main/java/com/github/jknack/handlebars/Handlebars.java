@@ -313,11 +313,6 @@ public class Handlebars implements HelperRegistry {
   private boolean deletePartialAfterMerge;
 
   /**
-   * The missing value resolver strategy.
-   */
-  private MissingValueResolver missingValueResolver = MissingValueResolver.NULL;
-
-  /**
    * The escaping strategy.
    */
   private EscapingStrategy escapingStrategy = EscapingStrategy.HTML_ENTITY;
@@ -461,6 +456,17 @@ public class Handlebars implements HelperRegistry {
   public <H> Handlebars registerHelper(final String name, final Helper<H> helper) {
     registry.registerHelper(name, helper);
     return this;
+  }
+
+  /**
+   * Register a missing helper in the helper registry.
+   *
+   * @param <H> The helper runtime type.
+   * @param helper The helper object. Required.
+   * @return This handlebars.
+   */
+  public <H> Handlebars registerHelperMissing(final Helper<H> helper) {
+    return registerHelper(HELPER_MISSING, helper);
   }
 
   /**
@@ -731,15 +737,6 @@ public class Handlebars implements HelperRegistry {
   }
 
   /**
-   * The missing value resolver.
-   *
-   * @return The missing value resolver.
-   */
-  public MissingValueResolver getMissingValueResolver() {
-    return missingValueResolver;
-  }
-
-  /**
    * The escaping strategy.
    *
    * @return The escaping strategy.
@@ -967,18 +964,6 @@ public class Handlebars implements HelperRegistry {
    */
   public Handlebars with(final TemplateCache cache) {
     this.cache = notNull(cache, "The template loader is required.");
-    return this;
-  }
-
-  /**
-   * Set a new {@link MissingValueResolver}.
-   *
-   * @param missingValueResolver The missing value resolver. Required.
-   * @return This handlebars object.
-   */
-  public Handlebars with(final MissingValueResolver missingValueResolver) {
-    this.missingValueResolver = notNull(missingValueResolver,
-        "The missing value resolver is required.");
     return this;
   }
 

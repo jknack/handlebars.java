@@ -125,6 +125,16 @@ class ForwardingTemplate implements Template {
   }
 
   @Override
+  public String filename() {
+    return template.filename();
+  }
+
+  @Override
+  public int[] position() {
+    return template.position();
+  }
+
+  @Override
   public String toString() {
     return template.toString();
   }

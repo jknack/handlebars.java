@@ -160,8 +160,8 @@ abstract class BaseTemplate implements Template {
       throws IOException;
 
   @Override
-  public String toString() {
-    return filename;
+  public final String toString() {
+    return filename + ":" + line + ":" + column;
   }
 
   /**
@@ -173,6 +173,16 @@ abstract class BaseTemplate implements Template {
   public BaseTemplate filename(final String filename) {
     this.filename = filename;
     return this;
+  }
+
+  @Override
+  public String filename() {
+    return filename;
+  }
+
+  @Override
+  public int[] position() {
+    return new int[]{line, column };
   }
 
   /**

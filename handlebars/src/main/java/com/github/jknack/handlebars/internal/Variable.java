@@ -29,7 +29,6 @@ import com.github.jknack.handlebars.EscapingStrategy;
 import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Helper;
 import com.github.jknack.handlebars.Lambda;
-import com.github.jknack.handlebars.MissingValueResolver;
 import com.github.jknack.handlebars.Options;
 import com.github.jknack.handlebars.TagType;
 import com.github.jknack.handlebars.Template;
@@ -62,11 +61,6 @@ class Variable extends HelperResolver {
    * Default value for a variable. If set, no lookup is executed. Optional.
    */
   private final Object constant;
-
-  /**
-   * The missing value resolver strategy.
-   */
-  private MissingValueResolver missingValueResolver;
 
   /**
    * The start delimiter.
@@ -112,7 +106,6 @@ class Variable extends HelperResolver {
       final Object value, final TagType type, final List<Object> params,
       final Map<String, Object> hash) {
     super(handlebars);
-    this.missingValueResolver = handlebars.getMissingValueResolver();
     this.escapingStrategy = handlebars.getEscapingStrategy();
     this.name = name.trim();
     this.constant = value;
@@ -151,7 +144,7 @@ class Variable extends HelperResolver {
       throws IOException {
     Helper<Object> helper = helper(name);
     if (helper != null) {
-      Options options = new Options.Builder(handlebars, name, type, scope, Template.EMPTY)
+      Options options = new Options.Builder(handlebars, name, type, scope, empty(this))
           .setParams(params(scope))
           .setHash(hash(scope))
           .build();
@@ -165,7 +158,14 @@ class Variable extends HelperResolver {
     } else {
       Object value = constant == null ? scope.get(name) : constant;
       if (value == null) {
-        value = missingValueResolver.resolve(determineContext(scope), name);
+        Helper<Object> missingValueResolver = helper(Handlebars.HELPER_MISSING);
+        if (missingValueResolver != null) {
+          Options options = new Options.Builder(handlebars, name, type, scope, empty(this))
+              .setParams(params(scope))
+              .setHash(hash(scope))
+              .build();
+          value = missingValueResolver.apply(determineContext(scope), options);
+        }
       }
       if (value != null) {
         if (value instanceof Lambda) {
@@ -183,6 +183,32 @@ class Variable extends HelperResolver {
         }
       }
     }
+  }
+
+  /**
+   * @param variable Source template.
+   * @return An empty template.
+   */
+  private static Template empty(final Variable variable) {
+    return new ForwardingTemplate(variable) {
+      @Override
+      public String apply(final Context context) throws IOException {
+        return "";
+      }
+
+      @Override
+      public void apply(final Context context, final Writer writer) throws IOException {
+      }
+
+      @Override
+      public String apply(final Object context) throws IOException {
+       return "";
+      }
+
+      @Override
+      public void apply(final Object context, final Writer writer) throws IOException {
+      }
+    };
   }
 
   @Override
@@ -242,6 +268,7 @@ class Variable extends HelperResolver {
     this.startDelimiter = startDelimiter;
     return this;
   }
+
   /**
    * The start delimiter.
    *

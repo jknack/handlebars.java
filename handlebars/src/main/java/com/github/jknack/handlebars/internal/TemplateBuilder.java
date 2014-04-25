@@ -183,9 +183,12 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
 
   @Override
   public Object visitEscape(final EscapeContext ctx) {
-    String text = ctx.ESC_VAR().getText().substring(1);
+    Token token = ctx.ESC_VAR().getSymbol();
+    String text = token.getText().substring(1);
     line.append(text);
-    return new Text(text, "\\");
+    return new Text(text, "\\")
+        .filename(source.filename())
+        .position(token.getLine(), token.getCharPositionInLine());
   }
 
   @Override
@@ -463,7 +466,9 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
   public Template visitText(final TextContext ctx) {
     String text = ctx.getText();
     line.append(text);
-    return new Text(text);
+    return new Text(text)
+        .filename(source.filename())
+        .position(ctx.start.getLine(), ctx.start.getCharPositionInLine());
   }
 
   @Override
@@ -474,7 +479,9 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
     if (space.getChannel() == Token.HIDDEN_CHANNEL) {
       return null;
     }
-    return new Text(text);
+    return new Text(text)
+        .filename(source.filename())
+        .position(ctx.start.getLine(), ctx.start.getCharPositionInLine());
   }
 
   @Override
@@ -484,7 +491,9 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
       return null;
     }
     line.setLength(0);
-    return new Text(newline.getText());
+    return new Text(newline.getText())
+        .filename(source.filename())
+        .position(newline.getLine(), newline.getCharPositionInLine());
   }
 
   /**
