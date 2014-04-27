@@ -298,10 +298,34 @@ public enum I18nHelper implements Helper<String> {
    * Set the message source.
    *
    * @param source The message source. Required.
+   * @NotThreadSafe Make sure to call this method ONCE at start time.
    */
   public void setSource(final I18nSource source) {
     this.source = notNull(source, "The i18n source is required.");
   }
+
+  /**
+   * Set the default bundle's name. Default is: messages and this method let you override the
+   * default bundle's name to something else.
+   *
+   * @param bundle The default's bundle name. Required.
+   * @NotThreadSafe Make sure to call this method ONCE at start time.
+   */
+  public void setDefaultBundle(final String bundle) {
+    this.defaultBundle = notEmpty(bundle, "A bundle's name is required.");
+  }
+
+  /**
+   * Set the default locale. Default is system dependent and this method let you override the
+   * default bundle's name to something else.
+   *
+   * @param locale The default locale name. Required.
+   * @NotThreadSafe Make sure to call this method ONCE at start time.
+   */
+  public void setDefaultLocale(final Locale locale) {
+    this.defaultLocale = notNull(locale, "A locale is required.");
+  }
+
 }
 
 /** Default implementation of I18nSource. */

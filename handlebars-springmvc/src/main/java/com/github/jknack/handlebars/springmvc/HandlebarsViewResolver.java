@@ -334,7 +334,8 @@ public class HandlebarsViewResolver extends AbstractTemplateViewResolver
    * <li>A method can/can't be static</li>
    * <li>The method's name became the helper's name</li>
    * <li>Context, parameters and options are all optionals</li>
-   * <li>If context and options are present they must be the first and last arguments of the method</li>
+   * <li>If context and options are present they must be the first and last arguments of the
+   *    method</li>
    * </ul>
    *
    * Instance and static methods will be registered as helpers.
@@ -366,7 +367,8 @@ public class HandlebarsViewResolver extends AbstractTemplateViewResolver
    * <li>A method can/can't be static</li>
    * <li>The method's name became the helper's name</li>
    * <li>Context, parameters and options are all optionals</li>
-   * <li>If context and options are present they must be the first and last arguments of the method</li>
+   * <li>If context and options are present they must be the first and last arguments of the
+   *    method</li>
    * </ul>
    *
    * Only static methods will be registered as helpers.
