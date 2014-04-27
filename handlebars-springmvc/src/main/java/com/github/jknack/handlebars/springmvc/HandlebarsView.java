@@ -68,6 +68,13 @@ public class HandlebarsView extends AbstractTemplateView {
     }
   }
 
+  /**
+   * @return The underlying template for this view.
+   */
+  public Template getTemplate() {
+    return template;
+  }
+
   @Override
   public boolean checkResource(final Locale locale) {
     return template != null;

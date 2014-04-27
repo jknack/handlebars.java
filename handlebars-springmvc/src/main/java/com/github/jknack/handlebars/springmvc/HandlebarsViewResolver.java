@@ -96,8 +96,9 @@ public class HandlebarsViewResolver extends AbstractTemplateViewResolver
 
   /**
    * If true, templates will be deleted once applied. Useful, in some advanced template inheritance
-   * use cases.  Used by <code>{{#block}} helper</code>. Default is: false.
+   * use cases. Used by <code>{{#block}} helper</code>. Default is: false.
    * At any time you can override the default setup with:
+   *
    * <pre>
    * {{#block "footer" delete-after-merge=true}}
    * </pre>
@@ -132,6 +133,12 @@ public class HandlebarsViewResolver extends AbstractTemplateViewResolver
   protected AbstractUrlBasedView buildView(final String viewName)
       throws Exception {
     return configure((HandlebarsView) super.buildView(viewName));
+  }
+
+  @Override
+  public HandlebarsView resolveViewName(final String viewName, final Locale locale)
+      throws Exception {
+    return (HandlebarsView) super.resolveViewName(viewName, locale);
   }
 
   /**
@@ -327,8 +334,7 @@ public class HandlebarsViewResolver extends AbstractTemplateViewResolver
    * <li>A method can/can't be static</li>
    * <li>The method's name became the helper's name</li>
    * <li>Context, parameters and options are all optionals</li>
-   * <li>If context and options are present they must be the first and last arguments
-   * of the method</li>
+   * <li>If context and options are present they must be the first and last arguments of the method</li>
    * </ul>
    *
    * Instance and static methods will be registered as helpers.
@@ -360,8 +366,7 @@ public class HandlebarsViewResolver extends AbstractTemplateViewResolver
    * <li>A method can/can't be static</li>
    * <li>The method's name became the helper's name</li>
    * <li>Context, parameters and options are all optionals</li>
-   * <li>If context and options are present they must be the first and last arguments of
-   * the method</li>
+   * <li>If context and options are present they must be the first and last arguments of the method</li>
    * </ul>
    *
    * Only static methods will be registered as helpers.
@@ -462,14 +467,15 @@ public class HandlebarsViewResolver extends AbstractTemplateViewResolver
 
   /**
    * If true, templates will be deleted once applied. Useful, in some advanced template inheritance
-   * use cases.  Used by <code>{{#block}} helper</code>. Default is: false.
+   * use cases. Used by <code>{{#block}} helper</code>. Default is: false.
    * At any time you can override the default setup with:
+   *
    * <pre>
    * {{#block "footer" delete-after-merge=true}}
    * </pre>
    *
    * @param deletePartialAfterMerge True for clearing up templates once they got applied. Used by
-   *      <code>{{#block}} helper</code>.
+   *        <code>{{#block}} helper</code>.
    */
   public void setDeletePartialAfterMerge(final boolean deletePartialAfterMerge) {
     this.deletePartialAfterMerge = deletePartialAfterMerge;
