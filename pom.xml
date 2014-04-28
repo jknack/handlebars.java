@@ -51,12 +51,12 @@
 
   <distributionManagement>
     <snapshotRepository>
-      <id>sonatype-nexus-snapshots</id>
+      <id>ossrh</id>
       <name>Sonatype Nexus Snapshots</name>
       <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
     </snapshotRepository>
     <repository>
-      <id>sonatype-nexus-staging</id>
+      <id>ossrh</id>
       <name>Nexus Release Repository</name>
       <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
     </repository>
@@ -307,6 +307,16 @@
 
       <!-- Deploy plugin -->
       <plugin>
+        <groupId>org.sonatype.plugins</groupId>
+        <artifactId>nexus-staging-maven-plugin</artifactId>
+        <version>1.6</version>
+        <extensions>true</extensions>
+        <configuration>
+          <serverId>ossrh</serverId>
+          <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+        </configuration>
+      </plugin>
+      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-deploy-plugin</artifactId>
         <version>2.8.1</version>
@@ -433,6 +443,7 @@
               <autoVersionSubmodules>true</autoVersionSubmodules>
               <tagNameFormat>v@{project.version}</tagNameFormat>
               <scmCommentPrefix>release</scmCommentPrefix>
+              <goals>deploy</goals>
             </configuration>
           </plugin>
         </plugins>
