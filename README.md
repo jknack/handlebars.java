@@ -73,7 +73,7 @@ Output:
 Hello Handlebars.java!
 ```
 
-You can specicy a different ```TemplateLoader``` by:
+You can specify a different ```TemplateLoader``` by:
 
 ```java
 TemplateLoader loader = ...;
