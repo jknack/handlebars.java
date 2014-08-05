@@ -29,7 +29,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -238,6 +237,8 @@ public class Context {
    * Index access expression.
    */
   private static final Pattern INT = Pattern.compile("\\d+");
+
+  private PropertyPathParser PATH_PARSER = new PropertyPathParser(PATH_SEPARATOR);
 
   /**
    * The qualified name for partials. Internal use.
@@ -506,23 +507,13 @@ public class Context {
   }
 
   /**
-   * Split the property name by '.' and create an array of it.
+   * Split the property name by '.' (except within an escaped blocked) and create an array of it
    *
    * @param key The property's name.
    * @return A path representation of the property (array based).
    */
   private String[] toPath(final String key) {
-    StringTokenizer tokenizer = new StringTokenizer(key, PATH_SEPARATOR);
-    int len = tokenizer.countTokens();
-    if (len == 1) {
-      return new String[]{key };
-    }
-    String[] path = new String[len];
-    int i = 0;
-    while (tokenizer.hasMoreTokens()) {
-      path[i++] = tokenizer.nextToken();
-    }
-    return path;
+    return PATH_PARSER.parsePath(key);
   }
 
   /**
