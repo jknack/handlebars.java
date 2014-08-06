@@ -238,7 +238,10 @@ public class Context {
    */
   private static final Pattern INT = Pattern.compile("\\d+");
 
-  private PropertyPathParser PATH_PARSER = new PropertyPathParser(PATH_SEPARATOR);
+  /**
+   * Parser for path expressions.
+   */
+  private static final PropertyPathParser PATH_PARSER = new PropertyPathParser(PATH_SEPARATOR);
 
   /**
    * The qualified name for partials. Internal use.
@@ -507,7 +510,7 @@ public class Context {
   }
 
   /**
-   * Split the property name by '.' (except within an escaped blocked) and create an array of it
+   * Split the property name by '.' (except within an escaped blocked) and create an array of it.
    *
    * @param key The property's name.
    * @return A path representation of the property (array based).
