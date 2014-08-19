@@ -27,7 +27,7 @@ import com.github.jknack.handlebars.Context;
  * @author edgar.espina
  * @since 0.1.0
  */
-enum ParamType {
+public enum ParamType {
   /**
    * Resolve the parameter type as {@link Context#context()}.
    */

@@ -101,6 +101,11 @@ public interface Template {
     public List<String> collect(final TagType... tagType) {
       return Collections.emptyList();
     }
+
+    @Override
+    public List<String> collectReferenceParameters() {
+      return Collections.emptyList();
+    }
   };
 
   /**
@@ -198,6 +203,24 @@ public interface Template {
    * @return A list with tag names.
    */
   List<String> collect(TagType... tagType);
+
+  /**
+   * Collects all the parameters which are also variables.
+   * <p>
+   * Usage:
+   * </p>
+   *
+   * <pre>
+   * {{#if v1}}{{/if}}
+   * {{#each v2 "test"}}{{/each}}
+   * </pre>
+   * <p>
+   * <code>collectReferenceParameters()</code> returns <code>[v1, v2]</code>
+   * </p>
+   *
+   * @return A list with reference parameter names.
+   */
+  List<String> collectReferenceParameters();
 
   /**
    * @return The template file's name.

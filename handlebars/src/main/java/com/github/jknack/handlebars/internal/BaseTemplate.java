@@ -281,6 +281,15 @@ abstract class BaseTemplate implements Template {
   protected void collect(final Collection<String> result, final TagType tagType) {
   }
 
+  public List<String> collectReferenceParameters() {
+    Set<String> paramNames = new LinkedHashSet<String>();
+    collectReferenceParameters(paramNames);
+    return new ArrayList<String>(paramNames);
+  }
+
+  protected void collectReferenceParameters(final Collection<String> result) {
+  }
+
   @Override
   public String toJavaScript() {
     synchronized (jsLock) {

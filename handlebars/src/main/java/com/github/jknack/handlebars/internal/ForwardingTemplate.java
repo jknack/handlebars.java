@@ -156,4 +156,8 @@ class ForwardingTemplate implements Template {
   public List<String> collect(final TagType... tagType) {
     return template.collect(tagType);
   }
+
+  public List<String> collectReferenceParameters() {
+    return template.collectReferenceParameters();
+  }
 }
