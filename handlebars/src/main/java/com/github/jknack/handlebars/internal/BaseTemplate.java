@@ -281,12 +281,16 @@ abstract class BaseTemplate implements Template {
   protected void collect(final Collection<String> result, final TagType tagType) {
   }
 
+  @Override
   public List<String> collectReferenceParameters() {
     Set<String> paramNames = new LinkedHashSet<String>();
     collectReferenceParameters(paramNames);
     return new ArrayList<String>(paramNames);
   }
 
+  /**
+   * @param result The result list to add new parameters to.
+   */
   protected void collectReferenceParameters(final Collection<String> result) {
   }
 

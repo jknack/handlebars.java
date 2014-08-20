@@ -322,6 +322,7 @@ class Block extends HelperResolver {
     super.collect(result, tagType);
   }
 
+  @Override
   public List<String> collectReferenceParameters() {
     Set<String> paramNames = new LinkedHashSet<String>();
     if (body != null) {
