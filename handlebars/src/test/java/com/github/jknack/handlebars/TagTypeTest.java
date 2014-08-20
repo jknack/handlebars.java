@@ -5,6 +5,8 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
 
 import org.junit.Test;
 
@@ -60,47 +62,51 @@ public class TagTypeTest extends AbstractTest {
 
   @Test
   public void collectVar() throws IOException {
-    assertEquals(Arrays.asList("a", "z", "k"), compile("{{#hello}}{{a}}{{&b}}{{z}}{{/hello}}{{k}}")
+    assertSetEquals(Arrays.asList("a", "z", "k"), compile("{{#hello}}{{a}}{{&b}}{{z}}{{/hello}}{{k}}")
         .collect(TagType.VAR));
   }
 
   @Test
   public void collectSubexpression() throws IOException {
-    assertEquals(Arrays.asList("tag"), compile("{{vowels (tag)}}", helpers)
+    assertSetEquals(Arrays.asList("tag"), compile("{{vowels (tag)}}", helpers)
         .collect(TagType.SUB_EXPRESSION));
   }
 
   @Test
   public void collectAmpVar() throws IOException {
-    assertEquals(Arrays.asList("b"), compile("{{#hello}}{{a}}{{&b}}{{z}}{{/hello}}{{k}}")
+    assertSetEquals(Arrays.asList("b"), compile("{{#hello}}{{a}}{{&b}}{{z}}{{/hello}}{{k}}")
         .collect(TagType.AMP_VAR));
   }
 
   @Test
   public void collectTripleVar() throws IOException {
-    assertEquals(Arrays.asList("tvar"),
+    assertSetEquals(Arrays.asList("tvar"),
         compile("{{{tvar}}}{{#hello}}{{a}}{{&b}}{{z}}{{/hello}}{{k}}")
             .collect(TagType.TRIPLE_VAR));
   }
 
   @Test
   public void collectSection() throws IOException {
-    assertEquals(Arrays.asList("hello"), compile("{{#hello}}{{a}}{{&b}}{{z}}{{/hello}}{{k}}")
+    assertSetEquals(Arrays.asList("hello"), compile("{{#hello}}{{a}}{{&b}}{{z}}{{/hello}}{{k}}")
         .collect(TagType.SECTION));
   }
 
   @Test
   public void collectSectionWithSubExpression() throws IOException {
-    assertEquals(Arrays.asList("tag"), compile("{{#hello}}{{vowels (tag)}}{{/hello}}", helpers)
+    assertSetEquals(Arrays.asList("tag"), compile("{{#hello}}{{vowels (tag)}}{{/hello}}", helpers)
         .collect(TagType.SUB_EXPRESSION));
   }
 
   @Test
   public void collectSectionAndVars() throws IOException {
-    assertEquals(
+    assertSetEquals(
         Arrays.asList("hello", "a", "b", "z", "k", "vowels", "tag"),
         compile("{{#hello}}{{a}}{{&b}}{{z}}{{/hello}}{{k}}{{vowels (tag)}}", helpers)
             .collect(TagType.SECTION, TagType.VAR, TagType.TRIPLE_VAR, TagType.AMP_VAR,
                 TagType.SUB_EXPRESSION));
+  }
+
+  private void assertSetEquals(List<String> list, List<String> list2) {
+    assertEquals(new HashSet<String>(list), new HashSet<String>(list2));
   }
 }
