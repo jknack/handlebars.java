@@ -566,36 +566,58 @@ public class Context {
    * @param expression The access expression.
    * @return The associated value.
    */
-  @SuppressWarnings("rawtypes")
   private Object resolve(final Object current, final String expression) {
     // Null => null
     if (current == null) {
       return null;
     }
 
-    // array or list access?
+    // array/list access or invalid Java identifiers wrapped with []
     Matcher matcher = IDX.matcher(expression);
     if (matcher.matches()) {
       String idx = matcher.group(1);
       if (INT.matcher(idx).matches()) {
-        // It is a number, check if the current value is a index base object.
-        int pos = Integer.parseInt(idx);
-        try {
-          if (current instanceof List) {
-            return ((List) current).get(pos);
-          } else if (current.getClass().isArray()) {
-            return Array.get(current, pos);
-          }
-        } catch (IndexOutOfBoundsException exception) {
-          // Index is outside of range, do as JS
-          return null;
+        Object result = resolveArrayAccess(current, idx);
+        if (result != NULL) {
+          return result;
         }
       }
       // It is not a index base object, defaults to string property lookup
       // (usually not a valid Java identifier)
       return resolver.resolve(current, idx);
     }
+    // array or list access, exclusive
+    if (INT.matcher(expression).matches()) {
+      Object result = resolveArrayAccess(current, expression);
+      if (result != NULL) {
+        return result;
+      }
+    }
     return resolver.resolve(current, expression);
+  }
+
+  /**
+   * Resolve a array or list access using idx.
+   *
+   * @param current The current scope.
+   * @param idx The index of the array or list.
+   * @return An object at the given location or null.
+   */
+  @SuppressWarnings("rawtypes")
+  private Object resolveArrayAccess(final Object current, final String idx) {
+    // It is a number, check if the current value is a index base object.
+    int pos = Integer.parseInt(idx);
+    try {
+      if (current instanceof List) {
+        return ((List) current).get(pos);
+      } else if (current.getClass().isArray()) {
+        return Array.get(current, pos);
+      }
+    } catch (IndexOutOfBoundsException exception) {
+      // Index is outside of range, fallback to null as in handlebar.js
+      return null;
+    }
+    return NULL;
   }
 
   /**

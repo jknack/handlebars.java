@@ -32,9 +32,12 @@ import org.antlr.v4.runtime.RuleContext;
 import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
+import org.apache.commons.lang3.math.NumberUtils;
 
 import com.github.jknack.handlebars.Context;
 import com.github.jknack.handlebars.Handlebars;
+import com.github.jknack.handlebars.HandlebarsError;
+import com.github.jknack.handlebars.HandlebarsException;
 import com.github.jknack.handlebars.Helper;
 import com.github.jknack.handlebars.HelperRegistry;
 import com.github.jknack.handlebars.TagType;
@@ -223,6 +226,19 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
   private Template newVar(final Token name, final TagType varType, final List<Object> params,
       final Map<String, Object> hash, final String startDelimiter, final String endDelimiter) {
     String varName = name.getText();
+    String[] parts = varName.split("\\.");
+    // TODO: try to catch this with ANTLR...
+    // foo.0 isn't allowed, it must be foo.0.
+    if (parts.length > 0 && NumberUtils.isNumber(parts[parts.length - 1])
+        && !varName.endsWith(".")) {
+      String evidence = varName;
+      String reason = "found: " + varName + ", expecting: " + varName + ".";
+      String message =
+          source.filename() + ":" + name.getLine() + ":" + name.getChannel() + ": "
+              + reason + "\n";
+      throw new HandlebarsException(new HandlebarsError(source.filename(), name.getLine(),
+          name.getCharPositionInLine(), reason, evidence, message));
+    }
     Helper<Object> helper = handlebars.helper(varName);
     if (helper == null
         && ((params.size() > 0 || hash.size() > 0) || varType == TagType.SUB_EXPRESSION)) {
