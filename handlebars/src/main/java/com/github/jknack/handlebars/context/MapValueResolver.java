@@ -59,6 +59,9 @@ public enum MapValueResolver implements ValueResolver {
 
   @Override
   public Object resolve(final Object context) {
+    if (context instanceof Map) {
+      return context;
+    }
     return UNRESOLVED;
   }
 
