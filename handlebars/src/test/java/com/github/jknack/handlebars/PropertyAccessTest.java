@@ -108,12 +108,14 @@ public class PropertyAccessTest {
     context.put("1foo", "foo");
     context.put("'foo'", "foo");
     context.put("foo or bar", "foo");
+    context.put("foo.bar", "foo");
     context.put("134", "134");
 
     assertEquals("foo", handlebars.compileInline("{{this.[1foo]}}").apply(context));
     assertEquals("foo", handlebars.compileInline("{{this.['foo']}}").apply(context));
     assertEquals("foo", handlebars.compileInline("{{this.[foo or bar]}}")
         .apply(context));
+    assertEquals("foo", handlebars.compileInline("{{this.[foo.bar]}}").apply(context));
     assertEquals("134", handlebars.compileInline("{{this.[134]}}").apply(context));
   }
 }
