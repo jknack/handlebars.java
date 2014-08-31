@@ -303,14 +303,15 @@ class Block extends HelperResolver {
 
   @Override
   public List<String> collect(final TagType... tagType) {
+    Set<String> tagNames = new LinkedHashSet<String>();
     if (body != null) {
-      Set<String> tagNames = new LinkedHashSet<String>();
-      tagNames.addAll(super.collect(tagType));
       tagNames.addAll(body.collect(tagType));
-      return new ArrayList<String>(tagNames);
-    } else {
-      return super.collect(tagType);
     }
+    if (inverse != null) {
+      tagNames.addAll(inverse.collect(tagType));
+    }
+    tagNames.addAll(super.collect(tagType));
+    return new ArrayList<String>(tagNames);
   }
 
   @Override
@@ -321,4 +322,31 @@ class Block extends HelperResolver {
     super.collect(result, tagType);
   }
 
+  @Override
+  public List<String> collectReferenceParameters() {
+    Set<String> paramNames = new LinkedHashSet<String>();
+    if (body != null) {
+      paramNames.addAll(body.collectReferenceParameters());
+    }
+    if (inverse != null) {
+      paramNames.addAll(inverse.collectReferenceParameters());
+    }
+    paramNames.addAll(super.collectReferenceParameters());
+    return new ArrayList<String>(paramNames);
+  }
+
+  @Override
+  protected void collectReferenceParameters(final Collection<String> result) {
+    for (Object param : params) {
+      if (ParamType.REFERENCE.apply(param) && !ParamType.STRING.apply(param)) {
+        result.add((String) param);
+      }
+    }
+    for (Object hashValue : hash.values()) {
+      if (ParamType.REFERENCE.apply(hashValue) && !ParamType.STRING.apply(hashValue)) {
+        result.add((String) hashValue);
+      }
+    }
+    super.collectReferenceParameters(result);
+  }
 }

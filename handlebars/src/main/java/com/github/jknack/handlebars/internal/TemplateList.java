@@ -93,4 +93,13 @@ class TemplateList extends BaseTemplate implements Iterable<Template> {
     }
     return new ArrayList<String>(tagNames);
   }
+
+  @Override
+  public List<String> collectReferenceParameters() {
+    Set<String> paramNames = new LinkedHashSet<String>();
+    for (Template node : nodes) {
+      paramNames.addAll(node.collectReferenceParameters());
+    }
+    return new ArrayList<String>(paramNames);
+  }
 }

@@ -56,7 +56,7 @@ abstract class HelperResolver extends BaseTemplate {
   /**
    * The hash object.
    */
-  private Map<String, Object> hash = Collections.emptyMap();
+  protected Map<String, Object> hash = Collections.emptyMap();
 
   /**
    * Empty parameters.
@@ -233,6 +233,25 @@ abstract class HelperResolver extends BaseTemplate {
     for (Object param : this.params) {
       if (param instanceof Variable) {
         ((Variable) param).collect(result, tagType);
+      }
+    }
+  }
+
+  @Override
+  protected void collectReferenceParameters(final Collection<String> result) {
+    for (Object param : this.params) {
+      if (param instanceof Variable) {
+        ((Variable) param).collectReferenceParameters(result);
+      }
+    }
+    for (Object param : params) {
+      if (ParamType.REFERENCE.apply(param) && !ParamType.STRING.apply(param)) {
+        result.add((String) param);
+      }
+    }
+    for (Object hashValue : hash.values()) {
+      if (ParamType.REFERENCE.apply(hashValue) && !ParamType.STRING.apply(hashValue)) {
+        result.add((String) hashValue);
       }
     }
   }

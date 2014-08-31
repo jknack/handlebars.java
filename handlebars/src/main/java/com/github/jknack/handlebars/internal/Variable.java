@@ -219,6 +219,21 @@ class Variable extends HelperResolver {
     super.collect(result, tagType);
   }
 
+  @Override
+  protected void collectReferenceParameters(final Collection<String> result) {
+    for (Object param : params) {
+      if (ParamType.REFERENCE.apply(param) && !ParamType.STRING.apply(param)) {
+        result.add((String) param);
+      }
+    }
+    for (Object hashValue : hash.values()) {
+      if (ParamType.REFERENCE.apply(hashValue) && !ParamType.STRING.apply(hashValue)) {
+        result.add((String) hashValue);
+      }
+    }
+    super.collectReferenceParameters(result);
+  }
+
   /**
    * True if the given value should be escaped.
    *
