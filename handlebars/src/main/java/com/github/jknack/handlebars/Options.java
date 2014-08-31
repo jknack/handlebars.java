@@ -17,14 +17,12 @@
  */
 package com.github.jknack.handlebars;
 
+import java.io.IOException;
+import java.util.*;
+import java.util.Map.Entry;
+
 import static org.apache.commons.lang3.Validate.notEmpty;
 import static org.apache.commons.lang3.Validate.notNull;
-
-import java.io.IOException;
-import java.util.Collections;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
 
 /**
  * Options available for {@link Helper#apply(Object, Options)}.
@@ -473,6 +471,9 @@ public class Options {
     }
     if (model instanceof Context) {
       return (Context) model;
+    }
+    if (model.getClass() == LinkedHashMap.class) {
+      return Context.newContext(model);
     }
     return Context.newContext(context, model);
   }
