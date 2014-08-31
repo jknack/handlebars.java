@@ -1,7 +1,7 @@
 package com.github.jknack.handlebars.springmvc;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 import java.util.Locale;
 
@@ -12,10 +12,12 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.web.servlet.View;
+import org.springframework.web.servlet.view.InternalResourceView;
+import org.springframework.web.servlet.view.RedirectView;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {HandlebarsApp.class })
-public class Issue292 {
+public class Issue304 {
 
   @Autowired
   @Qualifier("viewResolver")
@@ -26,11 +28,19 @@ public class Issue292 {
   HandlebarsViewResolver viewResolverWithoutMessageHelper;
 
   @Test
-  public void getTemplate() throws Exception {
+  public void forward() throws Exception {
     assertNotNull(viewResolver);
-    View view = viewResolver.resolveViewName("template", Locale.getDefault());
-    assertTrue(view instanceof HandlebarsView);
-    assertNotNull(((HandlebarsView) view).getTemplate());
+    View view = viewResolver.resolveViewName("forward:/template", Locale.getDefault());
+    assertNotNull(view);
+    assertEquals(InternalResourceView.class, view.getClass());
+  }
+
+  @Test
+  public void redirect() throws Exception {
+    assertNotNull(viewResolver);
+    View view = viewResolver.resolveViewName("redirect:/template", Locale.getDefault());
+    assertNotNull(view);
+    assertEquals(RedirectView.class, view.getClass());
   }
 
 }

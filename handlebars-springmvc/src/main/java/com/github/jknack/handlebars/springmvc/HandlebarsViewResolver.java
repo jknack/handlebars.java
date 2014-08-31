@@ -135,12 +135,6 @@ public class HandlebarsViewResolver extends AbstractTemplateViewResolver
     return configure((HandlebarsView) super.buildView(viewName));
   }
 
-  @Override
-  public HandlebarsView resolveViewName(final String viewName, final Locale locale)
-      throws Exception {
-    return (HandlebarsView) super.resolveViewName(viewName, locale);
-  }
-
   /**
    * Configure the handlebars view.
    *
