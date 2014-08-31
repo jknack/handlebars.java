@@ -102,6 +102,11 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
   protected StringBuilder line = new StringBuilder();
 
   /**
+   * Keep track of block helpers.
+   */
+  private LinkedList<String> qualifier = new LinkedList<String>();
+
+  /**
    * Creates a new {@link TemplateBuilder}.
    *
    * @param handlebars A handlbars object. required.
@@ -122,6 +127,7 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
     SexprContext sexpr = ctx.sexpr();
     Token nameStart = sexpr.QID().getSymbol();
     String name = nameStart.getText();
+    qualifier.addLast(name);
     String nameEnd = ctx.nameEnd.getText();
     if (!name.equals(nameEnd)) {
       reportError(null, ctx.nameEnd.getLine(), ctx.nameEnd.getCharPositionInLine()
@@ -154,6 +160,7 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
       }
     }
     hasTag(true);
+    qualifier.removeLast();
     return block;
   }
 
@@ -226,7 +233,14 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
   private Template newVar(final Token name, final TagType varType, final List<Object> params,
       final Map<String, Object> hash, final String startDelimiter, final String endDelimiter) {
     String varName = name.getText();
-    String[] parts = varName.split("\\.");
+    boolean isHelper = ((params.size() > 0 || hash.size() > 0)
+        || varType == TagType.SUB_EXPRESSION);
+    if (!isHelper && qualifier.size() > 0 && "with".equals(qualifier.getLast())
+        && !varName.startsWith(".")) {
+      // HACK to qualified 'with' in order to improve handlebars.js compatibility
+      varName = "this." + varName;
+    }
+    String[] parts = varName.split("\\./");
     // TODO: try to catch this with ANTLR...
     // foo.0 isn't allowed, it must be foo.0.
     if (parts.length > 0 && NumberUtils.isNumber(parts[parts.length - 1])
@@ -240,8 +254,7 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
           name.getCharPositionInLine(), reason, evidence, message));
     }
     Helper<Object> helper = handlebars.helper(varName);
-    if (helper == null
-        && ((params.size() > 0 || hash.size() > 0) || varType == TagType.SUB_EXPRESSION)) {
+    if (helper == null && isHelper) {
       Helper<Object> helperMissing =
           handlebars.helper(HelperRegistry.HELPER_MISSING);
       if (helperMissing == null) {
