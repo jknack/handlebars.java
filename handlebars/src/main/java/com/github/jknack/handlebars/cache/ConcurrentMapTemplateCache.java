@@ -29,7 +29,6 @@ import org.slf4j.LoggerFactory;
 
 import com.github.jknack.handlebars.Parser;
 import com.github.jknack.handlebars.Template;
-import com.github.jknack.handlebars.io.ForwardingTemplateSource;
 import com.github.jknack.handlebars.io.TemplateSource;
 
 /**
@@ -85,20 +84,7 @@ public class ConcurrentMapTemplateCache implements TemplateCache {
     /**
      * Don't keep duplicated entries, remove old one if a change is detected.
      */
-    return cacheGet(new ForwardingTemplateSource(source) {
-      @Override
-      public boolean equals(final Object obj) {
-        if (obj instanceof TemplateSource) {
-          return source.filename().equals(((TemplateSource) obj).filename());
-        }
-        return false;
-      }
-
-      @Override
-      public int hashCode() {
-        return source.filename().hashCode();
-      }
-    }, parser);
+    return cacheGet(source, parser);
   }
 
   /**
