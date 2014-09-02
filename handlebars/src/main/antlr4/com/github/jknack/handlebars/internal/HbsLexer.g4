@@ -35,29 +35,27 @@ lexer grammar HbsLexer;
   }
 
   private boolean comment(final String start, final String end) {
-    if (ahead(start + "!")) {
-      int offset = 0;
-      int level = -1;
-      while (!isEOF(offset)) {
-        if (ahead(end, offset)) {
-          if (level == 0) {
-            break;
-          } else {
-            level -= 1;
-          }
-        }
-        if (ahead(start, offset)) {
-          level += 1;
-        }
-        offset += 1;
-      }
-      offset += end.length();
-      // Since we found the text, increase the CharStream's index.
-      _input.seek(_input.index() + offset - 1);
-      getInterpreter().setCharPositionInLine(_tokenStartCharPositionInLine + offset - 1);
-      return true;
+    String commentClose;
+    if (ahead(start + "!--")) {
+      commentClose = "--" + end;
+    } else if (ahead(start + "!")) {
+      commentClose = end;
+    } else {
+      return false;
     }
-    return false;
+
+    int offset = 0;
+    while (!isEOF(offset)) {
+      if (ahead(commentClose, offset)) {
+        break;
+      }
+      offset += 1;
+    }
+    offset += commentClose.length();
+    // Since we found the text, increase the CharStream's index.
+    _input.seek(_input.index() + offset - 1);
+    getInterpreter().setCharPositionInLine(_tokenStartCharPositionInLine + offset - 1);
+    return true;
   }
 
   private boolean varEscape(final String start, final String end) {
