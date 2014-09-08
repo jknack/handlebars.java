@@ -116,15 +116,27 @@ public class HandlebarsViewResolverIntegrationTest {
       // maven classpath
       assertEquals(expected, output);
     } catch (ComparisonFailure ex) {
-      // eclipse classpath
-      assertEquals("<script type='text/javascript'>\n" +
-          "  /* Spanish (Argentina) */\n" +
-          "  I18n.translations = I18n.translations || {};\n" +
-          "  I18n.translations['es_AR'] = {\n" +
-          "    \"hello\": \"Hola\",\n" +
-          "    \"hello.0\": \"Hello {{arg0}}!\"\n" +
-          "  };\n" +
-          "</script>\n", output);
+      try {
+        // eclipse classpath
+        assertEquals("<script type='text/javascript'>\n" +
+            "  /* Spanish (Argentina) */\n" +
+            "  I18n.translations = I18n.translations || {};\n" +
+            "  I18n.translations['es_AR'] = {\n" +
+            "    \"hello\": \"Hola\",\n" +
+            "    \"hello.0\": \"Hello {{arg0}}!\"\n" +
+            "  };\n" +
+            "</script>\n", output);
+      } catch (ComparisonFailure java18) {
+        // java 1.8
+        assertEquals("<script type='text/javascript'>\n" +
+            "  /* Spanish (Argentina) */\n" +
+            "  I18n.translations = I18n.translations || {};\n" +
+            "  I18n.translations['es_AR'] = {\n" +
+            "    \"hello.0\": \"Hello {{arg0}}!\",\n" +
+            "    \"hello\": \"Handlebars Spring MVC!\"\n" +
+            "  };\n" +
+            "</script>\n", output);
+      }
     }
   }
 
