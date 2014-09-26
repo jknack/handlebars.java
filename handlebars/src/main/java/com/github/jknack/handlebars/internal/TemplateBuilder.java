@@ -45,27 +45,22 @@ import com.github.jknack.handlebars.Template;
 import com.github.jknack.handlebars.internal.HbsParser.AmpvarContext;
 import com.github.jknack.handlebars.internal.HbsParser.BlockContext;
 import com.github.jknack.handlebars.internal.HbsParser.BodyContext;
-import com.github.jknack.handlebars.internal.HbsParser.BoolHashContext;
 import com.github.jknack.handlebars.internal.HbsParser.BoolParamContext;
-import com.github.jknack.handlebars.internal.HbsParser.CharHashContext;
 import com.github.jknack.handlebars.internal.HbsParser.CharParamContext;
 import com.github.jknack.handlebars.internal.HbsParser.CommentContext;
 import com.github.jknack.handlebars.internal.HbsParser.ElseBlockContext;
 import com.github.jknack.handlebars.internal.HbsParser.EscapeContext;
 import com.github.jknack.handlebars.internal.HbsParser.HashContext;
-import com.github.jknack.handlebars.internal.HbsParser.IntHashContext;
 import com.github.jknack.handlebars.internal.HbsParser.IntParamContext;
 import com.github.jknack.handlebars.internal.HbsParser.NewlineContext;
 import com.github.jknack.handlebars.internal.HbsParser.ParamContext;
 import com.github.jknack.handlebars.internal.HbsParser.PartialContext;
-import com.github.jknack.handlebars.internal.HbsParser.RefHashContext;
-import com.github.jknack.handlebars.internal.HbsParser.RefPramContext;
+import com.github.jknack.handlebars.internal.HbsParser.RefParamContext;
 import com.github.jknack.handlebars.internal.HbsParser.SexprContext;
 import com.github.jknack.handlebars.internal.HbsParser.SpacesContext;
 import com.github.jknack.handlebars.internal.HbsParser.StatementContext;
-import com.github.jknack.handlebars.internal.HbsParser.StringHashContext;
 import com.github.jknack.handlebars.internal.HbsParser.StringParamContext;
-import com.github.jknack.handlebars.internal.HbsParser.SubexpressionContext;
+import com.github.jknack.handlebars.internal.HbsParser.SubParamExprContext;
 import com.github.jknack.handlebars.internal.HbsParser.TemplateContext;
 import com.github.jknack.handlebars.internal.HbsParser.TextContext;
 import com.github.jknack.handlebars.internal.HbsParser.TvarContext;
@@ -281,7 +276,7 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
     }
     Map<String, Object> result = new LinkedHashMap<String, Object>();
     for (HashContext hc : ctx) {
-      result.put(hc.QID().getText(), super.visit(hc.hashValue()));
+      result.put(hc.QID().getText(), super.visit(hc.param()));
     }
     return result;
   }
@@ -309,25 +304,10 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
   }
 
   @Override
-  public Object visitSubexpression(final SubexpressionContext ctx) {
+  public Object visitSubParamExpr(final SubParamExprContext ctx) {
     SexprContext sexpr = ctx.sexpr();
     return newVar(sexpr.QID().getSymbol(), TagType.SUB_EXPRESSION, params(sexpr.param()),
         hash(sexpr.hash()), ctx.start.getText(), ctx.stop.getText());
-  }
-
-  @Override
-  public Object visitBoolHash(final BoolHashContext ctx) {
-    return Boolean.valueOf(ctx.getText());
-  }
-
-  @Override
-  public Object visitCharHash(final CharHashContext ctx) {
-    return charLiteral(ctx);
-  }
-
-  @Override
-  public Object visitStringHash(final StringHashContext ctx) {
-    return stringLiteral(ctx);
   }
 
   @Override
@@ -357,18 +337,8 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
   }
 
   @Override
-  public Object visitRefHash(final RefHashContext ctx) {
+  public Object visitRefParam(final RefParamContext ctx) {
     return ctx.getText();
-  }
-
-  @Override
-  public Object visitRefPram(final RefPramContext ctx) {
-    return ctx.getText();
-  }
-
-  @Override
-  public Object visitIntHash(final IntHashContext ctx) {
-    return Integer.parseInt(ctx.getText());
   }
 
   @Override

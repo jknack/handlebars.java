@@ -125,22 +125,13 @@ param
   | SINGLE_STRING #charParam
   | INT           #intParam
   | BOOLEAN       #boolParam
-  | QID           #refPram
-  | LP sexpr RP #subexpression
+  | QID           #refParam
+  | LP sexpr RP   #subParamExpr
   ;
 
 hash
   :
-    QID EQ hashValue
-  ;
-
-hashValue
-  :
-    DOUBLE_STRING #stringHash
-  | SINGLE_STRING #charHash
-  | INT           #intHash
-  | BOOLEAN       #boolHash
-  | QID           #refHash
+    QID EQ param
   ;
 
 comment
