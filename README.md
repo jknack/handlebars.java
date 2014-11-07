@@ -48,12 +48,12 @@ Hello Handlebars.java!
 ```
 
 ### Loading templates
-Templates are loaded using the ```TemplateLoader``` class. Handlebars.java provides three implementations of a ```TemplateLodaer```:
+Templates are loaded using the ```TemplateLoader``` class. Handlebars.java provides three implementations of a ```TemplateLoader```:
  * ClassPathTemplateLoader (default)
  * FileTemplateLoader
  * SpringTemplateLoader (see the [handlebars-springmvc](https://github.com/jknack/handlebars.java/tree/master/handlebars-springmvc) module)
 
-This example load ```mytemplate.hbs``` from the root of the classpath:
+This example loads ```mytemplate.hbs``` from the root of the classpath:
 
 mytemplate.hbs:
 ```
@@ -168,15 +168,15 @@ enjoy it!
 * -port: set port number, default is 6780
 * -content-type: set the content-type header, default is text/html
 
-### Multiples data sources per template
-Sometimes you need or want to test multiples datasets over a single template, you can do that by setting a ```data``` parameter in the request URI.
+### Multiple data sources per template
+Sometimes you need or want to test multiple datasets over a single template, you can do that by setting a ```data``` parameter in the request URI.
 
 Example:
 
 ```
 http://localhost:6780/home.hbs?data=mytestdata
 ```
-Please note you don't have to specified the extension file.
+Please note you don't have to specify the extension file.
 
 ## Helpers
 
@@ -205,7 +205,7 @@ Usage:
     ...
   {{/block}}
 ```
-context: A string literal which define the region's name.
+context: A string literal which defines the region's name.
 
 Usage:
 ```
@@ -213,7 +213,7 @@ Usage:
     ...
   {{/partial}}
 ```
-context: A string literal which define the region's name.
+context: A string literal which defines the region's name.
 
 ### precompile
  Precompile a Handlebars.java template to JavaScript using handlebars.js
@@ -249,13 +249,13 @@ templates['user'] = template(function (Handlebars,depth0,helpers,partials,data) 
 })();
 </script>
 ```
-You can access to the precompiled template by:
+You can access the precompiled template with:
 
 ```js
 var template = Handlebars.templates['user']
 ```
 
-For more information have a look at [Precompiling Templates](https://github.com/wycats/handlebars.js/) documentation. 
+For more information have a look at the [Precompiling Templates](https://github.com/wycats/handlebars.js/) documentation. 
 
 Usage:
 ```
@@ -324,14 +324,14 @@ Using a locale:
 {{i18n "hello" locale="es_AR"}}
 ```
 
-This require a ```messages_es_AR.properties``` in the root of classpath.
+This requires a ```messages_es_AR.properties``` in the root of classpath.
 
 Using a different bundle:
 
 ```html
 {{i18n "hello" bundle="myMessages"}}
 ```
-This require a ```myMessages.properties``` in the root of classpath.
+This requires a ```myMessages.properties``` in the root of classpath.
 
 Using a message format:
 
@@ -342,7 +342,7 @@ Using a message format:
 Where ```hello``` is ```Hola {0}!```, results in ```Hola Handlebars.java!```.
 
 ### i18nJs
- Translate a ```ResourceBundle``` into JavaScript code. The generated code assume you have the [I18n](https://github.com/fnando/i18n-js) in your application.
+ Translate a ```ResourceBundle``` into JavaScript code. The generated code assumes you have the [I18n](https://github.com/fnando/i18n-js) in your application.
 
 Usage:
 
@@ -350,9 +350,9 @@ Usage:
 {{i18nJs [locale] [bundle=messages]}}
 ```
 
-If locale argument is present it will translate that locale to JavaScript. Otherwise, the default locale.
+If the locale argument is present it will translate that locale to JavaScript. Otherwise, it will use the default locale.
 
-The generated code looks like:
+The generated code looks like this:
 
 ```javascript
 <script type="text/javascript">
@@ -366,7 +366,7 @@ The generated code looks like:
 </script>
 ```
 
-Finally, it converts message patterns like: ```Hi {0}``` into ```Hi {{arg0}}```. This make possible to the [I18n](https://github.com/fnando/i18n-js) JS library to interpolate variables.
+Finally, it converts message patterns like: ```Hi {0}``` into ```Hi {{arg0}}```. This make possible for the [I18n](https://github.com/fnando/i18n-js) JS library to interpolate variables.
 
 ### string helpers
  Functions like abbreviate, capitalize, join, dateFormat, yesno, etc., are available from [StringHelpers] (https://github.com/jknack/handlebars.java/blob/master/handlebars/src/main/java/com/github/jknack/handlebars/helper/StringHelpers.java).
@@ -437,7 +437,7 @@ A helper source is any class with public methods returning an instance of a ```C
 Where: 
 
 * A method can/can't be static
-* The method's name became the helper's name
+* The method's name becomes the helper's name
 * Context, parameters and options are all optionals
 * If context and options are present they must be the **first** and **last** arguments of the method
 
@@ -574,7 +574,7 @@ template.hbs
            ^
 ```
 
-If a partial isn't found or if has errors, a call stack is added
+If a partial isn't found or if it has errors, a call stack is added:
 
 ```
 /deep1.hbs:1:5: The partial '/deep2.hbs' could not be found
@@ -584,9 +584,9 @@ at /deep1.hbs:1:10
 at /deep.hbs:1:10
 ```
 ### Helper/Runtime errors
-Helper or runtime errors are similar to syntax errors, except for two thing:
+Helper or runtime errors are similar to syntax errors, except for two things:
 
-1. The location of the problem may (or may not) be the correct one.
+1. The location of the problem may (or may not) be the correct one
 2. The stack-trace isn't available
 
 Examples:
@@ -619,13 +619,13 @@ Handlebars.java reports:
     {{#block}} ... {{/block}}
 ```
 
-In short from a helper you can throw an Exception and Handlebars.java will add the filename, line, column and the evidence.
+In short, from a helper you can throw an Exception and Handlebars.java will add the filename, line, column and the evidence.
 
 ## Advanced Usage
 
 ### Extending the context stack
  Let's say you need to access to the current logged-in user in every single view/page.
- You can publishing the current logged in user by hooking into the context-stack. See it in action:
+ You can publish the current logged in user by hooking into the context-stack. See it in action:
  ```java
   hookContextStack(Object model, Template template) {
     User user = ....;// Get the logged-in user from somewhere
@@ -644,7 +644,7 @@ In short from a helper you can throw an Exception and Handlebars.java will add t
 ### Using the ValueResolver
  By default, Handlebars.java use the JavaBean methods (i.e. public getXxx methods) and Map as value resolvers.
  
- You can choose a different value resolver. This section describe how to do it.
+ You can choose a different value resolver. This section describe how to do this.
  
 #### The JavaBeanValueResolver
  Resolves values from public methods prefixed with "get/is"
@@ -657,7 +657,7 @@ Context context = Context
 ```
 
 #### The FieldValueResolver
- Resolves values from  no-static fields.
+ Resolves values from no-static fields.
 
 ```java
 Context context = Context
@@ -742,7 +742,7 @@ Context context = Context
 
 As you can see, there isn't a ```put``` method. All the hard work is done in the ```get``` method, which is basically the core of the cache system.
 
-By default, Handlebars.java use a ```null``` cache implementation (a.k.a. no cache at all) which looks like:
+By default, Handlebars.java uses a ```null``` cache implementation (a.k.a. no cache at all) which looks like:
 
 ```
 Template get(TemplateSource source, Parser parser) throws IOException {
@@ -750,15 +750,15 @@ Template get(TemplateSource source, Parser parser) throws IOException {
 }
 ```
 
-Beside the ```null``` cache Handlebars.java provides three more implementations:
+In addition to the ```null``` cache, Handlebars.java provides three more implementations:
 
 1. ```ConcurrentMapTemplateCache```: a template cache implementation built on top of a ```ConcurrentMap``` that detects changes in files automatically.
 This implementation works very well in general, but there is a small window where two or more threads can compile the same template. This isn't a huge problem with Handlebars.java because the compiler is very very fast.
 But if for some reason you don't want this, you can use the ```HighConcurrencyTemplateCache``` template cache.
 
 2. ```HighConcurrencyTemplateCache```: a template cache implementation built on top of ```ConcurrentMap``` that detects changes in files automatically.
-This cache implementation eliminate the window created by ```ConcurrentMapTemplateCache``` to ```zero```.
-It follows the patterns described in [Java Concurrency in Practice](http://www.amazon.com/Java-Concurrency-Practice-Brian-Goetz/dp/0321349601) and ensure that a template will be compiled just one time regardless of the number of threads.
+This cache implementation eliminates the window created by ```ConcurrentMapTemplateCache``` to ```zero```.
+It follows the patterns described in [Java Concurrency in Practice](http://www.amazon.com/Java-Concurrency-Practice-Brian-Goetz/dp/0321349601) and ensures that a template will be compiled just once regardless of the number of threads.
 
 
 3. ```GuavaTemplateCache```: a template cache implementation built on top of [Google Guava](https://code.google.com/p/guava-libraries/wiki/CachesExplained). Available in [handlebars-guava-cache module](https://github.com/jknack/handlebars.java/tree/master/handlebars-guava-cache)
@@ -799,7 +799,7 @@ NOTE: MissingValueResolver is available in ```<= 1.3.0```. For ```> 1.3.0``` use
 ```
 
 ### String form parameters
- You can access to a parameter name if you set the: ```stringParams: true```. Example:
+ You can access a parameter name if you set the: ```stringParams: true```. Example:
  
 ```html
 {{sayHi this edgar}}
@@ -820,15 +820,14 @@ results in:
 ```
 Hello edgar!
 ```
- How it works? ```stringParams: true``` instruct Handlebars.java to resolve a parameter
- to his name if the value isn't present in the context stack.
+ How does this work? ```stringParams: true``` instructs Handlebars.java to resolve a parameter to it's name if the value isn't present in the context stack.
 
 ### Allow Infinite loops
- By default, Handlebars.java don't allow a partial to call him self (directly or indirectly).
- You can change this by setting the: ```Handlebars.inifiteLoops(true)```, just avoid ```StackOverflowError```.
+ By default, Handlebars.java doesn't allow a partial to call itself (directly or indirectly).
+ You can change this by setting the: ```Handlebars.inifiteLoops(true)```, but watch out for a ```StackOverflowError```.
 
 ### Pretty Print
- The Mustache Spec has some rules for removing spaces and new lines, by default, this feature is off.
+ The Mustache Spec has some rules for removing spaces and new lines. This feature is disabled by default.
  You can turn this on by setting the: ```Handlebars.prettyPrint(true)```.
 
 
@@ -991,7 +990,7 @@ Now, the same model and template with Handlebars.js is:
 ```html
 Hello 
 ```
-That is because Handlebars.js don't look in the context stack for missing attribute in the current scope (as the Mustache Spec says).
+That is because Handlebars.js doesn't look in the context stack for missing attributes in the current scope (this is consistent with the Mustache Spec).
 
 Hopefully, you can turn-off the context stack lookup in Handlebars.java by qualifying the attribute with ```this.```:
 
@@ -1024,12 +1023,12 @@ Hello {{#child}}{{this.value}}{{/child}}
 
 ## Want to contribute?
 * Fork the project on Github.
-* Wandering what to work on? See task/bug list and pick up something you would like to work on.
+* Wondering what to work on? See task/bug list and pick up something you would like to work on.
 * Do you want to donate one or more helpers? See [handlebars=helpers](https://github.com/jknack/handlebars.java/tree/master/handlebars-helpers) a repository for community's helpers.
 * Create an issue or fix one from [issues list](https://github.com/jknack/handlebars.java/issues).
 * If you know the answer to a question posted to our [mailing list](https://groups.google.com/forum/#!forum/handlebarsjava) - don't hesitate to write a reply.
 * Share your ideas or ask questions on [mailing list](https://groups.google.com/forum/#!forum/handlebarsjava) - don't hesitate to write a reply - that helps us improve javadocs/FAQ.
-* If you miss a particular feature - browse or ask on the [mailing list](https://groups.google.com/forum/#!forum/handlebarsjava) - don't hesitate to write a reply, show us a sample code and describe the problem.
+* If you miss a particular feature - browse or ask on the [mailing list](https://groups.google.com/forum/#!forum/handlebarsjava) - don't hesitate to write a reply, show us some sample code and describe the problem.
 * Write a blog post about how you use or extend handlebars.java.
 * Please suggest changes to javadoc/exception messages when you find something unclear.
 * If you have problems with documentation, find it non intuitive or hard to follow - let us know about it, we'll try to make it better according to your suggestions. Any constructive critique is greatly appreciated. Don't forget that this is an open source project developed and documented in spare time.
