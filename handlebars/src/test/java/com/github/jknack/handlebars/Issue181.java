@@ -30,6 +30,6 @@ public class Issue181 extends AbstractTest {
 
   @Test
   public void partialWithoutContentBlockWithContent() throws IOException {
-    shouldCompileTo("{{partial \"name\"}}{{#block \"name\"}}block{{/block}}", $, "");
+    shouldCompileTo("{{partial \"name\"}}{{#block \"name\"}}block{{/block}}", $, "block");
   }
 }

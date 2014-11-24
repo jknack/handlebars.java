@@ -20,10 +20,14 @@ package com.github.jknack.handlebars.helper;
 import static org.apache.commons.lang3.Validate.isTrue;
 
 import java.io.IOException;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
+import com.github.jknack.handlebars.Context;
 import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Helper;
 import com.github.jknack.handlebars.Options;
+import com.github.jknack.handlebars.TagType;
 import com.github.jknack.handlebars.Template;
 
 /**
@@ -71,12 +75,26 @@ public class BlockHelper implements Helper<Object> {
         template = options.fn;
       }
     }
-    CharSequence result = options.apply(template);
+    TagType partialType = options.data(Context.PARTIALS + "#" + context + "#type");
+    // handle empty templates and/or var templates
+    if (template == Template.EMPTY || (partialType != null && partialType.inline())) {
+      template = options.fn;
+    }
+    // Get hash from current block and merge partial hash (if any).
+    Map<String, Object> hash = new LinkedHashMap<String, Object>(options.hash);
+    Map<String, Object> partialHash = options.data(Context.PARTIALS + "#" + context + "#hash");
+    if (partialHash != null) {
+      hash.putAll(partialHash);
+    }
+
+    CharSequence result = options.apply(template, Context.newBuilder(options.context, hash)
+        .build());
     Boolean deletePartials = options.hash("delete-after-merge",
         options.handlebars.deletePartialAfterMerge());
     if (deletePartials) {
       // once applied, remove the template from current execution.
       options.partial(path, null);
+      options.data(Context.PARTIALS + "#" + context + "#hash", null);
     }
     return result;
   }
