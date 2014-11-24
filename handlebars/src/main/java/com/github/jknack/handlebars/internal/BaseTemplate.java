@@ -39,6 +39,7 @@ import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
 
 import com.github.jknack.handlebars.Context;
+import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.HandlebarsError;
 import com.github.jknack.handlebars.HandlebarsException;
 import com.github.jknack.handlebars.TagType;
@@ -52,6 +53,11 @@ import com.github.jknack.handlebars.TypeSafeTemplate;
  * @since 0.1.0
  */
 abstract class BaseTemplate implements Template {
+
+  /**
+   * The handlebars object. Required.
+   */
+  protected final Handlebars handlebars;
 
   /**
    * The line of this template.
@@ -77,6 +83,15 @@ abstract class BaseTemplate implements Template {
    * A pre-compiled JavaScript function.
    */
   private String javaScript;
+
+  /**
+   * Creates a new {@link BaseTemplate}.
+   *
+   * @param handlebars A handlebars instance.
+   */
+  public BaseTemplate(final Handlebars handlebars) {
+    this.handlebars = notNull(handlebars, "The handlebars can't be null.");
+  }
 
   /**
    * {@inheritDoc}
@@ -298,7 +313,7 @@ abstract class BaseTemplate implements Template {
   public String toJavaScript() {
     synchronized (jsLock) {
       if (javaScript == null) {
-        javaScript = JSEngine.RHINO.toJavaScript(this);
+        javaScript = JSEngine.RHINO.toJavaScript(handlebars.handlebarsJsFile(), this);
       }
       return javaScript;
     }

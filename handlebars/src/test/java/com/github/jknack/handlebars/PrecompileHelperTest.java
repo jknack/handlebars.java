@@ -49,7 +49,8 @@ public class PrecompileHelperTest {
   @Test
   public void precompileWithPartial() throws IOException {
     String js =
-        handlebars.compileInline("{{precompile \"root\"}}").apply("Handlebar.js");
+        handlebars
+            .compileInline("{{precompile \"root\"}}").apply("Handlebar.js");
 
     InputStream in =
         getClass().getResourceAsStream("/partial.precompiled.js");
@@ -61,7 +62,7 @@ public class PrecompileHelperTest {
 
   @Parameters
   public static Collection<Object[]> data() {
-    return Arrays.asList(new Object[] {"anonymous" }, new Object[] {"none" },
-        new Object[] {"amd" });
+    return Arrays.asList(new Object[]{"anonymous" }, new Object[]{"none" },
+        new Object[]{"amd" });
   }
 }

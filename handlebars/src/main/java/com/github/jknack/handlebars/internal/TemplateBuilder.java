@@ -191,7 +191,7 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
     Token token = ctx.ESC_VAR().getSymbol();
     String text = token.getText().substring(1);
     line.append(text);
-    return new Text(text, "\\")
+    return new Text(handlebars, text, "\\")
         .filename(source.filename())
         .position(token.getLine(), token.getCharPositionInLine());
   }
@@ -426,7 +426,7 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
     if (stats.size() == 1) {
       return visit(stats.get(0));
     }
-    TemplateList list = new TemplateList();
+    TemplateList list = new TemplateList(handlebars);
     Template prev = null;
     for (StatementContext statement : stats) {
       Template candidate = visit(statement);
@@ -465,7 +465,7 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
   public Template visitText(final TextContext ctx) {
     String text = ctx.getText();
     line.append(text);
-    return new Text(text)
+    return new Text(handlebars, text)
         .filename(source.filename())
         .position(ctx.start.getLine(), ctx.start.getCharPositionInLine());
   }
@@ -478,7 +478,7 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
     if (space.getChannel() == Token.HIDDEN_CHANNEL) {
       return null;
     }
-    return new Text(text)
+    return new Text(handlebars, text)
         .filename(source.filename())
         .position(ctx.start.getLine(), ctx.start.getCharPositionInLine());
   }
@@ -490,7 +490,7 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
       return null;
     }
     line.setLength(0);
-    return new Text(newline.getText())
+    return new Text(handlebars, newline.getText())
         .filename(source.filename())
         .position(newline.getLine(), newline.getCharPositionInLine());
   }

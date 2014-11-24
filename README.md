@@ -255,6 +255,14 @@ You can access the precompiled template with:
 var template = Handlebars.templates['user']
 ```
 
+By default it uses: ```/handlebars-v1.3.0.js``` to compile the template. Since handlebars.java 2.x it is also possible to use handlebars.js 2.x
+
+```java
+Handlebars handlebars = new Handlebars();
+handlebars.handlebarsJsFile("/handlebars-v2.0.0.js");
+```
+
+
 For more information have a look at the [Precompiling Templates](https://github.com/wycats/handlebars.js/) documentation. 
 
 Usage:

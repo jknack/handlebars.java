@@ -54,12 +54,12 @@ enum JSEngine {
    */
   RHINO {
     @Override
-    public String toJavaScript(final Template template) {
+    public String toJavaScript(final String hbslocation, final Template template) {
       Context ctx = null;
       try {
         ctx = newContext();
 
-        Scriptable scope = newScope(ctx);
+        Scriptable scope = newScope(hbslocation, ctx);
         scope.put("template", scope, template.text());
 
         String js = "Handlebars.precompile(template);";
@@ -77,11 +77,12 @@ enum JSEngine {
     /**
      * Creates a new scope where handlebars.js is present.
      *
+     *@param hbslocation Location of the handlebars.js file.
      * @param ctx A rhino context.
      * @return A new scope where handlebars.js is present.
      */
-    private Scriptable newScope(final Context ctx) {
-      Scriptable sharedScope = sharedScope(ctx);
+    private Scriptable newScope(final String hbslocation, final Context ctx) {
+      Scriptable sharedScope = sharedScope(hbslocation, ctx);
       Scriptable scope = ctx.newObject(sharedScope);
       scope.setParentScope(null);
       scope.setPrototype(sharedScope);
@@ -105,12 +106,13 @@ enum JSEngine {
     /**
      * Creates a initialize the handlebars.js scope.
      *
+     * @param hbslocation Location of the handlebars.js file.
      * @param ctx A rhino context.
      * @return A handlebars.js scope. Shared between executions.
      */
-    private Scriptable sharedScope(final Context ctx) {
+    private Scriptable sharedScope(final String hbslocation, final Context ctx) {
       ScriptableObject sharedScope = ctx.initStandardObjects();
-      ctx.evaluateString(sharedScope, handlebarsScript(HBS_FILE), HBS_FILE, 1, null);
+      ctx.evaluateString(sharedScope, handlebarsScript(hbslocation), hbslocation, 1, null);
       return sharedScope;
     }
 
@@ -130,16 +132,12 @@ enum JSEngine {
   };
 
   /**
-   * Handlerbars.js version.
-   */
-  private static final String HBS_FILE = "/handlebars-v1.3.0.js";
-
-  /**
    * Convert this template to JavaScript template (a.k.a precompiled template). Compilation is done
    * by handlebars.js and a JS Engine (usually Rhino).
    *
+   * @param hbslocation Location of the handlebars.js file.
    * @param template The template to convert.
    * @return A pre-compiled JavaScript version of this template.
    */
-  public abstract String toJavaScript(Template template);
+  public abstract String toJavaScript(String hbslocation, Template template);
 }

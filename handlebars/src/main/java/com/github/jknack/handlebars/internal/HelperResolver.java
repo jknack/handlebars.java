@@ -17,8 +17,6 @@
  */
 package com.github.jknack.handlebars.internal;
 
-import static org.apache.commons.lang3.Validate.notNull;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -44,11 +42,6 @@ import com.github.jknack.handlebars.Template;
 abstract class HelperResolver extends BaseTemplate {
 
   /**
-   * The handlebars object. Required.
-   */
-  protected final Handlebars handlebars;
-
-  /**
    * The parameter list.
    */
   protected List<Object> params = Collections.emptyList();
@@ -69,7 +62,7 @@ abstract class HelperResolver extends BaseTemplate {
    * @param handlebars The handlebars object. Required.
    */
   public HelperResolver(final Handlebars handlebars) {
-    this.handlebars = notNull(handlebars, "The handlebars can't be null.");
+    super(handlebars);
   }
 
   /**

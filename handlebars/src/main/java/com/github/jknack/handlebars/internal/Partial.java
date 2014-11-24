@@ -19,7 +19,6 @@ package com.github.jknack.handlebars.internal;
 
 import static org.apache.commons.lang3.StringUtils.join;
 import static org.apache.commons.lang3.Validate.notEmpty;
-import static org.apache.commons.lang3.Validate.notNull;
 
 import java.io.IOException;
 import java.io.Writer;
@@ -67,11 +66,6 @@ class Partial extends BaseTemplate {
   private String endDelimiter;
 
   /**
-   * The handlebars object. Required.
-   */
-  private Handlebars handlebars;
-
-  /**
    * The indent to apply to the partial.
    */
   private String indent;
@@ -84,7 +78,7 @@ class Partial extends BaseTemplate {
    * @param context The template context.
    */
   public Partial(final Handlebars handlebars, final String path, final String context) {
-    this.handlebars = notNull(handlebars, "The handlebars is required.");
+    super(handlebars);
     this.path = notEmpty(path, "The path is required.");
     this.context = context;
   }

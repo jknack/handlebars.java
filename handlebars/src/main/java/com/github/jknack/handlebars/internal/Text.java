@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.io.Writer;
 
 import com.github.jknack.handlebars.Context;
+import com.github.jknack.handlebars.Handlebars;
 
 /**
  * Plain text template.
@@ -43,10 +44,12 @@ class Text extends BaseTemplate {
   /**
    * Creates a new {@link Text}.
    *
+   * @param handlebars A handlebars instance. Required.
    * @param text The text content. Required.
    * @param escapeChar The escape char or empty.
    */
-  public Text(final String text, final String escapeChar) {
+  public Text(final Handlebars handlebars, final String text, final String escapeChar) {
+    super(handlebars);
     this.text = notNull(text, "The text content is required.");
     this.escapeChar = escapeChar;
   }
@@ -54,10 +57,11 @@ class Text extends BaseTemplate {
   /**
    * Creates a new {@link Text}.
    *
+   * @param handlebars A handlebars instance. Required.
    * @param text The text content. Required.
    */
-  public Text(final String text) {
-    this(text, "");
+  public Text(final Handlebars handlebars, final String text) {
+    this(handlebars, text, "");
   }
 
   @Override

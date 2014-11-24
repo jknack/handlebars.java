@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Set;
 
 import com.github.jknack.handlebars.Context;
+import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.TagType;
 import com.github.jknack.handlebars.Template;
 
@@ -42,6 +43,15 @@ class TemplateList extends BaseTemplate implements Iterable<Template> {
    * The list of child templates.
    */
   private final List<Template> nodes = new LinkedList<Template>();
+
+  /**
+   * Creates a new template list.
+   *
+   * @param handlebars A handlebars instance. Required.
+   */
+  public TemplateList(final Handlebars handlebars) {
+    super(handlebars);
+  }
 
   /**
    * Add a child template. Empty templates aren't added.

@@ -62,4 +62,5 @@ public class Issue204 extends AbstractTest {
     assertEquals(jsFn, compile("{{#if true}}true{{else}}false{{/if}}").toJavaScript());
     assertEquals(jsFn, compile("{{#if true}}true{{^}}false{{/if}}").toJavaScript());
   }
+
 }

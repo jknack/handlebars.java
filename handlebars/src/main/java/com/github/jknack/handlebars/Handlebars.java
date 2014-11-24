@@ -28,6 +28,7 @@ import java.io.InputStream;
 import java.io.Reader;
 import java.lang.reflect.Array;
 import java.net.URI;
+import java.net.URL;
 import java.util.Collection;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -332,6 +333,9 @@ public class Handlebars implements HelperRegistry {
    */
   private String endDelimiter = DELIM_END;
 
+  /** Location of the handlebars.js file. */
+  private String handlebarsJsFile = "/handlebars-v1.3.0.js";
+
   /**
    * Creates a new {@link Handlebars} with no cache.
    *
@@ -465,6 +469,7 @@ public class Handlebars implements HelperRegistry {
    * @param helper The helper object. Required.
    * @return This handlebars.
    */
+  @Override
   public <H> Handlebars registerHelperMissing(final Helper<H> helper) {
     return registerHelper(HELPER_MISSING, helper);
   }
@@ -990,6 +995,48 @@ public class Handlebars implements HelperRegistry {
     this.escapingStrategy = notNull(escapingStrategy,
         "The escaping strategy is required.");
     return this;
+  }
+
+  /**
+   * Set the handlebars.js location used it to compile/precompile template to JavaScript.
+   * <p>
+   * Using handlebars.js 2.x:
+   * </p>
+   * <pre>
+   *   Handlebars handlebars = new Handlebars()
+   *      .withHandlberasJs("handlebars-v2.0.0.js");
+   * </pre>
+   * <p>
+   * Using handlebars.js 1.x:
+   * </p>
+   * <pre>
+   *   Handlebars handlebars = new Handlebars()
+   *      .withHandlberasJs("handlebars-v1.3.0.js");
+   * </pre>
+   *
+   * Default handlebars.js is <code>handlebars-v1.3.0.js</code>.
+   *
+   * @param location A classpath location of the handlebar.js file.
+   * @return This instance of Handlebars.
+   */
+  public Handlebars handlebarsJsFile(final String location) {
+   this.handlebarsJsFile = notEmpty(location, "A handlebars.js location is required.");
+   if (!this.handlebarsJsFile.startsWith("/")) {
+     this.handlebarsJsFile = "/" + handlebarsJsFile;
+   }
+   URL resource = getClass().getResource(handlebarsJsFile);
+   if (resource == null) {
+     throw new IllegalArgumentException("File not found: " + handlebarsJsFile);
+   }
+   return this;
+  }
+
+  /**
+   * @return Classpath location of the handlebars.js file. Default is:
+   *      <code>handlebars-v1.3.0.js</code>
+   */
+  public String handlebarsJsFile() {
+    return handlebarsJsFile;
   }
 
   /**

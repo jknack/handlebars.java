@@ -21,7 +21,7 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
-import com.github.jknack.handlebars.internal.Text;
+import com.github.jknack.handlebars.Handlebars;
 
 /**
  * Unit test for {@link Text}.
@@ -33,17 +33,17 @@ public class TextTest {
 
   @Test
   public void newText() {
-    assertEquals("a", new Text("a").text());
+    assertEquals("a", new Text(new Handlebars(), "a").text());
   }
 
   @Test
   public void newTextSequence() {
-    assertEquals("abc", new Text("abc").text());
+    assertEquals("abc", new Text(new Handlebars(), "abc").text());
   }
 
   @Test(expected = NullPointerException.class)
   public void newTextFail() {
-    new Text(null);
+    new Text(new Handlebars(),  null);
   }
 
 }

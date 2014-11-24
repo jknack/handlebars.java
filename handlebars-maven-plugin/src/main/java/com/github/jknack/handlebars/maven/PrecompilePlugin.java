@@ -35,6 +35,7 @@ import static org.apache.commons.lang3.StringUtils.join;
 import static org.apache.commons.lang3.Validate.notNull;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
@@ -109,10 +110,16 @@ public class PrecompilePlugin extends HandlebarsPlugin {
   private String output;
 
   /**
+   * The handlebars js file.
+   */
+  @Parameter(defaultValue = "/handlebars-v1.3.0.js")
+  private String handlebarsJsFile;
+
+  /**
    * True, if the handlebars.runtime.js file need to be included in the output. Default is: false.
    */
   @Parameter
-  private boolean includeRuntime;
+  private String runtime;
 
   /**
    * Minimize the output. Default is: false.
@@ -147,6 +154,7 @@ public class PrecompilePlugin extends HandlebarsPlugin {
       String realPrefix = basedir.getPath();
 
       Handlebars handlebars = new Handlebars(new FileTemplateLoader(basedir, suffix));
+      handlebars.handlebarsJsFile(handlebarsJsFile);
 
       final List<CharSequence> extras = new ArrayList<CharSequence>();
 
@@ -172,8 +180,8 @@ public class PrecompilePlugin extends HandlebarsPlugin {
       }
 
       writer = new PrintWriter(output, encoding);
-      if (includeRuntime) {
-        runtimeIS = getClass().getResourceAsStream("/handlebars.runtime.js");
+      if (runtime != null) {
+        runtimeIS = new FileInputStream(new File(runtime));
         IOUtil.copy(runtimeIS, writer);
       }
 
@@ -196,7 +204,7 @@ public class PrecompilePlugin extends HandlebarsPlugin {
       getLog().debug("  prefix: " + realPrefix);
       getLog().debug("  suffix: " + suffix);
       getLog().debug("  minimize: " + minimize);
-      getLog().debug("  includeRuntime: " + includeRuntime);
+      getLog().debug("  runtime: " + runtime);
 
       if (!amd) {
         writer.append("(function () {\n");
@@ -365,11 +373,10 @@ public class PrecompilePlugin extends HandlebarsPlugin {
   }
 
   /**
-   * @param includeRuntime True, if the handlebars.runtime.js file need to be included in the
-   *        output. Default is: false.
+   * @param runtime Location of the handlebars.js runtime.
    */
-  public void setIncludeRuntime(final boolean includeRuntime) {
-    this.includeRuntime = includeRuntime;
+  public void setRuntime(final String runtime) {
+    this.runtime = runtime;
   }
 
   /**
@@ -416,6 +423,31 @@ public class PrecompilePlugin extends HandlebarsPlugin {
       this.templates = new ArrayList<String>();
     }
     this.templates.add(template);
+  }
+
+  /**
+   * Set the handlebars.js location used it to compile/precompile template to JavaScript.
+   * <p>
+   * Using handlebars.js 2.x:
+   * </p>
+   * <pre>
+   *   Handlebars handlebars = new Handlebars()
+   *      .withHandlberasJs("handlebars-v2.0.0.js");
+   * </pre>
+   * <p>
+   * Using handlebars.js 1.x:
+   * </p>
+   * <pre>
+   *   Handlebars handlebars = new Handlebars()
+   *      .withHandlberasJs("handlebars-v1.3.0.js");
+   * </pre>
+   *
+   * Default handlebars.js is <code>handlebars-v1.3.0.js</code>.
+   *
+   * @param handlebarsJsFile A classpath location of the handlebar.js file.
+   */
+  public void setHandlebarsJsFile(final String handlebarsJsFile) {
+    this.handlebarsJsFile = handlebarsJsFile;
   }
 
 }
