@@ -19,19 +19,16 @@ package com.github.jknack.handlebars.internal.js;
 
 import java.io.IOException;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 
-import org.apache.commons.lang3.ClassUtils;
 import org.mozilla.javascript.NativeArray;
 import org.mozilla.javascript.NativeObject;
 import org.mozilla.javascript.Scriptable;
-import org.mozilla.javascript.ScriptableObject;
 import org.mozilla.javascript.tools.ToolErrorReporter;
 
 import com.github.jknack.handlebars.Context;
-import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Helper;
 import com.github.jknack.handlebars.HelperRegistry;
 import com.github.jknack.handlebars.Options;
@@ -47,54 +44,72 @@ import com.github.jknack.handlebars.js.HandlebarsJs;
 public class RhinoHandlebars extends HandlebarsJs {
 
   /**
-   * Wrap a {@link Context handlebars context} as a Rhino Js Object.
+   * Better integration between java collections/arrays and js arrays. It check for data types
+   * at access time and convert them when necessary.
    *
-   * @author edgar.espina
-   * @since 1.1.0
+   * @author edgar
    */
   @SuppressWarnings("serial")
-  public static class JsContext extends ScriptableObject {
+  private static class BetterNativeArray extends NativeArray {
 
-    /**
-     * The {@link Handlebars} context.
-     */
+    /** The context object. */
     private Context context;
 
     /**
-     * Creates a new {@link JsContext}.
+     * A JS array.
      *
-     * @param context The {@link Handlebars} context.
+     * @param array Array.
+     * @param context Handlebars context.
      */
-    public JsContext(final Context context) {
+    public BetterNativeArray(final Object[] array, final Context context) {
+      super(array);
       this.context = context;
     }
 
-    @Override
-    public String getClassName() {
-      return "Object";
-    }
-
-    @Override
-    public Object get(final String name, final Scriptable start) {
-      return context.get(name);
+    /**
+     * A JS collection.
+     *
+     * @param collection collection.
+     * @param context Handlebars context.
+     */
+    public BetterNativeArray(final Collection<Object> collection, final Context context) {
+      this(collection.toArray(new Object[collection.size()]), context);
     }
 
     @Override
     public Object get(final int index, final Scriptable start) {
-      return context.get("" + index);
+      Object object = super.get(index, start);
+      return toJsObject(object, context);
+    }
+
+  }
+
+  /**
+   * Better integration between java objects and js object. It check for data types at access time
+   * and convert them if necessary.
+   *
+   * @author edgar
+   */
+  @SuppressWarnings("serial")
+  private static class BetterNativeObject extends NativeObject {
+
+    /** Handlebars context. */
+    private Context context;
+
+    /**
+     * Creates a new {@link BetterNativeObject}.
+     *
+     * @param context Handlebars context.
+     */
+    public BetterNativeObject(final Context context) {
+      this.context = context;
     }
 
     @Override
-    public Object[] getIds() {
-      Set<Entry<String, Object>> propertySet = context.propertySet();
-      Object[] ids = new Object[propertySet.size()];
-      int idx = 0;
-      for (Entry<String, Object> entry : propertySet) {
-        ids[idx++] = entry.getKey();
-      }
-      return ids;
+    public Object get(final String name, final Scriptable start) {
+      Object object = super.get(name, start);
+      return toJsObject(object, context);
     }
-
   }
 
   /**
@@ -141,12 +156,12 @@ public class RhinoHandlebars extends HandlebarsJs {
     /**
      * Creates a new {@link HandlebarsJs} options.
      *
-     * @param options The {@link Handlebars} options.
+     * @param options The {@link HandlebarsJs} options.
      */
     public OptionsJs(final Options options) {
       this.options = options;
-      this.hash = hash(options.hash);
-      this.params = new NativeArray(options.params);
+      this.hash = hash(options.hash, options.context);
+      this.params = new BetterNativeArray(options.params, options.context);
     }
 
     /**
@@ -194,20 +209,15 @@ public class RhinoHandlebars extends HandlebarsJs {
    */
   public void registerHelper(final String name, final JsHelper helper) {
     registry.registerHelper(name, new Helper<Object>() {
-      @SuppressWarnings({"rawtypes", "unchecked" })
       @Override
       public CharSequence apply(final Object context, final Options options) throws IOException {
-        JsContext jsContext = new JsContext(options.context);
+        Object jsContext = toJsObject(options.context);
         Object arg0 = context;
         Integer paramSize = options.data(Context.PARAM_SIZE);
         if (paramSize == 0) {
           arg0 = "___NOT_SET_";
-        } else if (!isSupportedType(arg0)) {
-          if (Map.class.isInstance(arg0)) {
-            arg0 = hash((Map) arg0);
-          } else if (Collection.class.isInstance(arg0)) {
-            arg0 = new NativeArray(((Collection) arg0).toArray(new Object[0]));
-          }
+        } else {
+          arg0 = toJsObject(context, options.context);
         }
         Object result = helper.apply(jsContext, arg0, new OptionsJs(options));
         if (result instanceof CharSequence) {
@@ -216,22 +226,6 @@ public class RhinoHandlebars extends HandlebarsJs {
         return result == null ? null : result.toString();
       }
     });
-  }
-
-  /**
-   * True if the object is natively supported by Rhino.
-   *
-   * @param object An object.
-   * @return True if the object is natively supported by Rhino.
-   */
-  private static boolean isSupportedType(final Object object) {
-    if (object == null) {
-      return true;
-    }
-    if (CharSequence.class.isInstance(object)) {
-      return true;
-    }
-    return ClassUtils.isPrimitiveOrWrapper(object.getClass());
   }
 
   @Override
@@ -298,14 +292,67 @@ public class RhinoHandlebars extends HandlebarsJs {
    * Convert a map to a JS Rhino object.
    *
    * @param map The map.
+   * @param context Handlebars context.
    * @return A JS Rhino object.
    */
-  private static NativeObject hash(final Map<String, Object> map) {
-    NativeObject hash = new NativeObject();
+  private static NativeObject hash(final Map<String, Object> map, final Context context) {
+    NativeObject hash = new BetterNativeObject(context);
     for (Entry<String, Object> prop : map.entrySet()) {
       hash.defineProperty(prop.getKey(), prop.getValue(), NativeObject.READONLY);
     }
     return hash;
+  }
+
+  /**
+   * Convert a Java Object to Js Object if necessary.
+   *
+   * @param object Source object.
+   * @param parent Handlebars context.
+   * @return A Rhino js object.
+   */
+  @SuppressWarnings({"unchecked", "rawtypes" })
+  private static Object toJsObject(final Object object, final Context parent) {
+    if (object == null) {
+      return null;
+    }
+    if (object == Scriptable.NOT_FOUND) {
+      return Scriptable.NOT_FOUND;
+    }
+    if (object instanceof Number) {
+      return object;
+    }
+    if (object instanceof Boolean) {
+      return object;
+    }
+    if (object instanceof CharSequence || object instanceof Character) {
+      return object.toString();
+    }
+    if (object instanceof Scriptable) {
+      return object;
+    }
+
+    if (Map.class.isInstance(object)) {
+      return hash((Map) object, parent);
+    } else if (Collection.class.isInstance(object)) {
+      return new BetterNativeArray((Collection) object, parent);
+    }
+    Context context = object instanceof Context
+        ? (Context) object : Context.newContext(parent, object);
+    return toJsObject(context);
+  }
+
+  /**
+   * Convert a Java Object to Js Object if necessary.
+   *
+   * @param context Handlebars context.
+   * @return A Rhino js object.
+   */
+  private static Object toJsObject(final Context context) {
+    Map<String, Object> hash = new HashMap<String, Object>();
+    for (Entry<String, Object> property : context.propertySet()) {
+      hash.put(property.getKey(), property.getValue());
+    }
+    return hash(hash, context);
   }
 
 }
