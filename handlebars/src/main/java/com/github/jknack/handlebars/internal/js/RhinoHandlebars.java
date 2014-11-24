@@ -242,7 +242,6 @@ public class RhinoHandlebars extends HandlebarsJs {
       ctx = newContext();
 
       Scriptable sharedScope = helpersEnvScope(ctx);
-      sharedScope.put("Handlebars_java", sharedScope, this);
       Scriptable scope = ctx.newObject(sharedScope);
       scope.setParentScope(null);
       scope.setPrototype(sharedScope);
@@ -276,6 +275,7 @@ public class RhinoHandlebars extends HandlebarsJs {
    */
   private Scriptable helpersEnvScope(final org.mozilla.javascript.Context ctx) {
     Scriptable env = ctx.initStandardObjects();
+    env.put("Handlebars_java", env, this);
     ctx.evaluateString(env, HELPERS_ENV, "helpers.rhino.js", 1, null);
     return env;
   }
@@ -307,4 +307,5 @@ public class RhinoHandlebars extends HandlebarsJs {
     }
     return hash;
   }
+
 }
