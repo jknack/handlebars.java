@@ -55,6 +55,9 @@ public class RhinoHandlebars extends HandlebarsJs {
     /** The context object. */
     private Context context;
 
+    /** Internal state of array. */
+    private Map<Object, Object> state = new HashMap<Object, Object>();
+
     /**
      * A JS array.
      *
@@ -78,8 +81,14 @@ public class RhinoHandlebars extends HandlebarsJs {
 
     @Override
     public Object get(final int index, final Scriptable start) {
-      Object object = super.get(index, start);
-      return toJsObject(object, context);
+      Object value = state.get(index);
+      if (value != null) {
+        return value;
+      }
+      value = super.get(index, start);
+      value = toJsObject(value, context);
+      state.put(index, value);
+      return value;
     }
 
   }
@@ -96,6 +105,9 @@ public class RhinoHandlebars extends HandlebarsJs {
     /** Handlebars context. */
     private Context context;
 
+    /** Internal state. */
+    private Map<Object, Object> state = new HashMap<Object, Object>();
+
     /**
      * Creates a new {@link BetterNativeObject}.
      *
@@ -107,8 +119,14 @@ public class RhinoHandlebars extends HandlebarsJs {
 
     @Override
     public Object get(final String name, final Scriptable start) {
-      Object object = super.get(name, start);
-      return toJsObject(object, context);
+      Object value = state.get(name);
+      if (value != null) {
+        return value;
+      }
+      value = super.get(name, start);
+      value = toJsObject(value, context);
+      state.put(name, value);
+      return value;
     }
   }
 
