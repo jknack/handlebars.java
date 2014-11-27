@@ -27,7 +27,7 @@ import com.github.jknack.handlebars.Options;
 
 /**
  * The partial registry helper. It stores templates in the current execution
- * context. Later the {@link #BLOCK} helper read the registry and apply the
+ * context. Later the {@link BlockHelper} helper read the registry and apply the
  * template.
  *
  * @author edgar.espina

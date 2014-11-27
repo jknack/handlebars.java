@@ -59,9 +59,8 @@ public enum I18nHelper implements Helper<String> {
    * A helper built on top of {@link ResourceBundle}. A {@link ResourceBundle} is the most well
    * known mechanism for internationalization (i18n).
    * </p>
-   * <p>
+   *
    * <h3>messages.properties:</h3>
-   * </p>
    *
    * <pre>
    *  hello=Hola
@@ -297,8 +296,9 @@ public enum I18nHelper implements Helper<String> {
   /**
    * Set the message source.
    *
+   * NotThreadSafe Make sure to call this method ONCE at start time.
+   *
    * @param source The message source. Required.
-   * @NotThreadSafe Make sure to call this method ONCE at start time.
    */
   public void setSource(final I18nSource source) {
     this.source = notNull(source, "The i18n source is required.");
@@ -308,8 +308,9 @@ public enum I18nHelper implements Helper<String> {
    * Set the default bundle's name. Default is: messages and this method let you override the
    * default bundle's name to something else.
    *
+   * NotThreadSafe Make sure to call this method ONCE at start time.
+   *
    * @param bundle The default's bundle name. Required.
-   * @NotThreadSafe Make sure to call this method ONCE at start time.
    */
   public void setDefaultBundle(final String bundle) {
     this.defaultBundle = notEmpty(bundle, "A bundle's name is required.");
@@ -319,8 +320,9 @@ public enum I18nHelper implements Helper<String> {
    * Set the default locale. Default is system dependent and this method let you override the
    * default bundle's name to something else.
    *
+   * NotThreadSafe Make sure to call this method ONCE at start time.
+   *
    * @param locale The default locale name. Required.
-   * @NotThreadSafe Make sure to call this method ONCE at start time.
    */
   public void setDefaultLocale(final Locale locale) {
     this.defaultLocale = notNull(locale, "A locale is required.");

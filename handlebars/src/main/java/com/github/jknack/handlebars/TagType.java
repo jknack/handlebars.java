@@ -33,7 +33,7 @@ public enum TagType {
 
   /**
    * All variables are HTML escaped by default. If you want to return unescaped HTML, use the
-   * triple mustache: <code>{{&name}}</code>.
+   * triple mustache: <code>{{{@literal &}name}}</code>.
    */
   AMP_VAR,
 

@@ -229,7 +229,6 @@ public interface Template {
 
   /**
    * @return The line and column where the template was found.
-   * @return
    */
   int[] position();
 }

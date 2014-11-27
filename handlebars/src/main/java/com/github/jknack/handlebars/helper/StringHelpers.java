@@ -151,7 +151,7 @@ public enum StringHelpers implements Helper<Object> {
    *
    * <pre>
    * {{join "a" "b" "c" " // " [prefix=""] [suffix=""]}}
-   * <p>Join the "a", "b", "c", the output will be the string "a // b // c".</p>
+   * Join the "a", "b", "c", the output will be the string "a // b // c".
    * </pre>
    */
   join {

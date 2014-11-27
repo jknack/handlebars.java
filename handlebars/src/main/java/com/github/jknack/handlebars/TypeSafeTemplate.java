@@ -28,7 +28,7 @@ import java.io.Writer;
  * </p>
  *
  * <pre>
- *  public interface UserTemplate extends TypeSafeTemplate<User> {
+ *  public interface UserTemplate extends TypeSafeTemplate&lt;User&gt; {
  *    UserTemplate setAge(int age);
  *
  *    UserTemplate setRole(String role);

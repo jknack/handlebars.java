@@ -1,5 +1,6 @@
 [![Build Status](https://secure.travis-ci.org/jknack/handlebars.java.png?branch=master)](https://travis-ci.org/jknack/handlebars.java)
 [![Coverage Status](https://coveralls.io/repos/jknack/handlebars.java/badge.png)](https://coveralls.io/r/jknack/handlebars.java)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.jknack/handlebars/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.jknack/handlebars)
 
 Handlebars.java
 ===============
@@ -17,7 +18,7 @@ Handlebars provides the power necessary to let you build semantic templates effe
  The [Handlebars.java blog](http://jknack.github.io/handlebars.java) is a good place for getting started too.
 
 ## Maven
-#### Stable version: **1.3.2**
+#### Stable version: **2.0.0**
 
 
 ```xml
@@ -28,7 +29,7 @@ Handlebars provides the power necessary to let you build semantic templates effe
   </dependency>
 ```
  
-#### Development version: **1.3.3-SNAPSHOT**
+#### Development version: **2.1.0-SNAPSHOT**
 
 SNAPSHOT versions are NOT synchronized to Central. If you want to use a snapshot version you need to add the https://oss.sonatype.org/content/repositories/snapshots/ repository to your pom.xml.
 

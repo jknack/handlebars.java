@@ -207,7 +207,7 @@ public class Handlebars implements HelperRegistry {
      * For example:
      * </p>
      * <p>
-     * <code>"bread" & "butter"</code>
+     * <code>"bread" {@literal &} "butter"</code>
      * </p>
      * becomes:
      *

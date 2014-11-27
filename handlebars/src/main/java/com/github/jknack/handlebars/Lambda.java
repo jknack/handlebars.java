@@ -41,7 +41,7 @@ import java.io.IOException;
  * <pre>
  * Map hash = ...
  * hash.put("name", "Willy");
- * hash.put("wrapped", new Lambda<String>() {
+ * hash.put("wrapped", new Lambda&lt;String&gt;() {
  *   public String apply(Scope scope, Template template) {
  *    return "<b>" + template.apply(scope) + "</b>";
  *   }
