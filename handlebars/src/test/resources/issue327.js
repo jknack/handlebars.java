@@ -7,9 +7,7 @@ Handlebars.registerHelper('link', function(text, url) {
   return new Handlebars.SafeString(result);
 });
 
-Handlebars.registerHelper('if-helper', function(context, options) {
-  var ifhelper = Handlebars.helpers['if'];
-  java.lang.System.out.println(ifhelper);
-
-  return ifhelper.apply(arguments);
+Handlebars.registerHelper('call-link', function(text, url) {
+  var link = Handlebars.helpers['link'];
+  return link.apply(this, [text, url]);
 });

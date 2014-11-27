@@ -22,4 +22,10 @@ public class Issue327 extends AbstractTest {
         "<a href=\"https://github.com/jknack/handlebars.java\">handlebars.java</a>");
   }
 
+  @Test
+  public void calllink() throws IOException {
+    shouldCompileTo("{{call-link 'handlebars.java' 'https://github.com/jknack/handlebars.java'}}", $,
+        "<a href=\"https://github.com/jknack/handlebars.java\">handlebars.java</a>");
+  }
+
 }

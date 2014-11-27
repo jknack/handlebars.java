@@ -47,7 +47,7 @@ Handlebars.escapeExpression = Handlebars.Utils.escapeExpression;
       return helper.apply(context, args);
     };
   
-    Handlebars.helpers[name] = fn;
+    Handlebars.helpers[name] = helper;
     Handlebars_java.registerHelper(name, fn);
   };
 
