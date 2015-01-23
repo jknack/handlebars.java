@@ -111,6 +111,8 @@ public class EachHelper implements Helper<Object> {
             .combine("@last", last ? "last" : "")
             .combine("@odd", even ? "" : "odd")
             .combine("@even", even ? "even" : "")
+            // 1-based index
+            .combine("@index_1", index + 1)
             .build();
         buffer.append(options.fn(current));
         current.destroy();
