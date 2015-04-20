@@ -157,6 +157,14 @@ public enum StringHelpers implements Helper<Object> {
   join {
     @SuppressWarnings("rawtypes")
     @Override
+    public CharSequence apply(final Object context, final Options options) {
+      if (options.isFalsy(context)) {
+        return "";
+      }
+      return safeApply(context, options);
+    }
+
+    @Override
     protected CharSequence safeApply(final Object context, final Options options) {
       int separatorIdx = options.params.length - 1;
       Object separator = options.param(separatorIdx, null);
