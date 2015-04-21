@@ -25,10 +25,7 @@ import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.*;
 
 import org.apache.commons.lang3.SystemUtils;
 import org.junit.Test;
@@ -149,7 +146,13 @@ public class StringHelpersTest extends AbstractTest {
   @Test
   public void joinIterable() throws IOException {
     shouldCompileTo("{{{join this \", \"}}}", Arrays.asList("6", "7", "8"),
-        $("join", StringHelpers.join), "6, 7, 8");
+            $("join", StringHelpers.join), "6, 7, 8");
+  }
+
+  @Test
+  public void joinEmptyList() throws IOException {
+    shouldCompileTo("{{{join this \", \"}}}", Collections.emptyList(),
+            $("join", StringHelpers.join), "");
   }
 
   @Test
@@ -483,6 +486,7 @@ public class StringHelpersTest extends AbstractTest {
   public void nullContext() throws IOException {
     Set<Helper<Object>> helpers = new LinkedHashSet<Helper<Object>>(Arrays.asList(StringHelpers
         .values()));
+    helpers.remove(StringHelpers.join);
     helpers.remove(StringHelpers.yesno);
     helpers.remove(StringHelpers.defaultIfEmpty);
 
@@ -503,6 +507,7 @@ public class StringHelpersTest extends AbstractTest {
   public void nullContextWithDefault() throws IOException {
     Set<Helper<Object>> helpers = new LinkedHashSet<Helper<Object>>(Arrays.asList(StringHelpers
         .values()));
+    helpers.remove(StringHelpers.join);
     helpers.remove(StringHelpers.yesno);
     helpers.remove(StringHelpers.defaultIfEmpty);
 
@@ -524,6 +529,7 @@ public class StringHelpersTest extends AbstractTest {
   public void nullContextWithNumber() throws IOException {
     Set<Helper<Object>> helpers = new LinkedHashSet<Helper<Object>>(Arrays.asList(StringHelpers
         .values()));
+    helpers.remove(StringHelpers.join);
     helpers.remove(StringHelpers.yesno);
     helpers.remove(StringHelpers.defaultIfEmpty);
 
