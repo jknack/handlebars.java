@@ -173,7 +173,7 @@ class HbsErrorStrategy extends DefaultErrorStrategy {
     }
     Token offendingToken = recognizer.getCurrentToken();
     IntervalSet expecting = getExpectedTokens(recognizer);
-    String msg = expecting.toString(recognizer.getTokenNames());
+    String msg = expecting.toString(recognizer.getVocabulary());
 
     recognizer.notifyErrorListeners(offendingToken, msg, null);
   }

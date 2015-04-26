@@ -291,6 +291,7 @@ fragment
 ID
   :
   ID_START ID_SUFFIX*
+  | ID_ESCAPE ID_SUFFIX*
  ;
 
 fragment
@@ -302,7 +303,7 @@ ID_START
 fragment
 ID_SUFFIX
   :
-    ID_ESCAPE
+    '.' ID_ESCAPE
   | ID_START
   | ID_PART
   | '-'
@@ -311,7 +312,7 @@ ID_SUFFIX
 fragment
 ID_ESCAPE
   :
-   '.' '[' ~[\r\n]+? ']'
+    '[' ~[\r\n]+? ']'
   ;
 
 fragment
