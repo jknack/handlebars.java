@@ -1,15 +1,10 @@
 
-  var template = Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
-  this.compilerInfo = [4,'>= 1.0.0'];
-helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
-  var buffer = "", functionType="function", escapeExpression=this.escapeExpression;
-
-
-  buffer += "Hi "
-    + escapeExpression((typeof depth0 === functionType ? depth0.apply(depth0) : depth0))
+  var template = Handlebars.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
+  var lambda=this.lambda, escapeExpression=this.escapeExpression;
+  return "Hi "
+    + escapeExpression(lambda(depth0, depth0))
     + "!";
-  return buffer;
-  });
+},"useData":true});
   var templates = Handlebars.templates = Handlebars.templates || {};
   templates['input'] = template;
   var partials = Handlebars.partials = Handlebars.partials || {};

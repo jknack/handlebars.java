@@ -11,28 +11,16 @@ public class Issue322 extends AbstractTest {
   @Test
   public void defaults() throws IOException {
     assertEquals(
-        "function (Handlebars,depth0,helpers,partials,data) {\n"
+        "{\"compiler\":[6,\">= 2.0.0-beta.1\"],\"main\":function(depth0,helpers,partials,data) {\n"
             +
-            "  this.compilerInfo = [4,'>= 1.0.0'];\n"
+            "  var helper, functionType=\"function\", helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression;\n"
             +
-            "helpers = this.merge(helpers, Handlebars.helpers); data = data || {};\n"
+            "  return \"Hi \"\n"
             +
-            "  var buffer = \"\", stack1, helper, functionType=\"function\", escapeExpression=this.escapeExpression;\n"
+            "    + escapeExpression(((helper = (helper = helpers['var'] || (depth0 != null ? depth0['var'] : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {\"name\":\"var\",\"hash\":{},\"data\":data}) : helper)))\n"
             +
-            "\n"
-            +
-            "\n"
-            +
-            "  buffer += \"Hi \";\n"
-            +
-            "  if (helper = helpers['var']) { stack1 = helper.call(depth0, {hash:{},data:data}); }\n"
-            +
-            "  else { helper = (depth0 && depth0['var']); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }\n"
-            +
-            "  buffer += escapeExpression(stack1)\n" +
             "    + \"!\";\n" +
-            "  return buffer;\n" +
-            "  }", compile("Hi {{var}}!").toJavaScript());
+            "},\"useData\":true}", compile("Hi {{var}}!").toJavaScript());
   }
 
   @Test
@@ -59,7 +47,7 @@ public class Issue322 extends AbstractTest {
             "  buffer += escapeExpression(stack1)\n" +
             "    + \"!\";\n" +
             "  return buffer;\n" +
-            "  }", compile("Hi {{var}}!").toJavaScript());
+            "  }", new Handlebars().handlebarsJsFile("/handlebars-v1.3.0.js").compileInline("Hi {{var}}!").toJavaScript());
   }
 
   @Test

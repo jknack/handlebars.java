@@ -112,6 +112,9 @@ public class HandlebarsViewResolver extends AbstractTemplateViewResolver
    */
   private Formatter[] formatters;
 
+  /** Location of the handlebars.js file. */
+  private String handlebarsJsFile;
+
   /**
    * Creates a new {@link HandlebarsViewResolver}.
    *
@@ -187,6 +190,10 @@ public class HandlebarsViewResolver extends AbstractTemplateViewResolver
         "A handlebars object is required.");
 
     handlebars.with(registry);
+
+    if (handlebarsJsFile != null) {
+      handlebars.handlebarsJsFile(handlebarsJsFile);
+    }
 
     if (formatters != null) {
       for (Formatter formatter : formatters) {
@@ -293,6 +300,33 @@ public class HandlebarsViewResolver extends AbstractTemplateViewResolver
   public void setFormatters(final Formatter... formatters) {
     this.formatters = notEmpty(formatters,
         "At least one formatter must be present.");
+  }
+
+  /**
+   * Set the handlebars.js location used it to compile/precompile template to JavaScript.
+   * <p>
+   * Using handlebars.js 2.x:
+   * </p>
+   *
+   * <pre>
+   *   Handlebars handlebars = new Handlebars()
+   *      .withHandlberasJs("handlebars-v2.0.0.js");
+   * </pre>
+   * <p>
+   * Using handlebars.js 1.x:
+   * </p>
+   *
+   * <pre>
+   *   Handlebars handlebars = new Handlebars()
+   *      .withHandlberasJs("handlebars-v1.3.0.js");
+   * </pre>
+   *
+   * Default handlebars.js is <code>handlebars-v2.0.0.js</code>.
+   *
+   * @param location A classpath location of the handlebar.js file.
+   */
+  public void setHandlebarsJsFile(final String location) {
+    this.handlebarsJsFile = notEmpty(location, "Location is required");
   }
 
   /**

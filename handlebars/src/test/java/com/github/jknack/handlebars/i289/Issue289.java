@@ -7,10 +7,17 @@ import java.io.IOException;
 import org.junit.Test;
 
 import com.github.jknack.handlebars.AbstractTest;
+import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Helper;
 import com.github.jknack.handlebars.Options;
 
 public class Issue289 extends AbstractTest {
+
+  @Override
+  protected void configure(final Handlebars handlebars) {
+    handlebars.handlebarsJsFile("/handlebars-v1.3.0.js");
+  }
+
 
   private Hash helpers = $("lowercase", new Helper<Object>() {
     @Override

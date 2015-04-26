@@ -7,6 +7,7 @@ import java.io.IOException;
 import org.junit.Test;
 
 import com.github.jknack.handlebars.AbstractTest;
+import com.github.jknack.handlebars.Handlebars;
 
 public class Issue204 extends AbstractTest {
 
@@ -59,8 +60,8 @@ public class Issue204 extends AbstractTest {
         "  if(stack1 || stack1 === 0) { return stack1; }\n" +
         "  else { return ''; }\n" +
         "  }";
-    assertEquals(jsFn, compile("{{#if true}}true{{else}}false{{/if}}").toJavaScript());
-    assertEquals(jsFn, compile("{{#if true}}true{{^}}false{{/if}}").toJavaScript());
+    assertEquals(jsFn, new Handlebars().handlebarsJsFile("/handlebars-v1.3.0.js").compileInline("{{#if true}}true{{else}}false{{/if}}").toJavaScript());
+    assertEquals(jsFn, new Handlebars().handlebarsJsFile("/handlebars-v1.3.0.js").compileInline("{{#if true}}true{{^}}false{{/if}}").toJavaScript());
   }
 
 }
