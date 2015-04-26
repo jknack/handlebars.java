@@ -313,10 +313,10 @@ public class RhinoHandlebars extends HandlebarsJs {
    * @param context Handlebars context.
    * @return A JS Rhino object.
    */
-  private static NativeObject hash(final Map<String, Object> map, final Context context) {
+  private static NativeObject hash(final Map<?, Object> map, final Context context) {
     NativeObject hash = new BetterNativeObject(context);
-    for (Entry<String, Object> prop : map.entrySet()) {
-      hash.defineProperty(prop.getKey(), prop.getValue(), NativeObject.READONLY);
+    for (Entry<?, Object> prop : map.entrySet()) {
+      hash.defineProperty(prop.getKey().toString(), prop.getValue(), NativeObject.READONLY);
     }
     return hash;
   }
