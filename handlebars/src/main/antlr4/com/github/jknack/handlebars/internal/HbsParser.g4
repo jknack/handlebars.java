@@ -116,7 +116,7 @@ delimiters
 
 partial
   :
-    START_PARTIAL PATH QID? END
+    START_PARTIAL PATH QID? hash* END
   ;
 
 param

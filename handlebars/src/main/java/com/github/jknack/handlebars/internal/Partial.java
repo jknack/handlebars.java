@@ -17,6 +17,7 @@
  */
 package com.github.jknack.handlebars.internal;
 
+import static org.apache.commons.lang3.StringUtils.isEmpty;
 import static org.apache.commons.lang3.StringUtils.join;
 import static org.apache.commons.lang3.Validate.notEmpty;
 
@@ -25,6 +26,7 @@ import java.io.Writer;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import com.github.jknack.handlebars.Context;
 import com.github.jknack.handlebars.Handlebars;
@@ -43,7 +45,7 @@ import com.github.jknack.handlebars.io.TemplateSource;
  * @author edgar.espina
  * @since 0.1.0
  */
-class Partial extends BaseTemplate {
+class Partial extends HelperResolver {
 
   /**
    * The partial path.
@@ -76,11 +78,14 @@ class Partial extends BaseTemplate {
    * @param handlebars The Handlebars object. Required.
    * @param path The template path.
    * @param context The template context.
+   * @param hash Template params
    */
-  public Partial(final Handlebars handlebars, final String path, final String context) {
+  public Partial(final Handlebars handlebars, final String path, final String context,
+      final Map<String, Object> hash) {
     super(handlebars);
     this.path = notEmpty(path, "The path is required.");
     this.context = context;
+    this.hash(hash);
   }
 
   @Override
@@ -120,11 +125,8 @@ class Partial extends BaseTemplate {
       }
 
       Template template = handlebars.compile(source);
-      if (this.context == null || this.context.equals("this")) {
-        template.apply(context, writer);
-      } else {
-        template.apply(Context.newContext(context, context.get(this.context)), writer);
-      }
+      String key = isEmpty(this.context) ? "this" : this.context;
+      template.apply(Context.newContext(context, context.get(key)).data(hash(context)), writer);
     } catch (IOException ex) {
       String reason = String.format("The partial '%s' could not be found",
           loader.resolve(path));
@@ -219,8 +221,8 @@ class Partial extends BaseTemplate {
   @Override
   public String text() {
     StringBuilder buffer = new StringBuilder(startDelimiter)
-      .append('>')
-      .append(path);
+        .append('>')
+        .append(path);
 
     if (context != null) {
       buffer.append(' ').append(context);

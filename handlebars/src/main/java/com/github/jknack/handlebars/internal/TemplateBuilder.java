@@ -407,7 +407,7 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
     TerminalNode partialContext = ctx.QID();
     String startDelim = ctx.start.getText();
     Template partial = new Partial(handlebars, uri,
-        partialContext != null ? partialContext.getText() : null)
+        partialContext != null ? partialContext.getText() : null, hash(ctx.hash()))
         .startDelimiter(startDelim.substring(0, startDelim.length() - 1))
         .endDelimiter(ctx.stop.getText())
         .indent(indent)
