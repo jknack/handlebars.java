@@ -130,7 +130,7 @@ public class HbsParserTest {
     parser.addErrorListener(errorReporter);
     ParseTree tree = parser.template();
     if (printTokens) {
-      String[] tokenNames = lexer.getTokenNames();
+      String[] tokenNames = parser.tokenNames();
       for (Token token : tokens.getTokens()) {
         int type = token.getType();
         String message = String.format("%s:%s:%s:%s", token.getText(), type == -1 ? ""

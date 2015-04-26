@@ -26,6 +26,7 @@ import org.antlr.v4.runtime.Parser;
 import org.antlr.v4.runtime.RecognitionException;
 import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.TokenStream;
+import org.antlr.v4.runtime.VocabularyImpl;
 import org.antlr.v4.runtime.misc.IntervalSet;
 import org.apache.commons.lang3.StringUtils;
 
@@ -181,7 +182,7 @@ class HbsErrorStrategy extends DefaultErrorStrategy {
   @Override
   public void reportInputMismatch(final Parser recognizer, final InputMismatchException e) {
     String[] displayNames = displayNames(recognizer);
-    String msg = e.getExpectedTokens().toString(displayNames);
+    String msg = e.getExpectedTokens().toString(VocabularyImpl.fromTokenNames(displayNames));
     recognizer.notifyErrorListeners(e.getOffendingToken(), msg, e);
   }
 
@@ -195,7 +196,7 @@ class HbsErrorStrategy extends DefaultErrorStrategy {
     HbsParser parser = (HbsParser) recognizer;
     TokenStream tokens = parser.getTokenStream();
     HbsLexer lexer = (HbsLexer) tokens.getTokenSource();
-    String[] tokenNames = recognizer.getTokenNames();
+    String[] tokenNames = parser.tokenNames();
     String[] displayName = new String[tokenNames.length];
     for (int i = 0; i < displayName.length; i++) {
       String[] parts = StringUtils.split(tokenNames[i], "_");

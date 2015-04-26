@@ -5,6 +5,22 @@ options {
 }
 
 @members {
+
+  public String[] tokenNames() {
+    String[] tokenNames = new String[_SYMBOLIC_NAMES.length];
+    for (int i = 0; i < tokenNames.length; i++) {
+      tokenNames[i] = VOCABULARY.getLiteralName(i);
+      if (tokenNames[i] == null) {
+        tokenNames[i] = VOCABULARY.getSymbolicName(i);
+      }
+
+      if (tokenNames[i] == null) {
+        tokenNames[i] = "<INVALID>";
+      }
+    }
+    return tokenNames;
+  }
+
   void setStart(String start) {
   }
 

@@ -155,7 +155,6 @@ public enum StringHelpers implements Helper<Object> {
    * </pre>
    */
   join {
-    @SuppressWarnings("rawtypes")
     @Override
     public CharSequence apply(final Object context, final Options options) {
       if (options.isFalsy(context)) {
@@ -164,6 +163,7 @@ public enum StringHelpers implements Helper<Object> {
       return safeApply(context, options);
     }
 
+    @SuppressWarnings("rawtypes")
     @Override
     protected CharSequence safeApply(final Object context, final Options options) {
       int separatorIdx = options.params.length - 1;
