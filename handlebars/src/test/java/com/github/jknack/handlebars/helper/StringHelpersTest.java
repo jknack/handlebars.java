@@ -250,7 +250,7 @@ public class StringHelpersTest extends AbstractTest {
     Template fn = createMock(Template.class);
 
     Options options = new Options.Builder(hbs, substring.name(), TagType.VAR, ctx, fn)
-        .setParams(new Object[]{11})
+        .setParams(new Object[]{11 })
         .build();
 
     assertEquals("substring", substring.name());
@@ -265,7 +265,7 @@ public class StringHelpersTest extends AbstractTest {
     Template fn = createMock(Template.class);
 
     Options options = new Options.Builder(hbs, substring.name(), TagType.VAR, ctx, fn)
-        .setParams(new Object[]{0, 10})
+        .setParams(new Object[]{0, 10 })
         .build();
 
     assertEquals("substring", substring.name());
@@ -327,7 +327,7 @@ public class StringHelpersTest extends AbstractTest {
 
     assertEquals("replace", replace.name());
     assertEquals("Handlebars rocks",
-    		replace.apply("Handlebars ...", options));
+        replace.apply("Handlebars ...", options));
   }
 
   @Test
@@ -491,7 +491,7 @@ public class StringHelpersTest extends AbstractTest {
     helpers.remove(StringHelpers.defaultIfEmpty);
 
     Options options = createMock(Options.class);
-    expect(options.isFalsy(anyObject())).andReturn(true).times(helpers.size());
+    expect(options.isFalsy(anyObject())).andReturn(true).times(helpers.size() - 1);
     expect(options.param(0, null)).andReturn(null).times(helpers.size());
 
     replay(options);
@@ -513,7 +513,7 @@ public class StringHelpersTest extends AbstractTest {
 
     String nothing = "nothing";
     Options options = createMock(Options.class);
-    expect(options.isFalsy(anyObject())).andReturn(true).times(helpers.size());
+    expect(options.isFalsy(anyObject())).andReturn(true).times(helpers.size() - 1);
     expect(options.param(0, null)).andReturn(nothing).times(helpers.size());
 
     replay(options);
@@ -535,7 +535,7 @@ public class StringHelpersTest extends AbstractTest {
 
     Object number = 32;
     Options options = createMock(Options.class);
-    expect(options.isFalsy(anyObject())).andReturn(true).times(helpers.size());
+    expect(options.isFalsy(anyObject())).andReturn(true).times(helpers.size() - 1);
     expect(options.param(0, null)).andReturn(number).times(helpers.size());
 
     replay(options);

@@ -596,6 +596,15 @@ public enum StringHelpers implements Helper<Object> {
    */
   numberFormat {
     @Override
+    public CharSequence apply(final Object context, final Options options) throws IOException {
+      if (context instanceof Number) {
+        return safeApply(context, options);
+      }
+      Object param = options.param(0, null);
+      return param == null ? null : param.toString();
+    }
+
+    @Override
     protected CharSequence safeApply(final Object value, final Options options) {
       isTrue(value instanceof Number, "found '%s', expected 'number'", value);
       Number number = (Number) value;
