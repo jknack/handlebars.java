@@ -26,6 +26,7 @@ import java.util.Map;
 
 import com.github.jknack.handlebars.Context;
 import com.github.jknack.handlebars.EscapingStrategy;
+import com.github.jknack.handlebars.Formatter;
 import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Helper;
 import com.github.jknack.handlebars.Lambda;
@@ -173,13 +174,13 @@ class Variable extends HelperResolver {
               Lambdas.merge(handlebars, (Lambda<Object, Object>) value, scope,
                   this);
         }
-        String stringValue = value.toString();
-        // TODO: Add formatter hook
+        Formatter.Chain formatter = handlebars.getFormatter();
+        String fvalue = formatter.format(value).toString();
         if (escape(value)) {
-          writer.append(escapingStrategy.escape(stringValue));
+          writer.append(escapingStrategy.escape(fvalue));
         } else {
           // DON'T escape none String values.
-          writer.append(stringValue);
+          writer.append(fvalue);
         }
       }
     }

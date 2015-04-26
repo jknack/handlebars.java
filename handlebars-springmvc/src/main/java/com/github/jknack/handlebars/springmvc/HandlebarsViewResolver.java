@@ -41,6 +41,7 @@ import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.view.AbstractTemplateViewResolver;
 import org.springframework.web.servlet.view.AbstractUrlBasedView;
 
+import com.github.jknack.handlebars.Formatter;
 import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Helper;
 import com.github.jknack.handlebars.HelperRegistry;
@@ -105,6 +106,11 @@ public class HandlebarsViewResolver extends AbstractTemplateViewResolver
    *
    */
   private boolean deletePartialAfterMerge;
+
+  /**
+   * Set variable formatters.
+   */
+  private Formatter[] formatters;
 
   /**
    * Creates a new {@link HandlebarsViewResolver}.
@@ -181,6 +187,12 @@ public class HandlebarsViewResolver extends AbstractTemplateViewResolver
         "A handlebars object is required.");
 
     handlebars.with(registry);
+
+    if (formatters != null) {
+      for (Formatter formatter : formatters) {
+        handlebars.with(formatter);
+      }
+    }
 
     if (registerMessageHelper) {
       // Add a message source helper
@@ -271,6 +283,16 @@ public class HandlebarsViewResolver extends AbstractTemplateViewResolver
   public void setValueResolvers(final ValueResolver... valueResolvers) {
     this.valueResolvers = notEmpty(valueResolvers,
         "At least one value-resolver must be present.");
+  }
+
+  /**
+   * Set variable formatters.
+   *
+   * @param formatters Formatters to add.
+   */
+  public void setFormatters(final Formatter... formatters) {
+    this.formatters = notEmpty(formatters,
+        "At least one formatter must be present.");
   }
 
   /**

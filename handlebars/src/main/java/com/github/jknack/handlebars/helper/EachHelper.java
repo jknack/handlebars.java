@@ -74,10 +74,14 @@ public class EachHelper implements Helper<Object> {
     Set<Entry<String, Object>> propertySet = options.propertySet(context);
     StringBuilder buffer = new StringBuilder();
     Context parent = options.context;
+    boolean first = true;
     for (Entry<String, Object> entry : propertySet) {
-      Context current = Context.newContext(parent, entry.getValue())
-          .data("key", entry.getKey());
+      Context current = Context.newBuilder(parent, entry.getValue())
+          .combine("@key", entry.getKey())
+          .combine("@first", first ? "first" : "")
+          .build();
       buffer.append(options.fn(current));
+      first = false;
     }
     return buffer.toString();
   }
