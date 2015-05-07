@@ -17,12 +17,12 @@
  */
 package com.github.jknack.handlebars.context;
 
+import com.github.jknack.handlebars.ValueResolver;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.LinkedHashSet;
 import java.util.Set;
-
-import com.github.jknack.handlebars.ValueResolver;
 
 /**
  * A specialization of {@link MemberValueResolver} with lookup and invocation
@@ -41,7 +41,8 @@ public class MethodValueResolver extends MemberValueResolver<Method> {
 
   @Override
   public boolean matches(final Method method, final String name) {
-    return isPublic(method) && method.getName().equals(name);
+    int parameterCount = method.getParameterTypes().length;
+    return isPublic(method) && method.getName().equals(name) && parameterCount == 0;
   }
 
   @Override
