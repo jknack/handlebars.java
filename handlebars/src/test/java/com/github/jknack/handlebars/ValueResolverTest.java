@@ -17,8 +17,11 @@
  */
 package com.github.jknack.handlebars;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import com.github.jknack.handlebars.context.FieldValueResolver;
+import com.github.jknack.handlebars.context.JavaBeanValueResolver;
+import com.github.jknack.handlebars.context.MapValueResolver;
+import com.github.jknack.handlebars.context.MethodValueResolver;
+import org.junit.Test;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -26,15 +29,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.Test;
-
-import com.github.jknack.handlebars.Context;
-import com.github.jknack.handlebars.Handlebars;
-import com.github.jknack.handlebars.Template;
-import com.github.jknack.handlebars.context.FieldValueResolver;
-import com.github.jknack.handlebars.context.JavaBeanValueResolver;
-import com.github.jknack.handlebars.context.MapValueResolver;
-import com.github.jknack.handlebars.context.MethodValueResolver;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 /**
  * Unit test for {@link Context}.
@@ -62,6 +58,14 @@ public class ValueResolverTest {
     public String getChildProperty() {
       return child;
     }
+
+    public String base() {
+      return base;
+    }
+
+    public String child() {
+      return child;
+    }
   }
 
   @Test
@@ -84,6 +88,8 @@ public class ValueResolverTest {
     assertNotNull(context);
     assertEquals("a", context.get("getBaseProperty"));
     assertEquals("b", context.get("getChildProperty"));
+    assertEquals("a", context.get("base"));
+    assertEquals("b", context.get("child"));
   }
 
   @Test
