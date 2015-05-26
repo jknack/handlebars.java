@@ -19,7 +19,6 @@ package com.github.jknack.handlebars.helper;
 
 import java.io.IOException;
 
-import com.github.jknack.handlebars.Context;
 import com.github.jknack.handlebars.Helper;
 import com.github.jknack.handlebars.Options;
 
@@ -47,9 +46,9 @@ public class IfHelper implements Helper<Object> {
   public CharSequence apply(final Object context, final Options options)
       throws IOException {
     if (options.isFalsy(context)) {
-      return options.inverse(Context.newContext(options.context, context));
+      return options.inverse();
     } else {
-      return options.fn(Context.newContext(options.context, context));
+      return options.fn();
     }
   }
 }
