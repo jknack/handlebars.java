@@ -147,6 +147,14 @@ class Block extends HelperResolver {
       }
       // A built-in helper might be override it.
       helper = handlebars.helper(helperName);
+      //
+      if (childContext == null) {
+        Helper<Object> missing = helper(Handlebars.HELPER_MISSING);
+        if (missing != null) {
+          // use missing here
+          helper = missing;
+        }
+      }
     } else {
       helperName = name;
       childContext = transform(determineContext(context));
