@@ -132,7 +132,13 @@ delimiters
 
 partial
   :
-    START_PARTIAL PATH QID? hash* END
+    START_PARTIAL pexpr END
+  ;
+
+pexpr
+  :
+    LP sexpr RP hash*             #dynamicPath
+  | path = (QID|PATH) QID? hash*  #staticPath
   ;
 
 param

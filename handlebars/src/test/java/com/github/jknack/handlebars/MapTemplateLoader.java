@@ -17,9 +17,6 @@
  */
 package com.github.jknack.handlebars;
 
-import static org.apache.commons.lang3.Validate.notEmpty;
-import static org.apache.commons.lang3.Validate.notNull;
-
 import java.io.FileNotFoundException;
 import java.net.URL;
 import java.util.HashMap;
@@ -54,8 +51,6 @@ public class MapTemplateLoader extends URLTemplateLoader {
 
   @Override
   public TemplateSource sourceAt(final String uri) throws FileNotFoundException {
-    notNull(uri, "The uri is required.");
-    notEmpty(uri.toString(), "The uri is required.");
     String location = resolve(normalize(uri));
     String text = map.get(location);
     if (text == null) {

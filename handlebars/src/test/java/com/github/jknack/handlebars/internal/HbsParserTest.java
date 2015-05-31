@@ -16,6 +16,11 @@ public class HbsParserTest {
   }
 
   @Test
+  public void dynamicPartial() {
+    parse("{{> (partial)}}");
+  }
+
+  @Test
   public void text() {
     parse("Hello world!");
   }

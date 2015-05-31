@@ -221,6 +221,7 @@ public class DefaultHelperRegistry implements HelperRegistry {
     registry.registerHelper(PrecompileHelper.NAME, PrecompileHelper.INSTANCE);
     registry.registerHelper("i18n", I18nHelper.i18n);
     registry.registerHelper("i18nJs", I18nHelper.i18nJs);
+    registry.registerHelper(LookupHelper.NAME, LookupHelper.INSTANCE);
   }
 
 }

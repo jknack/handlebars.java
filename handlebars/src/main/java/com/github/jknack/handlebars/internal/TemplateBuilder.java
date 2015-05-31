@@ -48,6 +48,7 @@ import com.github.jknack.handlebars.internal.HbsParser.BodyContext;
 import com.github.jknack.handlebars.internal.HbsParser.BoolParamContext;
 import com.github.jknack.handlebars.internal.HbsParser.CharParamContext;
 import com.github.jknack.handlebars.internal.HbsParser.CommentContext;
+import com.github.jknack.handlebars.internal.HbsParser.DynamicPathContext;
 import com.github.jknack.handlebars.internal.HbsParser.ElseBlockContext;
 import com.github.jknack.handlebars.internal.HbsParser.EscapeContext;
 import com.github.jknack.handlebars.internal.HbsParser.HashContext;
@@ -59,6 +60,7 @@ import com.github.jknack.handlebars.internal.HbsParser.RefParamContext;
 import com.github.jknack.handlebars.internal.HbsParser.SexprContext;
 import com.github.jknack.handlebars.internal.HbsParser.SpacesContext;
 import com.github.jknack.handlebars.internal.HbsParser.StatementContext;
+import com.github.jknack.handlebars.internal.HbsParser.StaticPathContext;
 import com.github.jknack.handlebars.internal.HbsParser.StringParamContext;
 import com.github.jknack.handlebars.internal.HbsParser.SubParamExprContext;
 import com.github.jknack.handlebars.internal.HbsParser.TemplateContext;
@@ -75,6 +77,28 @@ import com.github.jknack.handlebars.io.TemplateSource;
  * @since 0.10.0
  */
 abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
+
+  /**
+   * Get partial info: static vs dynamic.
+   *
+   * @author edgar
+   * @since 2.2.0
+   */
+  private static class PartialInfo {
+
+    /** Token to report errors. */
+    private Token token;
+
+    /** Partial params. */
+    private Map<String, Object> hash;
+
+    /** Partial path: static vs subexpression. */
+    private Template path;
+
+    /** Template context. */
+    private String context;
+
+  }
 
   /**
    * A handlebars object. required.
@@ -384,16 +408,6 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
   @Override
   public Template visitPartial(final PartialContext ctx) {
     hasTag(true);
-    Token pathToken = ctx.PATH().getSymbol();
-    String uri = pathToken.getText();
-    if (uri.startsWith("[") && uri.endsWith("]")) {
-      uri = uri.substring(1, uri.length() - 1);
-    }
-
-    if (uri.startsWith("/")) {
-      String message = "found: '/', partial shouldn't start with '/'";
-      reportError(null, pathToken.getLine(), pathToken.getCharPositionInLine(), message);
-    }
 
     String indent = line.toString();
     if (hasTag()) {
@@ -404,16 +418,54 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
       indent = null;
     }
 
-    TerminalNode partialContext = ctx.QID();
+    PartialInfo info = (PartialInfo) super.visit(ctx.pexpr());
+
     String startDelim = ctx.start.getText();
-    Template partial = new Partial(handlebars, uri,
-        partialContext != null ? partialContext.getText() : null, hash(ctx.hash()))
+    Template partial = new Partial(handlebars, info.path, info.context, info.hash)
         .startDelimiter(startDelim.substring(0, startDelim.length() - 1))
         .endDelimiter(ctx.stop.getText())
         .indent(indent)
         .filename(source.filename())
-        .position(pathToken.getLine(), pathToken.getCharPositionInLine());
+        .position(info.token.getLine(), info.token.getCharPositionInLine());
 
+    return partial;
+  }
+
+  @Override
+  public PartialInfo visitStaticPath(final StaticPathContext ctx) {
+    Token pathToken = ctx.path;
+    String uri = pathToken.getText();
+    if (uri.startsWith("[") && uri.endsWith("]")) {
+      uri = uri.substring(1, uri.length() - 1);
+    }
+
+    if (uri.startsWith("/")) {
+      String message = "found: '/', partial shouldn't start with '/'";
+      reportError(null, pathToken.getLine(), pathToken.getCharPositionInLine(), message);
+    }
+
+    TerminalNode partialContext = ctx.QID(1);
+
+    PartialInfo partial = new PartialInfo();
+    partial.token = pathToken;
+    partial.path = new Text(handlebars, uri);
+    partial.hash = hash(ctx.hash());
+    partial.context = partialContext != null ? partialContext.getText() : null;
+    return partial;
+  }
+
+  @Override
+  public PartialInfo visitDynamicPath(final DynamicPathContext ctx) {
+    SexprContext sexpr = ctx.sexpr();
+    TerminalNode qid = sexpr.QID();
+    Template expression = newVar(qid.getSymbol(), TagType.SUB_EXPRESSION, params(sexpr.param()),
+        hash(sexpr.hash()), ctx.start.getText(), ctx.stop.getText());
+
+    PartialInfo partial = new PartialInfo();
+    partial.path = expression;
+    partial.hash = hash(ctx.hash());
+    partial.context = null;
+    partial.token = qid.getSymbol();
     return partial;
   }
 

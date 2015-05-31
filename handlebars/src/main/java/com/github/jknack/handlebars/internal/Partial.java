@@ -19,7 +19,7 @@ package com.github.jknack.handlebars.internal;
 
 import static org.apache.commons.lang3.StringUtils.isEmpty;
 import static org.apache.commons.lang3.StringUtils.join;
-import static org.apache.commons.lang3.Validate.notEmpty;
+import static org.apache.commons.lang3.Validate.notNull;
 
 import java.io.IOException;
 import java.io.Writer;
@@ -50,7 +50,7 @@ class Partial extends HelperResolver {
   /**
    * The partial path.
    */
-  private String path;
+  private Template path;
 
   /**
    * A partial context. Optional.
@@ -80,10 +80,10 @@ class Partial extends HelperResolver {
    * @param context The template context.
    * @param hash Template params
    */
-  public Partial(final Handlebars handlebars, final String path, final String context,
+  public Partial(final Handlebars handlebars, final Template path, final String context,
       final Map<String, Object> hash) {
     super(handlebars);
-    this.path = notEmpty(path, "The path is required.");
+    this.path = notNull(path, "The path is required.");
     this.context = context;
     this.hash(hash);
   }
@@ -94,6 +94,8 @@ class Partial extends HelperResolver {
     TemplateLoader loader = handlebars.getLoader();
     try {
       LinkedList<TemplateSource> invocationStack = context.data(Context.INVOCATION_STACK);
+
+      String path = this.path.apply(context);
 
       TemplateSource source = loader.sourceAt(path);
 
@@ -129,7 +131,7 @@ class Partial extends HelperResolver {
       template.apply(Context.newContext(context, context.get(key)).data(hash(context)), writer);
     } catch (IOException ex) {
       String reason = String.format("The partial '%s' could not be found",
-          loader.resolve(path));
+          loader.resolve(path.text()));
       String message = String.format("%s:%s:%s: %s", filename, line, column, reason);
       HandlebarsError error = new HandlebarsError(filename, line,
           column, reason, text(), message);
@@ -222,7 +224,7 @@ class Partial extends HelperResolver {
   public String text() {
     StringBuilder buffer = new StringBuilder(startDelimiter)
         .append('>')
-        .append(path);
+        .append(path.text());
 
     if (context != null) {
       buffer.append(' ').append(context);

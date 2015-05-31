@@ -179,7 +179,7 @@ START_DELIM
  ;
 
 START_PARTIAL
- : {startToken(start, ">")}? . -> pushMode(PARTIAL)
+ : {startToken(start, ">")}? . -> pushMode(VAR)
  ;
 
 END_BLOCK
@@ -212,25 +212,6 @@ WS_DELIM
   ;
 
 DELIM: .;
-
-mode PARTIAL;
-
-PATH
-  :
-  (
-    '[' PATH_SEGMENT ']'
-  | PATH_SEGMENT
-  ) -> mode(VAR)
-  ;
-
-fragment
-PATH_SEGMENT
-  : [a-zA-Z0-9_$'/.:\-]+
-  ;
-
-WS_PATH
-  : [ \t\r\n] -> skip
-  ;
 
 mode VAR;
 
@@ -282,6 +263,17 @@ QID
  | ID ID_SEPARATOR QID
  | ID
  ;
+
+PATH
+  :
+    '[' PATH_SEGMENT ']'
+  | PATH_SEGMENT
+  ;
+
+fragment
+PATH_SEGMENT
+  : [a-zA-Z0-9_$'/.:\-]+
+  ;
 
 fragment
 ID_SEPARATOR

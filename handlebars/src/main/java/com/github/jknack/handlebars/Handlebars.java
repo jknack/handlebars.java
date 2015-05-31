@@ -1093,7 +1093,7 @@ public class Handlebars implements HelperRegistry {
   /**
    * Return a parser factory.
    *
-   * @return A parsert factory.
+   * @return A parser factory.
    */
   public ParserFactory getParserFactory() {
     return parserFactory;
