@@ -311,6 +311,7 @@ public class Context {
     root.data = new HashMap<String, Object>();
     root.data.put(PARTIALS, new HashMap<String, Template>());
     root.data.put(INVOCATION_STACK, new LinkedList<TemplateSource>());
+    root.data.put("root", model);
     return root;
   }
 
