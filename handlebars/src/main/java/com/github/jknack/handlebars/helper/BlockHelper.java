@@ -87,8 +87,7 @@ public class BlockHelper implements Helper<Object> {
       hash.putAll(partialHash);
     }
 
-    CharSequence result = options.apply(template, Context.newBuilder(options.context, hash)
-        .build());
+    CharSequence result = options.apply(template, options.context.data(hash));
     Boolean deletePartials = options.hash("delete-after-merge",
         options.handlebars.deletePartialAfterMerge());
     if (deletePartials) {
