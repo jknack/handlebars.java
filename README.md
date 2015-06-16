@@ -18,7 +18,7 @@ Handlebars provides the power necessary to let you build semantic templates effe
  The [Handlebars.java blog](http://jknack.github.io/handlebars.java) is a good place for getting started too.
 
 ## Maven
-#### Stable version: **2.1.0**
+#### Stable version: **2.2.1**
 
 
 ```xml
@@ -29,7 +29,7 @@ Handlebars provides the power necessary to let you build semantic templates effe
   </dependency>
 ```
  
-#### Development version: **2.2.0-SNAPSHOT**
+#### Development version: **2.2.2-SNAPSHOT**
 
 SNAPSHOT versions are NOT synchronized to Central. If you want to use a snapshot version you need to add the https://oss.sonatype.org/content/repositories/snapshots/ repository to your pom.xml.
 
