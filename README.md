@@ -18,7 +18,7 @@ Handlebars provides the power necessary to let you build semantic templates effe
  The [Handlebars.java blog](http://jknack.github.io/handlebars.java) is a good place for getting started too.
 
 ## Maven
-#### Stable version: **2.2.3**
+#### Stable version: **2.2.2**
 
 
 ```xml
