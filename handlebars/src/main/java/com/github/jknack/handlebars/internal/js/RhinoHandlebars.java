@@ -52,9 +52,10 @@ public class RhinoHandlebars extends HandlebarsJs {
     /**
      * Apply the helper to the context.
      *
-     * @param context The context object.
-     * @param arg0 The helper first argument, if it is a simple object (i.e. not an array, collection or map).
-     * @param complexArg0Json The helper first argument as JSON, if it is a an array, collection or map
+     * @param contextJson The context object as JSON.
+     * @param simpleArg0 The helper first argument, if it is a simple object.
+     * @param complexArg0Json The helper first argument as JSON,
+     *    if it is a an array, collection or map
      * @param options The options object.
      * @return A string result.
      */
@@ -74,12 +75,12 @@ public class RhinoHandlebars extends HandlebarsJs {
     private Options options;
 
     /**
-     * The options hash as JSON
+     * The options hash as JSON.
      */
     public String hashJson; //Map<String, Object>
 
     /**
-     * The helper params as JSON
+     * The helper params as JSON.
      */
     public String paramsJson; // Object[]
 
@@ -144,10 +145,10 @@ public class RhinoHandlebars extends HandlebarsJs {
         Map<String, Object>contextProperties = contextPropertiesToMap(options.context);
 
         String jsContextJson = toJson(contextProperties);
-        
+
         String complexArg0Json = null;
         Object arg0 = null;
-        
+
         Integer paramSize = options.data(Context.PARAM_SIZE);
         if (paramSize == 0) {
           arg0 = "___NOT_SET_";
@@ -158,7 +159,7 @@ public class RhinoHandlebars extends HandlebarsJs {
             complexArg0Json = toJson(context);
           } // else: keep arg0 = null
         }
-        
+
         Object result = helper.apply(jsContextJson, complexArg0Json, arg0, new OptionsJs(options));
         if (result instanceof CharSequence) {
           return (CharSequence) result;
@@ -168,17 +169,24 @@ public class RhinoHandlebars extends HandlebarsJs {
     });
   }
 
-  private static String toJson(Object object) {
+  /**
+   * Serialize given object to JSON String.
+   *
+   * @param object to serialize
+   * @return JSON String
+   */
+  private static String toJson(final Object object) {
     return new Gson().toJson(object);
   }
-  
+
   /**
    * Returns true for anything that we don' need to serialize as JSON.
-   * @param object
-   * @return
+   *
+   * @param object to analyze
+   * @return whether object is Number, Boolean, String
    */
-  private boolean isSimpleObject(Object object) {
-    
+  private boolean isSimpleObject(final Object object) {
+
     if (object instanceof Number) {
       return true;
     }
@@ -190,10 +198,10 @@ public class RhinoHandlebars extends HandlebarsJs {
     }
     if (object instanceof Scriptable) {
       return true;
-    }  
+    }
     return false;
   }
-  
+
   @Override
   public void registerHelpers(final String filename, final String source) throws Exception {
 
@@ -254,9 +262,11 @@ public class RhinoHandlebars extends HandlebarsJs {
     }
   }
 
-
-
-
+  /**
+   * Turn a given context's properties into a Map.
+   * @param context given
+   * @return the Map
+   */
   private static Map<String, Object> contextPropertiesToMap(final Context context) {
     Map<String, Object> hash = new HashMap<String, Object>();
     for (Entry<String, Object> property : context.propertySet()) {
