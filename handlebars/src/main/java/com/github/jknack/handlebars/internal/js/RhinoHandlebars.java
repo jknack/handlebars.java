@@ -18,13 +18,10 @@
 package com.github.jknack.handlebars.internal.js;
 
 import java.io.IOException;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.mozilla.javascript.NativeArray;
-import org.mozilla.javascript.NativeObject;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.tools.ToolErrorReporter;
 
@@ -34,6 +31,7 @@ import com.github.jknack.handlebars.HelperRegistry;
 import com.github.jknack.handlebars.Options;
 import com.github.jknack.handlebars.internal.Files;
 import com.github.jknack.handlebars.js.HandlebarsJs;
+import com.google.gson.Gson;
 
 /**
  * An implementation of {@link HandlebarsJs} on top of Rhino.
@@ -44,94 +42,7 @@ import com.github.jknack.handlebars.js.HandlebarsJs;
 public class RhinoHandlebars extends HandlebarsJs {
 
   /**
-   * Better integration between java collections/arrays and js arrays. It check for data types
-   * at access time and convert them when necessary.
-   *
-   * @author edgar
-   */
-  @SuppressWarnings("serial")
-  private static class BetterNativeArray extends NativeArray {
-
-    /** The context object. */
-    private Context context;
-
-    /** Internal state of array. */
-    private Map<Object, Object> state = new HashMap<Object, Object>();
-
-    /**
-     * A JS array.
-     *
-     * @param array Array.
-     * @param context Handlebars context.
-     */
-    public BetterNativeArray(final Object[] array, final Context context) {
-      super(array);
-      this.context = context;
-    }
-
-    /**
-     * A JS collection.
-     *
-     * @param collection collection.
-     * @param context Handlebars context.
-     */
-    public BetterNativeArray(final Collection<Object> collection, final Context context) {
-      this(collection.toArray(new Object[collection.size()]), context);
-    }
-
-    @Override
-    public Object get(final int index, final Scriptable start) {
-      Object value = state.get(index);
-      if (value != null) {
-        return value;
-      }
-      value = super.get(index, start);
-      value = toJsObject(value, context);
-      state.put(index, value);
-      return value;
-    }
-
-  }
-
-  /**
-   * Better integration between java objects and js object. It check for data types at access time
-   * and convert them if necessary.
-   *
-   * @author edgar
-   */
-  @SuppressWarnings("serial")
-  private static class BetterNativeObject extends NativeObject {
-
-    /** Handlebars context. */
-    private Context context;
-
-    /** Internal state. */
-    private Map<Object, Object> state = new HashMap<Object, Object>();
-
-    /**
-     * Creates a new {@link BetterNativeObject}.
-     *
-     * @param context Handlebars context.
-     */
-    public BetterNativeObject(final Context context) {
-      this.context = context;
-    }
-
-    @Override
-    public Object get(final String name, final Scriptable start) {
-      Object value = state.get(name);
-      if (value != null) {
-        return value;
-      }
-      value = super.get(name, start);
-      value = toJsObject(value, context);
-      state.put(name, value);
-      return value;
-    }
-  }
-
-  /**
-   * The JavaScript helper contract.
+   * The JavaScript helper contract. Implemented in Javascript in helpers.rhino.js
    *
    * @author edgar.espina
    * @since 1.1.0
@@ -142,11 +53,12 @@ public class RhinoHandlebars extends HandlebarsJs {
      * Apply the helper to the context.
      *
      * @param context The context object.
-     * @param arg0 The helper first argument.
+     * @param arg0 The helper first argument, if it is a simple object (i.e. not an array, collection or map).
+     * @param complexArg0Json The helper first argument as JSON, if it is a an array, collection or map
      * @param options The options object.
      * @return A string result.
      */
-    Object apply(Object context, Object arg0, OptionsJs options);
+    Object apply(String contextJson, String complexArg0Json, Object simpleArg0, OptionsJs options);
   }
 
   /**
@@ -162,14 +74,14 @@ public class RhinoHandlebars extends HandlebarsJs {
     private Options options;
 
     /**
-     * The options hash as JS Rhino object.
+     * The options hash as JSON
      */
-    public NativeObject hash;
+    public String hashJson; //Map<String, Object>
 
     /**
-     * The helper params as JS Rhino object.
+     * The helper params as JSON
      */
-    public NativeArray params;
+    public String paramsJson; // Object[]
 
     /**
      * Creates a new {@link HandlebarsJs} options.
@@ -178,8 +90,8 @@ public class RhinoHandlebars extends HandlebarsJs {
      */
     public OptionsJs(final Options options) {
       this.options = options;
-      this.hash = hash(options.hash, options.context);
-      this.params = new BetterNativeArray(options.params, options.context);
+      this.hashJson = toJson(options.hash);
+      this.paramsJson = toJson(options.params);
     }
 
     /**
@@ -229,15 +141,25 @@ public class RhinoHandlebars extends HandlebarsJs {
     registry.registerHelper(name, new Helper<Object>() {
       @Override
       public CharSequence apply(final Object context, final Options options) throws IOException {
-        Object jsContext = toJsObject(options.context);
-        Object arg0 = context;
+        Map<String, Object>contextProperties = contextPropertiesToMap(options.context);
+
+        String jsContextJson = toJson(contextProperties);
+        
+        String complexArg0Json = null;
+        Object arg0 = null;
+        
         Integer paramSize = options.data(Context.PARAM_SIZE);
         if (paramSize == 0) {
           arg0 = "___NOT_SET_";
         } else {
-          arg0 = toJsObject(context, options.context);
+          if (isSimpleObject(context)) {
+            arg0 = context;
+          } else if (context != null) {
+            complexArg0Json = toJson(context);
+          } // else: keep arg0 = null
         }
-        Object result = helper.apply(jsContext, arg0, new OptionsJs(options));
+        
+        Object result = helper.apply(jsContextJson, complexArg0Json, arg0, new OptionsJs(options));
         if (result instanceof CharSequence) {
           return (CharSequence) result;
         }
@@ -246,6 +168,32 @@ public class RhinoHandlebars extends HandlebarsJs {
     });
   }
 
+  private static String toJson(Object object) {
+    return new Gson().toJson(object);
+  }
+  
+  /**
+   * Returns true for anything that we don' need to serialize as JSON.
+   * @param object
+   * @return
+   */
+  private boolean isSimpleObject(Object object) {
+    
+    if (object instanceof Number) {
+      return true;
+    }
+    if (object instanceof Boolean) {
+      return true;
+    }
+    if (object instanceof CharSequence || object instanceof Character) {
+      return true;
+    }
+    if (object instanceof Scriptable) {
+      return true;
+    }  
+    return false;
+  }
+  
   @Override
   public void registerHelpers(final String filename, final String source) throws Exception {
 
@@ -306,71 +254,14 @@ public class RhinoHandlebars extends HandlebarsJs {
     }
   }
 
-  /**
-   * Convert a map to a JS Rhino object.
-   *
-   * @param map The map.
-   * @param context Handlebars context.
-   * @return A JS Rhino object.
-   */
-  private static NativeObject hash(final Map<?, Object> map, final Context context) {
-    NativeObject hash = new BetterNativeObject(context);
-    for (Entry<?, Object> prop : map.entrySet()) {
-      hash.defineProperty(prop.getKey().toString(), prop.getValue(), NativeObject.READONLY);
-    }
-    return hash;
-  }
 
-  /**
-   * Convert a Java Object to Js Object if necessary.
-   *
-   * @param object Source object.
-   * @param parent Handlebars context.
-   * @return A Rhino js object.
-   */
-  @SuppressWarnings({"unchecked", "rawtypes" })
-  private static Object toJsObject(final Object object, final Context parent) {
-    if (object == null) {
-      return null;
-    }
-    if (object == Scriptable.NOT_FOUND) {
-      return Scriptable.NOT_FOUND;
-    }
-    if (object instanceof Number) {
-      return object;
-    }
-    if (object instanceof Boolean) {
-      return object;
-    }
-    if (object instanceof CharSequence || object instanceof Character) {
-      return object.toString();
-    }
-    if (object instanceof Scriptable) {
-      return object;
-    }
 
-    if (Map.class.isInstance(object)) {
-      return hash((Map) object, parent);
-    } else if (Collection.class.isInstance(object)) {
-      return new BetterNativeArray((Collection) object, parent);
-    }
-    Context context = object instanceof Context
-        ? (Context) object : Context.newContext(parent, object);
-    return toJsObject(context);
-  }
 
-  /**
-   * Convert a Java Object to Js Object if necessary.
-   *
-   * @param context Handlebars context.
-   * @return A Rhino js object.
-   */
-  private static Object toJsObject(final Context context) {
+  private static Map<String, Object> contextPropertiesToMap(final Context context) {
     Map<String, Object> hash = new HashMap<String, Object>();
     for (Entry<String, Object> property : context.propertySet()) {
       hash.put(property.getKey(), property.getValue());
     }
-    return hash(hash, context);
+    return hash;
   }
-
 }
