@@ -22,14 +22,15 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.mozilla.javascript.Scriptable;
-import org.mozilla.javascript.tools.ToolErrorReporter;
+import javax.script.ScriptEngine;
+import javax.script.ScriptException;
 
 import com.github.jknack.handlebars.Context;
 import com.github.jknack.handlebars.Helper;
 import com.github.jknack.handlebars.HelperRegistry;
 import com.github.jknack.handlebars.Options;
 import com.github.jknack.handlebars.internal.Files;
+import com.github.jknack.handlebars.internal.JSEngine;
 import com.github.jknack.handlebars.js.HandlebarsJs;
 import com.google.gson.Gson;
 
@@ -118,10 +119,8 @@ public class RhinoHandlebars extends HandlebarsJs {
     }
   }
 
-  /**
-   * The JavaScript helpers environment for Rhino.
-   */
-  private static final String HELPERS_ENV = envSource("/helpers.rhino.js");
+  /** Location of the handlebars.rhino.js file. */
+  private static final String HANDLEBARS_HELPERS_REGISTRY_OVERRIDE_JS_FILE = "/helpers.rhino.js";
 
   /**
    * Creates a new {@link RhinoHandlebars}.
@@ -196,69 +195,31 @@ public class RhinoHandlebars extends HandlebarsJs {
     if (object instanceof CharSequence || object instanceof Character) {
       return true;
     }
-    if (object instanceof Scriptable) {
-      return true;
-    }
+//    if (object instanceof Scriptable) {
+//      return true;
+//    }
     return false;
   }
 
   @Override
   public void registerHelpers(final String filename, final String source) throws Exception {
 
-    org.mozilla.javascript.Context ctx = null;
+    ScriptEngine jsEngine = JSEngine.getInstance().getJsEngine();
+    String handlebarsHelpersRegistryOverrideScript =
+        Files.read(HANDLEBARS_HELPERS_REGISTRY_OVERRIDE_JS_FILE);
     try {
-      ctx = newContext();
-
-      Scriptable sharedScope = helpersEnvScope(ctx);
-      Scriptable scope = ctx.newObject(sharedScope);
-      scope.setParentScope(null);
-      scope.setPrototype(sharedScope);
-
-      ctx.evaluateString(scope, source, filename, 1, null);
-    } finally {
-      if (ctx != null) {
-        org.mozilla.javascript.Context.exit();
-      }
+      // this script redefines Handlebars.registerHelper(), so JS helper
+      // registration is happening against our Java helper registry
+      jsEngine.eval(handlebarsHelpersRegistryOverrideScript);
+    } catch (ScriptException e) {
+      throw new RuntimeException(e);
     }
-  }
 
-  /**
-   * Creates a new Rhino Context.
-   *
-   * @return A Rhino Context.
-   */
-  private org.mozilla.javascript.Context newContext() {
-    org.mozilla.javascript.Context ctx = org.mozilla.javascript.Context.enter();
-    ctx.setOptimizationLevel(-1);
-    ctx.setErrorReporter(new ToolErrorReporter(false));
-    ctx.setLanguageVersion(org.mozilla.javascript.Context.VERSION_1_8);
-    return ctx;
-  }
-
-  /**
-   * Creates a initialize the helpers.rhino.js scope.
-   *
-   * @param ctx A rhino context.
-   * @return A handlebars.js scope. Shared between executions.
-   */
-  private Scriptable helpersEnvScope(final org.mozilla.javascript.Context ctx) {
-    Scriptable env = ctx.initStandardObjects();
-    env.put("Handlebars_java", env, this);
-    ctx.evaluateString(env, HELPERS_ENV, "helpers.rhino.js", 1, null);
-    return env;
-  }
-
-  /**
-   * Load the helper environment.
-   *
-   * @param location The classpath location.
-   * @return The helper environment.
-   */
-  private static String envSource(final String location) {
+    jsEngine.put("Handlebars_java", this);
     try {
-      return Files.read(location);
-    } catch (IOException ex) {
-      throw new IllegalStateException("Unable to read " + location, ex);
+      JSEngine.getInstance().getJsEngine().eval(source);
+    } catch (ScriptException e) {
+      throw new RuntimeException(e);
     }
   }
 
