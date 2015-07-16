@@ -53,6 +53,7 @@ public class FalsyValueTest {
         new Object[]{BigInteger.ZERO },
         new Object[]{BigDecimal.ZERO },
         new Object[]{Collections.emptyList() },
+        new Object[]{Collections.emptyMap() },
         new Object[]{new Object[0] },
         // Custom Iterable
         new Object[]{new Iterable<Object>() {
