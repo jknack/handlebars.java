@@ -32,7 +32,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
@@ -199,9 +198,6 @@ public class Handlebars implements HelperRegistry {
       }
       if (value instanceof Number) {
         return ((Number) value).doubleValue() == 0;
-      }
-      if (value instanceof Map) {
-        return ((Map) value).isEmpty();
       }
       return false;
     }
