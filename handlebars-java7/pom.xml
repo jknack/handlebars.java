@@ -22,6 +22,14 @@
 				<configuration>
 					<source>1.7</source>
 					<target>1.7</target>
+                    <!--
+                      Make Java 7 built-in Rhino Javascript engine accessible to Maven compiler plugin 
+                      see http://stackoverflow.com/a/30472582/1245428 
+                    -->
+                    <compilerArgs>
+                        <arg>-XDignore.symbol.file</arg>
+                    </compilerArgs>
+                    <fork>true</fork>     
 				</configuration>
 			</plugin>
 
@@ -29,10 +37,30 @@
 	</build>
 	
 	<dependencies>
+ 
+         <!--
+           Make Java 7 built-in Rhino Javascript engine accessible to Maven compiler plugin 
+           see https://maven.apache.org/guides/introduction/introduction-to-dependency-mechanism.html#System_Dependencies 
+         -->
+         <dependency>
+           <groupId>sun</groupId>
+           <artifactId>org-mozilla-javascript</artifactId>
+           <version>dontcare</version>
+           <scope>system</scope>
+           <systemPath>${java.home}/lib/rt.jar</systemPath>
+        </dependency>
+    
 	    <!-- Logging System -->
 	    <dependency>
 	      <groupId>org.slf4j</groupId>
 	      <artifactId>slf4j-api</artifactId>
 	    </dependency>
+
+	    <dependency>
+	      <groupId>junit</groupId>
+	      <artifactId>junit</artifactId>
+	      <scope>test</scope>
+	    </dependency>
+	    
 	</dependencies>
 </project>
