@@ -83,7 +83,29 @@
       </plugin>
     </plugins>
   </build>
-
+  <profiles>
+    <profile>
+      <id>1.6</id>
+      <activation>
+        <jdk>1.6</jdk>
+      </activation>
+      <!-- TBD create handlebars-java6 module and include it here -->
+    </profile>
+    <profile>
+      <id>1.7</id>
+      <activation>
+        <jdk>1.7</jdk>
+      </activation>
+      <dependencies>
+        <dependency>
+          <groupId>com.github.jknack</groupId>
+          <artifactId>handlebars-java7</artifactId>
+          <version>${project.version}</version>
+          <scope>test</scope>
+        </dependency>
+      </dependencies>
+    </profile>
+  </profiles>
   <dependencies>
     <!-- commons-lang3 -->
     <dependency>

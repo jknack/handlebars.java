@@ -330,6 +330,22 @@
 
   <profiles>
     <profile>
+      <id>1.6</id>
+      <activation>
+        <jdk>1.6</jdk>
+      </activation>
+      <!-- TBD create handlebars-java6 module and include it here -->
+    </profile>
+    <profile>
+      <id>1.7</id>
+      <activation>
+        <jdk>1.7</jdk>
+      </activation>
+      <modules>
+        <module>handlebars-java7</module>
+      </modules>
+    </profile>  
+    <profile>
       <id>bench</id>
       <build>
         <plugins>
