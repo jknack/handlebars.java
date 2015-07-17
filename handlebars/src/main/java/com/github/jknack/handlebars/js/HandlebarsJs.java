@@ -19,9 +19,11 @@ package com.github.jknack.handlebars.js;
 
 import static org.apache.commons.lang3.Validate.notNull;
 
+import java.lang.reflect.Constructor;
+
 import com.github.jknack.handlebars.HelperRegistry;
 import com.github.jknack.handlebars.internal.JSEngine;
-import com.github.jknack.handlebars.internal.js.RhinoHandlebars;
+import com.github.jknack.handlebars.internal.js.JavaxScriptHandlebars;
 
 /**
  * The main motivation of {@link HandlebarsJs} is the ability of reuse JavaScript helpers in the
@@ -81,11 +83,25 @@ public abstract class HandlebarsJs {
    * Creates a {@link HandlebarsJs} object.
    *
    * @param helperRegistry The helperRegistry object. Required.
+   * @param javaxScriptHandlebarsClass of {@link JavaxScriptHandlebars} to instantiate.
+   *  Optional. Defaults to {@link JavaxScriptHandlebars}.
    * @return A new {@link HandlebarsJs} object.
    */
-  public static HandlebarsJs create(final HelperRegistry helperRegistry) {
+  public static HandlebarsJs create(final HelperRegistry helperRegistry,
+      final Class<? extends JavaxScriptHandlebars> javaxScriptHandlebarsClass) {
     if (JSEngine.getInstance().getJsEngine() != null) {
-      return new RhinoHandlebars(helperRegistry);
+      if (javaxScriptHandlebarsClass == null) {
+        return new JavaxScriptHandlebars(helperRegistry);
+      } else {
+        try {
+          // poor man's factory mechanism via Reflection
+          Constructor<? extends JavaxScriptHandlebars> constructor =
+              javaxScriptHandlebarsClass.getConstructor(HelperRegistry.class);
+          return constructor.newInstance(helperRegistry);
+        } catch (Exception e) {
+          throw new RuntimeException(e);
+        }
+      }
     } else {
       return new HandlebarsJs(helperRegistry) {
         @Override

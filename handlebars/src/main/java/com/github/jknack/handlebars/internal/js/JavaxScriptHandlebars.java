@@ -17,13 +17,18 @@
  */
 package com.github.jknack.handlebars.internal.js;
 
+import static org.slf4j.LoggerFactory.getLogger;
+
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptException;
+
+import org.slf4j.Logger;
 
 import com.github.jknack.handlebars.Context;
 import com.github.jknack.handlebars.Helper;
@@ -32,15 +37,15 @@ import com.github.jknack.handlebars.Options;
 import com.github.jknack.handlebars.internal.Files;
 import com.github.jknack.handlebars.internal.JSEngine;
 import com.github.jknack.handlebars.js.HandlebarsJs;
-import com.google.gson.Gson;
 
 /**
- * An implementation of {@link HandlebarsJs} on top of Rhino.
+ * An implementation of {@link HandlebarsJs} on top of javax.script API (JSR 223).
  *
+ * @see {@link https://docs.oracle.com/javase/8/docs/technotes/guides/scripting/prog_guide/api.html}
  * @author edgar.espina.
  * @since 1.1.0
  */
-public class RhinoHandlebars extends HandlebarsJs {
+public class JavaxScriptHandlebars extends HandlebarsJs {
 
   /**
    * The JavaScript helper contract. Implemented in Javascript in helpers.rhino.js
@@ -60,7 +65,7 @@ public class RhinoHandlebars extends HandlebarsJs {
      * @param options The options object.
      * @return A string result.
      */
-    Object apply(String contextJson, String complexArg0Json, Object simpleArg0, OptionsJs options);
+    Object apply(Object contextProperties, Object arg0, OptionsJs options);
   }
 
   /**
@@ -69,7 +74,7 @@ public class RhinoHandlebars extends HandlebarsJs {
    * @author edgar.espina
    * @since 1.1.0
    */
-  public static class OptionsJs {
+  public class OptionsJs {
     /**
      * Handlebars.java options.
      */
@@ -78,12 +83,12 @@ public class RhinoHandlebars extends HandlebarsJs {
     /**
      * The options hash as JSON.
      */
-    public String hashJson; //Map<String, Object>
+    public Object hash; // Map<String, Object> 
 
     /**
      * The helper params as JSON.
      */
-    public String paramsJson; // Object[]
+    public Object params; // Object[]
 
     /**
      * Creates a new {@link HandlebarsJs} options.
@@ -92,8 +97,8 @@ public class RhinoHandlebars extends HandlebarsJs {
      */
     public OptionsJs(final Options options) {
       this.options = options;
-      this.hashJson = toJson(options.hash);
-      this.paramsJson = toJson(options.params);
+      this.hash = translateToJsObject(options.hash);
+      this.params = translateToJsObject(options.params);
     }
 
     /**
@@ -119,15 +124,20 @@ public class RhinoHandlebars extends HandlebarsJs {
     }
   }
 
+  /**
+   * The logging system.
+   */
+  private static final Logger logger = getLogger(JavaxScriptHandlebars.class);
+
   /** Location of the handlebars.rhino.js file. */
   private static final String HANDLEBARS_HELPERS_REGISTRY_OVERRIDE_JS_FILE = "/helpers.rhino.js";
 
   /**
-   * Creates a new {@link RhinoHandlebars}.
+   * Creates a new {@link JavaxScriptHandlebars}.
    *
    * @param helperRegistry The handlebars object.
    */
-  public RhinoHandlebars(final HelperRegistry helperRegistry) {
+  public JavaxScriptHandlebars(final HelperRegistry helperRegistry) {
     super(helperRegistry);
   }
 
@@ -143,23 +153,16 @@ public class RhinoHandlebars extends HandlebarsJs {
       public CharSequence apply(final Object context, final Options options) throws IOException {
         Map<String, Object>contextProperties = contextPropertiesToMap(options.context);
 
-        String jsContextJson = toJson(contextProperties);
-
-        String complexArg0Json = null;
         Object arg0 = null;
 
         Integer paramSize = options.data(Context.PARAM_SIZE);
         if (paramSize == 0) {
           arg0 = "___NOT_SET_";
         } else {
-          if (isSimpleObject(context)) {
-            arg0 = context;
-          } else if (context != null) {
-            complexArg0Json = toJson(context);
-          } // else: keep arg0 = null
+          arg0 = context;
         }
 
-        Object result = helper.apply(jsContextJson, complexArg0Json, arg0, new OptionsJs(options));
+        Object result = helper.apply(translateToJsObject(contextProperties), translateToJsObject(arg0), new OptionsJs(options));
         if (result instanceof CharSequence) {
           return (CharSequence) result;
         }
@@ -168,39 +171,39 @@ public class RhinoHandlebars extends HandlebarsJs {
     });
   }
 
-  /**
-   * Serialize given object to JSON String.
-   *
-   * @param object to serialize
-   * @return JSON String
-   */
-  private static String toJson(final Object object) {
-    return new Gson().toJson(object);
+  private Object translateToJsObject(Object object) {
+    if (JSEngine.getInstance().engineKind == JSEngine.EngineKind.NASHORN) {
+      // Nashorn already has proper translation of Java objects into comfortable JS objects,
+      // see https://wiki.openjdk.java.net/display/Nashorn/Nashorn+extensions#Nashornextensions-SpecialtreatmentofobjectsofspecificJavaclasses
+      return object;
+    } else {
+      // assume Rhino:
+      // invoke method from optional dependency handlebars-java7 via reflection, so this class does not contain an
+      // an import statement for "com.github.jknack.handlebars.internal.js.JSConsumableObject"
+      // and so can be loaded in a Java 8 JVM.
+      // (JSConumableObject depends on jdk.rhino API not present in Java 8)
+      Method method;
+      try {
+        Class<?> jsConsumableObjectClass = Class.forName("com.github.jknack.handlebars.internal.js.JSConsumableObject");
+        try {
+          method = jsConsumableObjectClass.getMethod("translateIfNecessary", Object.class);
+        } catch (NoSuchMethodException e) {
+          throw new RuntimeException("Handlebars internal error: check if com.github.jknack.handlebars.internal.js.JSConsumableObject.translateIfNecessary(Object) got renamed");
+        } catch (SecurityException e) {
+          throw new RuntimeException(e);
+        }
+      } catch (ClassNotFoundException e) {
+        throw new RuntimeException("Please add dependency handlebars-java7", e);
+      }
+      
+      try {
+        return method.invoke(null, object);
+      } catch (Exception e) {
+        throw new RuntimeException("Handlebars internal error: something went wrong in " + method, e);
+      }
+    }
   }
-
-  /**
-   * Returns true for anything that we don' need to serialize as JSON.
-   *
-   * @param object to analyze
-   * @return whether object is Number, Boolean, String
-   */
-  private boolean isSimpleObject(final Object object) {
-
-    if (object instanceof Number) {
-      return true;
-    }
-    if (object instanceof Boolean) {
-      return true;
-    }
-    if (object instanceof CharSequence || object instanceof Character) {
-      return true;
-    }
-//    if (object instanceof Scriptable) {
-//      return true;
-//    }
-    return false;
-  }
-
+  
   @Override
   public void registerHelpers(final String filename, final String source) throws Exception {
 
@@ -217,10 +220,26 @@ public class RhinoHandlebars extends HandlebarsJs {
 
     jsEngine.put("Handlebars_java", this);
     try {
+      preHelpersRegistration(jsEngine);
       JSEngine.getInstance().getJsEngine().eval(source);
+      postHelpersRegistration(jsEngine);
     } catch (ScriptException e) {
-      throw new RuntimeException(e);
+      logger.error("Registration of JS helpers in " + filename + "failed!" , e);
     }
+  }
+
+  /**
+   * For subclasses to perform post-registration work.
+   * @param jsEngine used for helpers registration
+   */
+  protected void postHelpersRegistration(final ScriptEngine jsEngine) {
+  }
+
+  /**
+   * For subclasses to perform pre-registration work.
+   * @param jsEngine used for helpers registration
+   */
+  protected void preHelpersRegistration(final ScriptEngine jsEngine) {
   }
 
   /**

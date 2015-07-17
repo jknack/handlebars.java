@@ -86,13 +86,27 @@ public final class JSEngine {
     return instance;
   }
 
+  public final EngineKind engineKind;
+  
   /**
    * Constructor.
    */
   private JSEngine() {
     jsEngine = new ScriptEngineManager().getEngineByName("JavaScript");
+    String engineClassName = jsEngine.getClass().getName();
+    if (engineClassName.toLowerCase().contains("nashorn")) {
+      engineKind = EngineKind.NASHORN;
+    } else if (engineClassName.toLowerCase().contains("rhino")) {
+      engineKind = EngineKind.RHINO;
+    } else {
+      throw new RuntimeException("Javascript engine must be either Rhino or Nashorn, but isn't: " + engineClassName);
+    }
   }
 
+  public enum EngineKind {
+    RHINO, NASHORN
+  }
+  
   /**
    * Find cached {@link CompiledScript} for hbsLocation, or compile and cache it.
    * @param hbsLocation path to handlebars.js file
