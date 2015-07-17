@@ -58,10 +58,8 @@ public class JavaxScriptHandlebars extends HandlebarsJs {
     /**
      * Apply the helper to the context.
      *
-     * @param contextJson The context object as JSON.
-     * @param simpleArg0 The helper first argument, if it is a simple object.
-     * @param complexArg0Json The helper first argument as JSON,
-     *    if it is a an array, collection or map
+     * @param contextProperties The com.github.jknack.handlebars.Context's properties as Map.
+     * @param arg0 The helper first argument.
      * @param options The options object.
      * @return A string result.
      */
@@ -83,7 +81,7 @@ public class JavaxScriptHandlebars extends HandlebarsJs {
     /**
      * The options hash as JSON.
      */
-    public Object hash; // Map<String, Object> 
+    public Object hash; // Map<String, Object>
 
     /**
      * The helper params as JSON.
@@ -162,7 +160,10 @@ public class JavaxScriptHandlebars extends HandlebarsJs {
           arg0 = context;
         }
 
-        Object result = helper.apply(translateToJsObject(contextProperties), translateToJsObject(arg0), new OptionsJs(options));
+        Object result = helper.apply(
+            translateToJsObject(contextProperties),
+            translateToJsObject(arg0),
+            new OptionsJs(options));
         if (result instanceof CharSequence) {
           return (CharSequence) result;
         }
@@ -171,39 +172,49 @@ public class JavaxScriptHandlebars extends HandlebarsJs {
     });
   }
 
-  private Object translateToJsObject(Object object) {
-    if (JSEngine.getInstance().engineKind == JSEngine.EngineKind.NASHORN) {
+  /**
+   * Convert object into something more usable in JS, if not running on Nashorn.
+   * @param object Java object to be translated
+   * @return translated or same object
+   */
+  private Object translateToJsObject(final Object object) {
+    if (JSEngine.getInstance().getEngineKind() == JSEngine.EngineKind.NASHORN) {
       // Nashorn already has proper translation of Java objects into comfortable JS objects,
-      // see https://wiki.openjdk.java.net/display/Nashorn/Nashorn+extensions#Nashornextensions-SpecialtreatmentofobjectsofspecificJavaclasses
+      // see https://wiki.openjdk.java.net/display/Nashorn/
+      // Nashorn+extensions#Nashornextensions-SpecialtreatmentofobjectsofspecificJavaclasses
       return object;
     } else {
       // assume Rhino:
-      // invoke method from optional dependency handlebars-java7 via reflection, so this class does not contain an
-      // an import statement for "com.github.jknack.handlebars.internal.js.JSConsumableObject"
+      // invoke method from optional dependency handlebars-java7 via reflection
+      // so this class does not contain an import statement for it,
       // and so can be loaded in a Java 8 JVM.
-      // (JSConumableObject depends on jdk.rhino API not present in Java 8)
       Method method;
       try {
-        Class<?> jsConsumableObjectClass = Class.forName("com.github.jknack.handlebars.internal.js.JSConsumableObject");
+        Class<?> jsConsumableObjectClass = Class.forName(
+            "com.github.jknack.handlebars.internal.js.JavaObjectToJSTranslation");
         try {
           method = jsConsumableObjectClass.getMethod("translateIfNecessary", Object.class);
         } catch (NoSuchMethodException e) {
-          throw new RuntimeException("Handlebars internal error: check if com.github.jknack.handlebars.internal.js.JSConsumableObject.translateIfNecessary(Object) got renamed");
+          throw new RuntimeException(
+              "Handlebars internal error: check if"
+                  + "com.github.jknack.handlebars.internal.js.JavaObjectToJSTranslation."
+                  + "translateIfNecessary(Object) got renamed");
         } catch (SecurityException e) {
           throw new RuntimeException(e);
         }
       } catch (ClassNotFoundException e) {
         throw new RuntimeException("Please add dependency handlebars-java7", e);
       }
-      
+
       try {
         return method.invoke(null, object);
       } catch (Exception e) {
-        throw new RuntimeException("Handlebars internal error: something went wrong in " + method, e);
+        throw new RuntimeException(
+            "Handlebars internal error: something went wrong in " + method, e);
       }
     }
   }
-  
+
   @Override
   public void registerHelpers(final String filename, final String source) throws Exception {
 
