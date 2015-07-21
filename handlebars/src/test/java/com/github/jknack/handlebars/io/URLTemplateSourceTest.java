@@ -8,6 +8,7 @@ import static org.junit.Assert.assertEquals;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
+import java.net.JarURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 
@@ -77,4 +78,30 @@ public class URLTemplateSourceTest {
 
     PowerMock.verify(mocks);
   }
+
+  @Test
+  public void lastModifiedFromJar() throws IOException {
+    String jarFilename = "app.jar";
+
+    URL jarUrl = PowerMock.createMock(URL.class);
+    expect(jarUrl.getProtocol()).andReturn("file");
+    expect(jarUrl.getFile()).andReturn(jarFilename);
+
+    JarURLConnection juc = PowerMock.createMock(JarURLConnection.class);
+    expect(juc.getJarFileURL()).andReturn(jarUrl);
+
+    URL url = PowerMock.createMock(URL.class);
+    expect(url.openConnection()).andReturn(juc);
+
+    String filename = "home.hbs";
+
+    Object[] mocks = {url, juc, jarUrl};
+
+    PowerMock.replay(mocks);
+
+    assertEquals(0, new URLTemplateSource(filename, url).lastModified());
+
+    PowerMock.verify(mocks);
+  }
+
 }

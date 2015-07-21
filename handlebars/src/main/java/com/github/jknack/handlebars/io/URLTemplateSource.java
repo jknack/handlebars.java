@@ -20,10 +20,12 @@ package com.github.jknack.handlebars.io;
 import static org.apache.commons.lang3.Validate.notEmpty;
 import static org.apache.commons.lang3.Validate.notNull;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.net.JarURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 
@@ -116,6 +118,14 @@ public class URLTemplateSource extends AbstractTemplateSource {
     URLConnection uc = null;
     try {
       uc = resource.openConnection();
+      if (uc instanceof JarURLConnection) {
+        URL jarURL = ((JarURLConnection) uc).getJarFileURL();
+        if (jarURL.getProtocol().equals("file")) {
+          uc = null;
+          String file = jarURL.getFile();
+          return new File(file).lastModified();
+        }
+      }
       return uc.getLastModified();
     } catch (IOException ex) {
       Handlebars.warn("Can't get last modified date of: %s", resource);
