@@ -238,7 +238,7 @@ abstract class BaseTemplate implements Template {
    * @return A new {@link TypeSafeTemplate}.
    */
   private static Object newTypeSafeTemplate(final Class<?> rootType, final Template template) {
-    return Proxy.newProxyInstance(template.getClass().getClassLoader(), new Class[]{rootType },
+    return Proxy.newProxyInstance(rootType.getClassLoader(), new Class[]{rootType },
         new InvocationHandler() {
           private Map<String, Object> attributes = new HashMap<String, Object>();
 
