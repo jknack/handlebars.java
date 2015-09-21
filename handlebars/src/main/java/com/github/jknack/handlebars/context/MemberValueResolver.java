@@ -22,12 +22,8 @@ import static org.apache.commons.lang3.Validate.notNull;
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Member;
 import java.lang.reflect.Modifier;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.github.jknack.handlebars.ValueResolver;
@@ -46,12 +42,12 @@ public abstract class MemberValueResolver<M extends Member>
   /**
    * A concurrent and thread-safe cache for {@link Member}.
    */
-  private final Map<String, Object> cache =
-      new ConcurrentHashMap<String, Object>();
+  private final Map<CacheKey, Object> cache =
+      new ConcurrentHashMap<CacheKey, Object>();
 
   @Override
   public final Object resolve(final Object context, final String name) {
-    String key = key(context, name);
+    CacheKey key = key(context, name);
     Object value = cache.get(key);
     if (value == UNRESOLVED) {
       return value;
@@ -162,8 +158,8 @@ public abstract class MemberValueResolver<M extends Member>
    * @param name The attribute's name.
    * @return A unique key from the given parameters.
    */
-  private String key(final Object context, final String name) {
-    return context.getClass().getName() + "#" + name;
+  private CacheKey key(final Object context, final String name) {
+    return new CacheKey(context.getClass(), name);
   }
 
   /**
@@ -181,7 +177,7 @@ public abstract class MemberValueResolver<M extends Member>
    * @return All the possible members for the given class.
    */
   protected Set<M> membersFromCache(final Class<?> clazz) {
-    String key = clazz.getName();
+    CacheKey key = new CacheKey(clazz);
     @SuppressWarnings("unchecked")
     Set<M> members = (Set<M>) cache.get(key);
     if (members == null) {
@@ -215,4 +211,36 @@ public abstract class MemberValueResolver<M extends Member>
    * @return The member's name.
    */
   protected abstract String memberName(M member);
+
+  private static class CacheKey {
+    private final Class clazz;
+    private final String name;
+
+    public CacheKey(Class clazz) {
+      this(clazz, null);
+    }
+
+    public CacheKey(Class clazz, String name) {
+      this.clazz = clazz;
+      this.name = name;
+    }
+
+    @Override
+    public int hashCode() {
+      return Arrays.hashCode(new Object[] {clazz, name});
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+      if (obj instanceof CacheKey) {
+        CacheKey other = (CacheKey) obj;
+        return equal(clazz, other.clazz) && equal(name, other.name);
+      }
+      return false;
+    }
+
+    private static boolean equal(Object a, Object b) {
+      return a == b || a != null && a.equals(b);
+    }
+  }
 }
