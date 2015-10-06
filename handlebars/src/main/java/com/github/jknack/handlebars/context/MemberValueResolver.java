@@ -17,7 +17,7 @@
  */
 package com.github.jknack.handlebars.context;
 
-import com.github.jknack.handlebars.ValueResolver;
+import static org.apache.commons.lang3.Validate.notNull;
 
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Member;
@@ -31,7 +31,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-import static org.apache.commons.lang3.Validate.notNull;
+import com.github.jknack.handlebars.ValueResolver;
 
 /**
  * A specialization of {@link ValueResolver} that is built on top of reflections
@@ -225,7 +225,7 @@ public abstract class MemberValueResolver<M extends Member>
     /**
      * The class of the member this cache key is for.
      */
-    private final Class clazz;
+    private final Class<?> clazz;
 
     /**
      * Optional name of the the member this cache key is for.
@@ -238,7 +238,7 @@ public abstract class MemberValueResolver<M extends Member>
      *
      * @param clazz The class the constructed key is for.
      */
-    public CacheKey(final Class clazz) {
+    public CacheKey(final Class<?> clazz) {
       this(clazz, null);
     }
 
@@ -249,7 +249,7 @@ public abstract class MemberValueResolver<M extends Member>
      * @param clazz The class of the member the constructed cache key is for.
      * @param name The name of the the member the constructed key is for.
      */
-    public CacheKey(final Class clazz, final String name) {
+    public CacheKey(final Class<?> clazz, final String name) {
       this.clazz = clazz;
       this.name = name;
     }
