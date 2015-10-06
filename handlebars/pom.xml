@@ -10,6 +10,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.github.jknack</groupId>
   <artifactId>handlebars</artifactId>
+  <packaging>bundle</packaging>
 
   <name>Handlebars</name>
   <description>Logic-less and semantic templates with Java</description>
@@ -81,6 +82,19 @@
           </execution>
         </executions>
       </plugin>
+	  <plugin>
+	    <groupId>org.apache.felix</groupId>
+	    <artifactId>maven-bundle-plugin</artifactId>
+        <version>2.5.3</version>
+	    <extensions>true</extensions>
+	    <configuration>
+	      <instructions>
+	        <Embed-Dependency>scope=compile</Embed-Dependency>
+	        <Import-Package>!com.github.jknack.handlebars.io,*</Import-Package>
+	        <Export-Package>!com.github.jknack.handlebars.internal.*,com.github.jknack.handlebars.*;version=${handlebars.version}</Export-Package>
+	        </instructions>
+	    </configuration>
+	  </plugin>
     </plugins>
   </build>
 
@@ -89,6 +103,7 @@
     <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-lang3</artifactId>
+      <scope>provided</scope>
     </dependency>
 
     <!-- ANTLRv4 -->
@@ -114,6 +129,7 @@
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
+      <scope>provided</scope>
     </dependency>
 
     <!-- Servlet API -->
@@ -171,5 +187,6 @@
 
   <properties>
     <antlr-version>4.5</antlr-version>
+    <handlebars.version>2.0.0</handlebars.version>
   </properties>
 </project>
