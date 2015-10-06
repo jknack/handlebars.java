@@ -17,11 +17,12 @@
  */
 package com.github.jknack.handlebars.context;
 
-import static org.apache.commons.lang3.Validate.notNull;
+import com.github.jknack.handlebars.ValueResolver;
 
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Member;
 import java.lang.reflect.Modifier;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -30,7 +31,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-import com.github.jknack.handlebars.ValueResolver;
+import static org.apache.commons.lang3.Validate.notNull;
 
 /**
  * A specialization of {@link ValueResolver} that is built on top of reflections
@@ -46,12 +47,12 @@ public abstract class MemberValueResolver<M extends Member>
   /**
    * A concurrent and thread-safe cache for {@link Member}.
    */
-  private final Map<String, Object> cache =
-      new ConcurrentHashMap<String, Object>();
+  private final Map<CacheKey, Object> cache =
+      new ConcurrentHashMap<CacheKey, Object>();
 
   @Override
   public final Object resolve(final Object context, final String name) {
-    String key = key(context, name);
+    CacheKey key = key(context, name);
     Object value = cache.get(key);
     if (value == UNRESOLVED) {
       return value;
@@ -162,8 +163,8 @@ public abstract class MemberValueResolver<M extends Member>
    * @param name The attribute's name.
    * @return A unique key from the given parameters.
    */
-  private String key(final Object context, final String name) {
-    return context.getClass().getName() + "#" + name;
+  private CacheKey key(final Object context, final String name) {
+    return new CacheKey(context.getClass(), name);
   }
 
   /**
@@ -181,7 +182,7 @@ public abstract class MemberValueResolver<M extends Member>
    * @return All the possible members for the given class.
    */
   protected Set<M> membersFromCache(final Class<?> clazz) {
-    String key = clazz.getName();
+    CacheKey key = new CacheKey(clazz);
     @SuppressWarnings("unchecked")
     Set<M> members = (Set<M>) cache.get(key);
     if (members == null) {
@@ -215,4 +216,68 @@ public abstract class MemberValueResolver<M extends Member>
    * @return The member's name.
    */
   protected abstract String memberName(M member);
+
+  /**
+   *  A value type used as the key for cache of {@link Member}.
+   *  Consists of a class instance and an optional name.
+   */
+  private static class CacheKey {
+    /**
+     * The class of the member this cache key is for.
+     */
+    private final Class clazz;
+
+    /**
+     * Optional name of the the member this cache key is for.
+     */
+    private final String name;
+
+    /**
+     * Constructor which should be used when the created key is to be used for all members of
+     * a class.
+     *
+     * @param clazz The class the constructed key is for.
+     */
+    public CacheKey(final Class clazz) {
+      this(clazz, null);
+    }
+
+    /**
+     * The constructor which should be used when the created key is to be used for a specific
+     * member of a class.
+     *
+     * @param clazz The class of the member the constructed cache key is for.
+     * @param name The name of the the member the constructed key is for.
+     */
+    public CacheKey(final Class clazz, final String name) {
+      this.clazz = clazz;
+      this.name = name;
+    }
+
+    @Override
+    public int hashCode() {
+      return Arrays.hashCode(new Object[] {clazz, name});
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+      if (obj instanceof CacheKey) {
+        CacheKey other = (CacheKey) obj;
+        return equal(clazz, other.clazz) && equal(name, other.name);
+      }
+      return false;
+    }
+
+    /**
+     * A helper useful when implementing {@link java.lang.Object#equals} according to the
+     * contract of that method as outlined in Chapter 3, Item 8 of Effective Java by Joshua Bloch.
+     *
+     * @param first The first object checked for equality against the second object.
+     * @param second The second object checked for equality against the first object.
+     * @return true if the first and second arguments are equal
+     */
+    private static boolean equal(final Object first, final Object second) {
+      return first == second || first != null && first.equals(second);
+    }
+  }
 }
