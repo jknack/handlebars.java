@@ -27,6 +27,7 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.github.jknack.handlebars.Context;
 import com.github.jknack.handlebars.Handlebars;
@@ -92,6 +93,8 @@ class Partial extends HelperResolver {
   public void merge(final Context context, final Writer writer)
       throws IOException {
     TemplateLoader loader = handlebars.getLoader();
+    Map<String, Object> hash = Collections.emptyMap();
+    Context ctx = context;
     try {
       LinkedList<TemplateSource> invocationStack = context.data(Context.INVOCATION_STACK);
 
@@ -128,7 +131,9 @@ class Partial extends HelperResolver {
 
       Template template = handlebars.compile(source);
       String key = isEmpty(this.context) ? "this" : this.context;
-      template.apply(Context.newContext(context, context.get(key)).data(hash(context)), writer);
+      hash = hash(context);
+      ctx = Context.newContext(context, context.get(key)).data(hash);
+      template.apply(ctx, writer);
     } catch (IOException ex) {
       String reason = String.format("The partial '%s' could not be found",
           loader.resolve(path.text()));
@@ -136,6 +141,12 @@ class Partial extends HelperResolver {
       HandlebarsError error = new HandlebarsError(filename, line,
           column, reason, text(), message);
       throw new HandlebarsException(error);
+    } finally {
+      // clear partial params
+      Set<String> params = hash.keySet();
+      for (String param : params) {
+        ctx.data(param, null);
+      }
     }
   }
 

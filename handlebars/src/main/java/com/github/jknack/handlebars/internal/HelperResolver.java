@@ -73,6 +73,9 @@ abstract class HelperResolver extends BaseTemplate {
    * @throws IOException If param can't be applied.
    */
   protected Map<String, Object> hash(final Context context) throws IOException {
+    if (hash.isEmpty()) {
+      return Collections.emptyMap();
+    }
     Map<String, Object> result = new LinkedHashMap<String, Object>();
     for (Entry<String, Object> entry : hash.entrySet()) {
       Object value = entry.getValue();
