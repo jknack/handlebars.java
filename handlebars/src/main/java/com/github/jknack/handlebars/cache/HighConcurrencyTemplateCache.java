@@ -105,7 +105,6 @@ public class HighConcurrencyTemplateCache implements TemplateCache {
   /**
    * Get/Parse a template source.
    *
-   * @param key The template key.
    * @param source The template source.
    * @param parser The parser.
    * @return A Handlebars template.
