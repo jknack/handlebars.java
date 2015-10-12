@@ -21,7 +21,6 @@
     <module>handlebars-markdown</module>
     <module>handlebars-humanize</module>
     <module>handlebars-proto</module>
-    <module>handlebars-osgi</module>
     <module>handlebars-guava-cache</module>
     <module>handlebars-maven-plugin</module>
     <module>handlebars-maven-plugin-tests</module>
