@@ -149,8 +149,8 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
     qualifier.addLast(name);
     String nameEnd = ctx.nameEnd.getText();
     if (!name.equals(nameEnd)) {
-      reportError(null, ctx.nameEnd.getLine(), ctx.nameEnd.getCharPositionInLine()
-          , String.format("found: '%s', expected: '%s'", nameEnd, name));
+      reportError(null, ctx.nameEnd.getLine(), ctx.nameEnd.getCharPositionInLine(),
+          String.format("found: '%s', expected: '%s'", nameEnd, name));
     }
 
     hasTag(true);
@@ -266,16 +266,14 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
         && !varName.endsWith(".")) {
       String evidence = varName;
       String reason = "found: " + varName + ", expecting: " + varName + ".";
-      String message =
-          source.filename() + ":" + name.getLine() + ":" + name.getChannel() + ": "
-              + reason + "\n";
+      String message = source.filename() + ":" + name.getLine() + ":" + name.getChannel() + ": "
+          + reason + "\n";
       throw new HandlebarsException(new HandlebarsError(source.filename(), name.getLine(),
           name.getCharPositionInLine(), reason, evidence, message));
     }
     Helper<Object> helper = handlebars.helper(varName);
     if (helper == null && isHelper) {
-      Helper<Object> helperMissing =
-          handlebars.helper(HelperRegistry.HELPER_MISSING);
+      Helper<Object> helperMissing = handlebars.helper(HelperRegistry.HELPER_MISSING);
       if (helperMissing == null) {
         reportError(null, name.getLine(), name.getCharPositionInLine(), "could not find helper: '"
             + varName + "'");
@@ -538,10 +536,11 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
   @Override
   public BaseTemplate visitNewline(final NewlineContext ctx) {
     Token newline = ctx.NL().getSymbol();
+    line.setLength(0);
+    hasTag = null;
     if (newline.getChannel() == Token.HIDDEN_CHANNEL) {
       return null;
     }
-    line.setLength(0);
     return new Text(handlebars, newline.getText())
         .filename(source.filename())
         .position(newline.getLine(), newline.getCharPositionInLine());
