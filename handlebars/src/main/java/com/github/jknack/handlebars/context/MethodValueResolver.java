@@ -17,12 +17,12 @@
  */
 package com.github.jknack.handlebars.context;
 
-import com.github.jknack.handlebars.ValueResolver;
-
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.LinkedHashSet;
 import java.util.Set;
+
+import com.github.jknack.handlebars.ValueResolver;
 
 /**
  * A specialization of {@link MemberValueResolver} with lookup and invocation
@@ -85,10 +85,9 @@ public class MethodValueResolver extends MemberValueResolver<Method> {
       }
       if (clazz.getSuperclass() != null) {
         members(clazz.getSuperclass(), members);
-      } else if (clazz.isInterface()) {
-        for (Class<?> superIfc : clazz.getInterfaces()) {
-          members(superIfc, members);
-        }
+      }
+      for (Class<?> superIfc : clazz.getInterfaces()) {
+        members(superIfc, members);
       }
     }
   }
