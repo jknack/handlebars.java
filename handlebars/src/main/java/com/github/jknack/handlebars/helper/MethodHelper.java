@@ -36,6 +36,9 @@ import com.github.jknack.handlebars.Options;
  */
 public class MethodHelper implements Helper<Object> {
 
+  /** No args. */
+  private static final Object[] NO_ARGS = new Object[0];
+
   /**
    * The source or instance object. Might be null.
    */
@@ -59,34 +62,76 @@ public class MethodHelper implements Helper<Object> {
 
   @Override
   public CharSequence apply(final Object context, final Options options) throws IOException {
-    Class<?>[] paramTypes = method.getParameterTypes();
-    Object[] args = new Object[paramTypes.length];
-    if (args.length > 0) {
-      // one arg helper must be: Context or Options
-      if (args.length == 1) {
-        if (paramTypes[0] == Options.class) {
-          args[0] = options;
-        } else {
-          args[0] = context;
-        }
-      } else {
-        // multi arg helper: 1st arg must be context, then args and may be options
-        args[0] = context;
-        for (int i = 0; i < options.params.length; i++) {
-          args[i + 1] = options.param(i);
-        }
-        if (args.length > options.params.length + 1) {
-          args[args.length - 1] = options;
+    try {
+      Class<?>[] paramTypes = method.getParameterTypes();
+      Object[] args = NO_ARGS;
+      if (paramTypes.length > 0) {
+        args = new Object[paramTypes.length];
+        args[0] = paramTypes[0] == Options.class ? options : context;
+        for (int i = 1; i < args.length; i++) {
+          if (paramTypes[i] == Options.class) {
+            args[i] = options;
+          } else {
+            args[i] = options.param(i - 1);
+          }
         }
       }
-    }
-    try {
       return (CharSequence) method.invoke(source, args);
+    } catch (ArrayIndexOutOfBoundsException ex) {
+      throw new IllegalArgumentException(
+          "could not execute helper: " + toString(method) + ", with the given arguments: "
+              + toString(options.params),
+          ex);
     } catch (InvocationTargetException ex) {
       throw launderThrowable(ex.getCause());
     } catch (IllegalAccessException ex) {
-      throw new IllegalStateException("could not execute helper: " + method.getName(), ex);
+      throw new IllegalStateException("could not execute helper: " + toString(method), ex);
     }
+  }
+
+  /**
+   * Describe params.
+   *
+   * @param params Params to describe.
+   * @return ToString of params
+   */
+  private String toString(final Object[] params) {
+    StringBuilder buff = new StringBuilder();
+    buff.append("[");
+    for (Object param : params) {
+      buff.append(param == null ? "null" : param.getClass().getSimpleName()).append(", ");
+    }
+    if (buff.length() > 1) {
+      buff.setLength(buff.length() - 2);
+    }
+    return buff.append("]").toString();
+  }
+
+  /**
+   * Describes method.
+   *
+   * @param method Method to describe.
+   * @return ToString of method.
+   */
+  private String toString(final Method method) {
+    return method.getName() + "(" + toString(method.getParameterTypes()) + ")";
+  }
+
+  /**
+   * Describe types.
+   *
+   * @param types Types to describe.
+   * @return ToString of types.
+   */
+  private String toString(final Class<?>[] types) {
+    StringBuilder buff = new StringBuilder();
+    for (Class<?> type : types) {
+      buff.append(type.getSimpleName()).append(", ");
+    }
+    if (buff.length() > 0) {
+      buff.setLength(buff.length() - 2);
+    }
+    return buff.toString();
   }
 
   /**
