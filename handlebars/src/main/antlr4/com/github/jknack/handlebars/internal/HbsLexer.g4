@@ -21,7 +21,7 @@ lexer grammar HbsLexer;
 
   private boolean consumeUntil(final String token) {
     int offset = 0;
-    while(!isEOF(offset) && !ahead(token, offset) &&
+    while(!isEOF(offset) && !(ahead("\\" + token, offset) || ahead(token, offset)) &&
       !isWhite(_input.LA(offset + 1))) {
       offset+=1;
     }
