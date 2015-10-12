@@ -139,8 +139,7 @@ abstract class HelperResolver extends BaseTemplate {
   protected Helper<Object> helper(final String name) {
     Helper<Object> helper = handlebars.helper(name);
     if (helper == null && (params.size() > 0 || hash.size() > 0)) {
-      Helper<Object> helperMissing =
-          handlebars.helper(HelperRegistry.HELPER_MISSING);
+      Helper<Object> helperMissing = handlebars.helper(HelperRegistry.HELPER_MISSING);
       if (helperMissing == null) {
         throw new IllegalArgumentException("could not find helper: '" + name
             + "'");
@@ -212,7 +211,11 @@ abstract class HelperResolver extends BaseTemplate {
       StringBuilder buffer = new StringBuilder();
       String sep = " ";
       for (Entry<String, Object> hash : this.hash.entrySet()) {
-        buffer.append(hash.getKey()).append("=").append(hash.getValue())
+        Object hashValue = hash.getValue();
+        String hashText = hashValue instanceof Variable
+            ? ((Variable) hashValue).text()
+            : hashValue.toString();
+        buffer.append(hash.getKey()).append("=").append(hashText)
             .append(sep);
       }
       buffer.setLength(buffer.length() - sep.length());
