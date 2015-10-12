@@ -33,8 +33,7 @@ public class ConcurrentMapTemplateCacheTest {
 
   @Test
   public void get() throws IOException {
-    ConcurrentMap<TemplateSource, Pair<TemplateSource, Template>> cache =
-        new ConcurrentHashMap<TemplateSource, Pair<TemplateSource, Template>>();
+    ConcurrentMap<TemplateSource, Pair<TemplateSource, Template>> cache = new ConcurrentHashMap<TemplateSource, Pair<TemplateSource, Template>>();
 
     TemplateSource source = new URLTemplateSource("/template.hbs", getClass().getResource(
         "/template.hbs"));
@@ -57,8 +56,7 @@ public class ConcurrentMapTemplateCacheTest {
 
   @Test
   public void getAndReload() throws IOException, InterruptedException {
-    ConcurrentMap<TemplateSource, Pair<TemplateSource, Template>> cache =
-        new ConcurrentHashMap<TemplateSource, Pair<TemplateSource, Template>>();
+    ConcurrentMap<TemplateSource, Pair<TemplateSource, Template>> cache = new ConcurrentHashMap<TemplateSource, Pair<TemplateSource, Template>>();
 
     TemplateSource source = source("/template.hbs");
 
@@ -80,13 +78,16 @@ public class ConcurrentMapTemplateCacheTest {
     replay(parser, template, reloadTemplate);
 
     // 1st call, parse must be call it
-    assertEquals(template, new ConcurrentMapTemplateCache(cache).get(source, parser));
+    assertEquals(template,
+        new ConcurrentMapTemplateCache(cache).setReload(true).get(source, parser));
 
     // 2nd call, should return from cache
-    assertEquals(template, new ConcurrentMapTemplateCache(cache).get(source, parser));
+    assertEquals(template,
+        new ConcurrentMapTemplateCache(cache).setReload(true).get(source, parser));
 
     // 3th call, parse must be call it
-    assertEquals(reloadTemplate, new ConcurrentMapTemplateCache(cache).get(reloadSource, parser));
+    assertEquals(reloadTemplate, new ConcurrentMapTemplateCache(cache).setReload(true)
+        .get(reloadSource, parser));
 
     verify(parser, template, reloadTemplate);
   }
@@ -96,7 +97,8 @@ public class ConcurrentMapTemplateCacheTest {
     TemplateSource source = createMock(TemplateSource.class);
 
     @SuppressWarnings("unchecked")
-    ConcurrentMap<TemplateSource, Pair<TemplateSource, Template>> cache = createMock(ConcurrentMap.class);
+    ConcurrentMap<TemplateSource, Pair<TemplateSource, Template>> cache = createMock(
+        ConcurrentMap.class);
     expect(cache.remove(source)).andReturn(null);
 
     replay(cache, source);
@@ -109,7 +111,8 @@ public class ConcurrentMapTemplateCacheTest {
   @Test
   public void clear() throws IOException {
     @SuppressWarnings("unchecked")
-    ConcurrentMap<TemplateSource, Pair<TemplateSource, Template>> cache = createMock(ConcurrentMap.class);
+    ConcurrentMap<TemplateSource, Pair<TemplateSource, Template>> cache = createMock(
+        ConcurrentMap.class);
     cache.clear();
 
     replay(cache);

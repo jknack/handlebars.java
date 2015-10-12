@@ -47,7 +47,7 @@ public class URLTemplateSource extends AbstractTemplateSource {
   /**
    * The last modified date.
    */
-  private long lastModified;
+  private Long lastModified;
 
   /**
    * The file's name.
@@ -63,7 +63,6 @@ public class URLTemplateSource extends AbstractTemplateSource {
   public URLTemplateSource(final String filename, final URL resource) {
     this.filename = notEmpty(filename, "The filename is required.");
     this.resource = notNull(resource, "A resource is required.");
-    this.lastModified = lastModified(resource);
   }
 
   @Override
@@ -93,7 +92,12 @@ public class URLTemplateSource extends AbstractTemplateSource {
 
   @Override
   public long lastModified() {
-    return lastModified;
+    synchronized (this) {
+      if (lastModified == null) {
+        lastModified = lastModified(resource);
+      }
+      return lastModified;
+    }
   }
 
   /**

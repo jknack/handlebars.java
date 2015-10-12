@@ -52,4 +52,13 @@ public interface TemplateCache {
    * @throws IOException If input can't be parsed.
    */
   Template get(TemplateSource source, Parser parser) throws IOException;
+
+  /**
+   * Turn on/off auto reloading of templates. Auto reload is done using
+   * {@link TemplateSource#lastModified()}.
+   *
+   * @param reload True, for turning off template reload. Default is: false.
+   * @return This template loader.
+   */
+  TemplateCache setReload(boolean reload);
 }

@@ -74,13 +74,14 @@ public class GuavaTemplateCacheTest {
     replay(parser, template, reloadTemplate);
 
     // 1st call, parse must be call it
-    assertEquals(template, new GuavaTemplateCache(cache).get(source, parser));
+    assertEquals(template, new GuavaTemplateCache(cache).setReload(true).get(source, parser));
 
     // 2nd call, should return from cache
-    assertEquals(template, new GuavaTemplateCache(cache).get(source, parser));
+    assertEquals(template, new GuavaTemplateCache(cache).setReload(true).get(source, parser));
 
     // 3th call, parse must be call it
-    assertEquals(reloadTemplate, new GuavaTemplateCache(cache).get(reloadSource, parser));
+    assertEquals(reloadTemplate,
+        new GuavaTemplateCache(cache).setReload(true).get(reloadSource, parser));
 
     verify(parser, template, reloadTemplate);
   }

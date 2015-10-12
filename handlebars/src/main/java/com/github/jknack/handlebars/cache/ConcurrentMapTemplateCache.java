@@ -49,6 +49,9 @@ public class ConcurrentMapTemplateCache implements TemplateCache {
    */
   private final ConcurrentMap<TemplateSource, Pair<TemplateSource, Template>> cache;
 
+  /** Turn on/off auto reloading of templates. */
+  private boolean reload;
+
   /**
    * Creates a new ConcurrentMapTemplateCache.
    *
@@ -87,6 +90,12 @@ public class ConcurrentMapTemplateCache implements TemplateCache {
     return cacheGet(source, parser);
   }
 
+  @Override
+  public ConcurrentMapTemplateCache setReload(final boolean reload) {
+    this.reload = reload;
+    return this;
+  }
+
   /**
    * Get/Parse a template source.
    *
@@ -101,7 +110,7 @@ public class ConcurrentMapTemplateCache implements TemplateCache {
       logger.debug("Loading: {}", source);
       entry = Pair.of(source, parser.parse(source));
       cache.put(source, entry);
-    } else if (source.lastModified() != entry.getKey().lastModified()) {
+    } else if (reload && source.lastModified() != entry.getKey().lastModified()) {
       // remove current entry.
       evict(source);
       logger.debug("Reloading: {}", source);

@@ -45,6 +45,11 @@ public enum NullTemplateCache implements TemplateCache {
   }
 
   @Override
+  public NullTemplateCache setReload(final boolean reload) {
+    return this;
+  }
+
+  @Override
   public Template get(final TemplateSource source, final Parser parser) throws IOException {
     return parser.parse(source);
   }

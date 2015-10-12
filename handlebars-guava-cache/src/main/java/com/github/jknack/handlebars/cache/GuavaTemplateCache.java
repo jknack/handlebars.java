@@ -26,11 +26,14 @@ import java.util.concurrent.ExecutionException;
 import com.github.jknack.handlebars.HandlebarsException;
 import com.github.jknack.handlebars.Parser;
 import com.github.jknack.handlebars.Template;
+import com.github.jknack.handlebars.io.ReloadableTemplateSource;
 import com.github.jknack.handlebars.io.TemplateSource;
 import com.google.common.cache.Cache;
 
 /**
- * An implementation of {@link TemplateCache} built on top of Guava.
+ * An implementation of {@link TemplateCache} built on top of Guava. If {@link #setReload(boolean)}
+ * is <code>on</code> we recommended to use one of the available auto-eviction policy of Guava, it
+ * helps to reduce leaks when auto-reload is <code>on</code>.
  *
  * @author edgar.espina
  * @since 0.11.0
@@ -41,6 +44,9 @@ public class GuavaTemplateCache implements TemplateCache {
    * The guava cache.
    */
   private final Cache<TemplateSource, Template> cache;
+
+  /** Turn on/off auto reloading of templates. */
+  private boolean reload;
 
   /**
    * Creates a new {@link GuavaTemplateCache}.
@@ -58,7 +64,7 @@ public class GuavaTemplateCache implements TemplateCache {
 
   @Override
   public void evict(final TemplateSource source) {
-    cache.invalidate(source);
+    cache.invalidate(key(source));
   }
 
   @Override
@@ -66,7 +72,7 @@ public class GuavaTemplateCache implements TemplateCache {
     notNull(source, "The source is required.");
     notNull(parser, "The parser is required.");
     try {
-      return cache.get(source, new Callable<Template>() {
+      return cache.get(key(source), new Callable<Template>() {
         @Override
         public Template call() throws IOException {
           return parser.parse(source);
@@ -75,6 +81,12 @@ public class GuavaTemplateCache implements TemplateCache {
     } catch (ExecutionException ex) {
       throw launderThrowable(source, ex.getCause());
     }
+  }
+
+  @Override
+  public GuavaTemplateCache setReload(final boolean reload) {
+    this.reload = reload;
+    return this;
   }
 
   /**
@@ -93,4 +105,13 @@ public class GuavaTemplateCache implements TemplateCache {
       return new HandlebarsException("Can't parse: " + source, cause);
     }
   }
+
+  /**
+   * @param source Seed.
+   * @return A template source key.
+   */
+  private TemplateSource key(final TemplateSource source) {
+    return reload ? new ReloadableTemplateSource(source) : source;
+  }
+
 }
