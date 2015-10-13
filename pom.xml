@@ -4,7 +4,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.github.jknack</groupId>
   <artifactId>handlebars.java</artifactId>
-  <version>2.2.4-SNAPSHOT</version>
+  <version>2.3.0</version>
   <packaging>pom</packaging>
 
   <name>Handlebars.java</name>
