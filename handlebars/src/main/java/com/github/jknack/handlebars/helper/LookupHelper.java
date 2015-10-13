@@ -24,23 +24,13 @@ import com.github.jknack.handlebars.Helper;
 import com.github.jknack.handlebars.Options;
 
 /**
- * Lookup helper, which allows to get a context variable... It is kind of useless, but it it present
- * to keep better integration with handlebars.js.
+ * Lookup helper, which allows to get a context variable.
  *
  * It was introduced with dynamic partials:
  *
  * <pre>
  * {{> (lookup '.' 'myVariable') }}
  * </pre>
- *
- * This helper is useless bc it shouldn't be required to get a variable via a helper, like:
- *
- * <pre>
- * {{> (myVariable) }}
- * </pre>
- *
- * For now, previous expression isn't supported in Handlebars.java... but the only reason of that is
- * handlebars.js
  *
  * @author edgar
  * @since 2.2.0
@@ -60,16 +50,13 @@ public class LookupHelper implements Helper<Object> {
   @Override
   public CharSequence apply(final Object context, final Options options)
       throws IOException {
+    if (context == null) {
+      return null;
+    }
     if (options.params.length <= 0) {
       return context.toString();
     }
-    Context ctx = options.context;
-    while (ctx != null && context != ctx.model()) {
-      ctx = ctx.parent();
-    }
-    if (ctx == null) {
-      return null;
-    }
+    Context ctx = Context.newBuilder(options.context, context).build();
     Object lookup = ctx.get(options.param(0).toString());
     if (lookup == null) {
       return null;
