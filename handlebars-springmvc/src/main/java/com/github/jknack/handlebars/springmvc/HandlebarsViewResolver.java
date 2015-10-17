@@ -46,6 +46,9 @@ import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Helper;
 import com.github.jknack.handlebars.HelperRegistry;
 import com.github.jknack.handlebars.ValueResolver;
+import com.github.jknack.handlebars.cache.HighConcurrencyTemplateCache;
+import com.github.jknack.handlebars.cache.NullTemplateCache;
+import com.github.jknack.handlebars.cache.TemplateCache;
 import com.github.jknack.handlebars.helper.DefaultHelperRegistry;
 import com.github.jknack.handlebars.helper.I18nHelper;
 import com.github.jknack.handlebars.helper.I18nSource;
@@ -114,6 +117,9 @@ public class HandlebarsViewResolver extends AbstractTemplateViewResolver
 
   /** Location of the handlebars.js file. */
   private String handlebarsJsFile;
+
+  /** Template cache. */
+  private TemplateCache templateCache = new HighConcurrencyTemplateCache();
 
   /**
    * Creates a new {@link HandlebarsViewResolver}.
@@ -213,6 +219,11 @@ public class HandlebarsViewResolver extends AbstractTemplateViewResolver
       I18nHelper.i18nJs.setSource(i18nSource);
     }
 
+    TemplateCache cache = handlebars.getCache();
+    if (cache == NullTemplateCache.INSTANCE) {
+      handlebars.with(templateCache);
+    }
+
     // set delete partial after merge
     handlebars.setDeletePartialAfterMerge(deletePartialAfterMerge);
   }
@@ -260,8 +271,7 @@ public class HandlebarsViewResolver extends AbstractTemplateViewResolver
    * @param context The application's context.
    * @return A new template loader.
    */
-  protected URLTemplateLoader createTemplateLoader(
-      final ApplicationContext context) {
+  protected URLTemplateLoader createTemplateLoader(final ApplicationContext context) {
     URLTemplateLoader templateLoader = new SpringTemplateLoader(context);
     // Override prefix and suffix.
     templateLoader.setPrefix(getPrefix());
@@ -532,4 +542,20 @@ public class HandlebarsViewResolver extends AbstractTemplateViewResolver
   public void setDeletePartialAfterMerge(final boolean deletePartialAfterMerge) {
     this.deletePartialAfterMerge = deletePartialAfterMerge;
   }
+
+  @Override
+  public void setCache(final boolean cache) {
+    if (!cache) {
+      templateCache = NullTemplateCache.INSTANCE;
+    }
+    super.setCache(cache);
+  }
+
+  /**
+   * @param templateCache Set a template cache. Default is: {@link HighConcurrencyTemplateCache}.
+   */
+  public void setTemplateCache(final TemplateCache templateCache) {
+    this.templateCache = templateCache;
+  }
+
 }
