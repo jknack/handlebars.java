@@ -29,8 +29,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+
+import org.apache.commons.lang3.math.NumberUtils;
 
 import com.github.jknack.handlebars.io.TemplateSource;
 
@@ -227,16 +227,6 @@ public class Context {
    * Mark for fail context lookup.
    */
   private static final Object NULL = new Object();
-
-  /**
-   * Property access expression.
-   */
-  private static final Pattern IDX = Pattern.compile("\\[((.)+)\\]");
-
-  /**
-   * Index access expression.
-   */
-  private static final Pattern INT = Pattern.compile("\\d+");
 
   /**
    * Parser for path expressions.
@@ -466,7 +456,7 @@ public class Context {
     if (key.startsWith(PARENT_ATTR)) {
       return parent == null ? null : parent.get(key.substring(PARENT_ATTR.length()));
     }
-    String[] path = toPath(key);
+    List<String> path = toPath(key);
     Object value = internalGet(path);
     if (value == null) {
       // No luck, check the extended context.
@@ -477,7 +467,7 @@ public class Context {
         // simple data keys will be resolved immediately, complex keys need to go down and using a
         // new context.
         value = data.get(dataKey);
-        if (value == null && path.length > 1) {
+        if (value == null && path.size() > 1) {
           // for complex keys, a new data context need to be created per invocation,
           // bc data might changes per execution.
           Context dataContext = Context.newBuilder(data)
@@ -492,7 +482,7 @@ public class Context {
       }
       // No luck, but before checking at the parent scope we need to check for
       // the 'this' qualifier. If present, no look up will be done.
-      if (value == null && !path[0].equals(THIS)) {
+      if (value == null && !path.get(0).equals(THIS)) {
         value = get(parent, key);
       }
     }
@@ -516,7 +506,7 @@ public class Context {
    * @param key The property's name.
    * @return A path representation of the property (array based).
    */
-  private String[] toPath(final String key) {
+  private List<String> toPath(final String key) {
     return PATH_PARSER.parsePath(key);
   }
 
@@ -540,17 +530,17 @@ public class Context {
    * @param path The qualified path.
    * @return The value inside the stack for the given path.
    */
-  private Object internalGet(final String... path) {
+  private Object internalGet(final List<String> path) {
     Object current = model;
     // Resolve 'this' to the current model.
-    int start = path[0].equals(THIS) ? 1 : 0;
-    for (int i = start; i < path.length - 1; i++) {
-      current = resolve(current, path[i]);
+    int start = path.get(0).equals(THIS) ? 1 : 0;
+    for (int i = start; i < path.size() - 1; i++) {
+      current = resolve(current, path.get(i));
       if (current == null) {
         return null;
       }
     }
-    String name = path[path.length - 1];
+    String name = path.get(path.size() - 1);
     Object value = resolve(current, name);
     if (value == null && current != model) {
       // We're looking in the right scope, but the value isn't there
@@ -573,12 +563,18 @@ public class Context {
       return null;
     }
 
+    Object result = resolver.resolve(current, expression);
+    if (result != null && result != ValueResolver.UNRESOLVED) {
+      // no need to look for complex path expression, we already found the value.
+      return result;
+    }
+
+    // nothing was found, let's test check if we have an invalid identifier.
     // array/list access or invalid Java identifiers wrapped with []
-    Matcher matcher = IDX.matcher(expression);
-    if (matcher.matches()) {
-      String idx = matcher.group(1);
-      if (INT.matcher(idx).matches()) {
-        Object result = resolveArrayAccess(current, idx);
+    if (expression.charAt(0) == '[' && expression.charAt(expression.length() - 1) == ']') {
+      String idx = expression.substring(1, expression.length() - 1);
+      if (NumberUtils.isDigits(idx)) {
+        result = resolveArrayAccess(current, idx);
         if (result != NULL) {
           return result;
         }
@@ -588,13 +584,13 @@ public class Context {
       return resolver.resolve(current, idx);
     }
     // array or list access, exclusive
-    if (INT.matcher(expression).matches()) {
-      Object result = resolveArrayAccess(current, expression);
+    if (NumberUtils.isDigits(expression)) {
+      result = resolveArrayAccess(current, expression);
       if (result != NULL) {
         return result;
       }
     }
-    return resolver.resolve(current, expression);
+    return result;
   }
 
   /**

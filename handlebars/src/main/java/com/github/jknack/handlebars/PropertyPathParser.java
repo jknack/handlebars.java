@@ -31,8 +31,10 @@
  */
 package com.github.jknack.handlebars;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -41,13 +43,15 @@ import java.util.regex.Pattern;
  */
 class PropertyPathParser {
 
-  /**
-   * The path pattern.
-   */
-  private final Pattern pattern;
+  /** The path pattern. */
+  private Pattern pattern;
+
+  /** Cache of parsed key. */
+  private ConcurrentMap<String, List<String>> cache = new ConcurrentHashMap<String, List<String>>();
 
   /**
    * Construct parser using path separators.
+   *
    * @param pathSeparators characters that are path separators.
    */
   public PropertyPathParser(final String pathSeparators) {
@@ -61,13 +65,32 @@ class PropertyPathParser {
    * @param key The property's name.
    * @return A path representation of the property (array based).
    */
-  String[] parsePath(final String key) {
+  List<String> parsePath(final String key) {
+    List<String> path = cache.get(key);
+    if (path == null) {
+      path = parse(key);
+      List<String> newPath = cache.putIfAbsent(key, path);
+      if (newPath != null) {
+        path = newPath;
+      }
+    }
+    return path;
+  }
+
+  /**
+   * Split the property name by separator (except within a [] escaped blocked)
+   * and create an array of it.
+   *
+   * @param key The property's name.
+   * @return A path representation of the property (array based).
+   */
+  private List<String> parse(final String key) {
     Matcher matcher = pattern.matcher(key);
-    List<String> tags = new ArrayList<String>();
+    List<String> tags = new LinkedList<String>();
     while (matcher.find()) {
       tags.add(matcher.group(1));
     }
-    return tags.toArray(new String[tags.size()]);
+    return tags;
   }
 
 }
