@@ -222,7 +222,7 @@ public class Handlebars implements HelperRegistry {
      * @return The escaped version of the input or the same input if it's a
      *         SafeString.
      */
-    public static String escapeExpression(final CharSequence input) {
+    public static CharSequence escapeExpression(final CharSequence input) {
       if (StringUtils.isEmpty(input)) {
         return "";
       }
@@ -256,7 +256,7 @@ public class Handlebars implements HelperRegistry {
             html.append(ch);
         }
       }
-      return html.toString();
+      return html.length() == input.length() ? input : html;
     }
   }
 
@@ -1008,7 +1008,6 @@ public class Handlebars implements HelperRegistry {
         "The escaping strategy is required.");
     return this;
   }
-
 
   /**
    * @return A formatter chain.

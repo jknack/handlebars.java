@@ -33,6 +33,24 @@ class FastStringWriter extends Writer {
   private final StringBuilder buffer = new StringBuilder();
 
   @Override
+  public Writer append(final char c) throws IOException {
+    buffer.append(c);
+    return this;
+  }
+
+  @Override
+  public Writer append(final CharSequence csq) throws IOException {
+    buffer.append(csq);
+    return this;
+  }
+
+  @Override
+  public Writer append(final CharSequence csq, final int start, final int end) throws IOException {
+    buffer.append(csq, start, end);
+    return this;
+  }
+
+  @Override
   public void write(final char[] buffer) throws IOException {
     this.buffer.append(buffer);
   }

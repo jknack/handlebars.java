@@ -83,7 +83,7 @@ public class EachHelper implements Helper<Object> {
       buffer.append(options.fn(current));
       first = false;
     }
-    return buffer.toString();
+    return buffer;
   }
 
   /**
@@ -101,18 +101,16 @@ public class EachHelper implements Helper<Object> {
       buffer.append(options.inverse());
     } else {
       Iterator<Object> iterator = context.iterator();
-      int index = -1;
+      int base = options.hash("base", 0);
+      int index = base;
       Context parent = options.context;
       while (iterator.hasNext()) {
-        index += 1;
         Object element = iterator.next();
-        boolean first = index == 0;
         boolean even = index % 2 == 0;
-        boolean last = !iterator.hasNext();
         Context current = Context.newBuilder(parent, element)
             .combine("@index", index)
-            .combine("@first", first ? "first" : "")
-            .combine("@last", last ? "last" : "")
+            .combine("@first", index == base ? "first" : "")
+            .combine("@last", !iterator.hasNext() ? "last" : "")
             .combine("@odd", even ? "" : "odd")
             .combine("@even", even ? "even" : "")
             // 1-based index
@@ -120,9 +118,10 @@ public class EachHelper implements Helper<Object> {
             .build();
         buffer.append(options.fn(current));
         current.destroy();
+        index += 1;
       }
     }
-    return buffer.toString();
+    return buffer;
   }
 
 }

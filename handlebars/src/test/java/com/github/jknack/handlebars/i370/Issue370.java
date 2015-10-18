@@ -10,6 +10,6 @@ public class Issue370 {
 
   @Test
   public void shouldEscapeSingleQuote() {
-    assertEquals("&#x27;", Utils.escapeExpression("'"));
+    assertEquals("&#x27;", Utils.escapeExpression("'").toString());
   }
 }
