@@ -78,6 +78,9 @@ class Variable extends HelperResolver {
    */
   private EscapingStrategy escapingStrategy;
 
+  /** Helper. */
+  private final Helper<Object> helper;
+
   /**
    * Creates a new {@link Variable}.
    *
@@ -113,6 +116,7 @@ class Variable extends HelperResolver {
     this.type = type;
     params(params);
     hash(hash);
+    this.helper = helper(name);
   }
 
   /**
@@ -143,7 +147,7 @@ class Variable extends HelperResolver {
   @Override
   protected void merge(final Context scope, final Writer writer)
       throws IOException {
-    Helper<Object> helper = helper(name);
+    Helper<Object> helper = this.helper;
     if (helper != null) {
       Options options = new Options.Builder(handlebars, name, type, scope, empty(this))
           .setParams(params(scope))
@@ -170,9 +174,7 @@ class Variable extends HelperResolver {
       }
       if (value != null) {
         if (value instanceof Lambda) {
-          value =
-              Lambdas.merge(handlebars, (Lambda<Object, Object>) value, scope,
-                  this);
+          value = Lambdas.merge(handlebars, (Lambda<Object, Object>) value, scope, this);
         }
         Formatter.Chain formatter = handlebars.getFormatter();
         String fvalue = formatter.format(value).toString();

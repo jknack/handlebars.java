@@ -18,10 +18,9 @@ public class Issue200 extends AbstractTest {
         return "foo";
       }
     });
-    Template t = h.compileInline("hello world: {{replaceHelperTest \"foobar\"}}");
-    assertEquals("hello world: foo", t.apply(null));
 
     h.registerHelpers(new DynamicHelperExample());
+    Template t = h.compileInline("hello world: {{replaceHelperTest \"foobar\"}}");
 
     assertEquals("hello world: bar", t.apply(null));
   }

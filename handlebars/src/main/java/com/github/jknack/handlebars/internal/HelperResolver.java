@@ -28,6 +28,7 @@ import java.util.Map.Entry;
 
 import com.github.jknack.handlebars.Context;
 import com.github.jknack.handlebars.Handlebars;
+import com.github.jknack.handlebars.HandlebarsException;
 import com.github.jknack.handlebars.Helper;
 import com.github.jknack.handlebars.HelperRegistry;
 import com.github.jknack.handlebars.TagType;
@@ -144,8 +145,8 @@ abstract class HelperResolver extends BaseTemplate {
     if (helper == null && (params.size() > 0 || hash.size() > 0)) {
       Helper<Object> helperMissing = handlebars.helper(HelperRegistry.HELPER_MISSING);
       if (helperMissing == null) {
-        throw new IllegalArgumentException("could not find helper: '" + name
-            + "'");
+        throw new HandlebarsException(
+            new IllegalArgumentException("could not find helper: '" + name + "'"));
       }
       helper = helperMissing;
     }

@@ -88,12 +88,15 @@ class Block extends HelperResolver {
   /**
    * Inverse section for if/else clauses.
    */
-  private Template inverse;
+  private Template inverse = Template.EMPTY;
 
   /**
    * The inverse label: 'else' or '^'.
    */
   private String inverseLabel;
+
+  /** Helper. */
+  private final Helper<Object> helper;
 
   /**
    * Creates a new {@link Block}.
@@ -113,6 +116,7 @@ class Block extends HelperResolver {
     type = inverted ? "^" : "#";
     params(params);
     hash(hash);
+    this.helper = helper(name);
   }
 
   @SuppressWarnings("unchecked")
@@ -122,7 +126,7 @@ class Block extends HelperResolver {
       return;
     }
     final String helperName;
-    Helper<Object> helper = helper(name);
+    Helper<Object> helper = this.helper;
     Template template = body;
     final Object childContext;
     Context currentScope = context;
@@ -137,9 +141,7 @@ class Block extends HelperResolver {
       } else if (childContext instanceof Lambda) {
         helperName = WithHelper.NAME;
         template = Lambdas
-            .compile(handlebars,
-                (Lambda<Object, Object>) childContext,
-                context, template,
+            .compile(handlebars, (Lambda<Object, Object>) childContext, context, template,
                 startDelimiter, endDelimiter);
       } else {
         helperName = WithHelper.NAME;
@@ -161,10 +163,10 @@ class Block extends HelperResolver {
     }
     Options options = new Options.Builder(handlebars, helperName, TagType.SECTION, currentScope,
         template)
-        .setInverse(inverse == null ? Template.EMPTY : inverse)
-        .setParams(params(currentScope))
-        .setHash(hash(context))
-        .build();
+            .setInverse(inverse)
+            .setParams(params(currentScope))
+            .setHash(hash(context))
+            .build();
     options.data(Context.PARAM_SIZE, this.params.size());
 
     CharSequence result = helper.apply(childContext, options);
@@ -283,7 +285,7 @@ class Block extends HelperResolver {
     buffer.append(endDelimiter);
     if (complete) {
       buffer.append(body == null ? "" : body.text());
-      buffer.append(inverse == null ? "" : "{{" + inverseLabel + "}}" + inverse.text());
+      buffer.append(inverse == Template.EMPTY ? "" : "{{" + inverseLabel + "}}" + inverse.text());
     } else {
       buffer.append("\n...\n");
     }
@@ -315,9 +317,7 @@ class Block extends HelperResolver {
     if (body != null) {
       tagNames.addAll(body.collect(tagType));
     }
-    if (inverse != null) {
-      tagNames.addAll(inverse.collect(tagType));
-    }
+    tagNames.addAll(inverse.collect(tagType));
     tagNames.addAll(super.collect(tagType));
     return new ArrayList<String>(tagNames);
   }
@@ -336,9 +336,7 @@ class Block extends HelperResolver {
     if (body != null) {
       paramNames.addAll(body.collectReferenceParameters());
     }
-    if (inverse != null) {
-      paramNames.addAll(inverse.collectReferenceParameters());
-    }
+    paramNames.addAll(inverse.collectReferenceParameters());
     paramNames.addAll(super.collectReferenceParameters());
     return new ArrayList<String>(paramNames);
   }
