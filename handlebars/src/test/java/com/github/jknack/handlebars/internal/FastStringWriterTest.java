@@ -78,6 +78,5 @@ public class FastStringWriterTest {
     writer.append("hello");
     assertEquals("hello", writer.toString());
     writer.close();
-    assertEquals("", writer.toString());
   }
 }
