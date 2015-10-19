@@ -53,6 +53,19 @@ import com.github.jknack.handlebars.io.TemplateSource;
  */
 public class Context {
 
+  /** NOOP ctx. */
+  private static final Context NOOP = new Context(null) {
+    @Override
+    public Object get(final String key) {
+      return null;
+    }
+
+    @Override
+    protected Object get(final String key, final List<String> path) {
+      return null;
+    }
+  };
+
   /**
    * Handlebars and Mustache path separator.
    */
@@ -206,7 +219,7 @@ public class Context {
      */
     public Context build() {
       if (context.resolver == null) {
-        if (context.parent != null) {
+        if (context.parent != NOOP) {
           // Set resolver from parent.
           context.resolver = context.parent.resolver;
         } else {
@@ -215,7 +228,7 @@ public class Context {
               new CompositeValueResolver(ValueResolver.VALUE_RESOLVERS));
         }
         // Expand resolver to the extended context.
-        if (context.extendedContext != null) {
+        if (context.extendedContext != NOOP) {
           context.extendedContext.resolver = context.resolver;
         }
       }
@@ -281,6 +294,8 @@ public class Context {
    */
   protected Context(final Object model) {
     this.model = model;
+    this.extendedContext = NOOP;
+    this.parent = NOOP;
   }
 
   /**
@@ -293,7 +308,6 @@ public class Context {
   private static Context root(final Object model) {
     Context root = new Context(model);
     root.extendedContext = new Context(new HashMap<String, Object>());
-    root.parent = null;
     root.data = new HashMap<String, Object>();
     root.data.put(PARTIALS, new HashMap<String, Template>());
     root.data.put(INVOCATION_STACK, new LinkedList<TemplateSource>());
@@ -463,11 +477,11 @@ public class Context {
    * @param path Key as path.
    * @return Value.
    */
-  private Object get(final String key, final List<String> path) {
+  protected Object get(final String key, final List<String> path) {
     Object value = internalGet(path);
     if (value == null) {
       // No luck, check the extended context.
-      value = get(extendedContext, key, path);
+      value = extendedContext.get(key, path);
       // No luck, check the data context.
       if (value == null && data != null) {
         String dataKey = key.charAt(0) == '@' ? key.substring(1) : key;
@@ -482,7 +496,6 @@ public class Context {
               .build();
           // don't extend the lookup further.
           dataContext.data = null;
-          dataContext.extendedContext = null;
           value = dataContext.get(dataKey);
           // destroy it!
           dataContext.destroy();
@@ -491,22 +504,10 @@ public class Context {
       // No luck, but before checking at the parent scope we need to check for
       // the 'this' qualifier. If present, no look up will be done.
       if (value == null && !path.get(0).equals(THIS)) {
-        value = get(parent, key, path);
+        value = parent.get(key, path);
       }
     }
     return value == NULL ? null : value;
-  }
-
-  /**
-   * Look for the specified key in an external context.
-   *
-   * @param external The external context.
-   * @param key The associated key.
-   * @param path Key as path.
-   * @return The associated value or null if not found.
-   */
-  private Object get(final Context external, final String key, final List<String> path) {
-    return external == null ? null : external.get(key, path);
   }
 
   /**
