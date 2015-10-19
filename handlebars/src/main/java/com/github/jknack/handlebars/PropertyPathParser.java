@@ -69,10 +69,7 @@ class PropertyPathParser {
     List<String> path = cache.get(key);
     if (path == null) {
       path = parse(key);
-      List<String> newPath = cache.putIfAbsent(key, path);
-      if (newPath != null) {
-        path = newPath;
-      }
+      cache.put(key, path);
     }
     return path;
   }

@@ -22,7 +22,6 @@ import java.io.IOException;
 import com.github.jknack.handlebars.Context;
 import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Lambda;
-import com.github.jknack.handlebars.TagType;
 import com.github.jknack.handlebars.Template;
 
 /**
@@ -96,7 +95,7 @@ final class Lambdas {
       result = handlebars.compileInline(value.toString(), startDelimiter, endDelimiter);
     } else {
       // Don't escape no string values.
-      result = new Variable(handlebars, "$$lambda", value, TagType.TRIPLE_VAR);
+      result = new Text(handlebars, value.toString());
     }
     return result;
   }

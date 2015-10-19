@@ -59,11 +59,6 @@ class Variable extends HelperResolver {
   private final TagType type;
 
   /**
-   * Default value for a variable. If set, no lookup is executed. Optional.
-   */
-  private final Object constant;
-
-  /**
    * The start delimiter.
    */
   private String startDelimiter;
@@ -81,6 +76,9 @@ class Variable extends HelperResolver {
   /** Helper. */
   private final Helper<Object> helper;
 
+  /** Formatter. */
+  private Formatter.Chain formatter;
+
   /**
    * Creates a new {@link Variable}.
    *
@@ -93,30 +91,14 @@ class Variable extends HelperResolver {
   public Variable(final Handlebars handlebars, final String name,
       final TagType type, final List<Object> params,
       final Map<String, Object> hash) {
-    this(handlebars, name, null, type, params, hash);
-  }
-
-  /**
-   * Creates a new {@link Variable}.
-   *
-   * @param handlebars The handlebars instance.
-   * @param name The variable's name. Required.
-   * @param value The variable's value. Optional.
-   * @param type The variable's type. Required.
-   * @param params The variable's parameters. Required.
-   * @param hash The variable's hash. Required.
-   */
-  public Variable(final Handlebars handlebars, final String name,
-      final Object value, final TagType type, final List<Object> params,
-      final Map<String, Object> hash) {
     super(handlebars);
-    this.escapingStrategy = handlebars.getEscapingStrategy();
     this.name = name.trim();
-    this.constant = value;
     this.type = type;
     params(params);
     hash(hash);
+    this.escapingStrategy = handlebars.getEscapingStrategy();
     this.helper = helper(name);
+    this.formatter = handlebars.getFormatter();
   }
 
   /**
@@ -124,13 +106,11 @@ class Variable extends HelperResolver {
    *
    * @param handlebars The handlebars instance.
    * @param name The variable's name. Required.
-   * @param value The variable's value. Optional.
    * @param type The variable's type. Required.
    */
   @SuppressWarnings("unchecked")
-  public Variable(final Handlebars handlebars, final String name,
-      final Object value, final TagType type) {
-    this(handlebars, name, value, type, Collections.EMPTY_LIST,
+  public Variable(final Handlebars handlebars, final String name, final TagType type) {
+    this(handlebars, name, type, Collections.EMPTY_LIST,
         Collections.EMPTY_MAP);
   }
 
@@ -161,7 +141,7 @@ class Variable extends HelperResolver {
         writer.append(result);
       }
     } else {
-      Object value = constant == null ? scope.get(name) : constant;
+      Object value = scope.get(name);
       if (value == null) {
         Helper<Object> missingValueResolver = helper(Handlebars.HELPER_MISSING);
         if (missingValueResolver != null) {
@@ -176,7 +156,6 @@ class Variable extends HelperResolver {
         if (value instanceof Lambda) {
           value = Lambdas.merge(handlebars, (Lambda<Object, Object>) value, scope, this);
         }
-        Formatter.Chain formatter = handlebars.getFormatter();
         String fvalue = formatter.format(value).toString();
         if (escape(value)) {
           writer.append(escapingStrategy.escape(fvalue));

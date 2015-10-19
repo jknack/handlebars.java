@@ -343,6 +343,9 @@ public class Handlebars implements HelperRegistry {
   /** List of formatters. */
   private List<Formatter> formatters = new ArrayList<Formatter>();
 
+  /** Default formatter. */
+  private Formatter.Chain formatter = new Formatter.Noop();
+
   /**
    * Creates a new {@link Handlebars} with no cache.
    *
@@ -1013,7 +1016,7 @@ public class Handlebars implements HelperRegistry {
    * @return A formatter chain.
    */
   public Formatter.Chain getFormatter() {
-    return new FormatterChain(formatters);
+    return formatter;
   }
 
   /**
@@ -1041,6 +1044,8 @@ public class Handlebars implements HelperRegistry {
     notNull(formatter, "A formatter is required.");
 
     formatters.add(formatter);
+
+    this.formatter = new FormatterChain(formatters);
 
     return this;
   }

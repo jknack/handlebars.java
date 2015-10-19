@@ -53,13 +53,6 @@ public class ContextTest {
     assertEquals("String", context.model());
   }
 
-  @Test(expected = IllegalArgumentException.class)
-  public void noContext() {
-    Map<String, Object> model = new HashMap<String, Object>();
-    Context context = Context.newContext(model);
-    assertEquals(context, Context.newContext(context));
-  }
-
   @Test
   public void parentContext() {
     Map<String, Object> model = new HashMap<String, Object>();
@@ -229,7 +222,7 @@ public class ContextTest {
             .combine(new HashMap<String, Object>()).build();
     assertEquals("child2", child2.get("this"));
   }
-  
+
   public void testCombineGenerics() {
 
 	  Context.newBuilder("blah").combine(new HashMap<String, String>());

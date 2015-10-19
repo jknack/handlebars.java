@@ -280,10 +280,6 @@ public class Context {
    *        templates. Required.
    */
   protected Context(final Object model) {
-    if (model instanceof Context) {
-      throw new IllegalArgumentException("Invalid model type:"
-          + model.getClass().getName());
-    }
     this.model = model;
   }
 
@@ -314,7 +310,6 @@ public class Context {
    * @return A child context.
    */
   private static Context child(final Context parent, final Object model) {
-    notNull(parent, "A parent context is required.");
     Context child = new Context(model);
     child.extendedContext = new Context(new HashMap<String, Object>());
     child.parent = parent;
@@ -464,7 +459,7 @@ public class Context {
       // No luck, check the data context.
       if (value == null && data != null) {
         String dataKey = key.charAt(0) == '@' ? key.substring(1) : key;
-        // simple data keys will be resolved immediately, complex keys need to go down and using a
+        // simple data keys will be resolved immediately, complex keys need to go down and use a
         // new context.
         value = data.get(dataKey);
         if (value == null && path.size() > 1) {
