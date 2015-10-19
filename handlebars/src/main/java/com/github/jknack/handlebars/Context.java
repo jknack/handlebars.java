@@ -435,27 +435,39 @@ public class Context {
    * </ul>
    *
    * @param key The object key.
-   * @return The value associated to the given key or <code>null</code> if no
-   *         value is found.
+   * @return The value associated to the given key or <code>null</code> if no value is found.
    */
   public Object get(final String key) {
     // '.' or 'this'
     if (MUSTACHE_THIS.equals(key) || THIS.equals(key)) {
       return internalGet(model);
     }
-    // '..'
-    if (key.equals(PARENT)) {
-      return parent == null ? null : internalGet(parent.model);
+
+    // '..' or '../'
+    if (key.startsWith(PARENT)) {
+      if (parent == null) {
+        return null;
+      }
+      return key.length() == PARENT.length()
+          ? internalGet(parent.model)
+          : parent.get(key.substring(PARENT_ATTR.length()));
     }
-    // '../'
-    if (key.startsWith(PARENT_ATTR)) {
-      return parent == null ? null : parent.get(key.substring(PARENT_ATTR.length()));
-    }
-    List<String> path = toPath(key);
+
+    return get(key, toPath(key));
+  }
+
+  /**
+   * Lookup a key/path.
+   *
+   * @param key Key.
+   * @param path Key as path.
+   * @return Value.
+   */
+  private Object get(final String key, final List<String> path) {
     Object value = internalGet(path);
     if (value == null) {
       // No luck, check the extended context.
-      value = get(extendedContext, key);
+      value = get(extendedContext, key, path);
       // No luck, check the data context.
       if (value == null && data != null) {
         String dataKey = key.charAt(0) == '@' ? key.substring(1) : key;
@@ -470,6 +482,7 @@ public class Context {
               .build();
           // don't extend the lookup further.
           dataContext.data = null;
+          dataContext.extendedContext = null;
           value = dataContext.get(dataKey);
           // destroy it!
           dataContext.destroy();
@@ -478,7 +491,7 @@ public class Context {
       // No luck, but before checking at the parent scope we need to check for
       // the 'this' qualifier. If present, no look up will be done.
       if (value == null && !path.get(0).equals(THIS)) {
-        value = get(parent, key);
+        value = get(parent, key, path);
       }
     }
     return value == NULL ? null : value;
@@ -489,10 +502,11 @@ public class Context {
    *
    * @param external The external context.
    * @param key The associated key.
+   * @param path Key as path.
    * @return The associated value or null if not found.
    */
-  private Object get(final Context external, final String key) {
-    return external == null ? null : external.get(key);
+  private Object get(final Context external, final String key, final List<String> path) {
+    return external == null ? null : external.get(key, path);
   }
 
   /**
