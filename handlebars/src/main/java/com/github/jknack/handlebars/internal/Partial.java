@@ -90,7 +90,7 @@ class Partial extends HelperResolver {
   }
 
   @Override
-  public void merge(final Context context, final Writer writer)
+  protected void merge(final Context context, final Writer writer)
       throws IOException {
     TemplateLoader loader = handlebars.getLoader();
     Map<String, Object> hash = Collections.emptyMap();

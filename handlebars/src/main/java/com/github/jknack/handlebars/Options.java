@@ -17,9 +17,6 @@
  */
 package com.github.jknack.handlebars;
 
-import static org.apache.commons.lang3.Validate.notEmpty;
-import static org.apache.commons.lang3.Validate.notNull;
-
 import java.io.IOException;
 import java.util.Collections;
 import java.util.Map;
@@ -108,11 +105,11 @@ public class Options {
      */
     public Builder(final Handlebars handlebars, final String helperName, final TagType tagType,
         final Context context, final Template fn) {
-      this.handlebars = notNull(handlebars, "The handlebars is required.");
-      this.helperName = notEmpty(helperName, "The helperName is required.");
-      this.tagType = notNull(tagType, "The tag type is required.");
-      this.context = notNull(context, "The context is required.");
-      this.fn = notNull(fn, "The fn template is required.");
+      this.handlebars = handlebars;
+      this.helperName = helperName;
+      this.tagType = tagType;
+      this.context = context;
+      this.fn = fn;
     }
 
     /**
@@ -141,7 +138,7 @@ public class Options {
      * @return This builder.
      */
     public Builder setHash(final Map<String, Object> hash) {
-      this.hash = notNull(hash, "The hash is required.");
+      this.hash = hash;
       return this;
     }
 
@@ -152,7 +149,7 @@ public class Options {
      * @return This builder.
      */
     public Builder setInverse(final Template inverse) {
-      this.inverse = notNull(inverse, "The inverse is required.");
+      this.inverse = inverse;
       return this;
     }
 
@@ -163,7 +160,7 @@ public class Options {
      * @return This builder.
      */
     public Builder setParams(final Object[] params) {
-      this.params = notNull(params, "The params is required.");
+      this.params = params;
       return this;
     }
   }
@@ -221,14 +218,14 @@ public class Options {
   public Options(final Handlebars handlebars, final String helperName, final TagType tagType,
       final Context context, final Template fn, final Template inverse, final Object[] params,
       final Map<String, Object> hash) {
-    this.handlebars = notNull(handlebars, "The handlebars is required.");
-    this.helperName = notEmpty(helperName, "The helperName is required.");
-    this.tagType = notNull(tagType, "The tag type is required.");
-    this.context = notNull(context, "The context is required");
-    this.fn = notNull(fn, "The template is required.");
-    this.inverse = notNull(inverse, "The inverse template is required.");
-    this.params = notNull(params, "The parameters are required.");
-    this.hash = notNull(hash, "The hash are required.");
+    this.handlebars = handlebars;
+    this.helperName = helperName;
+    this.tagType = tagType;
+    this.context = context;
+    this.fn = fn;
+    this.inverse = inverse;
+    this.params = params;
+    this.hash = hash;
   }
 
   /**
@@ -238,7 +235,7 @@ public class Options {
    * @throws IOException If a resource cannot be loaded.
    */
   public CharSequence fn() throws IOException {
-    return fn(context);
+    return fn.apply(context);
   }
 
   /**
@@ -249,7 +246,18 @@ public class Options {
    * @throws IOException If a resource cannot be loaded.
    */
   public CharSequence fn(final Object context) throws IOException {
-    return apply(fn, context);
+    return fn.apply(wrap(context));
+  }
+
+  /**
+   * Apply the {@link #fn} template using the provided context.
+   *
+   * @param context The context to use.
+   * @return The resulting text.
+   * @throws IOException If a resource cannot be loaded.
+   */
+  public CharSequence fn(final Context context) throws IOException {
+    return fn.apply(wrap(context));
   }
 
   /**
@@ -270,7 +278,18 @@ public class Options {
    * @throws IOException If a resource cannot be loaded.
    */
   public CharSequence inverse(final Object context) throws IOException {
-    return apply(inverse, context);
+    return inverse.apply(wrap(context));
+  }
+
+  /**
+   * Apply the {@link #inverse} template using the provided context.
+   *
+   * @param context The context to use.
+   * @return The resulting text.
+   * @throws IOException If a resource cannot be loaded.
+   */
+  public CharSequence inverse(final Context context) throws IOException {
+    return inverse.apply(wrap(context));
   }
 
   /**
@@ -287,6 +306,19 @@ public class Options {
   }
 
   /**
+   * Apply the given template to the provided context. The context stack is
+   * propagated allowing the access to the whole stack.
+   *
+   * @param template The template.
+   * @param context The context object.
+   * @return The resulting text.
+   * @throws IOException If a resource cannot be loaded.
+   */
+  public CharSequence apply(final Template template, final Context context) throws IOException {
+    return template.apply(wrap(context));
+  }
+
+  /**
    * Apply the given template to the default context. The context stack is
    * propagated allowing the access to the whole stack.
    *
@@ -295,7 +327,7 @@ public class Options {
    * @throws IOException If a resource cannot be loaded.
    */
   public CharSequence apply(final Template template) throws IOException {
-    return apply(template, context);
+    return template.apply(context);
   }
 
   /**
@@ -465,16 +497,28 @@ public class Options {
    *         context already.
    */
   public Context wrap(final Object model) {
-    if (model == context) {
-      return context;
-    }
-    if (model == context.model()) {
+    if (model == context.model || model == context) {
       return context;
     }
     if (model instanceof Context) {
       return (Context) model;
     }
     return Context.newContext(context, model);
+  }
+
+  /**
+   * Creates a {@link Context} from the given model. If the object is a context
+   * already the same object will be returned.
+   *
+   * @param context The model object.
+   * @return A context representing the model or the same model if it's a
+   *         context already.
+   */
+  private Context wrap(final Context context) {
+    if (context != null) {
+      return context;
+    }
+    return Context.newContext(null);
   }
 
   /**

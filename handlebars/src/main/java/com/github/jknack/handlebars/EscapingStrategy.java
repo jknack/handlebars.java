@@ -75,6 +75,14 @@ public interface EscapingStrategy {
     }
   };
 
+  /** NOOP escaping. */
+  EscapingStrategy NOOP = new EscapingStrategy() {
+    @Override
+    public CharSequence escape(final CharSequence value) {
+      return value;
+    }
+  };
+
   /**
    * Escape the {@link java.lang.CharSequence}.
    *

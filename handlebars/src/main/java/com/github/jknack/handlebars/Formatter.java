@@ -65,24 +65,16 @@ public interface Formatter {
   }
 
   /**
-   * NOOP Chain.
+   * NOOP Formatter.
    *
    * @author edgar
-   * @since 2.1.0
    */
-  public class Noop implements Formatter.Chain {
-
-    /**
-     * Ask the next formatter to process the value.
-     *
-     * @param value A value to format, not null.
-     * @return A formatted value, not null.
-     */
+  Formatter.Chain NOOP = new Formatter.Chain() {
     @Override
     public Object format(final Object value) {
       return value;
     }
-  }
+  };
 
   /**
    * Format a value if possible or call next formatter in the chain.

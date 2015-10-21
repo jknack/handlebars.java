@@ -29,21 +29,6 @@ import com.github.jknack.handlebars.Context;
  */
 public enum ParamType {
   /**
-   * Resolve the parameter type as {@link Context#context()}.
-   */
-  CONTEXT {
-    @Override
-    boolean apply(final Object param) {
-      return param instanceof Context;
-    }
-
-    @Override
-    Object doParse(final Context scope, final Object param) {
-      return ((Context) param).model();
-    }
-  },
-
-  /**
    * Matches ".*" expressions.
    */
   STRING {
@@ -51,8 +36,9 @@ public enum ParamType {
     boolean apply(final Object param) {
       if (param instanceof String) {
         String string = (String) param;
-        return string.startsWith("\"") && string.endsWith("\"")
-            || string.startsWith("'") && string.endsWith("'");
+        int len = string.length();
+        return string.charAt(0) == '"' && string.charAt(len - 1) == '"'
+            || string.charAt(0) == '\'' && string.charAt(len - 1) == '\'';
       }
       return false;
     }
@@ -60,37 +46,7 @@ public enum ParamType {
     @Override
     Object doParse(final Context scope, final Object param) {
       String string = (String) param;
-      return string.subSequence(1, string.length() - 1);
-    }
-  },
-
-  /**
-   * Matches <code>true</code> or <code>false</code>.
-   */
-  BOOLEAN {
-    @Override
-    boolean apply(final Object param) {
-      return param instanceof Boolean;
-    }
-
-    @Override
-    Object doParse(final Context scope, final Object param) {
-      return param;
-    }
-  },
-
-  /**
-   * Matches a integer value.
-   */
-  INTEGER {
-    @Override
-    boolean apply(final Object param) {
-      return param instanceof Integer;
-    }
-
-    @Override
-    Object doParse(final Context scope, final Object param) {
-      return param;
+      return string.substring(1, string.length() - 1);
     }
   },
 
@@ -106,6 +62,21 @@ public enum ParamType {
     @Override
     Object doParse(final Context scope, final Object param) {
       return scope.get((String) param);
+    }
+  },
+
+  /**
+   * Resolve the parameter type as {@link Context#context()}.
+   */
+  CONTEXT {
+    @Override
+    boolean apply(final Object param) {
+      return param instanceof Context;
+    }
+
+    @Override
+    Object doParse(final Context scope, final Object param) {
+      return ((Context) param).model();
     }
   },
 
@@ -152,21 +123,27 @@ public enum ParamType {
    * @throws IOException If param can't be applied.
    */
   public static Object parse(final Context context, final Object param) throws IOException {
-    return get(param).doParse(context, param);
+    if (param instanceof String) {
+      // string literal
+      String str = (String) param;
+      if (str.charAt(0) == '"') {
+        return str.substring(1, str.length() - 1);
+      } else if (str.charAt(0) == '\'') {
+        return str.substring(1, str.length() - 1);
+      }
+      // reference
+      return context.get(str);
+    }
+    // context ref
+    if (param instanceof Context) {
+      return ((Context) param).model();
+    }
+    // subexpression
+    if (param instanceof Variable) {
+      return ((Variable) param).apply(context);
+    }
+    // noop
+    return param;
   }
 
-  /**
-   * Find a strategy.
-   *
-   * @param param The candidate param.
-   * @return A param type.
-   */
-  private static ParamType get(final Object param) {
-    for (ParamType type : values()) {
-      if (type.apply(param)) {
-        return type;
-      }
-    }
-    throw new IllegalArgumentException("Unsupported param: " + param);
-  }
 }

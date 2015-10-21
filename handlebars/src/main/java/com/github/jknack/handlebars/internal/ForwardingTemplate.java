@@ -52,38 +52,56 @@ class ForwardingTemplate implements Template {
 
   @Override
   public void apply(final Object context, final Writer writer) throws IOException {
-    apply(wrap(context), writer);
+    Context wrapped = wrap(context);
+    try {
+      beforeApply(wrapped);
+      template.apply(wrapped, writer);
+    } finally {
+      afterApply(wrapped);
+      if (wrapped != context) {
+        wrapped.destroy();
+      }
+    }
   }
 
   @Override
   public String apply(final Object context) throws IOException {
-    return apply(wrap(context));
+    Context wrapped = wrap(context);
+    try {
+      beforeApply(wrapped);
+      return template.apply(wrapped);
+    } finally {
+      afterApply(wrapped);
+      if (wrapped != context) {
+        wrapped.destroy();
+      }
+    }
   }
 
   @Override
   public void apply(final Context context, final Writer writer) throws IOException {
-    Context wrappedContext = wrap(context);
+    Context wrapped = wrap(context);
     try {
-      beforeApply(wrappedContext);
-      template.apply(wrappedContext, writer);
+      beforeApply(wrapped);
+      template.apply(wrapped, writer);
     } finally {
-      afterApply(wrappedContext);
-      if (wrappedContext != context) {
-        wrappedContext.destroy();
+      afterApply(wrapped);
+      if (wrapped != context) {
+        wrapped.destroy();
       }
     }
   }
 
   @Override
   public String apply(final Context context) throws IOException {
-    Context wrappedContext = wrap(context);
+    Context wrapped = wrap(context);
     try {
-      beforeApply(wrappedContext);
-      return template.apply(wrappedContext);
+      beforeApply(wrapped);
+      return template.apply(wrapped);
     } finally {
-      afterApply(wrappedContext);
-      if (wrappedContext != context) {
-        wrappedContext.destroy();
+      afterApply(wrapped);
+      if (wrapped != context) {
+        wrapped.destroy();
       }
     }
   }
@@ -150,6 +168,19 @@ class ForwardingTemplate implements Template {
       return (Context) candidate;
     }
     return Context.newContext(candidate);
+  }
+
+  /**
+   * Wrap the candidate object as a Context, or creates a new context.
+   *
+   * @param candidate The candidate object.
+   * @return A context.
+   */
+  private static Context wrap(final Context candidate) {
+    if (candidate != null) {
+      return candidate;
+    }
+    return Context.newContext(null);
   }
 
   @Override

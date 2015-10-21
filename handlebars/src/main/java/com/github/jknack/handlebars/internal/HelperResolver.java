@@ -120,8 +120,7 @@ abstract class HelperResolver extends BaseTemplate {
       return context.model();
     }
     Object value = params.get(0);
-    value = ParamType.parse(context, value);
-    return value;
+    return ParamType.parse(context, value);
   }
 
   /**

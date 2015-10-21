@@ -24,11 +24,14 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.github.jknack.handlebars.Context;
 import com.github.jknack.handlebars.EscapingStrategy;
 import com.github.jknack.handlebars.Formatter;
 import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Helper;
+import com.github.jknack.handlebars.HelperRegistry;
 import com.github.jknack.handlebars.Lambda;
 import com.github.jknack.handlebars.Options;
 import com.github.jknack.handlebars.TagType;
@@ -79,6 +82,9 @@ class Variable extends HelperResolver {
   /** Formatter. */
   private Formatter.Chain formatter;
 
+  /** Missing value resolver. */
+  private Helper<Object> missing;
+
   /**
    * Creates a new {@link Variable}.
    *
@@ -99,6 +105,7 @@ class Variable extends HelperResolver {
     this.escapingStrategy = handlebars.getEscapingStrategy();
     this.helper = helper(name);
     this.formatter = handlebars.getFormatter();
+    this.missing = handlebars.helper(HelperRegistry.HELPER_MISSING);
   }
 
   /**
@@ -135,35 +142,22 @@ class Variable extends HelperResolver {
           .build();
       options.data(Context.PARAM_SIZE, this.params.size());
       CharSequence result = helper.apply(determineContext(scope), options);
-      if (escape(result)) {
-        writer.append(escapingStrategy.escape(result));
-      } else if (result != null) {
-        writer.append(result);
-      }
+      writer.append(formatAndEscape(result, Formatter.NOOP));
     } else {
       Object value = scope.get(name);
       if (value == null) {
-        Helper<Object> missingValueResolver = helper(Handlebars.HELPER_MISSING);
-        if (missingValueResolver != null) {
+        if (missing != null) {
           Options options = new Options.Builder(handlebars, name, type, scope, empty(this))
               .setParams(params(scope))
               .setHash(hash(scope))
               .build();
-          value = missingValueResolver.apply(determineContext(scope), options);
+          value = missing.apply(determineContext(scope), options);
         }
       }
-      if (value != null) {
-        if (value instanceof Lambda) {
-          value = Lambdas.merge(handlebars, (Lambda<Object, Object>) value, scope, this);
-        }
-        String fvalue = formatter.format(value).toString();
-        if (escape(value)) {
-          writer.append(escapingStrategy.escape(fvalue));
-        } else {
-          // DON'T escape none String values.
-          writer.append(fvalue);
-        }
+      if (value instanceof Lambda) {
+        value = Lambdas.merge(handlebars, (Lambda<Object, Object>) value, scope, this);
       }
+      writer.append(formatAndEscape(value, formatter));
     }
   }
 
@@ -184,7 +178,7 @@ class Variable extends HelperResolver {
 
       @Override
       public String apply(final Object context) throws IOException {
-       return "";
+        return "";
       }
 
       @Override
@@ -220,13 +214,21 @@ class Variable extends HelperResolver {
    * True if the given value should be escaped.
    *
    * @param value The variable's value.
+   * @param formatter Formatter to use.
    * @return True if the given value should be escaped.
    */
-  private boolean escape(final Object value) {
-    if (value instanceof Handlebars.SafeString) {
-      return false;
+  private CharSequence formatAndEscape(final Object value, final Formatter.Chain formatter) {
+    if (value == null) {
+      return StringUtils.EMPTY;
     }
-    return type == TagType.VAR;
+    CharSequence formatted = formatter.format(value).toString();
+    if (value instanceof Handlebars.SafeString) {
+      return formatted;
+    }
+    if (type == TagType.VAR) {
+      return escapingStrategy.escape(formatted);
+    }
+    return formatted;
   }
 
   @Override

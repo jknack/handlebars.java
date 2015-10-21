@@ -124,10 +124,8 @@ abstract class BaseTemplate implements Template {
   @Override
   public void apply(final Context context, final Writer writer)
       throws IOException {
-    notNull(writer, "A writer is required.");
-    Context wrapped = wrap(context);
     try {
-      merge(wrapped, writer);
+      merge(context, writer);
     } catch (HandlebarsException ex) {
       throw ex;
     } catch (Exception ex) {
@@ -144,10 +142,6 @@ abstract class BaseTemplate implements Template {
       // Override the stack-trace
       hex.setStackTrace(ex.getStackTrace());
       throw hex;
-    } finally {
-      if (wrapped != context) {
-        wrapped.destroy();
-      }
     }
   }
 
@@ -175,7 +169,7 @@ abstract class BaseTemplate implements Template {
       throws IOException;
 
   @Override
-  public final String toString() {
+  public String toString() {
     return filename + ":" + line + ":" + column;
   }
 

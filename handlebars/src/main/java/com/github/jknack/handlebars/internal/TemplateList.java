@@ -22,7 +22,6 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -42,7 +41,7 @@ class TemplateList extends BaseTemplate implements Iterable<Template> {
   /**
    * The list of child templates.
    */
-  private final List<Template> nodes = new LinkedList<Template>();
+  private final List<Template> nodes = new ArrayList<Template>(10);
 
   /**
    * Creates a new template list.
@@ -111,5 +110,10 @@ class TemplateList extends BaseTemplate implements Iterable<Template> {
       paramNames.addAll(node.collectReferenceParameters());
     }
     return new ArrayList<String>(paramNames);
+  }
+
+  @Override
+  public String toString() {
+    return nodes.get(0).toString();
   }
 }

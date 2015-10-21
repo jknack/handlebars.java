@@ -18,7 +18,6 @@
 package com.github.jknack.handlebars;
 
 import static org.apache.commons.lang3.Validate.notEmpty;
-import static org.apache.commons.lang3.Validate.notNull;
 
 import java.lang.reflect.Array;
 import java.util.Collections;
@@ -269,7 +268,7 @@ public class Context {
   /**
    * The target value. Resolved as '.' or 'this' inside templates. Required.
    */
-  private Object model;
+  Object model;
 
   /**
    * A thread safe storage.
@@ -339,7 +338,6 @@ public class Context {
    */
   @SuppressWarnings({"unchecked" })
   private void combine(final String name, final Object model) {
-    notEmpty(name, "The variable's name is required.");
     Map<String, Object> map = (Map<String, Object>) extendedContext.model;
     map.put(name, model);
   }
@@ -375,7 +373,6 @@ public class Context {
    * @return This context.
    */
   public Context data(final String name, final Object value) {
-    notEmpty(name, "The attribute's name is required.");
     data.put(name, value);
     return this;
   }
@@ -387,7 +384,6 @@ public class Context {
    * @return This context.
    */
   public Context data(final Map<String, ?> attributes) {
-    notNull(attributes, "The attributes are required.");
     data.putAll(attributes);
     return this;
   }
@@ -467,7 +463,7 @@ public class Context {
           : parent.get(key.substring(PARENT_ATTR.length()));
     }
 
-    return get(key, toPath(key));
+    return get(key, PATH_PARSER.parsePath(key));
   }
 
   /**
@@ -508,16 +504,6 @@ public class Context {
       }
     }
     return value == NULL ? null : value;
-  }
-
-  /**
-   * Split the property name by '.' (except within an escaped blocked) and create an array of it.
-   *
-   * @param key The property's name.
-   * @return A path representation of the property (array based).
-   */
-  private List<String> toPath(final String key) {
-    return PATH_PARSER.parsePath(key);
   }
 
   /**
@@ -579,7 +565,7 @@ public class Context {
       return result;
     }
 
-    // nothing was found, let's test check if we have an invalid identifier.
+    // nothing was found, let's test if we have an invalid identifier.
     // array/list access or invalid Java identifiers wrapped with []
     if (expression.charAt(0) == '[' && expression.charAt(expression.length() - 1) == ']') {
       String idx = expression.substring(1, expression.length() - 1);
@@ -669,7 +655,6 @@ public class Context {
    * @return A new context builder.
    */
   public static Builder newBuilder(final Context parent, final Object model) {
-    notNull(parent, "The parent context is required.");
     return new Builder(parent, model);
   }
 

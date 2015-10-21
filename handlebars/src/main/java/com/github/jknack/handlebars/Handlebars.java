@@ -344,7 +344,7 @@ public class Handlebars implements HelperRegistry {
   private List<Formatter> formatters = new ArrayList<Formatter>();
 
   /** Default formatter. */
-  private Formatter.Chain formatter = new Formatter.Noop();
+  private Formatter.Chain formatter = Formatter.NOOP;
 
   /**
    * Creates a new {@link Handlebars} with no cache.

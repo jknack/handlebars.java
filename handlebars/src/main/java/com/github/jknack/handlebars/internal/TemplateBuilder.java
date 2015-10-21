@@ -400,6 +400,7 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
           invocationStack.removeLast();
         }
       }
+
     };
   }
 
