@@ -113,12 +113,8 @@ abstract class BaseTemplate implements Template {
   @Override
   public String apply(final Context context) throws IOException {
     FastStringWriter writer = new FastStringWriter();
-    try {
-      apply(context, writer);
-      return writer.toString();
-    } finally {
-      writer.close();
-    }
+    apply(context, writer);
+    return writer.toString();
   }
 
   @Override
@@ -131,13 +127,11 @@ abstract class BaseTemplate implements Template {
     } catch (Exception ex) {
       String evidence = toString();
       String reason = ex.toString();
-      String message =
-          filename + ":" + line + ":" + column + ": "
-              + reason + "\n";
+      String message = filename + ":" + line + ":" + column + ": "
+          + reason + "\n";
       message += "    " + join(split(evidence, "\n"), "\n    ");
-      HandlebarsError error =
-          new HandlebarsError(filename, line, column, reason, evidence,
-              message);
+      HandlebarsError error = new HandlebarsError(filename, line, column, reason, evidence,
+          message);
       HandlebarsException hex = new HandlebarsException(error, ex);
       // Override the stack-trace
       hex.setStackTrace(ex.getStackTrace());
@@ -165,8 +159,7 @@ abstract class BaseTemplate implements Template {
    * @param writer The writer.
    * @throws IOException If a resource cannot be loaded.
    */
-  protected abstract void merge(final Context context, Writer writer)
-      throws IOException;
+  protected abstract void merge(final Context context, Writer writer) throws IOException;
 
   @Override
   public String toString() {

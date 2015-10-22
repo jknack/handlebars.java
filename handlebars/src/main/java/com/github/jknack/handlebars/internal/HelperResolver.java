@@ -52,6 +52,12 @@ abstract class HelperResolver extends BaseTemplate {
    */
   protected Map<String, Object> hash = Collections.emptyMap();
 
+  /** Param's size. */
+  private int paramSize = 0;
+
+  /** Hash's size. */
+  private int hashSize;
+
   /**
    * Empty parameters.
    */
@@ -74,7 +80,7 @@ abstract class HelperResolver extends BaseTemplate {
    * @throws IOException If param can't be applied.
    */
   protected Map<String, Object> hash(final Context context) throws IOException {
-    if (hash.isEmpty()) {
+    if (hashSize == 0) {
       return Collections.emptyMap();
     }
     Map<String, Object> result = new LinkedHashMap<String, Object>();
@@ -94,11 +100,11 @@ abstract class HelperResolver extends BaseTemplate {
    * @throws IOException If param can't be applied.
    */
   protected Object[] params(final Context scope) throws IOException {
-    if (params.size() <= 1) {
+    if (paramSize <= 1) {
       return PARAMS;
     }
-    Object[] values = new Object[params.size() - 1];
-    for (int i = 1; i < params.size(); i++) {
+    Object[] values = new Object[paramSize - 1];
+    for (int i = 1; i < paramSize; i++) {
       Object value = params.get(i);
       Object resolved = ParamType.parse(scope, value);
       values[i - 1] = resolved == null && handlebars.stringParams()
@@ -116,21 +122,11 @@ abstract class HelperResolver extends BaseTemplate {
    * @throws IOException If param can't be applied.
    */
   protected Object determineContext(final Context context) throws IOException {
-    if (params.size() == 0) {
+    if (paramSize == 0) {
       return context.model();
     }
     Object value = params.get(0);
     return ParamType.parse(context, value);
-  }
-
-  /**
-   * Transform the given value (if applies).
-   *
-   * @param value The candidate value.
-   * @return The value transformed (if applies).
-   */
-  protected Object transform(final Object value) {
-    return Transformer.transform(value);
   }
 
   /**
@@ -164,6 +160,7 @@ abstract class HelperResolver extends BaseTemplate {
     } else {
       this.hash = new LinkedHashMap<String, Object>(hash);
     }
+    this.hashSize = hash.size();
     return this;
   }
 
@@ -179,6 +176,7 @@ abstract class HelperResolver extends BaseTemplate {
     } else {
       this.params = new ArrayList<Object>(params);
     }
+    this.paramSize = this.params.size();
     return this;
   }
 
@@ -188,7 +186,7 @@ abstract class HelperResolver extends BaseTemplate {
    * @return Make a string of {@link #params}.
    */
   protected String paramsToString() {
-    if (params.size() > 0) {
+    if (paramSize > 0) {
       StringBuilder buffer = new StringBuilder();
       String sep = " ";
       for (Object param : params) {
@@ -210,7 +208,7 @@ abstract class HelperResolver extends BaseTemplate {
    * @return Make a string of {@link #hash}.
    */
   protected String hashToString() {
-    if (hash.size() > 0) {
+    if (hashSize > 0) {
       StringBuilder buffer = new StringBuilder();
       String sep = " ";
       for (Entry<String, Object> hash : this.hash.entrySet()) {

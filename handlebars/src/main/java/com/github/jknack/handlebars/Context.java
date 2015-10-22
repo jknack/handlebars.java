@@ -530,13 +530,14 @@ public class Context {
     Object current = model;
     // Resolve 'this' to the current model.
     int start = path.get(0).equals(THIS) ? 1 : 0;
-    for (int i = start; i < path.size() - 1; i++) {
+    int psize = path.size();
+    for (int i = start; i < psize - 1; i++) {
       current = resolve(current, path.get(i));
       if (current == null) {
         return null;
       }
     }
-    String name = path.get(path.size() - 1);
+    String name = path.get(psize - 1);
     Object value = resolve(current, name);
     if (value == null && current != model) {
       // We're looking in the right scope, but the value isn't there
