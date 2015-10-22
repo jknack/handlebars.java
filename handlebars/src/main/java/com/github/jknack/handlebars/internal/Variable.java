@@ -139,6 +139,7 @@ class Variable extends HelperResolver {
       Options options = new Options.Builder(handlebars, name, type, scope, empty(this))
           .setParams(params(scope))
           .setHash(hash(scope))
+          .setWriter(writer)
           .build();
       options.data(Context.PARAM_SIZE, this.params.size());
       CharSequence result = helper.apply(determineContext(scope), options);
@@ -150,6 +151,7 @@ class Variable extends HelperResolver {
           Options options = new Options.Builder(handlebars, name, type, scope, empty(this))
               .setParams(params(scope))
               .setHash(hash(scope))
+              .setWriter(writer)
               .build();
           value = missing.apply(determineContext(scope), options);
         }

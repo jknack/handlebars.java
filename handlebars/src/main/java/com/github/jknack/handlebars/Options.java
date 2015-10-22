@@ -18,6 +18,7 @@
 package com.github.jknack.handlebars;
 
 import java.io.IOException;
+import java.io.Writer;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -45,6 +46,125 @@ import java.util.Set;
  * @since 0.1.0
  */
 public class Options {
+
+  /**
+   * Buffer like use it to increase rendering time while using helpers.
+   *
+   * @author edgar
+   * @since 2.3.2
+   */
+  public interface Buffer extends Appendable, CharSequence {
+  }
+
+  /**
+   * This buffer will write into the underlying writer. It won't be any visible output and
+   * {@link #toString()} returns an empty string.
+   *
+   * @author edgar
+   * @since 2.3.2
+   */
+  public static class NativeBuffer implements Buffer {
+
+    /** Writer. */
+    private Writer writer;
+
+    /**
+     * Creates a new {@link NativeBuffer}.
+     *
+     * @param writer A writer. Required.
+     */
+    public NativeBuffer(final Writer writer) {
+      this.writer = writer;
+    }
+
+    @Override
+    public Appendable append(final CharSequence csq) throws IOException {
+      writer.append(csq);
+      return this;
+    }
+
+    @Override
+    public Appendable append(final CharSequence csq, final int start, final int end)
+        throws IOException {
+      writer.append(csq, start, end);
+      return this;
+    }
+
+    @Override
+    public Appendable append(final char c) throws IOException {
+      writer.append(c);
+      return this;
+    }
+
+    @Override
+    public int length() {
+      // no need to merge anything
+      return 0;
+    }
+
+    @Override
+    public char charAt(final int index) {
+      throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public CharSequence subSequence(final int start, final int end) {
+      throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public String toString() {
+      // no need to merge anything
+      return "";
+    }
+  }
+
+  /**
+   * A {@link StringBuilder} implementation.
+   *
+   * @author edgar
+   * @since 2.3.2
+   */
+  public static class InMemoryBuffer implements Buffer {
+
+    /** A buffer. */
+    private StringBuilder buffer = new StringBuilder();
+
+    @Override
+    public Appendable append(final CharSequence csq) throws IOException {
+      buffer.append(csq);
+      return this;
+    }
+
+    @Override
+    public Appendable append(final CharSequence csq, final int start, final int end)
+        throws IOException {
+      buffer.append(csq, start, end);
+      return this;
+    }
+
+    @Override
+    public Appendable append(final char c) throws IOException {
+      buffer.append(c);
+      return this;
+    }
+
+    @Override
+    public int length() {
+      return buffer.length();
+    }
+
+    @Override
+    public char charAt(final int index) {
+      return buffer.charAt(index);
+    }
+
+    @Override
+    public CharSequence subSequence(final int start, final int end) {
+      return buffer.subSequence(start, end);
+    }
+
+  }
 
   /**
    * An {@link Options} builder.
@@ -94,6 +214,9 @@ public class Options {
     /** The name of the helper. */
     private String helperName;
 
+    /** Output writer. */
+    private Writer writer;
+
     /**
      * Creates a new {@link Builder}.
      *
@@ -120,6 +243,7 @@ public class Options {
     public Options build() {
       Options options = new Options(handlebars, helperName, tagType, context, fn, inverse, params,
           hash);
+      options.writer = writer;
       // clear out references
       handlebars = null;
       tagType = null;
@@ -128,6 +252,7 @@ public class Options {
       inverse = null;
       params = null;
       hash = null;
+      writer = null;
       return options;
     }
 
@@ -163,6 +288,18 @@ public class Options {
       this.params = params;
       return this;
     }
+
+    /**
+     * Set a writer, useful to improve performance.
+     *
+     * @param writer A writer. Required.
+     * @return This builder.
+     */
+    public Builder setWriter(final Writer writer) {
+      this.writer = writer;
+      return this;
+    }
+
   }
 
   /**
@@ -202,6 +339,9 @@ public class Options {
 
   /** The name of the helper. */
   public final String helperName;
+
+  /** Output writer. */
+  private Writer writer;
 
   /**
    * Creates a new Handlebars {@link Options}.
@@ -267,7 +407,7 @@ public class Options {
    * @throws IOException If a resource cannot be loaded.
    */
   public CharSequence inverse() throws IOException {
-    return inverse(context);
+    return inverse.apply(context);
   }
 
   /**
@@ -562,6 +702,29 @@ public class Options {
   @SuppressWarnings("unchecked")
   private Map<String, Template> partials() {
     return (Map<String, Template>) data(Context.PARTIALS);
+  }
+
+  /**
+   * Get a Buffer which probably increase rendering time (performance). Usage:
+   *
+   * <pre>
+   * public CharSequence helper(Object ctx, Options options) {
+   *   Buffer buffer = options.buffer();
+   *   ...
+   *   buffer.append(...);
+   *   ...
+   *   return buffer;
+   * }
+   * </pre>
+   *
+   * Something to keep in mind is that when using the native buffer there won't be any visible
+   * output. For example {@link NativeBuffer#toString()} results in an empty string, that's expected
+   * because the content is written directly to the underlying writer.
+   *
+   * @return A new buffer.
+   */
+  public Buffer buffer() {
+    return writer == null ? new InMemoryBuffer() : new NativeBuffer(writer);
   }
 
 }

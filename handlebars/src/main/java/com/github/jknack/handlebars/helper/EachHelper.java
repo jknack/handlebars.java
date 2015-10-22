@@ -72,9 +72,9 @@ public class EachHelper implements Helper<Object> {
   private CharSequence hashContext(final Object context, final Options options)
       throws IOException {
     Set<Entry<String, Object>> propertySet = options.propertySet(context);
-    StringBuilder buffer = new StringBuilder();
     Context parent = options.context;
     boolean first = true;
+    Options.Buffer buffer = options.buffer();
     for (Entry<String, Object> entry : propertySet) {
       Context current = Context.newBuilder(parent, entry.getValue())
           .combine("@key", entry.getKey())
@@ -96,7 +96,7 @@ public class EachHelper implements Helper<Object> {
    */
   private CharSequence iterableContext(final Iterable<Object> context, final Options options)
       throws IOException {
-    StringBuilder buffer = new StringBuilder();
+    Options.Buffer buffer = options.buffer();
     if (options.isFalsy(context)) {
       buffer.append(options.inverse());
     } else {

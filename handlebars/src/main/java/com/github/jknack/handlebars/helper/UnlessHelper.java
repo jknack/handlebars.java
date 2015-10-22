@@ -21,6 +21,7 @@ import java.io.IOException;
 
 import com.github.jknack.handlebars.Helper;
 import com.github.jknack.handlebars.Options;
+import com.github.jknack.handlebars.Options.Buffer;
 
 /**
  * You can use the unless helper as the inverse of the if helper. Its block
@@ -44,10 +45,12 @@ public class UnlessHelper implements Helper<Object> {
   @Override
   public CharSequence apply(final Object context, final Options options)
       throws IOException {
+    Buffer buffer = options.buffer();
     if (options.isFalsy(context)) {
-      return options.fn();
+      buffer.append(options.fn());
     } else {
-      return options.inverse();
+      buffer.append(options.inverse());
     }
+    return buffer;
   }
 }

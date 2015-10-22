@@ -17,7 +17,6 @@
  */
 package com.github.jknack.handlebars.internal;
 
-import static org.apache.commons.lang3.StringUtils.isEmpty;
 import static org.apache.commons.lang3.Validate.isTrue;
 import static org.apache.commons.lang3.Validate.notNull;
 
@@ -129,9 +128,9 @@ class Block extends HelperResolver {
     Helper<Object> helper = this.helper;
     Template template = body;
     final Object childContext;
-    Context currentScope = context;
+    Context it = context;
     if (helper == null) {
-      childContext = transform(context.get(name));
+      childContext = Transformer.transform(context.get(name));
       if (inverted) {
         helperName = UnlessHelper.NAME;
       } else if (childContext instanceof Iterable) {
@@ -145,7 +144,7 @@ class Block extends HelperResolver {
                 startDelimiter, endDelimiter);
       } else {
         helperName = WithHelper.NAME;
-        currentScope = Context.newContext(context, childContext);
+        it = Context.newContext(context, childContext);
       }
       // A built-in helper might be override it.
       helper = handlebars.helper(helperName);
@@ -159,18 +158,18 @@ class Block extends HelperResolver {
       }
     } else {
       helperName = name;
-      childContext = transform(determineContext(context));
+      childContext = Transformer.transform(determineContext(context));
     }
-    Options options = new Options.Builder(handlebars, helperName, TagType.SECTION, currentScope,
-        template)
+    Options options = new Options.Builder(handlebars, helperName, TagType.SECTION, it, template)
             .setInverse(inverse)
-            .setParams(params(currentScope))
+            .setParams(params(it))
             .setHash(hash(context))
+            .setWriter(writer)
             .build();
     options.data(Context.PARAM_SIZE, this.params.size());
 
     CharSequence result = helper.apply(childContext, options);
-    if (!isEmpty(result)) {
+    if (result != null) {
       writer.append(result);
     }
   }
