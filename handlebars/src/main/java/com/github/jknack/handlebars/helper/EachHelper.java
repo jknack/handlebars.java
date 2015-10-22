@@ -101,7 +101,7 @@ public class EachHelper implements Helper<Object> {
       buffer.append(options.inverse());
     } else {
       Iterator<Object> iterator = context.iterator();
-      int base = options.hash("base", 0);
+      int base = ((Number) options.hash("base", 0)).intValue();
       int index = base;
       Context parent = options.context;
       while (iterator.hasNext()) {
