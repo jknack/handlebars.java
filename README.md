@@ -12,6 +12,14 @@ Handlebars provides the power necessary to let you build semantic templates effe
 
 [Mustache](http://mustache.github.com/mustache.5.html) templates are compatible with Handlebars, so you can take a [Mustache](http://mustache.github.com) template, import it into Handlebars, and start taking advantage of the extra Handlebars features.
 
+# Performance
+
+Handlebars.java is a modern and full featured template engine, but also has a very good performance (Hbs):
+
+![Template Comparison](http://jknack.github.io/handlebars.java/images/bench.png)
+
+Benchmark source code is available at: https://github.com/mbosecke/template-benchmark
+
 # Getting Started
  In general, the syntax of **Handlebars** templates is a superset of [Mustache](http://mustache.github.com) templates. For basic syntax, check out the [Mustache manpage](http://mustache.github.com).
  
