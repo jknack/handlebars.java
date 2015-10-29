@@ -338,7 +338,7 @@ public class Handlebars implements HelperRegistry {
   private String endDelimiter = DELIM_END;
 
   /** Location of the handlebars.js file. */
-  private String handlebarsJsFile = "/handlebars-v2.0.0.js";
+  private String handlebarsJsFile = "/handlebars-v4.0.4.js";
 
   /** List of formatters. */
   private List<Formatter> formatters = new ArrayList<Formatter>();
@@ -1058,7 +1058,7 @@ public class Handlebars implements HelperRegistry {
    *
    * <pre>
    *   Handlebars handlebars = new Handlebars()
-   *      .handlebarsJsFile("handlebars-v2.0.0.js");
+   *      .handlebarsJsFile("/handlebars-v2.0.0.js");
    * </pre>
    * <p>
    * Using handlebars.js 1.x:
@@ -1066,10 +1066,10 @@ public class Handlebars implements HelperRegistry {
    *
    * <pre>
    *   Handlebars handlebars = new Handlebars()
-   *      .handlebarsJsFile("handlebars-v1.3.0.js");
+   *      .handlebarsJsFile("/handlebars-v1.3.0.js");
    * </pre>
    *
-   * Default handlebars.js is <code>handlebars-v2.0.0.js</code>.
+   * Default handlebars.js is <code>/handlebars-v4.0.4.js</code>.
    *
    * @param location A classpath location of the handlebar.js file.
    * @return This instance of Handlebars.
@@ -1088,7 +1088,7 @@ public class Handlebars implements HelperRegistry {
 
   /**
    * @return Classpath location of the handlebars.js file. Default is:
-   *         <code>handlebars-v1.3.0.js</code>
+   *         <code>handlebars-v4.0.4.js</code>
    */
   public String handlebarsJsFile() {
     return handlebarsJsFile;

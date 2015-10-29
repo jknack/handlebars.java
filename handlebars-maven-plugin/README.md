@@ -26,7 +26,7 @@ usage
         <output>${project.build.directory}/${project.build.finalName}/js/helpers.js</output>
         <prefix>${basedir}/src/main/webapp</prefix>
         <suffix>.hbs</suffix>
-        <handlebarsJsFile>/handlebars-v1.3.0.js</handlebarsJsFile>
+        <handlebarsJsFile>/handlebars-v4.0.4.js</handlebarsJsFile>
         <minimize>false</minimize>
         <runtime></runtime>
         <amd>false</amd>
@@ -56,7 +56,7 @@ configuration options
 * minimize: True, to minimize the output file with the google closure compiler. Default is: ```false```.
 * runtime: Location of the ```handlebars.runtime.js``` file. Optional. Required if you want to include the ```handlebars.runtime.js``` in the final output.
 * templates: The specific list of templates to process. Optional. By default all the templates will be processed.
-* handlebarsJsFile: Classpath location of the handlebars.js file. Optional. Default is: ```handlebars-v1.3.0.js```. Set to: ```handlebars-v2.0.0.js``` for handlebars.js 2.x templates.
+* handlebarsJsFile: Classpath location of the handlebars.js file. Optional. Default is: ```/handlebars-v1.3.0.js```. Set to: ```/handlebars-v2.0.0.js``` for handlebars.js 2.x templates.
 
 i18njs
 ======
