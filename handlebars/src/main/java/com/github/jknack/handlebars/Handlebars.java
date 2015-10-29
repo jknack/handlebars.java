@@ -1058,7 +1058,7 @@ public class Handlebars implements HelperRegistry {
    *
    * <pre>
    *   Handlebars handlebars = new Handlebars()
-   *      .withHandlberasJs("handlebars-v2.0.0.js");
+   *      .handlebarsJsFile("handlebars-v2.0.0.js");
    * </pre>
    * <p>
    * Using handlebars.js 1.x:
@@ -1066,7 +1066,7 @@ public class Handlebars implements HelperRegistry {
    *
    * <pre>
    *   Handlebars handlebars = new Handlebars()
-   *      .withHandlberasJs("handlebars-v1.3.0.js");
+   *      .handlebarsJsFile("handlebars-v1.3.0.js");
    * </pre>
    *
    * Default handlebars.js is <code>handlebars-v2.0.0.js</code>.
