@@ -300,7 +300,7 @@ abstract class BaseTemplate implements Template {
   public String toJavaScript() {
     synchronized (jsLock) {
       if (javaScript == null) {
-        javaScript = JSEngine.RHINO.toJavaScript(handlebars.handlebarsJsFile(), this);
+        javaScript = JSEngine.getInstance().toJavaScript(handlebars.handlebarsJsFile(), this);
       }
       return javaScript;
     }

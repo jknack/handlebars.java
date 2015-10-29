@@ -19,10 +19,11 @@ package com.github.jknack.handlebars.js;
 
 import static org.apache.commons.lang3.Validate.notNull;
 
-import org.apache.commons.lang3.ClassUtils;
+import java.lang.reflect.Constructor;
 
 import com.github.jknack.handlebars.HelperRegistry;
-import com.github.jknack.handlebars.internal.js.RhinoHandlebars;
+import com.github.jknack.handlebars.internal.JSEngine;
+import com.github.jknack.handlebars.internal.js.JavaxScriptHandlebars;
 
 /**
  * The main motivation of {@link HandlebarsJs} is the ability of reuse JavaScript helpers in the
@@ -82,17 +83,30 @@ public abstract class HandlebarsJs {
    * Creates a {@link HandlebarsJs} object.
    *
    * @param helperRegistry The helperRegistry object. Required.
+   * @param javaxScriptHandlebarsClass of {@link JavaxScriptHandlebars} to instantiate.
+   *  Optional. Defaults to {@link JavaxScriptHandlebars}.
    * @return A new {@link HandlebarsJs} object.
    */
-  public static HandlebarsJs create(final HelperRegistry helperRegistry) {
-    try {
-      ClassUtils.getClass("org.mozilla.javascript.Context");
-      return new RhinoHandlebars(helperRegistry);
-    } catch (final Exception ex) {
+  public static HandlebarsJs create(final HelperRegistry helperRegistry,
+      final Class<? extends JavaxScriptHandlebars> javaxScriptHandlebarsClass) {
+    if (JSEngine.getInstance().getJsEngine() != null) {
+      if (javaxScriptHandlebarsClass == null) {
+        return new JavaxScriptHandlebars(helperRegistry);
+      } else {
+        try {
+          // poor man's factory mechanism via Reflection
+          Constructor<? extends JavaxScriptHandlebars> constructor =
+              javaxScriptHandlebarsClass.getConstructor(HelperRegistry.class);
+          return constructor.newInstance(helperRegistry);
+        } catch (Exception e) {
+          throw new RuntimeException(e);
+        }
+      }
+    } else {
       return new HandlebarsJs(helperRegistry) {
         @Override
         public void registerHelpers(final String filename, final String source) throws Exception {
-          throw new IllegalStateException("Rhino isn't on the classpath", ex);
+          throw new IllegalStateException("Neither Rhino nor Nashorn is on the classpath");
         }
       };
     }

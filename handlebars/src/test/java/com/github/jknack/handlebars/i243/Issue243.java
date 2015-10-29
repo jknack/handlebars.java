@@ -27,8 +27,17 @@ public class Issue243 extends AbstractTest {
 
   @Test
   public void zeroValueForJavaScriptHelper() throws IOException {
+    String expected;
+    // cater for difference in rhino and nashorn, it seems nashorn is more clever in not
+    // returning pesky doubles when there are int values
+    String javaVersion = System.getProperty("java.version");
+    if (javaVersion.startsWith("1.8.")) {
+      expected = "0 1 2 ";
+    } else {
+      expected = "0.0 1.0 2.0 ";
+    }
     shouldCompileTo("{{#each item}}{{getIndex @index}} {{/each}}",
-        $("item", new Object[]{10, 20, 30 }), "0.0 1.0 2.0 ");
+        $("item", new Object[]{10, 20, 30 }), expected);
   }
 
   @Test

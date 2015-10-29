@@ -193,7 +193,7 @@
 
   <build>
     <plugins>
-      <!-- We're on 1.6 -->
+      <!-- We still want to support 1.6 -->
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
         <version>3.1</version>
@@ -329,6 +329,22 @@
   </build>
 
   <profiles>
+    <profile>
+      <id>1.6</id>
+      <activation>
+        <jdk>1.6</jdk>
+      </activation>
+      <!-- TBD create handlebars-java6 module and include it here -->
+    </profile>
+    <profile>
+      <id>1.7</id>
+      <activation>
+        <jdk>1.7</jdk>
+      </activation>
+      <modules>
+        <module>handlebars-java7</module>
+      </modules>
+    </profile>  
     <profile>
       <id>bench</id>
       <build>

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<parent>
+		<groupId>com.github.jknack</groupId>
+		<artifactId>handlebars.java</artifactId>
+		<version>2.2.3-SNAPSHOT</version>
+	</parent>
+
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.github.jknack</groupId>
+	<artifactId>handlebars-java7</artifactId>
+
+	<name>Java 7 support</name>
+	<description>Add this dependency if you want to run on Java 7</description>
+	<build>
+		<plugins>
+			<!-- Need to have source level 1.7 for Rhino API to become accessible -->
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.7</source>
+					<target>1.7</target>
+                    <!--
+                      Make Java 7 built-in Rhino Javascript engine accessible to Maven compiler plugin 
+                      see http://stackoverflow.com/a/30472582/1245428 
+                    -->
+                    <compilerArgs>
+                        <arg>-XDignore.symbol.file</arg>
+                    </compilerArgs>
+                    <fork>true</fork>     
+				</configuration>
+			</plugin>
+
+		</plugins>
+	</build>
+	
+	<dependencies>
+ 
+         <!--
+           Make Java 7 built-in Rhino Javascript engine accessible to Maven compiler plugin 
+           see https://maven.apache.org/guides/introduction/introduction-to-dependency-mechanism.html#System_Dependencies 
+         -->
+         <dependency>
+           <groupId>sun</groupId>
+           <artifactId>org-mozilla-javascript</artifactId>
+           <version>dontcare</version>
+           <scope>system</scope>
+           <systemPath>${java.home}/lib/rt.jar</systemPath>
+        </dependency>
+    
+	    <!-- Logging System -->
+	    <dependency>
+	      <groupId>org.slf4j</groupId>
+	      <artifactId>slf4j-api</artifactId>
+	    </dependency>
+
+	    <dependency>
+	      <groupId>junit</groupId>
+	      <artifactId>junit</artifactId>
+	      <scope>test</scope>
+	    </dependency>
+	    
+	</dependencies>
+</project>

@@ -70,7 +70,7 @@ public class DefaultHelperRegistry implements HelperRegistry {
   /**
    * A Handlebars.js implementation.
    */
-  private HandlebarsJs handlebarsJs = HandlebarsJs.create(this);
+  private HandlebarsJs handlebarsJs = HandlebarsJs.create(this, null);
 
   {
     // make sure default helpers are registered
