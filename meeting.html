@@ -43,7 +43,7 @@ The final page will looks like:
 <pre><span class="nt">&lt;script </span><span class="na">type=</span><span class="s">"text/javascript"</span><span class="nt">&gt;</span>
 <span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
   <span class="kd">var</span> <span class="nx">template</span> <span class="o">=</span> <span class="nx">Handlebars</span><span class="p">.</span><span class="nx">template</span><span class="p">,</span> <span class="nx">templates</span> <span class="o">=</span> <span class="nx">Handlebars</span><span class="p">.</span><span class="nx">templates</span> <span class="o">=</span> <span class="nx">Handlebars</span><span class="p">.</span><span class="nx">templates</span> <span class="o">||</span> <span class="p">{};</span>
-<span class="nx">templates</span><span class="p">[</span><span class="s1">'user.hbs'</span><span class="p">]</span> <span class="o">=</span> <span class="nx">template</span><span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">Handlebars</span><span class="p">,</span><span class="nx">depth0</span><span class="p">,</span><span class="nx">helpers</span><span class="p">,</span><span class="nx">partials</span><span class="p">,</span><span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
+<span class="nx">templates</span><span class="p">[</span><span class="s1">'user'</span><span class="p">]</span> <span class="o">=</span> <span class="nx">template</span><span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">Handlebars</span><span class="p">,</span><span class="nx">depth0</span><span class="p">,</span><span class="nx">helpers</span><span class="p">,</span><span class="nx">partials</span><span class="p">,</span><span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
   <span class="nx">helpers</span> <span class="o">=</span> <span class="nx">helpers</span> <span class="o">||</span> <span class="nx">Handlebars</span><span class="p">.</span><span class="nx">helpers</span><span class="p">;</span>
   <span class="kd">var</span> <span class="nx">buffer</span> <span class="o">=</span> <span class="s2">""</span><span class="p">,</span> <span class="nx">functionType</span><span class="o">=</span><span class="s2">"function"</span><span class="p">,</span> <span class="nx">escapeExpression</span><span class="o">=</span><span class="k">this</span><span class="p">.</span><span class="nx">escapeExpression</span><span class="p">;</span>
 
@@ -72,7 +72,7 @@ speed up boot time, as compilation is the most expensive part of <a href="http:/
 <p>Later, you can access to the precompiled template by:</p>
 <div class="highlight">
 <pre>
-<span class="nt">var</span> template = Handlebars.templates[<span class="s">'user.hbs'</span>]
+<span class="nt">var</span> template = Handlebars.templates[<span class="s">'user'</span>]
 <span class="nt">var</span> output = template(model);
 </pre>
 </div>

@@ -283,7 +283,7 @@
 <div class="highlight"><pre><span class="nt">&lt;script </span><span class="na">type=</span><span class="s">"text/javascript"</span><span class="nt">&gt;</span>
 <span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
   <span class="kd">var</span> <span class="nx">template</span> <span class="o">=</span> <span class="nx">Handlebars</span><span class="p">.</span><span class="nx">template</span><span class="p">,</span> <span class="nx">templates</span> <span class="o">=</span> <span class="nx">Handlebars</span><span class="p">.</span><span class="nx">templates</span> <span class="o">=</span> <span class="nx">Handlebars</span><span class="p">.</span><span class="nx">templates</span> <span class="o">||</span> <span class="p">{};</span>
-<span class="nx">templates</span><span class="p">[</span><span class="s1">'user.hbs'</span><span class="p">]</span> <span class="o">=</span> <span class="nx">template</span><span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">Handlebars</span><span class="p">,</span><span class="nx">depth0</span><span class="p">,</span><span class="nx">helpers</span><span class="p">,</span><span class="nx">partials</span><span class="p">,</span><span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
+<span class="nx">templates</span><span class="p">[</span><span class="s1">'user'</span><span class="p">]</span> <span class="o">=</span> <span class="nx">template</span><span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">Handlebars</span><span class="p">,</span><span class="nx">depth0</span><span class="p">,</span><span class="nx">helpers</span><span class="p">,</span><span class="nx">partials</span><span class="p">,</span><span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
   <span class="nx">helpers</span> <span class="o">=</span> <span class="nx">helpers</span> <span class="o">||</span> <span class="nx">Handlebars</span><span class="p">.</span><span class="nx">helpers</span><span class="p">;</span>
   <span class="kd">var</span> <span class="nx">buffer</span> <span class="o">=</span> <span class="s2">""</span><span class="p">,</span> <span class="nx">functionType</span><span class="o">=</span><span class="s2">"function"</span><span class="p">,</span> <span class="nx">escapeExpression</span><span class="o">=</span><span class="k">this</span><span class="p">.</span><span class="nx">escapeExpression</span><span class="p">;</span>
 
@@ -298,7 +298,7 @@
 
 <p>You can access to the precompiled template by:</p>
 
-<div class="highlight"><pre><span class="kd">var</span> <span class="nx">template</span> <span class="o">=</span> <span class="nx">Handlebars</span><span class="p">.</span><span class="nx">templates</span><span class="p">[</span><span class="s1">'user.hbs'</span><span class="p">]</span>
+<div class="highlight"><pre><span class="kd">var</span> <span class="nx">template</span> <span class="o">=</span> <span class="nx">Handlebars</span><span class="p">.</span><span class="nx">templates</span><span class="p">[</span><span class="s1">'user'</span><span class="p">]</span>
 </pre></div>
 
 <p>For more information have a look at <a href="https://github.com/wycats/handlebars.js/">Precompiling Templates</a> documentation</p>
@@ -1088,6 +1088,6 @@ at /deep.hbs:1:10
 
     </div>
     <!--[if !IE]><script>fixScale(document);</script><![endif]-->
-    
+
   </body>
 </html>
