@@ -1,20 +1,21 @@
 package com.github.jknack.handlebars.context;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+import static org.apache.commons.io.FileUtils.copyURLToFile;
 
-import javax.tools.JavaCompiler;
-import javax.tools.ToolProvider;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLClassLoader;
 
-import static org.apache.commons.io.FileUtils.copyURLToFile;
+import javax.tools.JavaCompiler;
+import javax.tools.ToolProvider;
+
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 
 public class MultipleClassLoadersMethodValueResolverTest {
 
@@ -46,6 +47,8 @@ public class MultipleClassLoadersMethodValueResolverTest {
   private Class<?> loadTestClassWithDistinctClassLoader() throws Exception {
     URL[] classpath = {temp.getRoot().toURI().toURL()};
     URLClassLoader loader = new URLClassLoader(classpath);
-    return loader.loadClass(CLASS_NAME);
+    Class<?> clazz = loader.loadClass(CLASS_NAME);
+    loader.close();
+    return clazz;
   }
 }
