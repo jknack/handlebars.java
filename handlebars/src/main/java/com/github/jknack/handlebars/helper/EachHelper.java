@@ -21,7 +21,6 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Map.Entry;
-import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -73,16 +72,18 @@ public class EachHelper implements Helper<Object> {
    */
   private CharSequence hashContext(final Object it, final Options options)
       throws IOException {
-    Set<Entry<String, Object>> propertySet = options.propertySet(it);
+    Iterator<Entry<String, Object>> loop = options.propertySet(it).iterator();
     Context parent = options.context;
     boolean first = true;
     Options.Buffer buffer = options.buffer();
     Template fn = options.fn;
-    for (Entry<String, Object> entry : propertySet) {
+    while (loop.hasNext()) {
+      Entry<String, Object> entry = loop.next();
       String key = entry.getKey();
       Context itCtx = Context.newBuilder(parent, entry.getValue())
           .combine("@key", key)
           .combine("@first", first ? "first" : "")
+          .combine("@last", !loop.hasNext() ? "last" : "")
           .build();
       buffer.append(options.apply(fn, itCtx, Arrays.asList(it, key)));
       first = false;
