@@ -16,7 +16,6 @@
     <module>handlebars</module>
     <module>handlebars-helpers</module>
     <module>handlebars-springmvc</module>
-    <module>handlebars-json</module>
     <module>handlebars-jackson2</module>
     <module>handlebars-markdown</module>
     <module>handlebars-humanize</module>
