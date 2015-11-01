@@ -7,17 +7,10 @@ import java.io.IOException;
 import org.junit.Test;
 
 import com.github.jknack.handlebars.AbstractTest;
-import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Helper;
 import com.github.jknack.handlebars.Options;
 
 public class Issue289 extends AbstractTest {
-
-  @Override
-  protected void configure(final Handlebars handlebars) {
-    handlebars.handlebarsJsFile("/handlebars-v1.3.0.js");
-  }
-
 
   private Hash helpers = $("lowercase", new Helper<Object>() {
     @Override
@@ -39,15 +32,9 @@ public class Issue289 extends AbstractTest {
 
   @Test
   public void subexpressionToJS() throws IOException {
-    String js = "function (Handlebars,depth0,helpers,partials,data) {\n"
-        + "  this.compilerInfo = [4,'>= 1.0.0'];\n"
-        + "helpers = this.merge(helpers, Handlebars.helpers); data = data || {};\n"
-        + "  var stack1, helper, options, helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression;\n"
-        + "\n"
-        + "\n"
-        + "  stack1 = (helper = helpers.concat || (depth0 && depth0.concat),options={hash:{},data:data},helper ? helper.call(depth0, \"string1\", \"string2\", options) : helperMissing.call(depth0, \"concat\", \"string1\", \"string2\", options));\n"
-        + "  return escapeExpression((helper = helpers.lowercase || (depth0 && depth0.lowercase),options={hash:{},data:data},helper ? helper.call(depth0, stack1, options) : helperMissing.call(depth0, \"lowercase\", stack1, options)));\n"
-        + "  }";
+    String js = "{\"compiler\":[6,\">= 2.0.0-beta.1\"],\"main\":function(depth0,helpers,partials,data) {\n" +
+        "    return this.escapeExpression((helpers.lowercase || (depth0 && depth0.lowercase) || helpers.helperMissing).call(depth0,(helpers.concat || (depth0 && depth0.concat) || helpers.helperMissing).call(depth0,\"string1\",\"string2\",{\"name\":\"concat\",\"hash\":{},\"data\":data}),{\"name\":\"lowercase\",\"hash\":{},\"data\":data}));\n" +
+        "},\"useData\":true}";
 
     assertEquals(js,
         compile("{{lowercase (concat \"string1\" \"string2\")}}", helpers).toJavaScript());

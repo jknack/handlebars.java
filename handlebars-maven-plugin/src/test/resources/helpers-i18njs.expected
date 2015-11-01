@@ -1,24 +1,18 @@
 (function () {
 // Source: src/test/resources/i18nJs/i18njs.html
 
-  var template = Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
-  this.compilerInfo = [4,'>= 1.0.0'];
-helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
-  var buffer = "", stack1, helper, options, functionType="function", escapeExpression=this.escapeExpression, helperMissing=helpers.helperMissing;
+  var template = Handlebars.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
+    var helper;
 
-
-  if (helper = helpers.i18nJs) { stack1 = helper.call(depth0, {hash:{},data:data}); }
-  else { helper = (depth0 && depth0.i18nJs); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
-  buffer += escapeExpression(stack1)
+  return this.escapeExpression(((helper = (helper = helpers.i18nJs || (depth0 != null ? depth0.i18nJs : depth0)) != null ? helper : helpers.helperMissing),(typeof helper === "function" ? helper.call(depth0,{"name":"i18nJs","hash":{},"data":data}) : helper)))
     + "\n"
-    + escapeExpression((helper = helpers.i18n || (depth0 && depth0.i18n),options={hash:{},data:data},helper ? helper.call(depth0, "hello", options) : helperMissing.call(depth0, "i18n", "hello", options)))
+    + this.escapeExpression((helpers.i18n || (depth0 && depth0.i18n) || helpers.helperMissing).call(depth0,"hello",{"name":"i18n","hash":{},"data":data}))
     + "\n"
-    + escapeExpression((helper = helpers.i18n || (depth0 && depth0.i18n),options={hash:{},data:data},helper ? helper.call(depth0, "formatted", "Edgar!", options) : helperMissing.call(depth0, "i18n", "formatted", "Edgar!", options)))
+    + this.escapeExpression((helpers.i18n || (depth0 && depth0.i18n) || helpers.helperMissing).call(depth0,"formatted","Edgar!",{"name":"i18n","hash":{},"data":data}))
     + "\n"
-    + escapeExpression((helper = helpers.i18n || (depth0 && depth0.i18n),options={hash:{},data:data},helper ? helper.call(depth0, "args", "a", "b", "c", options) : helperMissing.call(depth0, "i18n", "args", "a", "b", "c", options)))
+    + this.escapeExpression((helpers.i18n || (depth0 && depth0.i18n) || helpers.helperMissing).call(depth0,"args","a","b","c",{"name":"i18n","hash":{},"data":data}))
     + "\n";
-  return buffer;
-  });
+},"useData":true});
   var templates = Handlebars.templates = Handlebars.templates || {};
   templates['i18njs'] = template;
   var partials = Handlebars.partials = Handlebars.partials || {};

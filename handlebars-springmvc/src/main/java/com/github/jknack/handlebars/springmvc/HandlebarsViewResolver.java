@@ -328,10 +328,10 @@ public class HandlebarsViewResolver extends AbstractTemplateViewResolver
    *
    * <pre>
    *   Handlebars handlebars = new Handlebars()
-   *      .handlebarsJsFile("handlebars-v1.3.0.js");
+   *      .handlebarsJsFile("handlebars-v3.0.3.js");
    * </pre>
    *
-   * Default handlebars.js is <code>handlebars-v2.0.0.js</code>.
+   * Default handlebars.js is <code>handlebars-v3.0.3.js</code>.
    *
    * @param location A classpath location of the handlebar.js file.
    */

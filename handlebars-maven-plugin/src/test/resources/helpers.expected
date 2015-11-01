@@ -1,19 +1,13 @@
 (function () {
 // Source: src/test/resources/partials/level1/level1.html
 
-  var template = Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
-  this.compilerInfo = [4,'>= 1.0.0'];
-helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
-  var buffer = "", stack1, helper, functionType="function", escapeExpression=this.escapeExpression;
+  var template = Handlebars.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
+    var helper;
 
-
-  buffer += "<h1>I'm ";
-  if (helper = helpers.level1) { stack1 = helper.call(depth0, {hash:{},data:data}); }
-  else { helper = (depth0 && depth0.level1); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
-  buffer += escapeExpression(stack1)
+  return "<h1>I'm "
+    + this.escapeExpression(((helper = (helper = helpers.level1 || (depth0 != null ? depth0.level1 : depth0)) != null ? helper : helpers.helperMissing),(typeof helper === "function" ? helper.call(depth0,{"name":"level1","hash":{},"data":data}) : helper)))
     + "</h1>";
-  return buffer;
-  });
+},"useData":true});
   var templates = Handlebars.templates = Handlebars.templates || {};
   templates['level1/level1'] = template;
   var partials = Handlebars.partials = Handlebars.partials || {};
@@ -22,17 +16,12 @@ helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
 
 // Source: src/test/resources/partials/partial/base.html
 
-  var template = Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
-  this.compilerInfo = [4,'>= 1.0.0'];
-helpers = this.merge(helpers, Handlebars.helpers); partials = this.merge(partials, Handlebars.partials); data = data || {};
-  var buffer = "", stack1, self=this;
+  var template = Handlebars.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
+    var stack1;
 
-
-  buffer += "I'm the base partial\n";
-  stack1 = self.invokePartial(partials['partial/partial'], 'partial/partial', depth0, helpers, partials, data);
-  if(stack1 || stack1 === 0) { buffer += stack1; }
-  return buffer;
-  });
+  return "I'm the base partial\n"
+    + ((stack1 = this.invokePartial(partials['partial/partial'],depth0,{"name":"partial/partial","data":data,"helpers":helpers,"partials":partials})) != null ? stack1 : "");
+},"usePartial":true,"useData":true});
   var templates = Handlebars.templates = Handlebars.templates || {};
   templates['partial/base'] = template;
   var partials = Handlebars.partials = Handlebars.partials || {};
@@ -41,14 +30,9 @@ helpers = this.merge(helpers, Handlebars.helpers); partials = this.merge(partial
 
 // Source: src/test/resources/partials/partial/partial.html
 
-  var template = Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
-  this.compilerInfo = [4,'>= 1.0.0'];
-helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
-  
-
-
-  return "I'm the child partial";
-  });
+  var template = Handlebars.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
+    return "I'm the child partial";
+},"useData":true});
   var templates = Handlebars.templates = Handlebars.templates || {};
   templates['partial/partial'] = template;
   var partials = Handlebars.partials = Handlebars.partials || {};
@@ -57,17 +41,11 @@ helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
 
 // Source: src/test/resources/partials/root.html
 
-  var template = Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
-  this.compilerInfo = [4,'>= 1.0.0'];
-helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
-  var buffer = "", functionType="function", escapeExpression=this.escapeExpression;
-
-
-  buffer += "Hello "
-    + escapeExpression((typeof depth0 === functionType ? depth0.apply(depth0) : depth0))
+  var template = Handlebars.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
+    return "Hello "
+    + this.escapeExpression(this.lambda(depth0, depth0))
     + "!";
-  return buffer;
-  });
+},"useData":true});
   var templates = Handlebars.templates = Handlebars.templates || {};
   templates['root'] = template;
   var partials = Handlebars.partials = Handlebars.partials || {};
