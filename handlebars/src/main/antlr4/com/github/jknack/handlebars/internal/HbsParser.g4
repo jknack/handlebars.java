@@ -81,7 +81,7 @@ block
   :
     START_BLOCK sexpr blockParams? END
     thenBody=body
-    elseBlock?
+    elseBlock*
     END_BLOCK nameEnd=QID END
   ;
 
@@ -97,7 +97,18 @@ sexpr
 
 elseBlock
   :
+    elseStmt
+  | elseStmtChain
+  ;
+
+elseStmt
+  :
     (inverseToken=UNLESS | START inverseToken=ELSE) END unlessBody=body
+  ;
+
+elseStmtChain
+  :
+    (inverseToken=UNLESS | START inverseToken=ELSE) sexpr blockParams? END unlessBody=body
   ;
 
 unless

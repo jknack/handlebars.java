@@ -51,6 +51,8 @@ import com.github.jknack.handlebars.internal.HbsParser.CharParamContext;
 import com.github.jknack.handlebars.internal.HbsParser.CommentContext;
 import com.github.jknack.handlebars.internal.HbsParser.DynamicPathContext;
 import com.github.jknack.handlebars.internal.HbsParser.ElseBlockContext;
+import com.github.jknack.handlebars.internal.HbsParser.ElseStmtChainContext;
+import com.github.jknack.handlebars.internal.HbsParser.ElseStmtContext;
 import com.github.jknack.handlebars.internal.HbsParser.EscapeContext;
 import com.github.jknack.handlebars.internal.HbsParser.HashContext;
 import com.github.jknack.handlebars.internal.HbsParser.IntParamContext;
@@ -168,15 +170,41 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
     if (body != null) {
       block.body(body);
     }
-    ElseBlockContext elseBlock = ctx.elseBlock();
-    if (elseBlock != null) {
-      Template unless = visitBody(elseBlock.unlessBody);
-      if (unless != null) {
-        String inverseLabel = elseBlock.inverseToken.getText();
+    // else
+    Block elseroot = block;
+    for (ElseBlockContext elseBlock : ctx.elseBlock()) {
+      ElseStmtContext elseStmt = elseBlock.elseStmt();
+      if (elseStmt != null) {
+        // basic else
+        Template unless = visitBody(elseStmt.unlessBody);
+        if (unless != null) {
+          String inverseLabel = elseStmt.inverseToken.getText();
+          if (inverseLabel.startsWith(startDelim)) {
+            inverseLabel = inverseLabel.substring(startDelim.length());
+          }
+          elseroot.inverse(inverseLabel, unless);
+        }
+      } else {
+        // else chain
+        ElseStmtChainContext elseStmtChain = elseBlock.elseStmtChain();
+        SexprContext elseexpr = elseStmtChain.sexpr();
+        Token elsenameStart = elseexpr.QID().getSymbol();
+        String elsename = elsenameStart.getText();
+        Block elseblock = new Block(handlebars, elsename, false, params(elseexpr.param()),
+            hash(elseexpr.hash()), blockParams(elseStmtChain.blockParams()));
+        elseblock.filename(source.filename());
+        elseblock.position(elsenameStart.getLine(), elsenameStart.getCharPositionInLine());
+        elseblock.startDelimiter(startDelim);
+        elseblock.endDelimiter(elseBlock.stop.getText());
+        Template elsebody = visitBody(elseStmtChain.unlessBody);
+        elseblock.body(elsebody);
+
+        String inverseLabel = elseStmtChain.inverseToken.getText();
         if (inverseLabel.startsWith(startDelim)) {
           inverseLabel = inverseLabel.substring(startDelim.length());
         }
-        block.inverse(inverseLabel, unless);
+        elseroot.inverse(inverseLabel, elseblock);
+        elseroot = elseblock;
       }
     }
     hasTag(true);

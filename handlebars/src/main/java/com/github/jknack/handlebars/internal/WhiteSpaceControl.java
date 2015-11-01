@@ -27,7 +27,8 @@ import com.github.jknack.handlebars.internal.HbsParser.AmpvarContext;
 import com.github.jknack.handlebars.internal.HbsParser.BlockContext;
 import com.github.jknack.handlebars.internal.HbsParser.CommentContext;
 import com.github.jknack.handlebars.internal.HbsParser.DelimitersContext;
-import com.github.jknack.handlebars.internal.HbsParser.ElseBlockContext;
+import com.github.jknack.handlebars.internal.HbsParser.ElseStmtChainContext;
+import com.github.jknack.handlebars.internal.HbsParser.ElseStmtContext;
 import com.github.jknack.handlebars.internal.HbsParser.NewlineContext;
 import com.github.jknack.handlebars.internal.HbsParser.PartialContext;
 import com.github.jknack.handlebars.internal.HbsParser.SpacesContext;
@@ -102,7 +103,12 @@ public class WhiteSpaceControl extends HbsParserBaseListener {
   }
 
   @Override
-  public void enterElseBlock(final ElseBlockContext ctx) {
+  public void enterElseStmt(final ElseStmtContext ctx) {
+    trim(ctx.start, ctx.END().getSymbol());
+  }
+
+  @Override
+  public void enterElseStmtChain(final ElseStmtChainContext ctx) {
     trim(ctx.start, ctx.END().getSymbol());
   }
 
