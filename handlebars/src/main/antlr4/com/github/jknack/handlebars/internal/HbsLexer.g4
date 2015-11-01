@@ -223,6 +223,10 @@ END
  : {endToken(end)}? . -> mode(DEFAULT_MODE)
  ;
 
+AS: 'as';
+
+PIPE: '|';
+
 DOUBLE_STRING
  :
   '"' ( '\\"' | ~[\n] )*? '"'
@@ -257,6 +261,7 @@ QID
  :
    '../' QID
  | '..'
+ | './' QID
  | '.'
  | '[' ID ']' ID_SEPARATOR QID
  | '[' ID ']'

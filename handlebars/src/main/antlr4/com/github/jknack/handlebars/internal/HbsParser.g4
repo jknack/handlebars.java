@@ -79,10 +79,15 @@ newline
 
 block
   :
-    START_BLOCK sexpr END
+    START_BLOCK sexpr blockParams? END
     thenBody=body
     elseBlock?
     END_BLOCK nameEnd=QID END
+  ;
+
+blockParams
+  :
+    AS PIPE QID+ PIPE
   ;
 
 sexpr
@@ -97,7 +102,7 @@ elseBlock
 
 unless
   :
-    UNLESS nameStart=QID END
+    UNLESS sexpr blockParams? END
     body
     END_BLOCK nameEnd=QID END
   ;

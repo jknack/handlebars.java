@@ -135,7 +135,7 @@ class Variable extends HelperResolver {
   protected void merge(final Context scope, final Writer writer)
       throws IOException {
     Helper<Object> helper = this.helper;
-    if (helper != null) {
+    if (helper != null && !scope.isBlockParams()) {
       Options options = new Options.Builder(handlebars, name, type, scope, empty(this))
           .setParams(params(scope))
           .setHash(hash(scope))
@@ -237,7 +237,7 @@ class Variable extends HelperResolver {
   public String text() {
     StringBuilder buffer = new StringBuilder();
     buffer.append(startDelimiter).append(name);
-    String params = paramsToString();
+    String params = paramsToString(this.params);
     if (params.length() > 0) {
       buffer.append(" ").append(params);
     }

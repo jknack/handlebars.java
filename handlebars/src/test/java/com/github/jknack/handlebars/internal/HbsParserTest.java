@@ -133,7 +133,6 @@ public class HbsParserTest {
     };
     parser.removeErrorListeners();
     parser.addErrorListener(errorReporter);
-    ParseTree tree = parser.template();
     if (printTokens) {
       String[] tokenNames = parser.tokenNames();
       for (Token token : tokens.getTokens()) {
@@ -143,6 +142,7 @@ public class HbsParserTest {
         System.out.println(message);
       }
     }
+    ParseTree tree = parser.template();
     System.out.println(tree.toStringTree(parser));
     return tree;
   }

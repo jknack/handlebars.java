@@ -44,6 +44,7 @@ import com.github.jknack.handlebars.TagType;
 import com.github.jknack.handlebars.Template;
 import com.github.jknack.handlebars.internal.HbsParser.AmpvarContext;
 import com.github.jknack.handlebars.internal.HbsParser.BlockContext;
+import com.github.jknack.handlebars.internal.HbsParser.BlockParamsContext;
 import com.github.jknack.handlebars.internal.HbsParser.BodyContext;
 import com.github.jknack.handlebars.internal.HbsParser.BoolParamContext;
 import com.github.jknack.handlebars.internal.HbsParser.CharParamContext;
@@ -155,7 +156,7 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
 
     hasTag(true);
     Block block = new Block(handlebars, name, false, params(sexpr.param()),
-        hash(sexpr.hash()));
+        hash(sexpr.hash()), blockParams(ctx.blockParams()));
     block.filename(source.filename());
     block.position(nameStart.getLine(), nameStart.getCharPositionInLine());
     String startDelim = ctx.start.getText();
@@ -186,10 +187,19 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
   @Override
   public Template visitUnless(final UnlessContext ctx) {
     hasTag(true);
-    Block block = new Block(handlebars, ctx.nameStart.getText(), true, Collections.emptyList(),
-        Collections.<String, Object> emptyMap());
+    SexprContext sexpr = ctx.sexpr();
+    Token nameStart = sexpr.QID().getSymbol();
+    String name = nameStart.getText();
+    qualifier.addLast(name);
+    String nameEnd = ctx.nameEnd.getText();
+    if (!name.equals(nameEnd)) {
+      reportError(null, ctx.nameEnd.getLine(), ctx.nameEnd.getCharPositionInLine(),
+          String.format("found: '%s', expected: '%s'", nameEnd, name));
+    }
+    Block block = new Block(handlebars, name, true, Collections.emptyList(),
+        Collections.<String, Object> emptyMap(), blockParams(ctx.blockParams()));
     block.filename(source.filename());
-    block.position(ctx.nameStart.getLine(), ctx.nameStart.getCharPositionInLine());
+    block.position(nameStart.getLine(), nameStart.getCharPositionInLine());
     String startDelim = ctx.start.getText();
     block.startDelimiter(startDelim.substring(0, startDelim.length() - 1));
     block.endDelimiter(ctx.stop.getText());
@@ -299,6 +309,27 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
     Map<String, Object> result = new LinkedHashMap<String, Object>();
     for (HashContext hc : ctx) {
       result.put(hc.QID().getText(), super.visit(hc.param()));
+    }
+    return result;
+  }
+
+  /**
+   * Build a hash.
+   *
+   * @param ctx The hash context.
+   * @return A new hash.
+   */
+  private List<String> blockParams(final BlockParamsContext ctx) {
+    if (ctx == null) {
+      return Collections.emptyList();
+    }
+    List<TerminalNode> ids = ctx.QID();
+    if (ids == null || ids.size() == 0) {
+      return Collections.emptyList();
+    }
+    List<String> result = new ArrayList<String>();
+    for (TerminalNode id : ids) {
+      result.add(id.getText());
     }
     return result;
   }

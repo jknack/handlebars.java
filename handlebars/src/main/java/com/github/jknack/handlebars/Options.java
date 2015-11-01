@@ -19,7 +19,9 @@ package com.github.jknack.handlebars;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -217,6 +219,9 @@ public class Options {
     /** Output writer. */
     private Writer writer;
 
+    /** Block params. */
+    private List<String> blockParams = Collections.emptyList();
+
     /**
      * Creates a new {@link Builder}.
      *
@@ -242,7 +247,7 @@ public class Options {
      */
     public Options build() {
       Options options = new Options(handlebars, helperName, tagType, context, fn, inverse, params,
-          hash);
+          hash, blockParams);
       options.writer = writer;
       // clear out references
       handlebars = null;
@@ -264,6 +269,17 @@ public class Options {
      */
     public Builder setHash(final Map<String, Object> hash) {
       this.hash = hash;
+      return this;
+    }
+
+    /**
+     * Set the options block params.
+     *
+     * @param blockParams A block params. Required.
+     * @return This builder.
+     */
+    public Builder setBlockParams(final List<String> blockParams) {
+      this.blockParams = blockParams;
       return this;
     }
 
@@ -343,6 +359,9 @@ public class Options {
   /** Output writer. */
   private Writer writer;
 
+  /** Block param names. */
+  public final List<String> blockParams;
+
   /**
    * Creates a new Handlebars {@link Options}.
    *
@@ -354,10 +373,11 @@ public class Options {
    * @param inverse The inverse template function. Required.
    * @param params The parameters. Required.
    * @param hash The optional hash. Required.
+   * @param blockParams The block param names. Required.
    */
   public Options(final Handlebars handlebars, final String helperName, final TagType tagType,
       final Context context, final Template fn, final Template inverse, final Object[] params,
-      final Map<String, Object> hash) {
+      final Map<String, Object> hash, final List<String> blockParams) {
     this.handlebars = handlebars;
     this.helperName = helperName;
     this.tagType = tagType;
@@ -366,6 +386,7 @@ public class Options {
     this.inverse = inverse;
     this.params = params;
     this.hash = hash;
+    this.blockParams = blockParams;
   }
 
   /**
@@ -375,7 +396,7 @@ public class Options {
    * @throws IOException If a resource cannot be loaded.
    */
   public CharSequence fn() throws IOException {
-    return fn.apply(context);
+    return apply(fn, context, blockParams(context.model));
   }
 
   /**
@@ -386,7 +407,8 @@ public class Options {
    * @throws IOException If a resource cannot be loaded.
    */
   public CharSequence fn(final Object context) throws IOException {
-    return fn.apply(wrap(context));
+    Context ctx = wrap(context);
+    return apply(fn, ctx, blockParams(ctx.model));
   }
 
   /**
@@ -397,7 +419,8 @@ public class Options {
    * @throws IOException If a resource cannot be loaded.
    */
   public CharSequence fn(final Context context) throws IOException {
-    return fn.apply(wrap(context));
+    Context ctx = wrap(context);
+    return apply(fn, ctx, blockParams(ctx.model));
   }
 
   /**
@@ -407,7 +430,7 @@ public class Options {
    * @throws IOException If a resource cannot be loaded.
    */
   public CharSequence inverse() throws IOException {
-    return inverse.apply(context);
+    return apply(inverse, context, blockParams(context.model));
   }
 
   /**
@@ -418,7 +441,8 @@ public class Options {
    * @throws IOException If a resource cannot be loaded.
    */
   public CharSequence inverse(final Object context) throws IOException {
-    return inverse.apply(wrap(context));
+    Context ctx = wrap(context);
+    return apply(inverse, ctx, blockParams(ctx.model));
   }
 
   /**
@@ -429,7 +453,8 @@ public class Options {
    * @throws IOException If a resource cannot be loaded.
    */
   public CharSequence inverse(final Context context) throws IOException {
-    return inverse.apply(wrap(context));
+    Context ctx = wrap(context);
+    return apply(inverse, ctx, blockParams(ctx.model));
   }
 
   /**
@@ -442,7 +467,8 @@ public class Options {
    * @throws IOException If a resource cannot be loaded.
    */
   public CharSequence apply(final Template template, final Object context) throws IOException {
-    return template.apply(wrap(context));
+    Context ctx = wrap(context);
+    return apply(template, ctx, blockParams(ctx.model));
   }
 
   /**
@@ -455,7 +481,42 @@ public class Options {
    * @throws IOException If a resource cannot be loaded.
    */
   public CharSequence apply(final Template template, final Context context) throws IOException {
-    return template.apply(wrap(context));
+    Context ctx = wrap(context);
+    return apply(template, ctx, blockParams(ctx.model));
+  }
+
+  /**
+   * Apply the given template to the provided context. The context stack is
+   * propagated allowing the access to the whole stack.
+   *
+   * @param template The template.
+   * @param context The context object.
+   * @param blockParams The block param values.
+   * @return The resulting text.
+   * @throws IOException If a resource cannot be loaded.
+   */
+  public CharSequence apply(final Template template, final Context context,
+      final List<Object> blockParams) throws IOException {
+    Context ctx = context;
+    if (this.blockParams.size() > 0) {
+      ctx = Context.newBlockParamContext(context, this.blockParams, blockParams);
+    }
+    return template.apply(ctx);
+  }
+
+  /**
+   * Apply the given template to the provided context. The context stack is
+   * propagated allowing the access to the whole stack.
+   *
+   * @param template The template.
+   * @param context The context object.
+   * @param blockParams The block param values.
+   * @return The resulting text.
+   * @throws IOException If a resource cannot be loaded.
+   */
+  public CharSequence apply(final Template template, final Object context,
+      final List<Object> blockParams) throws IOException {
+    return apply(template, wrap(context), blockParams);
   }
 
   /**
@@ -467,7 +528,7 @@ public class Options {
    * @throws IOException If a resource cannot be loaded.
    */
   public CharSequence apply(final Template template) throws IOException {
-    return template.apply(context);
+    return apply(template, context, blockParams(context.model));
   }
 
   /**
@@ -727,4 +788,16 @@ public class Options {
     return writer == null ? new InMemoryBuffer() : new NativeBuffer(writer);
   }
 
+  /**
+   * Build block params from given context.
+   *
+   * @param context A context.
+   * @return A block params.
+   */
+  private List<Object> blockParams(final Object context) {
+    if (this.blockParams.size() == 1) {
+      return Arrays.<Object> asList(context);
+    }
+    return Collections.emptyList();
+  }
 }

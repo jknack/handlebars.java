@@ -66,6 +66,76 @@ public class Context {
   };
 
   /**
+   * Special scope for silly block param rules, implemented by handlebars.js. This context will
+   * check for pathed variable and resolve them against parent context.
+   *
+   * @author edgar
+   * @since 3.0.0
+   */
+  private static class BlockParam extends Context {
+
+    /**
+     * A new {@link BlockParam}.
+     *
+     * @param parent Parent context.
+     * @param hash A hash model.
+     */
+    protected BlockParam(final Context parent, final Map<String, Object> hash) {
+      super(hash);
+      this.extendedContext = new Context(new HashMap<String, Object>());
+      this.parent = parent;
+      this.data = parent.data;
+      this.resolver = parent.resolver;
+    }
+
+    @Override
+    public Object get(final String key) {
+      // path variable should resolve from parent :S
+      if (key.startsWith(".")) {
+        return parent.get(key);
+      }
+      return super.get(key);
+    }
+
+    @Override
+    protected Context newChildContext(final Object model) {
+      return new ParentFirst(model);
+    }
+  }
+
+  /**
+   * Context that resolve variables against parent, or fallback to default/normal lookup.
+   *
+   * @author edgar
+   * @since 3.0.0
+   */
+  private static class ParentFirst extends Context {
+
+    /**
+     * Parent first lookup.
+     *
+     * @param model A model.
+     */
+    protected ParentFirst(final Object model) {
+      super(model);
+    }
+
+    @Override
+    public Object get(final String key) {
+      Object value = parent.get(key);
+      if (value == null) {
+        return super.get(key);
+      }
+      return value;
+    }
+
+    @Override
+    protected Context newChildContext(final Object model) {
+      return new ParentFirst(model);
+    }
+  }
+
+  /**
    * Handlebars and Mustache path separator.
    */
   private static final String PATH_SEPARATOR = "./";
@@ -164,7 +234,7 @@ public class Context {
      * @param model The model data.
      */
     private Builder(final Context parent, final Object model) {
-      context = Context.child(parent, model);
+      context = parent.newChild(model);
     }
 
     /**
@@ -263,7 +333,7 @@ public class Context {
   /**
    * The parent context. Optional.
    */
-  private Context parent;
+  protected Context parent;
 
   /**
    * The target value. Resolved as '.' or 'this' inside templates. Required.
@@ -273,23 +343,22 @@ public class Context {
   /**
    * A thread safe storage.
    */
-  private Map<String, Object> data;
+  protected Map<String, Object> data;
 
   /**
    * Additional, data can be stored here.
    */
-  private Context extendedContext;
+  protected Context extendedContext;
 
   /**
    * The value resolver.
    */
-  private ValueResolver resolver;
+  protected ValueResolver resolver;
 
   /**
    * Creates a new context.
    *
-   * @param model The target value. Resolved as '.' or 'this' inside
-   *        templates. Required.
+   * @param model The target value. Resolved as '.' or 'this' inside templates. Required.
    */
   protected Context(final Object model) {
     this.model = model;
@@ -315,42 +384,30 @@ public class Context {
   }
 
   /**
-   * Creates a child context.
-   *
-   * @param parent The parent context. Required.
-   * @param model The target value. Resolved as '.' or 'this' inside
-   *        templates. Required.
-   * @return A child context.
-   */
-  private static Context child(final Context parent, final Object model) {
-    Context child = new Context(model);
-    child.extendedContext = new Context(new HashMap<String, Object>());
-    child.parent = parent;
-    child.data = parent.data;
-    return child;
-  }
-
-  /**
    * Insert a new attribute in the context-stack.
    *
    * @param name The attribute's name. Required.
    * @param model The model data.
+   * @return This context.
    */
   @SuppressWarnings({"unchecked" })
-  private void combine(final String name, final Object model) {
+  public Context combine(final String name, final Object model) {
     Map<String, Object> map = (Map<String, Object>) extendedContext.model;
     map.put(name, model);
+    return this;
   }
 
   /**
-   * Inser all the attributes in the context-stack.
+   * Insert all the attributes in the context-stack.
    *
    * @param model The model attributes.
+   * @return This context.
    */
   @SuppressWarnings({"unchecked" })
-  private void combine(final Map<String, ?> model) {
+  public Context combine(final Map<String, ?> model) {
     Map<String, Object> map = (Map<String, Object>) extendedContext.model;
     map.putAll(model);
+    return this;
   }
 
   /**
@@ -429,6 +486,13 @@ public class Context {
    */
   public Set<Entry<String, Object>> propertySet() {
     return propertySet(model);
+  }
+
+  /**
+   * @return True, if this context is a block param context.
+   */
+  public boolean isBlockParams() {
+    return this instanceof BlockParam;
   }
 
   /**
@@ -681,6 +745,23 @@ public class Context {
   }
 
   /**
+   * Creates a new block param context.
+   *
+   * @param parent The parent context. Required.
+   * @param names A list of names to set in the block param context.
+   * @param values A list of values to set in the block param context.
+   * @return A new block param context.
+   */
+  public static Context newBlockParamContext(final Context parent, final List<String> names,
+      final List<Object> values) {
+    Map<String, Object> hash = new HashMap<String, Object>();
+    for (int i = 0; i < names.size(); i++) {
+      hash.put(names.get(i), values.get(i));
+    }
+    return new BlockParam(parent, hash);
+  }
+
+  /**
    * Creates a new root context.
    *
    * @param model The model data.
@@ -688,6 +769,30 @@ public class Context {
    */
   public static Context newContext(final Object model) {
     return newBuilder(model).build();
+  }
+
+  /**
+   * Creates a new child context.
+   *
+   * @param model A model/data.
+   * @return A new context.
+   */
+  private Context newChild(final Object model) {
+    Context child = newChildContext(model);
+    child.extendedContext = new Context(new HashMap<String, Object>());
+    child.parent = this;
+    child.data = this.data;
+    return child;
+  }
+
+  /**
+   * Creates an empty/default context.
+   *
+   * @param model A model/data.
+   * @return A new context.
+   */
+  protected Context newChildContext(final Object model) {
+    return new Context(model);
   }
 
 }

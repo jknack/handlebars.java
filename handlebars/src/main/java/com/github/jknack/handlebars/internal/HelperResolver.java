@@ -95,18 +95,18 @@ abstract class HelperResolver extends BaseTemplate {
   /**
    * Build a parameter list by looking for values in the current context.
    *
-   * @param scope The current context.
+   * @param ctx The current context.
    * @return A parameter list with values in the current context.
    * @throws IOException If param can't be applied.
    */
-  protected Object[] params(final Context scope) throws IOException {
+  protected Object[] params(final Context ctx) throws IOException {
     if (paramSize <= 1) {
       return PARAMS;
     }
     Object[] values = new Object[paramSize - 1];
     for (int i = 1; i < paramSize; i++) {
       Object value = params.get(i);
-      Object resolved = ParamType.parse(scope, value);
+      Object resolved = ParamType.parse(ctx, value);
       values[i - 1] = resolved == null && handlebars.stringParams()
           ? value : resolved;
     }
@@ -183,9 +183,10 @@ abstract class HelperResolver extends BaseTemplate {
   /**
    * Make a string of {@link #params}.
    *
+   * @param params list of params.
    * @return Make a string of {@link #params}.
    */
-  protected String paramsToString() {
+  protected String paramsToString(final List<?> params) {
     if (paramSize > 0) {
       StringBuilder buffer = new StringBuilder();
       String sep = " ";

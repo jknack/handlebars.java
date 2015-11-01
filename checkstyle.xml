@@ -128,7 +128,7 @@
         </module>
         <module name="MethodLength"/>
         <module name="ParameterNumber">
-          <property name="max" value="8"/>
+          <property name="max" value="10"/>
         </module>
 
 
@@ -184,7 +184,7 @@
         <module name="VisibilityModifier">
           <property name="packageAllowed" value="true"/>
           <property name="protectedAllowed" value="true"/>
-          <property name="publicMemberPattern" value="handlebars|fn|inverse|params|tagType|hash|context|line|column|evidence|reason|message|filename|helperName"/>
+          <property name="publicMemberPattern" value="handlebars|fn|inverse|params|tagType|hash|context|line|column|evidence|reason|message|filename|helperName|blockParams"/>
         </module>
 
 

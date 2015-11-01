@@ -97,6 +97,9 @@ class Block extends HelperResolver {
   /** Helper. */
   private final Helper<Object> helper;
 
+  /** Block param names. */
+  private List<String> blockParams;
+
   /**
    * Creates a new {@link Block}.
    *
@@ -105,16 +108,19 @@ class Block extends HelperResolver {
    * @param inverted True if it's inverted.
    * @param params The parameter list.
    * @param hash The hash.
+   * @param blockParams The block param names.
    */
   public Block(final Handlebars handlebars, final String name,
       final boolean inverted, final List<Object> params,
-      final Map<String, Object> hash) {
+      final Map<String, Object> hash,
+      final List<String> blockParams) {
     super(handlebars);
     this.name = notNull(name, "The name is required.");
     this.inverted = inverted;
     type = inverted ? "^" : "#";
     params(params);
     hash(hash);
+    this.blockParams = blockParams;
     this.helper = helper(name);
   }
 
@@ -127,29 +133,29 @@ class Block extends HelperResolver {
     final String helperName;
     Helper<Object> helper = this.helper;
     Template template = body;
-    final Object childContext;
-    Context it = context;
+    final Object it;
+    Context itCtx = context;
     if (helper == null) {
-      childContext = Transformer.transform(context.get(name));
+      it = Transformer.transform(context.get(name));
       if (inverted) {
         helperName = UnlessHelper.NAME;
-      } else if (childContext instanceof Iterable) {
+      } else if (it instanceof Iterable) {
         helperName = EachHelper.NAME;
-      } else if (childContext instanceof Boolean) {
+      } else if (it instanceof Boolean) {
         helperName = IfHelper.NAME;
-      } else if (childContext instanceof Lambda) {
+      } else if (it instanceof Lambda) {
         helperName = WithHelper.NAME;
         template = Lambdas
-            .compile(handlebars, (Lambda<Object, Object>) childContext, context, template,
+            .compile(handlebars, (Lambda<Object, Object>) it, context, template,
                 startDelimiter, endDelimiter);
       } else {
         helperName = WithHelper.NAME;
-        it = Context.newContext(context, childContext);
+        itCtx = Context.newContext(context, it);
       }
       // A built-in helper might be override it.
       helper = handlebars.helper(helperName);
-      //
-      if (childContext == null) {
+
+      if (it == null) {
         Helper<Object> missing = helper(Handlebars.HELPER_MISSING);
         if (missing != null) {
           // use missing here
@@ -158,17 +164,19 @@ class Block extends HelperResolver {
       }
     } else {
       helperName = name;
-      childContext = Transformer.transform(determineContext(context));
+      it = Transformer.transform(determineContext(context));
     }
-    Options options = new Options.Builder(handlebars, helperName, TagType.SECTION, it, template)
+
+    Options options = new Options.Builder(handlebars, helperName, TagType.SECTION, itCtx, template)
             .setInverse(inverse)
-            .setParams(params(it))
-            .setHash(hash(context))
+            .setParams(params(itCtx))
+            .setHash(hash(itCtx))
+            .setBlockParams(blockParams)
             .setWriter(writer)
             .build();
     options.data(Context.PARAM_SIZE, this.params.size());
 
-    CharSequence result = helper.apply(childContext, options);
+    CharSequence result = helper.apply(it, options);
     if (result != null) {
       writer.append(result);
     }
@@ -273,13 +281,16 @@ class Block extends HelperResolver {
   private String text(final boolean complete) {
     StringBuilder buffer = new StringBuilder();
     buffer.append(startDelimiter).append(type).append(name);
-    String params = paramsToString();
+    String params = paramsToString(this.params);
     if (params.length() > 0) {
       buffer.append(" ").append(params);
     }
     String hash = hashToString();
     if (hash.length() > 0) {
       buffer.append(" ").append(hash);
+    }
+    if (blockParams.size() > 0) {
+      buffer.append(" as |").append(paramsToString(this.blockParams)).append("|");
     }
     buffer.append(endDelimiter);
     if (complete) {

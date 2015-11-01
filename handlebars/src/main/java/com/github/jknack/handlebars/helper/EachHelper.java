@@ -18,6 +18,7 @@
 package com.github.jknack.handlebars.helper;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -27,6 +28,7 @@ import org.apache.commons.lang3.StringUtils;
 import com.github.jknack.handlebars.Context;
 import com.github.jknack.handlebars.Helper;
 import com.github.jknack.handlebars.Options;
+import com.github.jknack.handlebars.Template;
 
 /**
  * You can iterate over a list using the built-in each helper. Inside the
@@ -64,23 +66,25 @@ public class EachHelper implements Helper<Object> {
   /**
    * Iterate over a hash like object.
    *
-   * @param context The context object.
+   * @param it The context object.
    * @param options The helper options.
    * @return The string output.
    * @throws IOException If something goes wrong.
    */
-  private CharSequence hashContext(final Object context, final Options options)
+  private CharSequence hashContext(final Object it, final Options options)
       throws IOException {
-    Set<Entry<String, Object>> propertySet = options.propertySet(context);
+    Set<Entry<String, Object>> propertySet = options.propertySet(it);
     Context parent = options.context;
     boolean first = true;
     Options.Buffer buffer = options.buffer();
+    Template fn = options.fn;
     for (Entry<String, Object> entry : propertySet) {
-      Context current = Context.newBuilder(parent, entry.getValue())
-          .combine("@key", entry.getKey())
+      String key = entry.getKey();
+      Context itCtx = Context.newBuilder(parent, entry.getValue())
+          .combine("@key", key)
           .combine("@first", first ? "first" : "")
           .build();
-      buffer.append(options.fn(current));
+      buffer.append(options.apply(fn, itCtx, Arrays.asList(it, key)));
       first = false;
     }
     return buffer;
@@ -100,24 +104,25 @@ public class EachHelper implements Helper<Object> {
     if (options.isFalsy(context)) {
       buffer.append(options.inverse());
     } else {
-      Iterator<Object> iterator = context.iterator();
-      int base = ((Number) options.hash("base", 0)).intValue();
+      Iterator<Object> loop = context.iterator();
+      int base = options.hash("base", 0);
       int index = base;
       Context parent = options.context;
-      while (iterator.hasNext()) {
-        Object element = iterator.next();
+      Template fn = options.fn;
+      while (loop.hasNext()) {
+        Object it = loop.next();
         boolean even = index % 2 == 0;
-        Context current = Context.newBuilder(parent, element)
+        Context itCtx = Context.newBuilder(parent, it)
             .combine("@index", index)
             .combine("@first", index == base ? "first" : "")
-            .combine("@last", !iterator.hasNext() ? "last" : "")
+            .combine("@last", !loop.hasNext() ? "last" : "")
             .combine("@odd", even ? "" : "odd")
             .combine("@even", even ? "even" : "")
             // 1-based index
             .combine("@index_1", index + 1)
             .build();
-        buffer.append(options.fn(current));
-        current.destroy();
+        buffer.append(options.apply(fn, itCtx, Arrays.asList(it, index)));
+        itCtx.destroy();
         index += 1;
       }
     }
