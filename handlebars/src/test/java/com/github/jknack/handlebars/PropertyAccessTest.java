@@ -70,7 +70,6 @@ public class PropertyAccessTest {
     assertEquals("", template.apply(context));
   }
 
-  @SuppressWarnings("unchecked")
   @Test
   public void qualifiedListAccess() throws IOException {
     Handlebars handlebars = new Handlebars();
