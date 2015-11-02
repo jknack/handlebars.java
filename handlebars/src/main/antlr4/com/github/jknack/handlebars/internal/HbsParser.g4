@@ -79,7 +79,7 @@ newline
 
 block
   :
-    START_BLOCK sexpr blockParams? END
+    startToken = (START_BLOCK|START_DECORATOR) sexpr blockParams? END
     thenBody=body
     elseBlock*
     END_BLOCK nameEnd=QID END

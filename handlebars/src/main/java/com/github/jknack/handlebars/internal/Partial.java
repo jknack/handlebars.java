@@ -100,36 +100,42 @@ class Partial extends HelperResolver {
 
       String path = this.path.apply(context);
 
-      TemplateSource source = loader.sourceAt(path);
+      /** Inline partial? */
+      Map<String, Template> inlineTemplates = context.data(Context.INLINE_PARTIALS);
+      Template template = inlineTemplates.get(path);
 
-      if (exists(invocationStack, source.filename())) {
-        TemplateSource caller = invocationStack.removeLast();
-        Collections.reverse(invocationStack);
+      if (template == null) {
+        TemplateSource source = loader.sourceAt(path);
 
-        final String message;
-        final String reason;
-        if (invocationStack.isEmpty()) {
-          reason = String.format("infinite loop detected, partial '%s' is calling itself",
-              source.filename());
+        if (exists(invocationStack, source.filename())) {
+          TemplateSource caller = invocationStack.removeLast();
+          Collections.reverse(invocationStack);
 
-          message = String.format("%s:%s:%s: %s", caller.filename(), line, column, reason);
-        } else {
-          reason = String.format(
-              "infinite loop detected, partial '%s' was previously loaded", source.filename());
+          final String message;
+          final String reason;
+          if (invocationStack.isEmpty()) {
+            reason = String.format("infinite loop detected, partial '%s' is calling itself",
+                source.filename());
 
-          message = String.format("%s:%s:%s: %s\n%s", caller.filename(), line, column, reason,
-              "at " + join(invocationStack, "\nat "));
+            message = String.format("%s:%s:%s: %s", caller.filename(), line, column, reason);
+          } else {
+            reason = String.format(
+                "infinite loop detected, partial '%s' was previously loaded", source.filename());
+
+            message = String.format("%s:%s:%s: %s\n%s", caller.filename(), line, column, reason,
+                "at " + join(invocationStack, "\nat "));
+          }
+          HandlebarsError error = new HandlebarsError(caller.filename(), line,
+              column, reason, text(), message);
+          throw new HandlebarsException(error);
         }
-        HandlebarsError error = new HandlebarsError(caller.filename(), line,
-            column, reason, text(), message);
-        throw new HandlebarsException(error);
-      }
 
-      if (indent != null) {
-        source = partial(source, indent);
-      }
+        if (indent != null) {
+          source = partial(source, indent);
+        }
 
-      Template template = handlebars.compile(source);
+        template = handlebars.compile(source);
+      }
       String key = isEmpty(this.context) ? "this" : this.context;
       hash = hash(context);
       ctx = Context.newContext(context, context.get(key)).data(hash);

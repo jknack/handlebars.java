@@ -147,6 +147,7 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
   @Override
   public Template visitBlock(final BlockContext ctx) {
     SexprContext sexpr = ctx.sexpr();
+    boolean decorator = ctx.start.getText().endsWith("#*");
     Token nameStart = sexpr.QID().getSymbol();
     String name = nameStart.getText();
     qualifier.addLast(name);
@@ -158,11 +159,12 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
 
     hasTag(true);
     Block block = new Block(handlebars, name, false, params(sexpr.param()),
-        hash(sexpr.hash()), blockParams(ctx.blockParams()));
+        hash(sexpr.hash()), blockParams(ctx.blockParams()), decorator);
     block.filename(source.filename());
     block.position(nameStart.getLine(), nameStart.getCharPositionInLine());
+    int to = decorator ? 2 : 1;
     String startDelim = ctx.start.getText();
-    startDelim = startDelim.substring(0, startDelim.length() - 1);
+    startDelim = startDelim.substring(0, startDelim.length() - to);
     block.startDelimiter(startDelim);
     block.endDelimiter(ctx.stop.getText());
 
@@ -191,7 +193,7 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
         Token elsenameStart = elseexpr.QID().getSymbol();
         String elsename = elsenameStart.getText();
         Block elseblock = new Block(handlebars, elsename, false, params(elseexpr.param()),
-            hash(elseexpr.hash()), blockParams(elseStmtChain.blockParams()));
+            hash(elseexpr.hash()), blockParams(elseStmtChain.blockParams()), false);
         elseblock.filename(source.filename());
         elseblock.position(elsenameStart.getLine(), elsenameStart.getCharPositionInLine());
         elseblock.startDelimiter(startDelim);
@@ -225,7 +227,7 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
           String.format("found: '%s', expected: '%s'", nameEnd, name));
     }
     Block block = new Block(handlebars, name, true, Collections.emptyList(),
-        Collections.<String, Object> emptyMap(), blockParams(ctx.blockParams()));
+        Collections.<String, Object> emptyMap(), blockParams(ctx.blockParams()), false);
     block.filename(source.filename());
     block.position(nameStart.getLine(), nameStart.getCharPositionInLine());
     String startDelim = ctx.start.getText();

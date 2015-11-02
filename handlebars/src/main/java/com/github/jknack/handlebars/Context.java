@@ -321,6 +321,11 @@ public class Context {
   public static final String PARTIALS = Context.class.getName() + "#partials";
 
   /**
+   * Inline partials.
+   */
+  public static final String INLINE_PARTIALS = "__inline_partials_";
+
+  /**
    * The qualified name for partials. Internal use.
    */
   public static final String INVOCATION_STACK = Context.class.getName() + "#invocationStack";
@@ -378,6 +383,7 @@ public class Context {
     root.extendedContext = new Context(new HashMap<String, Object>());
     root.data = new HashMap<String, Object>();
     root.data.put(PARTIALS, new HashMap<String, Template>());
+    root.data.put(INLINE_PARTIALS, new HashMap<String, Template>());
     root.data.put(INVOCATION_STACK, new LinkedList<TemplateSource>());
     root.data.put("root", model);
     return root;

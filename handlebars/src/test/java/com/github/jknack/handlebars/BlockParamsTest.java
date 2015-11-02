@@ -5,7 +5,6 @@ import static org.junit.Assert.assertEquals;
 import java.io.IOException;
 import java.util.Arrays;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class BlockParamsTest extends AbstractTest {
@@ -88,7 +87,6 @@ public class BlockParamsTest extends AbstractTest {
   }
 
   @Test
-  @Ignore
   public void shouldAllowBlockParamsOnChainedHelpers() throws IOException {
     shouldCompileTo(
         "{{#if bar}}{{else goodbyes as |value|}}{{value}}{{/if}}{{value}}",
@@ -104,7 +102,7 @@ public class BlockParamsTest extends AbstractTest {
             }
             return options.fn($("value", "bar"));
           }
-        }), "13foo");
+        }), "1foo");
   }
 
   @Test

@@ -170,6 +170,10 @@ UNLESS
  : {startToken(start, "^")}? . -> pushMode(VAR)
  ;
 
+START_DECORATOR
+ : {startToken(start, "#*")}? . -> pushMode(VAR)
+ ;
+
 START_BLOCK
  : {startToken(start, "#")}? . -> pushMode(VAR)
  ;
