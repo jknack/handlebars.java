@@ -37,7 +37,7 @@ Benchmark source code is available at: https://github.com/mbosecke/template-benc
   </dependency>
 ```
  
-#### Development version: **3.0.0-SNAPSHOT**
+#### Development version: **4.0.0-SNAPSHOT**
 
 SNAPSHOT versions are NOT synchronized to Central. If you want to use a snapshot version you need to add the https://oss.sonatype.org/content/repositories/snapshots/ repository to your pom.xml.
 
