@@ -55,6 +55,7 @@ statement
   | ampvar
   | unless
   | partial
+  | partialBlock
   | escape
   | comment
   | delimiters
@@ -149,6 +150,13 @@ delimiters
 partial
   :
     START_PARTIAL pexpr END
+  ;
+
+partialBlock
+  :
+    START_PARTIAL_BLOCK pexpr END
+    thenBody=body
+    END_BLOCK nameEnd=QID END
   ;
 
 pexpr

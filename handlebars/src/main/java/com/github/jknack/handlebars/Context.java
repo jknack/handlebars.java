@@ -83,6 +83,7 @@ public class Context {
     protected BlockParam(final Context parent, final Map<String, Object> hash) {
       super(hash);
       this.extendedContext = new Context(new HashMap<String, Object>());
+      this.extendedContext.resolver = parent.resolver;
       this.parent = parent;
       this.data = parent.data;
       this.resolver = parent.resolver;

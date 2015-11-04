@@ -21,6 +21,7 @@ import static org.apache.commons.lang3.StringUtils.isEmpty;
 import static org.apache.commons.lang3.StringUtils.join;
 import static org.apache.commons.lang3.Validate.notNull;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.Collections;
@@ -73,6 +74,12 @@ class Partial extends HelperResolver {
    */
   private String indent;
 
+  /** Template loader. */
+  private TemplateLoader loader;
+
+  /** A partial block body. */
+  private Template partial;
+
   /**
    * Creates a new {@link Partial}.
    *
@@ -87,54 +94,68 @@ class Partial extends HelperResolver {
     this.path = notNull(path, "The path is required.");
     this.context = context;
     this.hash(hash);
+    this.loader = handlebars.getLoader();
   }
 
   @Override
   protected void merge(final Context context, final Writer writer)
       throws IOException {
-    TemplateLoader loader = handlebars.getLoader();
     Map<String, Object> hash = Collections.emptyMap();
     Context ctx = context;
     try {
-      LinkedList<TemplateSource> invocationStack = context.data(Context.INVOCATION_STACK);
-
       String path = this.path.apply(context);
-
       /** Inline partial? */
       Map<String, Template> inlineTemplates = context.data(Context.INLINE_PARTIALS);
+
+      if (this.partial != null) {
+        this.partial.apply(context);
+        inlineTemplates.put("@partial-block", this.partial);
+      }
+
       Template template = inlineTemplates.get(path);
 
       if (template == null) {
-        TemplateSource source = loader.sourceAt(path);
+        LinkedList<TemplateSource> invocationStack = context.data(Context.INVOCATION_STACK);
 
-        if (exists(invocationStack, source.filename())) {
-          TemplateSource caller = invocationStack.removeLast();
-          Collections.reverse(invocationStack);
+        try {
+          TemplateSource source = loader.sourceAt(path);
 
-          final String message;
-          final String reason;
-          if (invocationStack.isEmpty()) {
-            reason = String.format("infinite loop detected, partial '%s' is calling itself",
-                source.filename());
+          if (exists(invocationStack, source.filename())) {
+            TemplateSource caller = invocationStack.removeLast();
+            Collections.reverse(invocationStack);
 
-            message = String.format("%s:%s:%s: %s", caller.filename(), line, column, reason);
-          } else {
-            reason = String.format(
-                "infinite loop detected, partial '%s' was previously loaded", source.filename());
+            final String message;
+            final String reason;
+            if (invocationStack.isEmpty()) {
+              reason = String.format("infinite loop detected, partial '%s' is calling itself",
+                  source.filename());
 
-            message = String.format("%s:%s:%s: %s\n%s", caller.filename(), line, column, reason,
-                "at " + join(invocationStack, "\nat "));
+              message = String.format("%s:%s:%s: %s", caller.filename(), line, column, reason);
+            } else {
+              reason = String.format(
+                  "infinite loop detected, partial '%s' was previously loaded", source.filename());
+
+              message = String.format("%s:%s:%s: %s\n%s", caller.filename(), line, column, reason,
+                  "at " + join(invocationStack, "\nat "));
+            }
+            HandlebarsError error = new HandlebarsError(caller.filename(), line,
+                column, reason, text(), message);
+            throw new HandlebarsException(error);
           }
-          HandlebarsError error = new HandlebarsError(caller.filename(), line,
-              column, reason, text(), message);
-          throw new HandlebarsException(error);
+
+          if (indent != null) {
+            source = partial(source, indent);
+          }
+
+          template = handlebars.compile(source);
+        } catch (FileNotFoundException fnf) {
+          if (this.partial != null) {
+            template = this.partial;
+          } else {
+            throw fnf;
+          }
         }
 
-        if (indent != null) {
-          source = partial(source, indent);
-        }
-
-        template = handlebars.compile(source);
       }
       String key = isEmpty(this.context) ? "this" : this.context;
       hash = hash(context);
@@ -239,15 +260,21 @@ class Partial extends HelperResolver {
 
   @Override
   public String text() {
+    String path = this.path.text();
     StringBuilder buffer = new StringBuilder(startDelimiter)
         .append('>')
-        .append(path.text());
+        .append(path);
 
     if (context != null) {
       buffer.append(' ').append(context);
     }
 
     buffer.append(endDelimiter);
+
+    if (this.partial != null) {
+      buffer.append(this.partial.text()).append(startDelimiter, 0, startDelimiter.length() - 1)
+          .append("/").append(path).append(endDelimiter);
+    }
     return buffer.toString();
   }
 
@@ -299,6 +326,17 @@ class Partial extends HelperResolver {
    */
   public Partial indent(final String indent) {
     this.indent = indent;
+    return this;
+  }
+
+  /**
+   * Set a partial block body.
+   *
+   * @param fn Partial block.
+   * @return This partial.
+   */
+  public Partial setPartial(final Template fn) {
+    this.partial = fn;
     return this;
   }
 

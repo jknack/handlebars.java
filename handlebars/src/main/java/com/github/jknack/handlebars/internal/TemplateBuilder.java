@@ -58,6 +58,7 @@ import com.github.jknack.handlebars.internal.HbsParser.HashContext;
 import com.github.jknack.handlebars.internal.HbsParser.IntParamContext;
 import com.github.jknack.handlebars.internal.HbsParser.NewlineContext;
 import com.github.jknack.handlebars.internal.HbsParser.ParamContext;
+import com.github.jknack.handlebars.internal.HbsParser.PartialBlockContext;
 import com.github.jknack.handlebars.internal.HbsParser.PartialContext;
 import com.github.jknack.handlebars.internal.HbsParser.RefParamContext;
 import com.github.jknack.handlebars.internal.HbsParser.SexprContext;
@@ -482,6 +483,34 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
 
     String startDelim = ctx.start.getText();
     Template partial = new Partial(handlebars, info.path, info.context, info.hash)
+        .startDelimiter(startDelim.substring(0, startDelim.length() - 1))
+        .endDelimiter(ctx.stop.getText())
+        .indent(indent)
+        .filename(source.filename())
+        .position(info.token.getLine(), info.token.getCharPositionInLine());
+
+    return partial;
+  }
+
+  @Override
+  public Object visitPartialBlock(final PartialBlockContext ctx) {
+    hasTag(true);
+
+    String indent = line.toString();
+    if (hasTag()) {
+      if (isEmpty(indent) || !isEmpty(indent.trim())) {
+        indent = null;
+      }
+    } else {
+      indent = null;
+    }
+
+    PartialInfo info = (PartialInfo) super.visit(ctx.pexpr());
+    Template fn = visitBody(ctx.thenBody);
+
+    String startDelim = ctx.start.getText();
+    Template partial = new Partial(handlebars, info.path, info.context, info.hash)
+        .setPartial(fn)
         .startDelimiter(startDelim.substring(0, startDelim.length() - 1))
         .endDelimiter(ctx.stop.getText())
         .indent(indent)
