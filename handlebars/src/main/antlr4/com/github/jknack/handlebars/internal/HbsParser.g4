@@ -80,7 +80,7 @@ newline
 
 block
   :
-    startToken = (START_BLOCK|START_DECORATOR) sexpr blockParams? END
+    startToken = START_BLOCK DECORATOR? sexpr blockParams? END
     thenBody=body
     elseBlock*
     END_BLOCK nameEnd=QID END
@@ -131,7 +131,7 @@ ampvar
 
 var
   :
-   START sexpr END
+   START DECORATOR? sexpr END
   ;
 
 delimiters

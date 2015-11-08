@@ -41,6 +41,7 @@ import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.view.AbstractTemplateViewResolver;
 import org.springframework.web.servlet.view.AbstractUrlBasedView;
 
+import com.github.jknack.handlebars.Decorator;
 import com.github.jknack.handlebars.Formatter;
 import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Helper;
@@ -558,4 +559,14 @@ public class HandlebarsViewResolver extends AbstractTemplateViewResolver
     this.templateCache = templateCache;
   }
 
+  @Override
+  public Decorator decorator(final String name) {
+    return this.registry.decorator(name);
+  }
+
+  @Override
+  public HandlebarsViewResolver registerDecorator(final String name, final Decorator decorator) {
+    registry.registerDecorator(name, decorator);
+    return this;
+  }
 }

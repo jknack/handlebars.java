@@ -170,10 +170,6 @@ UNLESS
  : {startToken(start, "^")}? . -> pushMode(VAR)
  ;
 
-START_DECORATOR
- : {startToken(start, "#*")}? . -> pushMode(VAR)
- ;
-
 START_PARTIAL_BLOCK
  : {startToken(start, "#>")}? . -> pushMode(VAR)
  ;
@@ -231,9 +227,20 @@ END
  : {endToken(end)}? . -> mode(DEFAULT_MODE)
  ;
 
-AS: 'as';
+DECORATOR
+  :
+    '*'
+  ;
 
-PIPE: '|';
+AS
+  :
+    'as'
+  ;
+
+PIPE
+  :
+    '|'
+  ;
 
 DOUBLE_STRING
  :

@@ -114,6 +114,24 @@ abstract class HelperResolver extends BaseTemplate {
   }
 
   /**
+   * Build a parameter list by looking for values in the current context.
+   *
+   * @param ctx The current context.
+   * @return A parameter list with values in the current context.
+   * @throws IOException If param can't be applied.
+   */
+  protected Object[] decoParams(final Context ctx) throws IOException {
+    Object[] values = new Object[paramSize];
+    for (int i = 0; i < paramSize; i++) {
+      Object value = params.get(i);
+      Object resolved = ParamType.parse(ctx, value);
+      values[i] = resolved == null && handlebars.stringParams()
+          ? value : resolved;
+    }
+    return values;
+  }
+
+  /**
    * Determine the current context. If the param list is empty, the current
    * context value is returned.
    *

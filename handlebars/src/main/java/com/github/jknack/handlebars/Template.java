@@ -60,6 +60,14 @@ public interface Template {
     }
 
     @Override
+    public void before(final Context context, final Writer writer) throws IOException {
+    }
+
+    @Override
+    public void after(final Context context, final Writer writer) throws IOException {
+    }
+
+    @Override
     public String toJavaScript() {
       return "";
     }
@@ -71,7 +79,7 @@ public interface Template {
 
     @Override
     public int[] position() {
-      return new int[] {0, 0};
+      return new int[]{0, 0 };
     }
 
     @SuppressWarnings({"rawtypes", "unchecked" })
@@ -134,6 +142,24 @@ public interface Template {
    * @throws IOException If a resource cannot be loaded.
    */
   void apply(Context context, Writer writer) throws IOException;
+
+  /**
+   * Notify that template is going to be processed.
+   *
+   * @param context The context object. Required.
+   * @param writer The writer object. Required.
+   * @throws IOException If a resource cannot be loaded.
+   */
+  void before(Context context, Writer writer) throws IOException;
+
+  /**
+   * Notify that template has been processed.
+   *
+   * @param context The context object. Required.
+   * @param writer The writer object. Required.
+   * @throws IOException If a resource cannot be loaded.
+   */
+  void after(Context context, Writer writer) throws IOException;
 
   /**
    * Merge the template tree using the given context.

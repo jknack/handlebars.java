@@ -105,7 +105,8 @@ class Partial extends HelperResolver {
     try {
       String path = this.path.apply(context);
       /** Inline partial? */
-      Map<String, Template> inlineTemplates = context.data(Context.INLINE_PARTIALS);
+      LinkedList<Map<String, Template>> partials = context.data(Context.INLINE_PARTIALS);
+      Map<String, Template> inlineTemplates = partials.getLast();
 
       if (this.partial != null) {
         this.partial.apply(context);

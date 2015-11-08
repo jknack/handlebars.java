@@ -54,12 +54,12 @@ class Variable extends HelperResolver {
   /**
    * The variable's name. Required.
    */
-  private final String name;
+  protected final String name;
 
   /**
    * The variable type.
    */
-  private final TagType type;
+  protected final TagType type;
 
   /**
    * The start delimiter.
@@ -77,7 +77,7 @@ class Variable extends HelperResolver {
   private EscapingStrategy escapingStrategy;
 
   /** Helper. */
-  private final Helper<Object> helper;
+  private Helper<Object> helper;
 
   /** Formatter. */
   private Formatter.Chain formatter;
@@ -103,9 +103,8 @@ class Variable extends HelperResolver {
     params(params);
     hash(hash);
     this.escapingStrategy = handlebars.getEscapingStrategy();
-    this.helper = helper(name);
     this.formatter = handlebars.getFormatter();
-    this.missing = handlebars.helper(HelperRegistry.HELPER_MISSING);
+    postInit();
   }
 
   /**
@@ -119,6 +118,14 @@ class Variable extends HelperResolver {
   public Variable(final Handlebars handlebars, final String name, final TagType type) {
     this(handlebars, name, type, Collections.EMPTY_LIST,
         Collections.EMPTY_MAP);
+  }
+
+  /**
+   * Apply any pending initialization.
+   */
+  protected void postInit() {
+    this.helper = helper(name);
+    this.missing = handlebars.helper(HelperRegistry.HELPER_MISSING);
   }
 
   /**
@@ -236,7 +243,7 @@ class Variable extends HelperResolver {
   @Override
   public String text() {
     StringBuilder buffer = new StringBuilder();
-    buffer.append(startDelimiter).append(name);
+    buffer.append(startDelimiter).append(suffix()).append(name);
     String params = paramsToString(this.params);
     if (params.length() > 0) {
       buffer.append(" ").append(params);
@@ -246,6 +253,13 @@ class Variable extends HelperResolver {
       buffer.append(" ").append(hash);
     }
     return buffer.append(endDelimiter).toString();
+  }
+
+  /**
+   * @return Type suffix, default is empty.
+   */
+  protected String suffix() {
+    return "";
   }
 
   /**

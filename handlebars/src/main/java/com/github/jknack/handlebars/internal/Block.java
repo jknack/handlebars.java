@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -58,12 +59,12 @@ class Block extends HelperResolver {
   /**
    * The body template.
    */
-  private Template body;
+  protected Template body;
 
   /**
    * The section's name.
    */
-  private final String name;
+  protected final String name;
 
   /**
    * True if it's inverted.
@@ -96,16 +97,13 @@ class Block extends HelperResolver {
   private String inverseLabel;
 
   /** Helper. */
-  private final Helper<Object> helper;
+  private Helper<Object> helper;
 
   /** Block param names. */
-  private List<String> blockParams;
+  protected final List<String> blockParams;
 
-  /** True, if this block has a decorator char: <code>*</code>. */
-  private String typeSuffix;
-
-  /** True, if this block is a decorator (it has an <code>*</code>). */
-  private boolean decorator;
+  /** Tag type, default: is {@link TagType#SECTION}. */
+  protected TagType tagType;
 
   /**
    * Creates a new {@link Block}.
@@ -116,11 +114,10 @@ class Block extends HelperResolver {
    * @param params The parameter list.
    * @param hash The hash.
    * @param blockParams The block param names.
-   * @param decorator True, if this block has a decorator char: <code>*</code>.
    */
   public Block(final Handlebars handlebars, final String name,
       final boolean inverted, final List<Object> params,
-      final Map<String, Object> hash, final List<String> blockParams, final boolean decorator) {
+      final Map<String, Object> hash, final List<String> blockParams) {
     super(handlebars);
     this.name = notNull(name, "The name is required.");
     this.inverted = inverted;
@@ -128,9 +125,32 @@ class Block extends HelperResolver {
     params(params);
     hash(hash);
     this.blockParams = blockParams;
+    this.tagType = TagType.SECTION;
+    postInit();
+  }
+
+  /**
+   * Make/run any pending or required initialization.
+   */
+  protected void postInit() {
     this.helper = helper(name);
-    this.decorator = decorator;
-    this.typeSuffix = decorator ? "*" : "";
+  }
+
+  @Override
+  public void before(final Context context, final Writer writer) throws IOException {
+    if (body != null) {
+      LinkedList<Map<String, Template>> partials = context.data(Context.INLINE_PARTIALS);
+      partials.addLast(new HashMap<>(partials.getLast()));
+      body.before(context, writer);
+    }
+  }
+
+  @Override
+  public void after(final Context context, final Writer writer) throws IOException {
+    if (body != null) {
+      LinkedList<Map<String, Template>> partials = context.data(Context.INLINE_PARTIALS);
+      partials.removeLast();
+    }
   }
 
   @SuppressWarnings("unchecked")
@@ -140,66 +160,56 @@ class Block extends HelperResolver {
       return;
     }
 
-    Map<String, Object> partials = context.data(Context.INLINE_PARTIALS);
-    Map<String, Object> localPartials = new HashMap<>(partials);
-    context.data(Context.INLINE_PARTIALS, localPartials);
-    try {
-      final String helperName;
-      Helper<Object> helper = this.helper;
-      Template template = body;
-      final Object it;
-      Context itCtx = context;
-      if (helper == null) {
-        it = Transformer.transform(context.get(name));
-        if (inverted) {
-          helperName = UnlessHelper.NAME;
-        } else if (it instanceof Iterable) {
-          helperName = EachHelper.NAME;
-        } else if (it instanceof Boolean) {
-          helperName = IfHelper.NAME;
-        } else if (it instanceof Lambda) {
-          helperName = WithHelper.NAME;
-          template = Lambdas
-              .compile(handlebars, (Lambda<Object, Object>) it, context, template,
-                  startDelimiter, endDelimiter);
-        } else {
-          helperName = WithHelper.NAME;
-          itCtx = Context.newContext(context, it);
-        }
-        // A built-in helper might be override it.
-        helper = handlebars.helper(helperName);
-
-        if (it == null) {
-          Helper<Object> missing = helper(Handlebars.HELPER_MISSING);
-          if (missing != null) {
-            // use missing here
-            helper = missing;
-          }
-        }
+    final String helperName;
+    Helper<Object> helper = this.helper;
+    Template template = body;
+    final Object it;
+    Context itCtx = context;
+    if (helper == null) {
+      it = Transformer.transform(context.get(name));
+      if (inverted) {
+        helperName = UnlessHelper.NAME;
+      } else if (it instanceof Iterable) {
+        helperName = EachHelper.NAME;
+      } else if (it instanceof Boolean) {
+        helperName = IfHelper.NAME;
+      } else if (it instanceof Lambda) {
+        helperName = WithHelper.NAME;
+        template = Lambdas
+            .compile(handlebars, (Lambda<Object, Object>) it, context, template,
+                startDelimiter, endDelimiter);
       } else {
-        helperName = name;
-        it = Transformer.transform(determineContext(context));
+        helperName = WithHelper.NAME;
+        itCtx = Context.newContext(context, it);
       }
+      // A built-in helper might be override it.
+      helper = handlebars.helper(helperName);
 
-      Options options = new Options.Builder(handlebars, helperName, TagType.SECTION, itCtx,
-          template)
-              .setInverse(inverse)
-              .setParams(params(itCtx))
-              .setHash(hash(itCtx))
-              .setBlockParams(blockParams)
-              .setWriter(writer)
-              .build();
-      options.data(Context.PARAM_SIZE, this.params.size());
+      if (it == null) {
+        Helper<Object> missing = helper(Handlebars.HELPER_MISSING);
+        if (missing != null) {
+          // use missing here
+          helper = missing;
+        }
+      }
+    } else {
+      helperName = name;
+      it = Transformer.transform(determineContext(context));
+    }
 
-      CharSequence result = helper.apply(it, options);
-      if (result != null) {
-        writer.append(result);
-      }
-    } finally {
-      if (!decorator) {
-        context.data(Context.INLINE_PARTIALS, partials);
-        localPartials.clear();
-      }
+    Options options = new Options.Builder(handlebars, helperName, TagType.SECTION, itCtx,
+        template)
+            .setInverse(inverse)
+            .setParams(params(itCtx))
+            .setHash(hash(itCtx))
+            .setBlockParams(blockParams)
+            .setWriter(writer)
+            .build();
+    options.data(Context.PARAM_SIZE, this.params.size());
+
+    CharSequence result = helper.apply(it, options);
+    if (result != null) {
+      writer.append(result);
     }
   }
 
@@ -301,7 +311,7 @@ class Block extends HelperResolver {
    */
   private String text(final boolean complete) {
     StringBuilder buffer = new StringBuilder();
-    buffer.append(startDelimiter).append(type).append(typeSuffix).append(name);
+    buffer.append(startDelimiter).append(type).append(suffix()).append(name);
     String params = paramsToString(this.params);
     if (params.length() > 0) {
       buffer.append(" ").append(params);
@@ -322,6 +332,13 @@ class Block extends HelperResolver {
     }
     buffer.append(startDelimiter).append('/').append(name).append(endDelimiter);
     return buffer.toString();
+  }
+
+  /**
+   * @return Block suffix, default is empty.
+   */
+  protected String suffix() {
+    return "";
   }
 
   /**
@@ -355,7 +372,7 @@ class Block extends HelperResolver {
 
   @Override
   protected void collect(final Collection<String> result, final TagType tagType) {
-    if (tagType == TagType.SECTION) {
+    if (tagType == this.tagType) {
       result.add(name);
     }
     super.collect(result, tagType);

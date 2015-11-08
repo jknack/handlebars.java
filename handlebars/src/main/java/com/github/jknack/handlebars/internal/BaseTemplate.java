@@ -121,6 +121,7 @@ abstract class BaseTemplate implements Template {
   public void apply(final Context context, final Writer writer)
       throws IOException {
     try {
+      before(context, writer);
       merge(context, writer);
     } catch (HandlebarsException ex) {
       throw ex;
@@ -136,6 +137,8 @@ abstract class BaseTemplate implements Template {
       // Override the stack-trace
       hex.setStackTrace(ex.getStackTrace());
       throw hex;
+    } finally {
+      after(context, writer);
     }
   }
 
@@ -150,6 +153,14 @@ abstract class BaseTemplate implements Template {
       return (Context) candidate;
     }
     return Context.newContext(candidate);
+  }
+
+  @Override
+  public void before(final Context context, final Writer writer) throws IOException {
+  }
+
+  @Override
+  public void after(final Context context, final Writer writer) throws IOException {
   }
 
   /**

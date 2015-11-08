@@ -1192,4 +1192,15 @@ public class Handlebars implements HelperRegistry {
     logger.error(message);
   }
 
+  @Override
+  public Decorator decorator(final String name) {
+    return registry.decorator(name);
+  }
+
+  @Override
+  public Handlebars registerDecorator(final String name, final Decorator decorator) {
+    registry.registerDecorator(name, decorator);
+    return this;
+  }
+
 }

@@ -136,7 +136,9 @@ public interface HelperRegistry {
    * </ul>
    *
    * Only static methods will be registered as helpers.
-   * <p>Enums are supported too</p>
+   * <p>
+   * Enums are supported too
+   * </p>
    *
    * @param helperSource The helper source. Enums are supported. Required.
    * @return This handlebars object.
@@ -297,9 +299,28 @@ public interface HelperRegistry {
    *
    * @param filename The file name (just for debugging purpose). Required.
    * @param source The JavaScript source. Required.
-   * @return This handlebars object.
+   * @return This registry.
    * @throws Exception If the JavaScript helpers can't be registered.
    */
   HelperRegistry registerHelpers(String filename, String source) throws Exception;
+
+  /**
+   * Find a decorator by name.
+   *
+   * @param name A decorator's name.
+   * @return A decorator or <code>null</code>.
+   * @since 4.0.0
+   */
+  Decorator decorator(String name);
+
+  /**
+   * Register a decorator and make it accessible via {@link #decorator(String)}.
+   *
+   * @param name A decorator's name. Required.
+   * @param decorator A decorator. Required.
+   * @return This registry.
+   * @since 4.0.0
+   */
+  HelperRegistry registerDecorator(String name, Decorator decorator);
 
 }

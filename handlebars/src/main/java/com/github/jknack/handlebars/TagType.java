@@ -32,6 +32,11 @@ public enum TagType {
   VAR,
 
   /**
+   * A var decorator tag, like: <code>{{*name}}</code>.
+   */
+  STAR_VAR,
+
+  /**
    * All variables are HTML escaped by default. If you want to return unescaped HTML, use the
    * triple mustache: <code>{{{@literal &}name}}</code>.
    */
@@ -61,6 +66,16 @@ public enum TagType {
    * </p>
    */
   SECTION {
+    @Override
+    public boolean inline() {
+      return false;
+    }
+  },
+
+  /**
+   * Like {{#* decorator}}success{{/decorator}}.
+   */
+  START_SECTION {
     @Override
     public boolean inline() {
       return false;

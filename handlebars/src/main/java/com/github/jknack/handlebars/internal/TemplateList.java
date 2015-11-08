@@ -22,6 +22,7 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -41,7 +42,10 @@ class TemplateList extends BaseTemplate implements Iterable<Template> {
   /**
    * The list of child templates.
    */
-  private final List<Template> nodes = new ArrayList<Template>(10);
+  private final List<Template> nodes = new ArrayList<>(10);
+
+  /** Keep track of direct decorators and run them before merge. */
+  private final List<Template> decorators = new LinkedList<>();
 
   /**
    * Creates a new template list.
@@ -60,7 +64,24 @@ class TemplateList extends BaseTemplate implements Iterable<Template> {
    */
   public boolean add(final Template child) {
     nodes.add(child);
+    if (child instanceof VarDecorator || child instanceof BlockDecorator) {
+      decorators.add(child);
+    }
     return true;
+  }
+
+  @Override
+  public void before(final Context context, final Writer writer) throws IOException {
+    for (Template node : decorators) {
+      node.before(context, writer);
+    }
+  }
+
+  @Override
+  public void after(final Context context, final Writer writer) throws IOException {
+    for (Template node : decorators) {
+      node.after(context, writer);
+    }
   }
 
   @Override
@@ -114,6 +135,6 @@ class TemplateList extends BaseTemplate implements Iterable<Template> {
 
   @Override
   public String toString() {
-    return nodes.get(0).toString();
+    return nodes.toString();
   }
 }

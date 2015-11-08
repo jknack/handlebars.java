@@ -384,7 +384,9 @@ public class Context {
     root.extendedContext = new Context(new HashMap<String, Object>());
     root.data = new HashMap<String, Object>();
     root.data.put(PARTIALS, new HashMap<String, Template>());
-    root.data.put(INLINE_PARTIALS, new HashMap<String, Template>());
+    LinkedList<Map<String, Template>> partials = new LinkedList<>();
+    partials.push(new HashMap<String, Template>());
+    root.data.put(INLINE_PARTIALS, partials);
     root.data.put(INVOCATION_STACK, new LinkedList<TemplateSource>());
     root.data.put("root", model);
     return root;
@@ -800,6 +802,20 @@ public class Context {
    */
   protected Context newChildContext(final Object model) {
     return new Context(model);
+  }
+
+  /**
+   * Creates a new context but keep the <code>data</code> attribute.
+   *
+   * @param context Context to extract the <code>data</code> attribute.
+   * @param model A model/data.
+   * @return A new context.
+   */
+  public static Context copy(final Context context, final Object model) {
+    Context ctx = Context.newContext(model);
+    ctx.data = context.data;
+    ctx.resolver = context.resolver;
+    return ctx;
   }
 
 }

@@ -47,6 +47,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import com.github.jknack.handlebars.Decorator;
 import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Helper;
 import com.github.jknack.handlebars.HelperRegistry;
@@ -64,8 +65,10 @@ public class DefaultHelperRegistry implements HelperRegistry {
   /**
    * The helper registry.
    */
-  private final Map<String, Helper<?>> helpers =
-      new HashMap<String, Helper<?>>();
+  private final Map<String, Helper<?>> helpers = new HashMap<String, Helper<?>>();
+
+  /** Decorators. */
+  private final Map<String, Decorator> decorators = new HashMap<>();
 
   /**
    * A Handlebars.js implementation.
@@ -222,7 +225,27 @@ public class DefaultHelperRegistry implements HelperRegistry {
     registry.registerHelper("i18n", I18nHelper.i18n);
     registry.registerHelper("i18nJs", I18nHelper.i18nJs);
     registry.registerHelper(LookupHelper.NAME, LookupHelper.INSTANCE);
-    registry.registerHelper("inline", InlineHelper.INSTANCE);
+
+    // decorator
+    registry.registerDecorator("inline", InlineDecorator.INSTANCE);
+  }
+
+  @Override
+  public Decorator decorator(final String name) {
+    notEmpty(name, "A decorator's name is required.");
+    return decorators.get(name);
+  }
+
+  @Override
+  public HelperRegistry registerDecorator(final String name, final Decorator decorator) {
+    notEmpty(name, "A decorator's name is required.");
+    notNull(decorator, "A decorator is required.");
+
+    Decorator old = decorators.put(name, decorator);
+    if (old != null) {
+      Handlebars.warn("Decorator '%s' has been replaced by '%s'", name, decorator);
+    }
+    return this;
   }
 
 }
