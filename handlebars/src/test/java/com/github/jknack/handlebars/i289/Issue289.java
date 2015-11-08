@@ -32,8 +32,8 @@ public class Issue289 extends AbstractTest {
 
   @Test
   public void subexpressionToJS() throws IOException {
-    String js = "{\"compiler\":[6,\">= 2.0.0-beta.1\"],\"main\":function(depth0,helpers,partials,data) {\n" +
-        "    return this.escapeExpression((helpers.lowercase || (depth0 && depth0.lowercase) || helpers.helperMissing).call(depth0,(helpers.concat || (depth0 && depth0.concat) || helpers.helperMissing).call(depth0,\"string1\",\"string2\",{\"name\":\"concat\",\"hash\":{},\"data\":data}),{\"name\":\"lowercase\",\"hash\":{},\"data\":data}));\n" +
+    String js = "{\"compiler\":[7,\">= 4.0.0\"],\"main\":function(container,depth0,helpers,partials,data) {\n" +
+        "    return container.escapeExpression((helpers.lowercase || (depth0 && depth0.lowercase) || helpers.helperMissing).call(depth0 != null ? depth0 : {},(helpers.concat || (depth0 && depth0.concat) || helpers.helperMissing).call(depth0 != null ? depth0 : {},\"string1\",\"string2\",{\"name\":\"concat\",\"hash\":{},\"data\":data}),{\"name\":\"lowercase\",\"hash\":{},\"data\":data}));\n" +
         "},\"useData\":true}";
 
     assertEquals(js,

@@ -1,7 +1,7 @@
 (function() {
-  var template = Handlebars.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
+  var template = Handlebars.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
     return "Hi "
-    + this.escapeExpression(this.lambda(depth0, depth0))
+    + container.escapeExpression(container.lambda(depth0, depth0))
     + "!";
 },"useData":true});
   var templates = Handlebars.templates = Handlebars.templates || {};

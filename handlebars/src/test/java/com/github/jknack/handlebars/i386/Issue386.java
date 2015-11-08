@@ -10,13 +10,13 @@ public class Issue386 extends AbstractTest {
 
   @Test
   public void blockHelperShouldNotIntroduceANewContext() throws IOException {
-    shouldCompileTo("{{#partial \"body\"}}{{this}}{{/partial}}{{block \"body\"}}", $("foo", "bar"),
-        "{foo=bar}");
+    shouldCompileTo("{{#partial \"body\"}}{{&this}}{{/partial}}{{block \"body\"}}", $("foo", "bar"),
+        "{foo&#x3Dbar}");
   }
 
   @Test
   public void partialShouldNotIntroduceANewContext() throws IOException {
-    shouldCompileToWithPartials("{{> partial}}", $("foo", "bar"), $("partial", "{{this}}"),
+    shouldCompileToWithPartials("{{> partial}}", $("foo", "bar"), $("partial", "{{&this}}"),
         "{foo=bar}");
   }
 

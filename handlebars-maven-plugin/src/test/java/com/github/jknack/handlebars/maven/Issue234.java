@@ -24,7 +24,7 @@ public class Issue234 {
     plugin.addTemplate("c");
     plugin.setAmd(true);
     plugin.setProject(newProject());
-    plugin.setHandlebarsJsFile("/handlebars-v3.0.3.js");
+    plugin.setHandlebarsJsFile("/handlebars-v4.0.4.js");
 
     plugin.execute();
 

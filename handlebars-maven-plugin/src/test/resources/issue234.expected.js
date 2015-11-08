@@ -1,8 +1,8 @@
 // Source: src/test/resources/templates/a.hbs
 define('a.hbs', ['handlebars'], function(Handlebars) {
-  var template = Handlebars.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
+  var template = Handlebars.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
     return "I'm template a.\nHello "
-    + this.escapeExpression(this.lambda(depth0, depth0))
+    + container.escapeExpression(container.lambda(depth0, depth0))
     + "!";
 },"useData":true});
   var templates = Handlebars.templates = Handlebars.templates || {};
@@ -14,9 +14,9 @@ define('a.hbs', ['handlebars'], function(Handlebars) {
 
 // Source: src/test/resources/templates/c.hbs
 define('c.hbs', ['handlebars'], function(Handlebars) {
-  var template = Handlebars.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
+  var template = Handlebars.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
     return "I'm template c.\nHello "
-    + this.escapeExpression(this.lambda(depth0, depth0))
+    + container.escapeExpression(container.lambda(depth0, depth0))
     + "!";
 },"useData":true});
   var templates = Handlebars.templates = Handlebars.templates || {};
