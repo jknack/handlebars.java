@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2013 Tristan Burch
+ * Copyright (c) 2012-2015 Edgar Espina
  *
  * This file is part of Handlebars.java.
  *
