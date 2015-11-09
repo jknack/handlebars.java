@@ -56,6 +56,7 @@ statement
   | unless
   | partial
   | partialBlock
+  | rawBlock
   | escape
   | comment
   | delimiters
@@ -67,7 +68,10 @@ escape
   ;
 
 text
-  : TEXT
+  :
+    TEXT
+  | RAW_CONTENT
+  | RAW_SPACE
   ;
 
 spaces
@@ -84,6 +88,13 @@ block
     thenBody=body
     elseBlock*
     END_BLOCK nameEnd=QID END
+  ;
+
+rawBlock
+  :
+    startToken = START_RAW sexpr END_RAW
+    thenBody=body
+    END_RAW_BLOCK nameEnd=QID END_RAW
   ;
 
 blockParams

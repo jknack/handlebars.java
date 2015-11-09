@@ -111,17 +111,18 @@ class Block extends HelperResolver {
    * @param handlebars The handlebars object.
    * @param name The section's name.
    * @param inverted True if it's inverted.
+   * @param type Block type: <code>#</code>, <code>^</code>, <code>#*</code>, <code>{{</code>.
    * @param params The parameter list.
    * @param hash The hash.
    * @param blockParams The block param names.
    */
   public Block(final Handlebars handlebars, final String name,
-      final boolean inverted, final List<Object> params,
+      final boolean inverted, final String type, final List<Object> params,
       final Map<String, Object> hash, final List<String> blockParams) {
     super(handlebars);
     this.name = notNull(name, "The name is required.");
     this.inverted = inverted;
-    type = inverted ? "^" : "#";
+    this.type = type;
     params(params);
     hash(hash);
     this.blockParams = blockParams;
@@ -311,7 +312,7 @@ class Block extends HelperResolver {
    */
   private String text(final boolean complete) {
     StringBuilder buffer = new StringBuilder();
-    buffer.append(startDelimiter).append(type).append(suffix()).append(name);
+    buffer.append(startDelimiter).append(type).append(name);
     String params = paramsToString(this.params);
     if (params.length() > 0) {
       buffer.append(" ").append(params);
@@ -330,15 +331,12 @@ class Block extends HelperResolver {
     } else {
       buffer.append("\n...\n");
     }
-    buffer.append(startDelimiter).append('/').append(name).append(endDelimiter);
+    buffer.append(startDelimiter);
+    if (type.equals("{{")) {
+      buffer.append("{{");
+    }
+    buffer.append('/').append(name).append(endDelimiter);
     return buffer.toString();
-  }
-
-  /**
-   * @return Block suffix, default is empty.
-   */
-  protected String suffix() {
-    return "";
   }
 
   /**

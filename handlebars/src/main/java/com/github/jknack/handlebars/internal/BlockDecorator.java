@@ -57,7 +57,7 @@ public class BlockDecorator extends Block {
   public BlockDecorator(final Handlebars handlebars, final String name, final boolean inverted,
       final List<Object> params, final Map<String, Object> hash, final List<String> blockParams,
       final boolean root) {
-    super(handlebars, name, inverted, params, hash, blockParams);
+    super(handlebars, name, inverted, "#*", params, hash, blockParams);
     this.root = root;
     this.tagType = TagType.START_SECTION;
   }
@@ -85,11 +85,6 @@ public class BlockDecorator extends Block {
     options.data(Context.PARAM_SIZE, this.params.size());
 
     decorator.apply(body, options);
-  }
-
-  @Override
-  protected String suffix() {
-    return "*";
   }
 
   @Override

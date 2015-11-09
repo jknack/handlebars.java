@@ -61,6 +61,7 @@ import com.github.jknack.handlebars.internal.HbsParser.NewlineContext;
 import com.github.jknack.handlebars.internal.HbsParser.ParamContext;
 import com.github.jknack.handlebars.internal.HbsParser.PartialBlockContext;
 import com.github.jknack.handlebars.internal.HbsParser.PartialContext;
+import com.github.jknack.handlebars.internal.HbsParser.RawBlockContext;
 import com.github.jknack.handlebars.internal.HbsParser.RefParamContext;
 import com.github.jknack.handlebars.internal.HbsParser.SexprContext;
 import com.github.jknack.handlebars.internal.HbsParser.SpacesContext;
@@ -151,6 +152,39 @@ abstract class TemplateBuilder<it> extends HbsParserBaseVisitor<Object> {
   }
 
   @Override
+  public Template visitRawBlock(final RawBlockContext ctx) {
+    level += 1;
+    SexprContext sexpr = ctx.sexpr();
+    Token nameStart = sexpr.QID().getSymbol();
+    String name = nameStart.getText();
+    qualifier.addLast(name);
+    String nameEnd = ctx.nameEnd.getText();
+    if (!name.equals(nameEnd)) {
+      reportError(null, ctx.nameEnd.getLine(), ctx.nameEnd.getCharPositionInLine(),
+          String.format("found: '%s', expected: '%s'", nameEnd, name));
+    }
+
+    hasTag(true);
+    Block block = new Block(handlebars, name, false, "{{", params(sexpr.param()),
+        hash(sexpr.hash()), Collections.<String> emptyList());
+    block.filename(source.filename());
+    block.position(nameStart.getLine(), nameStart.getCharPositionInLine());
+    String startDelim = ctx.start.getText();
+    startDelim = startDelim.substring(0, startDelim.length() - 2);
+    block.startDelimiter(startDelim);
+    block.endDelimiter(ctx.stop.getText());
+
+    Template body = visitBody(ctx.thenBody);
+    if (body != null) {
+      block.body(body);
+    }
+    hasTag(true);
+    qualifier.removeLast();
+    level -= 1;
+    return block;
+  }
+
+  @Override
   public Template visitBlock(final BlockContext ctx) {
     level += 1;
     SexprContext sexpr = ctx.sexpr();
@@ -170,7 +204,7 @@ abstract class TemplateBuilder<it> extends HbsParserBaseVisitor<Object> {
       block = new BlockDecorator(handlebars, name, false, params(sexpr.param()),
           hash(sexpr.hash()), blockParams(ctx.blockParams()), level == 1);
     } else {
-      block = new Block(handlebars, name, false, params(sexpr.param()),
+      block = new Block(handlebars, name, false, "#", params(sexpr.param()),
           hash(sexpr.hash()), blockParams(ctx.blockParams()));
     }
     block.filename(source.filename());
@@ -204,7 +238,7 @@ abstract class TemplateBuilder<it> extends HbsParserBaseVisitor<Object> {
         SexprContext elseexpr = elseStmtChain.sexpr();
         Token elsenameStart = elseexpr.QID().getSymbol();
         String elsename = elsenameStart.getText();
-        Block elseblock = new Block(handlebars, elsename, false, params(elseexpr.param()),
+        Block elseblock = new Block(handlebars, elsename, false, "#", params(elseexpr.param()),
             hash(elseexpr.hash()), blockParams(elseStmtChain.blockParams()));
         elseblock.filename(source.filename());
         elseblock.position(elsenameStart.getLine(), elsenameStart.getCharPositionInLine());
@@ -240,7 +274,7 @@ abstract class TemplateBuilder<it> extends HbsParserBaseVisitor<Object> {
       reportError(null, ctx.nameEnd.getLine(), ctx.nameEnd.getCharPositionInLine(),
           String.format("found: '%s', expected: '%s'", nameEnd, name));
     }
-    Block block = new Block(handlebars, name, true, Collections.emptyList(),
+    Block block = new Block(handlebars, name, true, "^", Collections.emptyList(),
         Collections.<String, Object> emptyMap(), blockParams(ctx.blockParams()));
     block.filename(source.filename());
     block.position(nameStart.getLine(), nameStart.getCharPositionInLine());

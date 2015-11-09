@@ -159,12 +159,23 @@ COMMENT
   ;
 
 START_AMP
- : {startToken(start, "&")}? . -> pushMode(VAR)
+  :
+    {startToken(start, "&")}? . -> pushMode(VAR)
+  ;
+
+END_RAW_BLOCK
+ : {startToken(start, "{{/")}? . -> pushMode(VAR)
  ;
 
+START_RAW
+  :
+    {startToken(start, "{{")}? . -> pushMode(VAR)
+  ;
+
 START_T
- : {startToken(start, "{")}? . -> pushMode(VAR)
- ;
+  :
+    {startToken(start, "{")}? . -> pushMode(VAR)
+  ;
 
 UNLESS
  : {startToken(start, "^")}? . -> pushMode(VAR)
@@ -208,24 +219,48 @@ NL
 mode SET_DELIMS;
 
 END_DELIM
-  : {endToken("=" + end)}? . -> popMode
+  :
+    {endToken("=" + end)}? . -> popMode
   ;
 
 WS_DELIM
-  : [ \t\r\n]
+  :
+    [ \t\r\n]
   ;
 
-DELIM: .;
+DELIM
+  :
+    .
+  ;
+
+mode RAW;
+
+RAW_SPACE
+  :
+   [ \t\r\n]
+  ;
+
+RAW_CONTENT
+  :
+    {consumeUntil(start + "{{/")}? . -> popMode
+  ;
 
 mode VAR;
 
+END_RAW
+  :
+    {endToken(end, "}}")}? . -> mode(RAW)
+  ;
+
 END_T
- : {endToken(end, "}")}? . -> popMode
- ;
+  :
+    {endToken(end, "}")}? . -> popMode
+  ;
 
 END
- : {endToken(end)}? . -> mode(DEFAULT_MODE)
- ;
+  :
+    {endToken(end)}? . -> mode(DEFAULT_MODE)
+  ;
 
 DECORATOR
   :
@@ -243,17 +278,18 @@ PIPE
   ;
 
 DOUBLE_STRING
- :
-  '"' ( '\\"' | ~[\n] )*? '"'
- ;
+  :
+    '"' ( '\\"' | ~[\n] )*? '"'
+  ;
 
 SINGLE_STRING
- :
-  '\'' ( '\\\'' | ~[\n] )*? '\''
- ;
+  :
+    '\'' ( '\\\'' | ~[\n] )*? '\''
+  ;
 
 EQ
-  : '='
+  :
+    '='
   ;
 
 INT
