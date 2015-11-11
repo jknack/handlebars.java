@@ -217,17 +217,16 @@ public class ContextTest {
     assertEquals("root", root.get("this"));
     Context child1 = Context.newBuilder(root, "child1").build();
     assertEquals("child1", child1.get("this"));
-    Context child2 =
-        Context.newBuilder(root, "child2")
-            .combine(new HashMap<String, Object>()).build();
+    Context child2 = Context.newBuilder(root, "child2")
+        .combine(new HashMap<String, Object>()).build();
     assertEquals("child2", child2.get("this"));
   }
 
   public void testCombineGenerics() {
 
-	  Context.newBuilder("blah").combine(new HashMap<String, String>());
-	  Context.newBuilder("blah").combine(new HashMap<String, Object>());
-	  Context.newBuilder("blah").combine(new HashMap<String, Map<String,Object>>());
+    Context.newBuilder("blah").combine(new HashMap<String, String>());
+    Context.newBuilder("blah").combine(new HashMap<String, Object>());
+    Context.newBuilder("blah").combine(new HashMap<String, Map<String, Object>>());
   }
 
 }

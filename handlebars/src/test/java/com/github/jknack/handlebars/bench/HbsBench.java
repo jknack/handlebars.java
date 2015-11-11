@@ -39,8 +39,13 @@ public class HbsBench {
   }
 
   @Test
+  public void single() throws IOException {
+    template.apply(context);
+  }
+
+  @Test
   public void benchmark() throws IOException {
-    new Bench(2000, 10).run(new Unit() {
+    new Bench(1000, 5, 10).run(new Unit() {
 
       @Override
       public void run() throws IOException {

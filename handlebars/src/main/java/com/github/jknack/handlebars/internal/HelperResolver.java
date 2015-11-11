@@ -18,7 +18,6 @@
 package com.github.jknack.handlebars.internal;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -108,7 +107,7 @@ abstract class HelperResolver extends BaseTemplate {
       Object value = params.get(i);
       Object resolved = ParamType.parse(ctx, value);
       values[i - 1] = resolved == null && handlebars.stringParams()
-          ? value : resolved;
+          ? params.get(i) : resolved;
     }
     return values;
   }
@@ -176,7 +175,7 @@ abstract class HelperResolver extends BaseTemplate {
     if (hash == null || hash.size() == 0) {
       this.hash = Collections.emptyMap();
     } else {
-      this.hash = new LinkedHashMap<String, Object>(hash);
+      this.hash = hash;
     }
     this.hashSize = hash.size();
     return this;
@@ -192,7 +191,7 @@ abstract class HelperResolver extends BaseTemplate {
     if (params == null || params.size() == 0) {
       this.params = Collections.emptyList();
     } else {
-      this.params = new ArrayList<Object>(params);
+      this.params = params;
     }
     this.paramSize = this.params.size();
     return this;

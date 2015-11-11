@@ -34,6 +34,8 @@ import com.github.jknack.handlebars.Helper;
 import com.github.jknack.handlebars.HelperRegistry;
 import com.github.jknack.handlebars.Lambda;
 import com.github.jknack.handlebars.Options;
+import com.github.jknack.handlebars.PathCompiler;
+import com.github.jknack.handlebars.PathExpression;
 import com.github.jknack.handlebars.TagType;
 import com.github.jknack.handlebars.Template;
 
@@ -85,6 +87,9 @@ class Variable extends HelperResolver {
   /** Missing value resolver. */
   private Helper<Object> missing;
 
+  /** A compiled version of {@link #name}. */
+  private List<PathExpression> path;
+
   /**
    * Creates a new {@link Variable}.
    *
@@ -99,6 +104,7 @@ class Variable extends HelperResolver {
       final Map<String, Object> hash) {
     super(handlebars);
     this.name = name.trim();
+    this.path = PathCompiler.compile(name);
     this.type = type;
     params(params);
     hash(hash);
@@ -152,7 +158,7 @@ class Variable extends HelperResolver {
       CharSequence result = helper.apply(determineContext(scope), options);
       writer.append(formatAndEscape(result, Formatter.NOOP));
     } else {
-      Object value = scope.get(name);
+      Object value = scope.get(path);
       if (value == null) {
         if (missing != null) {
           Options options = new Options.Builder(handlebars, name, type, scope, empty(this))

@@ -19,7 +19,6 @@ package com.github.jknack.handlebars;
 
 import static org.apache.commons.lang3.Validate.notEmpty;
 
-import java.lang.reflect.Array;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
@@ -28,8 +27,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-
-import org.apache.commons.lang3.math.NumberUtils;
 
 import com.github.jknack.handlebars.io.TemplateSource;
 
@@ -51,19 +48,6 @@ import com.github.jknack.handlebars.io.TemplateSource;
  * @since 0.1.0
  */
 public class Context {
-
-  /** NOOP ctx. */
-  private static final Context NOOP = new Context(null) {
-    @Override
-    public Object get(final String key) {
-      return null;
-    }
-
-    @Override
-    protected Object get(final String key, final List<String> path) {
-      return null;
-    }
-  };
 
   /**
    * Special scope for silly block param rules, implemented by handlebars.js. This context will
@@ -90,12 +74,13 @@ public class Context {
     }
 
     @Override
-    public Object get(final String key) {
+    public Object get(final List<PathExpression> path) {
+      String key = path.get(0).toString();
       // path variable should resolve from parent :S
       if (key.startsWith(".")) {
-        return parent.get(key);
+        return parent.get(path.subList(1, path.size()));
       }
-      return super.get(key);
+      return super.get(path);
     }
 
     @Override
@@ -122,10 +107,10 @@ public class Context {
     }
 
     @Override
-    public Object get(final String key) {
-      Object value = parent.get(key);
+    public Object get(final List<PathExpression> path) {
+      Object value = parent.get(path);
       if (value == null) {
-        return super.get(key);
+        return super.get(path);
       }
       return value;
     }
@@ -135,31 +120,6 @@ public class Context {
       return new ParentFirst(model);
     }
   }
-
-  /**
-   * Handlebars and Mustache path separator.
-   */
-  private static final String PATH_SEPARATOR = "./";
-
-  /**
-   * Handlebars 'parent' attribute reference.
-   */
-  private static final String PARENT_ATTR = "../";
-
-  /**
-   * Handlebars 'parent' attribute reference.
-   */
-  private static final String PARENT = "..";
-
-  /**
-   * Handlebars 'this' reference.
-   */
-  private static final String THIS = "this";
-
-  /**
-   * The mustache 'this' reference.
-   */
-  private static final String MUSTACHE_THIS = ".";
 
   /**
    * A composite value resolver. It delegate the value resolution.
@@ -185,22 +145,26 @@ public class Context {
 
     @Override
     public Object resolve(final Object context, final String name) {
-      for (ValueResolver resolver : resolvers) {
-        Object value = resolver.resolve(context, name);
+      int i = 0;
+      while (i < resolvers.length) {
+        Object value = resolvers[i].resolve(context, name);
         if (value != UNRESOLVED) {
           return value == null ? NULL : value;
         }
+        i += 1;
       }
       return null;
     }
 
     @Override
     public Object resolve(final Object context) {
-      for (ValueResolver resolver : resolvers) {
-        Object value = resolver.resolve(context);
+      int i = 0;
+      while (i < resolvers.length) {
+        Object value = resolvers[i].resolve(context);
         if (value != UNRESOLVED) {
           return value == null ? NULL : value;
         }
+        i += 1;
       }
       return null;
     }
@@ -289,7 +253,7 @@ public class Context {
      */
     public Context build() {
       if (context.resolver == null) {
-        if (context.parent != NOOP) {
+        if (context.parent != null) {
           // Set resolver from parent.
           context.resolver = context.parent.resolver;
         } else {
@@ -298,7 +262,7 @@ public class Context {
               new CompositeValueResolver(ValueResolver.VALUE_RESOLVERS));
         }
         // Expand resolver to the extended context.
-        if (context.extendedContext != NOOP) {
+        if (context.extendedContext != null) {
           context.extendedContext.resolver = context.resolver;
         }
       }
@@ -307,14 +271,60 @@ public class Context {
   }
 
   /**
+   * Path expression chain.
+   *
+   * @author edgar
+   * @since 4.0.1
+   */
+  private static class PathExpressionChain implements PathExpression.Chain {
+
+    /** Expression path. */
+    private List<PathExpression> path;
+
+    /** Cursor to move/execute the next expression. */
+    private int i = 0;
+
+    /**
+     * Creates a new {@link PathExpressionChain}.
+     *
+     * @param path Expression path.
+     */
+    public PathExpressionChain(final List<PathExpression> path) {
+      this.path = path;
+    }
+
+    @Override
+    public Object next(final ValueResolver resolver, final Context context, final Object data) {
+      if (data != null && i < path.size()) {
+        PathExpression next = path.get(i++);
+        return next.eval(resolver, context, data, this);
+      }
+      return data;
+    }
+
+    /**
+     * Reset any previous state and restart the evaluation.
+     *
+     * @param resolver Value resolver.
+     * @param context Context object.
+     * @param data Data object.
+     * @return A resolved value or <code>null</code>.
+     */
+    public Object eval(final ValueResolver resolver, final Context context, final Object data) {
+      i = 0;
+      Object value = next(resolver, context, data);
+      if (value == null) {
+        return i > 1 ? NULL : null;
+      }
+      return value;
+    }
+
+  }
+
+  /**
    * Mark for fail context lookup.
    */
   private static final Object NULL = new Object();
-
-  /**
-   * Parser for path expressions.
-   */
-  private static final PropertyPathParser PATH_PARSER = new PropertyPathParser(PATH_SEPARATOR);
 
   /**
    * The qualified name for partials. Internal use.
@@ -368,8 +378,8 @@ public class Context {
    */
   protected Context(final Object model) {
     this.model = model;
-    this.extendedContext = NOOP;
-    this.parent = NOOP;
+    this.extendedContext = null;
+    this.parent = null;
   }
 
   /**
@@ -517,174 +527,52 @@ public class Context {
    * resolutions.
    * </ul>
    *
-   * @param key The object key.
+   * @param path The object path.
    * @return The value associated to the given key or <code>null</code> if no value is found.
    */
-  public Object get(final String key) {
-    // '.' or 'this'
-    if (MUSTACHE_THIS.equals(key) || THIS.equals(key)) {
-      return internalGet(model);
+  public Object get(final List<PathExpression> path) {
+    PathExpression head = path.get(0);
+    boolean local = head.local();
+    if (local) {
+      return new PathExpressionChain(path).next(resolver, this, model);
     }
+    Context it = this;
+    Object value = null;
+    PathExpressionChain expr = new PathExpressionChain(path);
+    while (value == null && it != null) {
+      value = expr.eval(resolver, it, it.model);
+      if (value == null) {
+        // No luck, check the extended context.
+        value = expr.eval(resolver, it.extendedContext, it.extendedContext.model);
 
-    // '..' or '../'
-    if (key.startsWith(PARENT)) {
-      if (parent == null) {
-        return null;
-      }
-      return key.length() == PARENT.length()
-          ? internalGet(parent.model)
-          : parent.get(key.substring(PARENT_ATTR.length()));
-    }
-
-    return get(key, PATH_PARSER.parsePath(key));
-  }
-
-  /**
-   * Lookup a key/path.
-   *
-   * @param key Key.
-   * @param path Key as path.
-   * @return Value.
-   */
-  protected Object get(final String key, final List<String> path) {
-    Object value = internalGet(path);
-    if (value == null) {
-      // No luck, check the extended context.
-      value = extendedContext.get(key, path);
-      // No luck, check the data context.
-      if (value == null && data != null) {
-        String dataKey = key.charAt(0) == '@' ? key.substring(1) : key;
-        // simple data keys will be resolved immediately, complex keys need to go down and use a
-        // new context.
-        value = data.get(dataKey);
-        if (value == null && path.size() > 1) {
-          // for complex keys, a new data context need to be created per invocation,
-          // bc data might changes per execution.
-          Context dataContext = Context.newBuilder(data)
-              .resolver(this.resolver)
-              .build();
-          // don't extend the lookup further.
-          dataContext.data = null;
-          value = dataContext.get(dataKey);
-          // destroy it!
-          dataContext.destroy();
+        if (value == null) {
+          // data context
+          value = expr.eval(resolver, it, it.data);
         }
       }
-      // No luck, but before checking at the parent scope we need to check for
-      // the 'this' qualifier. If present, no look up will be done.
-      if (value == null && !path.get(0).equals(THIS)) {
-        value = parent.get(key, path);
-      }
+      it = it.parent;
     }
     return value == NULL ? null : value;
   }
 
   /**
-   * @param candidate resolve a candidate object.
-   * @return A resolved value or the current value if there isn't a resolved value.
-   */
-  private Object internalGet(final Object candidate) {
-    Object resolved = resolver.resolve(candidate);
-    return resolved == null ? candidate : resolved;
-  }
-
-  /**
-   * Iterate over the qualified path and return a value. The value can be
-   * null, {@link #NULL} or not null. If the value is <code>null</code>, the
-   * value isn't present and the lookup algorithm will searchin for the value in
-   * the parent context.
-   * If the value is {@value #NULL} the search must stop bc the context for
-   * the given path exists but there isn't a value there.
+   * Lookup the given key inside the context stack.
+   * <ul>
+   * <li>Objects and hashes should be pushed onto the context stack.
+   * <li>All elements on the context stack should be accessible.
+   * <li>Multiple sections per template should be permitted.
+   * <li>Failed context lookups should be considered falsey.
+   * <li>Dotted names should be valid for Section tags.
+   * <li>Dotted names that cannot be resolved should be considered falsey.
+   * <li>Dotted Names - Context Precedence: Dotted names should be resolved against former
+   * resolutions.
+   * </ul>
    *
-   * @param path The qualified path.
-   * @return The value inside the stack for the given path.
+   * @param key The object key.
+   * @return The value associated to the given key or <code>null</code> if no value is found.
    */
-  private Object internalGet(final List<String> path) {
-    Object current = model;
-    // Resolve 'this' to the current model.
-    int start = path.get(0).equals(THIS) ? 1 : 0;
-    int psize = path.size();
-    for (int i = start; i < psize - 1; i++) {
-      current = resolve(current, path.get(i));
-      if (current == null) {
-        return null;
-      }
-    }
-    String name = path.get(psize - 1);
-    Object value = resolve(current, name);
-    if (value == null && current != model) {
-      // We're looking in the right scope, but the value isn't there
-      // returns a custom mark to stop looking
-      value = NULL;
-    }
-    return value;
-  }
-
-  /**
-   * Do the actual lookup of an unqualified property name.
-   *
-   * @param current The target object.
-   * @param expression The access expression.
-   * @return The associated value.
-   */
-  private Object resolve(final Object current, final String expression) {
-    // Null => null
-    if (current == null) {
-      return null;
-    }
-
-    Object result = resolver.resolve(current, expression);
-    if (result != null && result != ValueResolver.UNRESOLVED) {
-      // no need to look for complex path expression, we already found the value.
-      return result;
-    }
-
-    // nothing was found, let's test if we have an invalid identifier.
-    // array/list access or invalid Java identifiers wrapped with []
-    if (expression.charAt(0) == '[' && expression.charAt(expression.length() - 1) == ']') {
-      String idx = expression.substring(1, expression.length() - 1);
-      if (NumberUtils.isDigits(idx)) {
-        result = resolveArrayAccess(current, idx);
-        if (result != NULL) {
-          return result;
-        }
-      }
-      // It is not a index base object, defaults to string property lookup
-      // (usually not a valid Java identifier)
-      return resolver.resolve(current, idx);
-    }
-    // array or list access, exclusive
-    if (NumberUtils.isDigits(expression)) {
-      result = resolveArrayAccess(current, expression);
-      if (result != NULL) {
-        return result;
-      }
-    }
-    return result;
-  }
-
-  /**
-   * Resolve a array or list access using idx.
-   *
-   * @param current The current scope.
-   * @param idx The index of the array or list.
-   * @return An object at the given location or null.
-   */
-  @SuppressWarnings("rawtypes")
-  private Object resolveArrayAccess(final Object current, final String idx) {
-    // It is a number, check if the current value is a index base object.
-    int pos = Integer.parseInt(idx);
-    try {
-      if (current instanceof List) {
-        return ((List) current).get(pos);
-      } else if (current.getClass().isArray()) {
-        return Array.get(current, pos);
-      }
-    } catch (IndexOutOfBoundsException exception) {
-      // Index is outside of range, fallback to null as in handlebar.js
-      return null;
-    }
-    return NULL;
+  public Object get(final String key) {
+    return get(PathCompiler.compile(key));
   }
 
   /**

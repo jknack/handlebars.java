@@ -22,8 +22,6 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Map.Entry;
 
-import org.apache.commons.lang3.StringUtils;
-
 import com.github.jknack.handlebars.Context;
 import com.github.jknack.handlebars.Helper;
 import com.github.jknack.handlebars.Options;
@@ -53,13 +51,12 @@ public class EachHelper implements Helper<Object> {
   @Override
   public CharSequence apply(final Object context, final Options options)
       throws IOException {
-    if (context == null) {
-      return StringUtils.EMPTY;
-    }
     if (context instanceof Iterable) {
       return iterableContext((Iterable) context, options);
+    } else if (context != null) {
+      return hashContext(context, options);
     }
-    return hashContext(context, options);
+    return options.buffer();
   }
 
   /**

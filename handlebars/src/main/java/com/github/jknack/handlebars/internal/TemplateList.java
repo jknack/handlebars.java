@@ -42,7 +42,7 @@ class TemplateList extends BaseTemplate implements Iterable<Template> {
   /**
    * The list of child templates.
    */
-  private final List<Template> nodes = new ArrayList<>(10);
+  private final List<Template> nodes = new LinkedList<>();
 
   /** Keep track of direct decorators and run them before merge. */
   private final List<Template> decorators = new LinkedList<>();

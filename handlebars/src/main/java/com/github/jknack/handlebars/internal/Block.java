@@ -36,6 +36,8 @@ import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Helper;
 import com.github.jknack.handlebars.Lambda;
 import com.github.jknack.handlebars.Options;
+import com.github.jknack.handlebars.PathCompiler;
+import com.github.jknack.handlebars.PathExpression;
 import com.github.jknack.handlebars.TagType;
 import com.github.jknack.handlebars.Template;
 import com.github.jknack.handlebars.helper.EachHelper;
@@ -105,6 +107,9 @@ class Block extends HelperResolver {
   /** Tag type, default: is {@link TagType#SECTION}. */
   protected TagType tagType;
 
+  /** Compiled path for {@link #name()}. */
+  private List<PathExpression> path;
+
   /**
    * Creates a new {@link Block}.
    *
@@ -121,6 +126,7 @@ class Block extends HelperResolver {
       final Map<String, Object> hash, final List<String> blockParams) {
     super(handlebars);
     this.name = notNull(name, "The name is required.");
+    this.path = PathCompiler.compile(name);
     this.inverted = inverted;
     this.type = type;
     params(params);
@@ -167,7 +173,7 @@ class Block extends HelperResolver {
     final Object it;
     Context itCtx = context;
     if (helper == null) {
-      it = Transformer.transform(context.get(name));
+      it = Transformer.transform(itCtx.get(this.path));
       if (inverted) {
         helperName = UnlessHelper.NAME;
       } else if (it instanceof Iterable) {
@@ -198,14 +204,13 @@ class Block extends HelperResolver {
       it = Transformer.transform(determineContext(context));
     }
 
-    Options options = new Options.Builder(handlebars, helperName, TagType.SECTION, itCtx,
-        template)
-            .setInverse(inverse)
-            .setParams(params(itCtx))
-            .setHash(hash(itCtx))
-            .setBlockParams(blockParams)
-            .setWriter(writer)
-            .build();
+    Options options = new Options.Builder(handlebars, helperName, tagType, itCtx, template)
+        .setInverse(inverse)
+        .setParams(params(itCtx))
+        .setHash(hash(itCtx))
+        .setBlockParams(blockParams)
+        .setWriter(writer)
+        .build();
     options.data(Context.PARAM_SIZE, this.params.size());
 
     CharSequence result = helper.apply(it, options);

@@ -17,7 +17,6 @@
  */
 package com.github.jknack.handlebars.internal;
 
-import static org.apache.commons.lang3.StringUtils.isEmpty;
 import static org.apache.commons.lang3.StringUtils.join;
 import static org.apache.commons.lang3.Validate.notNull;
 
@@ -59,6 +58,9 @@ class Partial extends HelperResolver {
    */
   private String context;
 
+  /** Null-Safe version of {@link #context}. */
+  private String scontext;
+
   /**
    * The start delimiter.
    */
@@ -93,6 +95,7 @@ class Partial extends HelperResolver {
     super(handlebars);
     this.path = notNull(path, "The path is required.");
     this.context = context;
+    this.scontext = context == null ? "this" : context;
     this.hash(hash);
     this.loader = handlebars.getLoader();
   }
@@ -158,9 +161,11 @@ class Partial extends HelperResolver {
         }
 
       }
-      String key = isEmpty(this.context) ? "this" : this.context;
-      hash = hash(context);
-      ctx = Context.newContext(context, context.get(key)).data(hash);
+      if (!"this".equals(this.scontext)) {
+        ctx = Context.newContext(ctx, ctx.get(this.scontext));
+      }
+      hash = hash(ctx);
+      ctx.data(hash);
       template.apply(ctx, writer);
     } catch (IOException ex) {
       String reason = String.format("The partial '%s' could not be found",
