@@ -225,6 +225,7 @@ public class DefaultHelperRegistry implements HelperRegistry {
     registry.registerHelper("i18n", I18nHelper.i18n);
     registry.registerHelper("i18nJs", I18nHelper.i18nJs);
     registry.registerHelper(LookupHelper.NAME, LookupHelper.INSTANCE);
+    registry.registerHelper(LogHelper.NAME, LogHelper.INSTANCE);
 
     // decorator
     registry.registerDecorator("inline", InlineDecorator.INSTANCE);

@@ -86,7 +86,7 @@ public class v4Test {
     return new Handlebars();
   }
 
-  public static final Object $ = new Object();
+  public static final Hash $ = $();
 
   public static Hash $(final Object... attributes) {
     Hash model = new Hash();
