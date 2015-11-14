@@ -229,7 +229,7 @@ public class RhinoHandlebars extends HandlebarsJs {
     registry.registerHelper(name, new Helper<Object>() {
       @Override
       public CharSequence apply(final Object context, final Options options) throws IOException {
-        Object jsContext = toJsObject(options.context);
+        Object jsContext = toJsObject(options.context.model(), options.context);
         Object arg0 = context;
         Integer paramSize = options.data(Context.PARAM_SIZE);
         if (paramSize == 0) {

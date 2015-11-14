@@ -90,6 +90,9 @@ class Variable extends HelperResolver {
   /** A compiled version of {@link #name}. */
   private List<PathExpression> path;
 
+  /** True, when no param/hash. */
+  private boolean noArg;
+
   /**
    * Creates a new {@link Variable}.
    *
@@ -110,6 +113,7 @@ class Variable extends HelperResolver {
     hash(hash);
     this.escapingStrategy = handlebars.getEscapingStrategy();
     this.formatter = handlebars.getFormatter();
+    this.noArg = params.size() == 0 && hash.size() == 0;
     postInit();
   }
 
@@ -148,7 +152,8 @@ class Variable extends HelperResolver {
   protected void merge(final Context scope, final Writer writer)
       throws IOException {
     Helper<Object> helper = this.helper;
-    if (helper != null && !scope.isBlockParams()) {
+    boolean blockParam = scope.isBlockParams() && noArg;
+    if (helper != null && !blockParam) {
       Options options = new Options.Builder(handlebars, name, type, scope, empty(this))
           .setParams(params(scope))
           .setHash(hash(scope))

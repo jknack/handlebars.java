@@ -52,10 +52,10 @@ abstract class HelperResolver extends BaseTemplate {
   protected Map<String, Object> hash = Collections.emptyMap();
 
   /** Param's size. */
-  private int paramSize = 0;
+  protected int paramSize;
 
   /** Hash's size. */
-  private int hashSize;
+  protected int hashSize;
 
   /**
    * Empty parameters.
@@ -154,7 +154,7 @@ abstract class HelperResolver extends BaseTemplate {
    */
   protected Helper<Object> helper(final String name) {
     Helper<Object> helper = handlebars.helper(name);
-    if (helper == null && (params.size() > 0 || hash.size() > 0)) {
+    if (helper == null && (paramSize > 0 || hashSize > 0)) {
       Helper<Object> helperMissing = handlebars.helper(HelperRegistry.HELPER_MISSING);
       if (helperMissing == null) {
         throw new HandlebarsException(
