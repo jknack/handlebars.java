@@ -47,6 +47,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.github.jknack.handlebars.Decorator;
 import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Helper;
@@ -61,6 +64,9 @@ import com.github.jknack.handlebars.js.HandlebarsJs;
  * @since 1.2.0
  */
 public class DefaultHelperRegistry implements HelperRegistry {
+
+  /** The logging system. */
+  private final Logger logger = LoggerFactory.getLogger(HelperRegistry.class);
 
   /**
    * The helper registry.
@@ -94,7 +100,7 @@ public class DefaultHelperRegistry implements HelperRegistry {
 
     Helper<?> oldHelper = helpers.put(name, helper);
     if (oldHelper != null) {
-      Handlebars.warn("Helper '%s' has been replaced by '%s'", name, helper);
+      logger.warn("Helper '%s' has been replaced by '%s'", name, helper);
     }
     return this;
   }
@@ -244,7 +250,7 @@ public class DefaultHelperRegistry implements HelperRegistry {
 
     Decorator old = decorators.put(name, decorator);
     if (old != null) {
-      Handlebars.warn("Decorator '%s' has been replaced by '%s'", name, decorator);
+      logger.warn("Decorator '%s' has been replaced by '%s'", name, decorator);
     }
     return this;
   }
