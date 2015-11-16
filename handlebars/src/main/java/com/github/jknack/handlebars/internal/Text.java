@@ -17,8 +17,6 @@
  */
 package com.github.jknack.handlebars.internal;
 
-import static org.apache.commons.lang3.Validate.notNull;
-
 import java.io.IOException;
 import java.io.Writer;
 
@@ -36,7 +34,7 @@ class Text extends BaseTemplate {
   /**
    * The plain text. Required.
    */
-  private String text;
+  private char[] text;
 
   /** The escape's char or empty. */
   private String escapeChar;
@@ -50,7 +48,9 @@ class Text extends BaseTemplate {
    */
   public Text(final Handlebars handlebars, final String text, final String escapeChar) {
     super(handlebars);
-    this.text = notNull(text, "The text content is required.");
+    int length = text.length();
+    this.text = new char[length];
+    text.getChars(0, length, this.text, 0);
     this.escapeChar = escapeChar;
   }
 
@@ -66,20 +66,19 @@ class Text extends BaseTemplate {
 
   @Override
   public String text() {
-    return escapeChar + text;
+    return escapeChar + new String(text);
   }
 
   /**
    * @return Same as {@link #text()} without the escape char.
    */
-  public String textWithoutEscapeChar() {
+  public char[] textWithoutEscapeChar() {
     return text;
   }
 
   @Override
-  protected void merge(final Context scope, final Writer writer)
-      throws IOException {
-    writer.append(text);
+  protected void merge(final Context scope, final Writer writer) throws IOException {
+    writer.write(text);
   }
 
   /**
@@ -88,8 +87,12 @@ class Text extends BaseTemplate {
    * @param text The text to append.
    * @return This object.
    */
-  public Text append(final String text) {
-    this.text += text;
+  public Text append(final char[] text) {
+    int length = this.text.length + text.length;
+    char[] ntext = new char[length];
+    System.arraycopy(this.text, 0, ntext, 0, this.text.length);
+    System.arraycopy(text, 0, ntext, this.text.length, text.length);
+    this.text = ntext;
     return this;
   }
 
