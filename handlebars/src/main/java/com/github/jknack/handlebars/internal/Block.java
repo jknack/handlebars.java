@@ -91,7 +91,7 @@ class Block extends HelperResolver {
   /**
    * Inverse section for if/else clauses.
    */
-  private Template inverse = Template.EMPTY;
+  protected Template inverse = Template.EMPTY;
 
   /**
    * The inverse label: 'else' or '^'.
@@ -99,7 +99,7 @@ class Block extends HelperResolver {
   private String inverseLabel;
 
   /** Helper. */
-  private Helper<Object> helper;
+  protected Helper<Object> helper;
 
   /** Block param names. */
   protected final List<String> blockParams;
@@ -108,7 +108,7 @@ class Block extends HelperResolver {
   protected TagType tagType;
 
   /** Compiled path for {@link #name()}. */
-  private List<PathExpression> path;
+  protected final List<PathExpression> path;
 
   /**
    * Creates a new {@link Block}.

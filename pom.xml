@@ -249,7 +249,7 @@
         <executions>
           <execution>
             <id>checkstyle</id>
-            <phase>none</phase>
+            <phase>verify</phase>
             <goals>
               <goal>checkstyle</goal>
             </goals>
