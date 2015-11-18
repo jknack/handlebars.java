@@ -72,7 +72,7 @@ public class BlockDecorator extends Block {
 
     Context ctx = root ? Context.copy(context, null) : context;
 
-    if (body != null) {
+    if (body instanceof BaseTemplate) {
       ((BaseTemplate) body).before(ctx, writer);
     }
 
@@ -95,6 +95,11 @@ public class BlockDecorator extends Block {
   @Override
   public void after(final Context context, final Writer writer) throws IOException {
     // NOOP
+  }
+
+  @Override
+  public boolean decorate() {
+    return true;
   }
 
 }

@@ -120,8 +120,11 @@ abstract class BaseTemplate implements Template {
   @Override
   public void apply(final Context context, final Writer writer)
       throws IOException {
+    boolean decorate = decorate();
     try {
-      before(context, writer);
+      if (decorate) {
+        before(context, writer);
+      }
       merge(context, writer);
     } catch (HandlebarsException ex) {
       throw ex;
@@ -138,7 +141,9 @@ abstract class BaseTemplate implements Template {
       hex.setStackTrace(ex.getStackTrace());
       throw hex;
     } finally {
-      after(context, writer);
+      if (decorate) {
+        after(context, writer);
+      }
     }
   }
 
@@ -155,11 +160,23 @@ abstract class BaseTemplate implements Template {
     return Context.newContext(candidate);
   }
 
-  @Override
+  /**
+   * Notify that template is going to be processed.
+   *
+   * @param context The context object. Required.
+   * @param writer The writer object. Required.
+   * @throws IOException If a resource cannot be loaded.
+   */
   public void before(final Context context, final Writer writer) throws IOException {
   }
 
-  @Override
+  /**
+   * Notify that template has been processed.
+   *
+   * @param context The context object. Required.
+   * @param writer The writer object. Required.
+   * @throws IOException If a resource cannot be loaded.
+   */
   public void after(final Context context, final Writer writer) throws IOException {
   }
 
@@ -315,6 +332,13 @@ abstract class BaseTemplate implements Template {
       }
       return javaScript;
     }
+  }
+
+  /**
+   * @return True if this template has decorators.
+   */
+  public boolean decorate() {
+    return false;
   }
 
 }

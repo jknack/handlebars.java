@@ -85,6 +85,11 @@ public class VarDecorator extends Variable {
   }
 
   @Override
+  public boolean decorate() {
+    return true;
+  }
+
+  @Override
   protected String suffix() {
     return "*";
   }

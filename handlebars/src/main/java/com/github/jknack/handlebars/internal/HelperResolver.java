@@ -18,6 +18,7 @@
 package com.github.jknack.handlebars.internal;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -144,6 +145,19 @@ abstract class HelperResolver extends BaseTemplate {
     }
     Object value = params.get(0);
     return ParamType.parse(context, value);
+  }
+
+  /**
+   * Transform the given value into something different or leave it as it is.
+   *
+   * @param candidate The candidate value. May be null.
+   * @return A transformed value or the original value.
+   */
+  public static final Object transform(final Object candidate) {
+    if (candidate != null && candidate.getClass().isArray()) {
+      return Arrays.asList((Object[]) candidate);
+    }
+    return candidate;
   }
 
   /**

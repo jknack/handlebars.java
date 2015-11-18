@@ -110,6 +110,9 @@ class Block extends HelperResolver {
   /** Compiled path for {@link #name()}. */
   protected final List<PathExpression> path;
 
+  /** True, if this block has decorators. */
+  private boolean decorate;
+
   /**
    * Creates a new {@link Block}.
    *
@@ -145,16 +148,17 @@ class Block extends HelperResolver {
 
   @Override
   public void before(final Context context, final Writer writer) throws IOException {
-    if (body != null) {
+    if (body instanceof BaseTemplate) {
       LinkedList<Map<String, Template>> partials = context.data(Context.INLINE_PARTIALS);
       partials.addLast(new HashMap<>(partials.getLast()));
-      body.before(context, writer);
+      ((BaseTemplate) body).before(context, writer);
     }
   }
 
   @Override
   public void after(final Context context, final Writer writer) throws IOException {
-    if (body != null) {
+    if (body instanceof BaseTemplate) {
+      ((BaseTemplate) body).after(context, writer);
       LinkedList<Map<String, Template>> partials = context.data(Context.INLINE_PARTIALS);
       partials.removeLast();
     }
@@ -173,7 +177,7 @@ class Block extends HelperResolver {
     final Object it;
     Context itCtx = context;
     if (helper == null) {
-      it = Transformer.transform(itCtx.get(this.path));
+      it = transform(itCtx.get(this.path));
       if (inverted) {
         helperName = UnlessHelper.NAME;
       } else if (it instanceof Iterable) {
@@ -201,7 +205,7 @@ class Block extends HelperResolver {
       }
     } else {
       helperName = name;
-      it = Transformer.transform(determineContext(context));
+      it = transform(determineContext(context));
     }
 
     Options options = new Options.Builder(handlebars, helperName, tagType, itCtx, template)
@@ -245,7 +249,15 @@ class Block extends HelperResolver {
    */
   public Block body(final Template body) {
     this.body = notNull(body, "The template's body is required.");
+    if (body instanceof BaseTemplate) {
+      decorate = ((BaseTemplate) body).decorate();
+    }
     return this;
+  }
+
+  @Override
+  public boolean decorate() {
+    return decorate;
   }
 
   /**

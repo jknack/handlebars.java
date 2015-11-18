@@ -65,7 +65,7 @@ public class EachBlock extends Block {
   @SuppressWarnings("unchecked")
   @Override
   protected void merge(final Context context, final Writer writer) throws IOException {
-    Object it = Transformer.transform(determineContext(context));
+    Object it = transform(determineContext(context));
     int size = 0;
     if (it instanceof Iterable) {
       size = iterable((Iterable<Object>) it, context, writer);
@@ -143,8 +143,6 @@ public class EachBlock extends Block {
           .combine("@index_1", index + 1);
 
       body.apply(itCtx, writer);
-      // buffer.append(options.apply(fn, itCtx, Arrays.asList(it, index)));
-      itCtx.destroy();
       index += 1;
     }
     return index;

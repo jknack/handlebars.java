@@ -45,7 +45,10 @@ class TemplateList extends BaseTemplate implements Iterable<Template> {
   private final List<Template> nodes = new LinkedList<>();
 
   /** Keep track of direct decorators and run them before merge. */
-  private final List<Template> decorators = new LinkedList<>();
+  private final List<BaseTemplate> decorators = new LinkedList<>();
+
+  /** True, if this block has decorators. */
+  private boolean decorate;
 
   /**
    * Creates a new template list.
@@ -65,21 +68,22 @@ class TemplateList extends BaseTemplate implements Iterable<Template> {
   public boolean add(final Template child) {
     nodes.add(child);
     if (child instanceof VarDecorator || child instanceof BlockDecorator) {
-      decorators.add(child);
+      decorators.add((BaseTemplate) child);
+      decorate = true;
     }
     return true;
   }
 
   @Override
   public void before(final Context context, final Writer writer) throws IOException {
-    for (Template node : decorators) {
+    for (BaseTemplate node : decorators) {
       node.before(context, writer);
     }
   }
 
   @Override
   public void after(final Context context, final Writer writer) throws IOException {
-    for (Template node : decorators) {
+    for (BaseTemplate node : decorators) {
       node.after(context, writer);
     }
   }
@@ -90,6 +94,11 @@ class TemplateList extends BaseTemplate implements Iterable<Template> {
     for (Template node : nodes) {
       node.apply(context, writer);
     }
+  }
+
+  @Override
+  public final boolean decorate() {
+    return decorate;
   }
 
   @Override

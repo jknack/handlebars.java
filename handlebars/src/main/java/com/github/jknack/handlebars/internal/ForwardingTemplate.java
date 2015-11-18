@@ -106,14 +106,6 @@ class ForwardingTemplate implements Template {
     }
   }
 
-  @Override
-  public void before(final Context context, final Writer writer) throws IOException {
-  }
-
-  @Override
-  public void after(final Context context, final Writer writer) throws IOException {
-  }
-
   /**
    * Call it after a template has been applied.
    *
