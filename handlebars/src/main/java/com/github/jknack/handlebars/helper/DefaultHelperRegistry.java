@@ -249,4 +249,18 @@ public class DefaultHelperRegistry implements HelperRegistry {
     return this;
   }
 
+
+	/**
+	 * Set the handlebars Js. This operation will override previously registered
+	 * handlebars Js.
+	 *
+	 * @param handlebarsJs The handlebars Js. Required.
+	 * @return This DefaultHelperRegistry object.
+	 */
+	public DefaultHelperRegistry with(HandlebarsJs handlebarsJs){
+		notNull(handlebarsJs, "The handlebarsJs is required.");
+		this.handlebarsJs = handlebarsJs;
+		return this;
+	}
+
 }
