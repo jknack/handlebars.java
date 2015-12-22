@@ -12,6 +12,6 @@ import com.github.jknack.handlebars.v4Test;
 public class Issue430 extends v4Test {
   @Test
   public void shouldEscapeEqualsSignInHtml() throws IOException {
-    assertEquals("foo&#x3D", Handlebars.Utils.escapeExpression("foo=").toString());
+    assertEquals("foo&#x3D;", Handlebars.Utils.escapeExpression("foo=").toString());
   }
 }
