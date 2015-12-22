@@ -11,7 +11,7 @@ public class Issue386 extends AbstractTest {
   @Test
   public void blockHelperShouldNotIntroduceANewContext() throws IOException {
     shouldCompileTo("{{#partial \"body\"}}{{&this}}{{/partial}}{{block \"body\"}}", $("foo", "bar"),
-        "{foo&#x3Dbar}");
+        "{foo&#x3D;bar}");
   }
 
   @Test
