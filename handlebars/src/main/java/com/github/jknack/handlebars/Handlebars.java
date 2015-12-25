@@ -250,7 +250,7 @@ public class Handlebars implements HelperRegistry {
             html.append("&#x60;");
             break;
           case '=':
-            html.append("&#x3D");
+            html.append("&#x3D;");
             break;
           case '&':
             html.append("&amp;");
