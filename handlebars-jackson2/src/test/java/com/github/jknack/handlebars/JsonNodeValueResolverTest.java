@@ -26,6 +26,7 @@ import com.fasterxml.jackson.databind.node.DecimalNode;
 import com.fasterxml.jackson.databind.node.LongNode;
 import com.fasterxml.jackson.databind.node.NullNode;
 import com.fasterxml.jackson.databind.node.POJONode;
+import com.github.jknack.handlebars.context.MapValueResolver;
 
 public class JsonNodeValueResolverTest {
 
@@ -233,6 +234,7 @@ public class JsonNodeValueResolverTest {
   }
 
   public static Context context(final Object object) throws IOException {
-    return Context.newBuilder(node(object)).resolver(JsonNodeValueResolver.INSTANCE).build();
+    return Context.newBuilder(node(object))
+        .resolver(MapValueResolver.INSTANCE, JsonNodeValueResolver.INSTANCE).build();
   }
 }

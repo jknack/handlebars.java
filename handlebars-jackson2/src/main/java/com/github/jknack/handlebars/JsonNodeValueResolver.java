@@ -17,9 +17,11 @@
  */
 package com.github.jknack.handlebars;
 
+import java.util.AbstractMap;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -81,7 +83,7 @@ public enum JsonNodeValueResolver implements ValueResolver {
    * @param node A {@link JsonNode} object.
    * @return A primitive value, json object, json array or null.
    */
-  private Object resolve(final JsonNode node) {
+  private static Object resolve(final JsonNode node) {
     // binary node
     if (node instanceof BinaryNode) {
       return ((BinaryNode) node).binaryValue();
@@ -118,8 +120,41 @@ public enum JsonNodeValueResolver implements ValueResolver {
     if (node instanceof TextNode) {
       return ((TextNode) node).textValue();
     }
+    // object node to map
+    if (node instanceof ObjectNode) {
+      return toMap((ObjectNode) node);
+    }
     // container, array or null
     return node;
+  }
+
+  /**
+   * @param node A json node.
+   * @return A map from a json node.
+   */
+  private static Map<String, Object> toMap(final ObjectNode node) {
+    return new AbstractMap<String, Object>() {
+      @Override
+      public Object get(final Object key) {
+        return resolve(node.get((String) key));
+      }
+
+      @Override
+      public int size() {
+        return node.size();
+      }
+
+      @SuppressWarnings({"unchecked", "rawtypes" })
+      @Override
+      public Set<Map.Entry<String, Object>> entrySet() {
+        Iterator<Map.Entry<String, JsonNode>> it = node.fields();
+        Set set = new LinkedHashSet();
+        while (it.hasNext()) {
+          set.add(it.next());
+        }
+        return set;
+      }
+    };
   }
 
   @Override

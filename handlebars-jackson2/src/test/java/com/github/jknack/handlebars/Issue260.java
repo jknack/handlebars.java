@@ -6,12 +6,14 @@ import org.junit.Test;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.jknack.handlebars.context.MapValueResolver;
 
 public class Issue260 extends AbstractTest {
 
   @Override
   protected Object configureContext(final Object model) {
-    return Context.newBuilder(model).resolver(JsonNodeValueResolver.INSTANCE).build();
+    return Context.newBuilder(model)
+        .resolver(MapValueResolver.INSTANCE, JsonNodeValueResolver.INSTANCE).build();
   }
 
   @Test
