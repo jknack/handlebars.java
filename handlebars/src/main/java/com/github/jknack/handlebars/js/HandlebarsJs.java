@@ -85,27 +85,28 @@ public abstract class HandlebarsJs {
    * @return A new {@link HandlebarsJs} object.
    */
   public static HandlebarsJs create(final HelperRegistry helperRegistry) {
-    return createRhino(helperRegistry,-1);
+    return createRhino(helperRegistry, -1);
   }
 
-	/**
-	 * Creates a {@link HandlebarsJs} object.
-	 *
-	 * @param helperRegistry The helperRegistry object. Required.
-	 * @param optimizationLevel The optimization level of rhino.
-	 * @return A new {@link HandlebarsJs} object.
-	 */
-	public static HandlebarsJs createRhino(final HelperRegistry helperRegistry, int optimizationLevel) {
-		try {
-			ClassUtils.getClass("org.mozilla.javascript.Context");
-			return new RhinoHandlebars(helperRegistry, optimizationLevel);
-		} catch (final Exception ex) {
-			return new HandlebarsJs(helperRegistry) {
-				@Override
-				public void registerHelpers(final String filename, final String source) throws Exception {
-					throw new IllegalStateException("Rhino isn't on the classpath", ex);
-				}
-			};
-		}
-	}
+  /**
+   * Creates a {@link HandlebarsJs} object.
+   *
+   * @param helperRegistry The helperRegistry object. Required.
+   * @param optimizationLevel The optimization level of rhino.
+   * @return A new {@link HandlebarsJs} object.
+   */
+  public static HandlebarsJs createRhino(final HelperRegistry helperRegistry,
+      final int optimizationLevel) {
+    try {
+      ClassUtils.getClass("org.mozilla.javascript.Context");
+      return new RhinoHandlebars(helperRegistry, optimizationLevel);
+    } catch (final Exception ex) {
+      return new HandlebarsJs(helperRegistry) {
+        @Override
+        public void registerHelpers(final String filename, final String source) throws Exception {
+          throw new IllegalStateException("Rhino isn't on the classpath", ex);
+        }
+      };
+    }
+  }
 }

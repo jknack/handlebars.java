@@ -43,11 +43,12 @@ import com.github.jknack.handlebars.js.HandlebarsJs;
  */
 public class RhinoHandlebars extends HandlebarsJs {
 
-	/**
-	 * The optimization level of rhino,  default -1.
-	 * Please refer to https://developer.mozilla.org/en-US/docs/Mozilla/Projects/Rhino/Optimization
-	 */
-	private int optimizationLevel = -1;
+  /**
+   * The optimization level of rhino, default -1.
+   * Please refer to https://developer.mozilla.org/en-US/docs/Mozilla/Projects/Rhino/Optimization
+   */
+  private int optimizationLevel = -1;
+
   /**
    * Better integration between java collections/arrays and js arrays. It check for data types
    * at access time and convert them when necessary.
@@ -224,19 +225,18 @@ public class RhinoHandlebars extends HandlebarsJs {
     super(helperRegistry);
   }
 
-	/**
-	 * Creates a new {@link RhinoHandlebars}.
-	 *
-	 * @param helperRegistry The handlebars object.
-	 * @param optimizationLevel The optimization level of rhino.
-	 */
-	public RhinoHandlebars(final HelperRegistry helperRegistry, int optimizationLevel) {
-		super(helperRegistry);
-		this.optimizationLevel = optimizationLevel;
-	}
+  /**
+   * Creates a new {@link RhinoHandlebars}.
+   *
+   * @param helperRegistry The handlebars object.
+   * @param optimizationLevel The optimization level of rhino.
+   */
+  public RhinoHandlebars(final HelperRegistry helperRegistry, final int optimizationLevel) {
+    super(helperRegistry);
+    this.optimizationLevel = optimizationLevel;
+  }
 
-
-	/**
+  /**
    * Register a helper in the helper registry.
    *
    * @param name The helper's name. Required.
