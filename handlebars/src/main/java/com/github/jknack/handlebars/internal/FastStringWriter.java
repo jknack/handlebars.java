@@ -32,7 +32,8 @@ class FastStringWriter extends Writer {
   /**
    * The internal buffer.
    */
-  private StrBuilder buffer = new StrBuilder();
+  private StrBuilder buffer = new StrBuilder(Integer
+      .parseInt(System.getProperty("hbs.buffer", "1600")));
 
   @Override
   public Writer append(final char c) throws IOException {
