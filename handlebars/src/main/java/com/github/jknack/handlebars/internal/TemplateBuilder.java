@@ -43,7 +43,6 @@ import com.github.jknack.handlebars.Helper;
 import com.github.jknack.handlebars.HelperRegistry;
 import com.github.jknack.handlebars.TagType;
 import com.github.jknack.handlebars.Template;
-import com.github.jknack.handlebars.helper.EachHelper;
 import com.github.jknack.handlebars.internal.HbsParser.AmpvarContext;
 import com.github.jknack.handlebars.internal.HbsParser.BlockContext;
 import com.github.jknack.handlebars.internal.HbsParser.BlockParamsContext;
@@ -205,16 +204,8 @@ abstract class TemplateBuilder<it> extends HbsParserBaseVisitor<Object> {
       block = new BlockDecorator(handlebars, name, false, params(sexpr.param()),
           hash(sexpr.hash()), blockParams(ctx.blockParams()), level == 1);
     } else {
-      // favor well known helpers over default/mustache versions helper.
-      if ("each".equals(name) && handlebars.helper(name) == EachHelper.INSTANCE) {
-        // override default each helper
-        block = new EachBlock(handlebars, name, false, "#", params(sexpr.param()),
-            hash(sexpr.hash()), blockParams(ctx.blockParams()));
-      }
-      if (block == null) {
-        block = new Block(handlebars, name, false, "#", params(sexpr.param()),
-            hash(sexpr.hash()), blockParams(ctx.blockParams()));
-      }
+      block = new Block(handlebars, name, false, "#", params(sexpr.param()),
+          hash(sexpr.hash()), blockParams(ctx.blockParams()));
     }
     block.filename(source.filename());
     block.position(nameStart.getLine(), nameStart.getCharPositionInLine());
