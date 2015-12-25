@@ -533,24 +533,25 @@ public class Context {
   public Object get(final List<PathExpression> path) {
     PathExpression head = path.get(0);
     boolean local = head.local();
-    if (local) {
-      return new PathExpressionChain(path).next(resolver, this, model);
-    }
-    Context it = this;
     Object value = null;
-    PathExpressionChain expr = new PathExpressionChain(path);
-    while (value == null && it != null) {
-      value = expr.eval(resolver, it, it.model);
-      if (value == null) {
-        // No luck, check the extended context.
-        value = expr.eval(resolver, it.extendedContext, it.extendedContext.model);
-
+    if (local) {
+      value = new PathExpressionChain(path).next(resolver, this, model);
+    } else {
+      Context it = this;
+      PathExpressionChain expr = new PathExpressionChain(path);
+      while (value == null && it != null) {
+        value = expr.eval(resolver, it, it.model);
         if (value == null) {
-          // data context
-          value = expr.eval(resolver, it, it.data);
+          // No luck, check the extended context.
+          value = expr.eval(resolver, it.extendedContext, it.extendedContext.model);
+
+          if (value == null) {
+            // data context
+            value = expr.eval(resolver, it, it.data);
+          }
         }
+        it = it.parent;
       }
-      it = it.parent;
     }
     return value == NULL ? null : value;
   }
