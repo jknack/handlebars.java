@@ -228,38 +228,55 @@ public class Handlebars implements HelperRegistry {
       }
       // Don't escape SafeStrings, since they're already safe
       if (input instanceof SafeString) {
-        return input.toString();
+        return ((SafeString) input).content;
       }
-      StringBuilder html = new StringBuilder(input.length());
-      for (int i = 0; i < input.length(); i++) {
-        char ch = input.charAt(i);
-        switch (ch) {
+      StringBuilder out = null;
+      int prev = 0;
+      final int length = input.length();
+      for (int i = 0; i < length; i++) {
+        String newCh = null;
+        switch (input.charAt(i)) {
           case '<':
-            html.append("&lt;");
+            newCh = "&lt;";
             break;
           case '>':
-            html.append("&gt;");
+            newCh = "&gt;";
             break;
           case '"':
-            html.append("&quot;");
+            newCh = "&quot;";
             break;
           case '\'':
-            html.append("&#x27;");
+            newCh = "&#x27;";
             break;
           case '`':
-            html.append("&#x60;");
+            newCh = "&#x60;";
             break;
           case '=':
-            html.append("&#x3D;");
+            newCh = "&#x3D;";
             break;
           case '&':
-            html.append("&amp;");
+            newCh = "&amp;";
             break;
           default:
-            html.append(ch);
+        }
+        if (newCh != null) {
+          if (out == null) {
+            out = new StringBuilder(length + 10);
+          }
+          if (prev < i) {
+            out.append(input, prev, i);
+          }
+          out.append(newCh);
+          prev = i + 1;
         }
       }
-      return html.length() == input.length() ? input : html;
+      if (out == null) {
+        return input;
+      }
+      if (prev < length) {
+        out.append(input, prev, length);
+      }
+      return out;
     }
   }
 
