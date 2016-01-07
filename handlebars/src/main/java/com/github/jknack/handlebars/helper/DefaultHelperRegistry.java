@@ -100,7 +100,7 @@ public class DefaultHelperRegistry implements HelperRegistry {
 
     Helper<?> oldHelper = helpers.put(name, helper);
     if (oldHelper != null) {
-      logger.warn("Helper '%s' has been replaced by '%s'", name, helper);
+      logger.warn("Helper '{}' has been replaced by '{}'", name, helper);
     }
     return this;
   }
@@ -250,7 +250,7 @@ public class DefaultHelperRegistry implements HelperRegistry {
 
     Decorator old = decorators.put(name, decorator);
     if (old != null) {
-      logger.warn("Decorator '%s' has been replaced by '%s'", name, decorator);
+      logger.warn("Decorator '{}' has been replaced by '{}'", name, decorator);
     }
     return this;
   }
