@@ -22,7 +22,6 @@ import static org.apache.commons.lang3.Validate.notNull;
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Member;
 import java.lang.reflect.Modifier;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -256,7 +255,9 @@ public abstract class MemberValueResolver<M extends Member>
 
     @Override
     public int hashCode() {
-      return Arrays.hashCode(new Object[] {clazz, name});
+      int result = clazz.hashCode();
+      result = 31 * result + (name != null ? name.hashCode() : 0);
+      return result;
     }
 
     @Override

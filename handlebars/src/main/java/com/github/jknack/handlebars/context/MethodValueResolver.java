@@ -38,6 +38,10 @@ public class MethodValueResolver extends MemberValueResolver<Method> {
    * The default instance.
    */
   public static final ValueResolver INSTANCE = new MethodValueResolver();
+  /**
+   * Args for getters.
+   */
+  private static final Object[] EMPTY_ARGS = new Object[0];
 
   @Override
   public boolean matches(final Method method, final String name) {
@@ -48,7 +52,7 @@ public class MethodValueResolver extends MemberValueResolver<Method> {
   @Override
   protected Object invokeMember(final Method member, final Object context) {
     try {
-      return member.invoke(context);
+      return member.invoke(context, EMPTY_ARGS);
     } catch (InvocationTargetException ex) {
       Throwable cause = ex.getCause();
       if (cause instanceof RuntimeException) {

@@ -32,6 +32,8 @@ public class DataPath implements PathExpression {
 
   /** Property name. */
   private String name;
+  /** Property name without @. */
+  private String nameWithoutAtSymbol;
 
   /**
    * Creates a new {@link DataPath} expression.
@@ -40,6 +42,7 @@ public class DataPath implements PathExpression {
    */
   public DataPath(final String name) {
     this.name = name;
+    this.nameWithoutAtSymbol = name.substring(1);
   }
 
   @Override
@@ -49,7 +52,7 @@ public class DataPath implements PathExpression {
     Object value = resolver.resolve(data, name);
     if (value == null) {
       // without @
-      value = resolver.resolve(data, name.substring(1));
+      value = resolver.resolve(data, nameWithoutAtSymbol);
     }
     return chain.next(resolver, context, value);
   }
