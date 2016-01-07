@@ -17,7 +17,7 @@
  */
 package com.github.jknack.handlebars;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -77,7 +77,7 @@ public final class PathCompiler {
    * @return A path representation of the property (array based).
    */
   private static List<PathExpression> parse(final String path) {
-    LinkedList<PathExpression> resolvers = new LinkedList<>();
+    List<PathExpression> resolvers = new ArrayList<>();
     if ("this".equals(path) || "./".equals(path) || ".".equals(path)) {
       resolvers.add(new ResolveThisPath(path));
       return resolvers;

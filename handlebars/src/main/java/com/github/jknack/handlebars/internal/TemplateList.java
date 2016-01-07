@@ -22,7 +22,6 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -42,10 +41,10 @@ class TemplateList extends BaseTemplate implements Iterable<Template> {
   /**
    * The list of child templates.
    */
-  private final List<Template> nodes = new LinkedList<>();
+  private final List<Template> nodes = new ArrayList<>();
 
   /** Keep track of direct decorators and run them before merge. */
-  private final List<BaseTemplate> decorators = new LinkedList<>();
+  private final List<BaseTemplate> decorators = new ArrayList<>();
 
   /** True, if this block has decorators. */
   private boolean decorate;
