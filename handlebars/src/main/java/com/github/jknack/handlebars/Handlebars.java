@@ -109,7 +109,7 @@ public class Handlebars implements HelperRegistry {
     /**
      * The content.
      */
-    private CharSequence content;
+    public final CharSequence content;
 
     /**
      * Creates a new {@link SafeString}.

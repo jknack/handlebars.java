@@ -52,79 +52,56 @@ public class EachHelper implements Helper<Object> {
   public CharSequence apply(final Object context, final Options options)
       throws IOException {
     if (context instanceof Iterable) {
-      return iterableContext((Iterable) context, options);
-    } else if (context != null) {
-      return hashContext(context, options);
-    }
-    return options.buffer();
-  }
-
-  /**
-   * Iterate over a hash like object.
-   *
-   * @param it The context object.
-   * @param options The helper options.
-   * @return The string output.
-   * @throws IOException If something goes wrong.
-   */
-  private CharSequence hashContext(final Object it, final Options options)
-      throws IOException {
-    Iterator<Entry<String, Object>> loop = options.propertySet(it).iterator();
-    Context parent = options.context;
-    boolean first = true;
-    Options.Buffer buffer = options.buffer();
-    Template fn = options.fn;
-    while (loop.hasNext()) {
-      Entry<String, Object> entry = loop.next();
-      String key = entry.getKey();
-      Context itCtx = Context.newBuilder(parent, entry.getValue())
-          .combine("@key", key)
-          .combine("@first", first ? "first" : "")
-          .combine("@last", !loop.hasNext() ? "last" : "")
-          .build();
-      buffer.append(options.apply(fn, itCtx, Arrays.asList(it, key)));
-      first = false;
-    }
-    return buffer;
-  }
-
-  /**
-   * Iterate over an iterable object.
-   *
-   * @param context The context object.
-   * @param options The helper options.
-   * @return The string output.
-   * @throws IOException If something goes wrong.
-   */
-  private CharSequence iterableContext(final Iterable<Object> context, final Options options)
-      throws IOException {
-    Options.Buffer buffer = options.buffer();
-    if (options.isFalsy(context)) {
-      buffer.append(options.inverse());
-    } else {
-      Iterator<Object> loop = context.iterator();
+      Options.Buffer buffer = options.buffer();
+      Iterator<Object> loop = ((Iterable) context).iterator();
       int base = options.hash("base", 0);
       int index = base;
+      boolean even = index % 2 == 0;
       Context parent = options.context;
       Template fn = options.fn;
       while (loop.hasNext()) {
         Object it = loop.next();
-        boolean even = index % 2 == 0;
-        Context itCtx = Context.newBuilder(parent, it)
-            .combine("@index", index)
+        Context itCtx = Context.newContext(parent, it);
+        itCtx.combine("@index", index)
             .combine("@first", index == base ? "first" : "")
             .combine("@last", !loop.hasNext() ? "last" : "")
             .combine("@odd", even ? "" : "odd")
             .combine("@even", even ? "even" : "")
             // 1-based index
-            .combine("@index_1", index + 1)
-            .build();
+            .combine("@index_1", index + 1);
         buffer.append(options.apply(fn, itCtx, Arrays.asList(it, index)));
-        itCtx.destroy();
         index += 1;
+        even = !even;
       }
+      // empty?
+      if (base == index) {
+        buffer.append(options.inverse());
+      }
+      return buffer;
+    } else if (context != null) {
+      Iterator<Entry<String, Object>> loop = options.propertySet(context).iterator();
+      Context parent = options.context;
+      boolean first = true;
+      Options.Buffer buffer = options.buffer();
+      Template fn = options.fn;
+      while (loop.hasNext()) {
+        Entry<String, Object> entry = loop.next();
+        String key = entry.getKey();
+        Context itCtx = Context.newBuilder(parent, entry.getValue())
+            .combine("@key", key)
+            .combine("@first", first ? "first" : "")
+            .combine("@last", !loop.hasNext() ? "last" : "")
+            .build();
+        buffer.append(options.apply(fn, itCtx, Arrays.asList(context, key)));
+        first = false;
+      }
+      // empty?
+      if (first) {
+        buffer.append(options.inverse());
+      }
+      return buffer;
     }
-    return buffer;
+    return options.buffer();
   }
 
 }

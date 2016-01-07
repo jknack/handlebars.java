@@ -167,12 +167,7 @@ class Block extends HelperResolver {
   @SuppressWarnings("unchecked")
   @Override
   protected void merge(final Context context, final Writer writer) throws IOException {
-    if (body == null) {
-      return;
-    }
-
     final String helperName;
-    Helper<Object> helper = this.helper;
     Template template = body;
     final Object it;
     Context itCtx = context;
@@ -208,13 +203,8 @@ class Block extends HelperResolver {
       it = transform(determineContext(context));
     }
 
-    Options options = new Options.Builder(handlebars, helperName, tagType, itCtx, template)
-        .setInverse(inverse)
-        .setParams(params(itCtx))
-        .setHash(hash(itCtx))
-        .setBlockParams(blockParams)
-        .setWriter(writer)
-        .build();
+    Options options = new Options(handlebars, helperName, tagType, itCtx, template, inverse,
+        params(itCtx), hash(itCtx), blockParams, writer);
     options.data(Context.PARAM_SIZE, this.params.size());
 
     CharSequence result = helper.apply(it, options);

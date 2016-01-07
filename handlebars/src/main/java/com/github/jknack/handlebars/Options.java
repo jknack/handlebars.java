@@ -362,6 +362,9 @@ public class Options {
   /** Block param names. */
   public final List<String> blockParams;
 
+  /** True, if there is any block param. */
+  private boolean hasBlockParams;
+
   /**
    * Creates a new Handlebars {@link Options}.
    *
@@ -387,6 +390,37 @@ public class Options {
     this.params = params;
     this.hash = hash;
     this.blockParams = blockParams;
+    hasBlockParams = this.blockParams.size() > 0;
+  }
+
+  /**
+   * Creates a new Handlebars {@link Options}.
+   *
+   * @param handlebars The handlebars instance. Required.
+   * @param helperName The name of the helper. Required.
+   * @param tagType The {@link TagType} from where the helper was called.
+   * @param context The current context. Required.
+   * @param fn The template function. Required.
+   * @param inverse The inverse template function. Required.
+   * @param params The parameters. Required.
+   * @param hash The optional hash. Required.
+   * @param blockParams The block param names. Required.
+   * @param writer A writer. Optional.
+   */
+  public Options(final Handlebars handlebars, final String helperName, final TagType tagType,
+      final Context context, final Template fn, final Template inverse, final Object[] params,
+      final Map<String, Object> hash, final List<String> blockParams, final Writer writer) {
+    this.handlebars = handlebars;
+    this.helperName = helperName;
+    this.tagType = tagType;
+    this.context = context;
+    this.fn = fn;
+    this.inverse = inverse;
+    this.params = params;
+    this.hash = hash;
+    this.blockParams = blockParams;
+    this.writer = writer;
+    hasBlockParams = this.blockParams.size() > 0;
   }
 
   /**
@@ -498,7 +532,7 @@ public class Options {
   public CharSequence apply(final Template template, final Context context,
       final List<Object> blockParams) throws IOException {
     Context ctx = context;
-    if (this.blockParams.size() > 0) {
+    if (hasBlockParams) {
       ctx = Context.newBlockParamContext(context, this.blockParams, blockParams);
     }
     return template.apply(ctx);

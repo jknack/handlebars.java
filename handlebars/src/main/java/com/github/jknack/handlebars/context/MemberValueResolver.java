@@ -46,8 +46,7 @@ public abstract class MemberValueResolver<M extends Member>
   /**
    * A concurrent and thread-safe cache for {@link Member}.
    */
-  private final Map<CacheKey, Object> cache =
-      new ConcurrentHashMap<CacheKey, Object>();
+  private final Map<CacheKey, Object> cache = new ConcurrentHashMap<CacheKey, Object>();
 
   @Override
   public final Object resolve(final Object context, final String name) {
@@ -217,8 +216,8 @@ public abstract class MemberValueResolver<M extends Member>
   protected abstract String memberName(M member);
 
   /**
-   *  A value type used as the key for cache of {@link Member}.
-   *  Consists of a class instance and an optional name.
+   * A value type used as the key for cache of {@link Member}.
+   * Consists of a class instance and an optional name.
    */
   private static class CacheKey {
     /**
@@ -230,6 +229,9 @@ public abstract class MemberValueResolver<M extends Member>
      * Optional name of the the member this cache key is for.
      */
     private final String name;
+
+    /** Key hash code. */
+    private int hash;
 
     /**
      * Constructor which should be used when the created key is to be used for all members of
@@ -251,13 +253,13 @@ public abstract class MemberValueResolver<M extends Member>
     public CacheKey(final Class<?> clazz, final String name) {
       this.clazz = clazz;
       this.name = name;
+      this.hash = clazz.hashCode();
+      hash = 31 * hash + (name != null ? name.hashCode() : 0);
     }
 
     @Override
     public int hashCode() {
-      int result = clazz.hashCode();
-      result = 31 * result + (name != null ? name.hashCode() : 0);
-      return result;
+      return hash;
     }
 
     @Override

@@ -24,8 +24,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang3.StringUtils;
-
 import com.github.jknack.handlebars.Context;
 import com.github.jknack.handlebars.EscapingStrategy;
 import com.github.jknack.handlebars.Formatter;
@@ -90,8 +88,14 @@ class Variable extends HelperResolver {
   /** A compiled version of {@link #name}. */
   private List<PathExpression> path;
 
+  /** Block params. */
+  private static final List<String> BPARAMS = Collections.emptyList();
+
   /** True, when no param/hash. */
   private boolean noArg;
+
+  /** Empty var. */
+  private Template emptyVar;
 
   /**
    * Creates a new {@link Variable}.
@@ -109,9 +113,12 @@ class Variable extends HelperResolver {
     this.name = name.trim();
     this.path = PathCompiler.compile(name);
     this.type = type;
+    this.emptyVar = empty(this);
     params(params);
     hash(hash);
-    this.escapingStrategy = handlebars.getEscapingStrategy();
+    this.escapingStrategy = type == TagType.VAR
+        ? handlebars.getEscapingStrategy()
+        : EscapingStrategy.NOOP;
     this.formatter = handlebars.getFormatter();
     this.noArg = params.size() == 0 && hash.size() == 0;
     postInit();
@@ -151,33 +158,31 @@ class Variable extends HelperResolver {
   @Override
   protected void merge(final Context scope, final Writer writer)
       throws IOException {
-    Helper<Object> helper = this.helper;
     boolean blockParam = scope.isBlockParams() && noArg;
     if (helper != null && !blockParam) {
-      Options options = new Options.Builder(handlebars, name, type, scope, empty(this))
-          .setParams(params(scope))
-          .setHash(hash(scope))
-          .setWriter(writer)
-          .build();
+      Options options = new Options(handlebars, name, type, scope, emptyVar, Template.EMPTY,
+          params(scope), hash(scope), BPARAMS, writer);
       options.data(Context.PARAM_SIZE, this.params.size());
-      CharSequence result = helper.apply(determineContext(scope), options);
-      writer.append(formatAndEscape(result, Formatter.NOOP));
+      CharSequence value = helper.apply(determineContext(scope), options);
+      if (value != null) {
+        writer.append(formatAndEscape(value, Formatter.NOOP));
+      }
     } else {
       Object value = scope.get(path);
       if (value == null) {
         if (missing != null) {
-          Options options = new Options.Builder(handlebars, name, type, scope, empty(this))
-              .setParams(params(scope))
-              .setHash(hash(scope))
-              .setWriter(writer)
-              .build();
+          Options options = new Options(handlebars, name, type, scope, emptyVar, Template.EMPTY,
+              params(scope), hash(scope), BPARAMS, writer);
+          options.data(Context.PARAM_SIZE, this.params.size());
           value = missing.apply(determineContext(scope), options);
         }
       }
       if (value instanceof Lambda) {
         value = Lambdas.merge(handlebars, (Lambda<Object, Object>) value, scope, this);
       }
-      writer.append(formatAndEscape(value, formatter));
+      if (value != null) {
+        writer.append(formatAndEscape(value, formatter));
+      }
     }
   }
 
@@ -231,24 +236,18 @@ class Variable extends HelperResolver {
   }
 
   /**
-   * True if the given value should be escaped.
+   * Format and escape a var (if need it).
    *
    * @param value The variable's value.
    * @param formatter Formatter to use.
-   * @return True if the given value should be escaped.
+   * @return Formatted and escaped value.
    */
-  private CharSequence formatAndEscape(final Object value, final Formatter.Chain formatter) {
-    if (value == null) {
-      return StringUtils.EMPTY;
-    }
+  protected CharSequence formatAndEscape(final Object value, final Formatter.Chain formatter) {
     CharSequence formatted = formatter.format(value).toString();
     if (value instanceof Handlebars.SafeString) {
       return formatted;
     }
-    if (type == TagType.VAR) {
-      return escapingStrategy.escape(formatted);
-    }
-    return formatted;
+    return escapingStrategy.escape(formatted);
   }
 
   @Override

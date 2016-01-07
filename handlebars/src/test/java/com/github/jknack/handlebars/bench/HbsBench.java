@@ -45,7 +45,7 @@ public class HbsBench {
 
   @Test
   public void benchmark() throws IOException {
-    new Bench(1000, 5, 10).run(new Unit() {
+    new Bench(1000, 5, 30).run(new Unit() {
 
       @Override
       public void run() throws IOException {

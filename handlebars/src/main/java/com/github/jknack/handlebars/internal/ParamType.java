@@ -126,9 +126,8 @@ public enum ParamType {
     if (param instanceof String) {
       // string literal
       String str = (String) param;
-      if (str.charAt(0) == '"') {
-        return str.substring(1, str.length() - 1);
-      } else if (str.charAt(0) == '\'') {
+      char ch = str.charAt(0);
+      if (ch == '"' || ch == '\'') {
         return str.substring(1, str.length() - 1);
       }
       // reference

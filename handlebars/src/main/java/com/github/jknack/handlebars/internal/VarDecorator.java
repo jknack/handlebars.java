@@ -19,6 +19,7 @@ package com.github.jknack.handlebars.internal;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -69,11 +70,8 @@ public class VarDecorator extends Variable {
 
     Context ctx = root ? Context.copy(context, null) : context;
 
-    Options options = new Options.Builder(handlebars, name, type, ctx, this)
-        .setInverse(Template.EMPTY)
-        .setParams(decoParams(ctx))
-        .setHash(hash(ctx))
-        .build();
+    Options options = new Options(handlebars, name, type, ctx, this, Template.EMPTY,
+        decoParams(ctx), hash(ctx), Collections.<String> emptyList(), null);
     options.data(Context.PARAM_SIZE, this.params.size());
 
     decorator.apply(this, options);

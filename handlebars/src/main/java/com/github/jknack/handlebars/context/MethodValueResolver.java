@@ -38,6 +38,7 @@ public class MethodValueResolver extends MemberValueResolver<Method> {
    * The default instance.
    */
   public static final ValueResolver INSTANCE = new MethodValueResolver();
+
   /**
    * Args for getters.
    */

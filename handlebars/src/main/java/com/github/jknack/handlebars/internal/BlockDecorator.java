@@ -76,12 +76,8 @@ public class BlockDecorator extends Block {
       ((BaseTemplate) body).before(ctx, writer);
     }
 
-    Options options = new Options.Builder(handlebars, name, TagType.SECTION, ctx, body)
-        .setInverse(Template.EMPTY)
-        .setParams(decoParams(ctx))
-        .setHash(hash(ctx))
-        .setBlockParams(blockParams)
-        .build();
+    Options options = new Options(handlebars, name, TagType.SECTION, ctx, body, Template.EMPTY,
+        decoParams(ctx), hash(ctx), blockParams, null);
     options.data(Context.PARAM_SIZE, this.params.size());
 
     decorator.apply(body, options);

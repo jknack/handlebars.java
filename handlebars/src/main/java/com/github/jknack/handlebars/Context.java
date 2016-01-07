@@ -209,6 +209,7 @@ public class Context {
      */
     private Builder(final Object model) {
       context = Context.root(model);
+      context.setResolver(new CompositeValueResolver(ValueResolver.VALUE_RESOLVERS));
     }
 
     /**
@@ -252,20 +253,6 @@ public class Context {
      * @return A new context stack.
      */
     public Context build() {
-      if (context.resolver == null) {
-        if (context.parent != null) {
-          // Set resolver from parent.
-          context.resolver = context.parent.resolver;
-        } else {
-          // Set default value resolvers: Java Bean like and Map resolvers.
-          context.setResolver(
-              new CompositeValueResolver(ValueResolver.VALUE_RESOLVERS));
-        }
-        // Expand resolver to the extended context.
-        if (context.extendedContext != null) {
-          context.extendedContext.resolver = context.resolver;
-        }
-      }
       return context;
     }
   }
@@ -469,7 +456,7 @@ public class Context {
    *
    * @return The model or data.
    */
-  public Object model() {
+  public final Object model() {
     return model;
   }
 
@@ -478,7 +465,7 @@ public class Context {
    *
    * @return The parent context or null.
    */
-  public Context parent() {
+  public final Context parent() {
     return parent;
   }
 
@@ -678,6 +665,7 @@ public class Context {
   private Context newChild(final Object model) {
     Context child = newChildContext(model);
     child.extendedContext = new Context(new HashMap<String, Object>());
+    child.setResolver(this.resolver);
     child.parent = this;
     child.data = this.data;
     return child;
