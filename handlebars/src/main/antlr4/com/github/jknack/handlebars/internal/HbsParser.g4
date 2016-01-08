@@ -174,6 +174,7 @@ pexpr
   :
     LP sexpr RP hash*             #dynamicPath
   | path = (QID|PATH) QID? hash*  #staticPath
+  | path = (DOUBLE_STRING | SINGLE_STRING) QID? hash* #literalPath
   ;
 
 param

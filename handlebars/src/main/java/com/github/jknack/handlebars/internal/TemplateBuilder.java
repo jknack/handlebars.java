@@ -57,6 +57,7 @@ import com.github.jknack.handlebars.internal.HbsParser.ElseStmtContext;
 import com.github.jknack.handlebars.internal.HbsParser.EscapeContext;
 import com.github.jknack.handlebars.internal.HbsParser.HashContext;
 import com.github.jknack.handlebars.internal.HbsParser.IntParamContext;
+import com.github.jknack.handlebars.internal.HbsParser.LiteralPathContext;
 import com.github.jknack.handlebars.internal.HbsParser.NewlineContext;
 import com.github.jknack.handlebars.internal.HbsParser.ParamContext;
 import com.github.jknack.handlebars.internal.HbsParser.PartialBlockContext;
@@ -583,9 +584,21 @@ abstract class TemplateBuilder<it> extends HbsParserBaseVisitor<Object> {
 
   @Override
   public PartialInfo visitStaticPath(final StaticPathContext ctx) {
-    Token pathToken = ctx.path;
+    return staticPath(ctx.path, ctx.QID(1), ctx.hash());
+  }
+
+  /**
+   * Collect partial data.
+   *
+   * @param pathToken Path token.
+   * @param partialContext Optional partial context.
+   * @param hash Optional partial arguments.
+   * @return Partial info.
+   */
+  private PartialInfo staticPath(final Token pathToken, final TerminalNode partialContext,
+      final List<HashContext> hash) {
     String uri = pathToken.getText();
-    if (uri.startsWith("[") && uri.endsWith("]")) {
+    if (uri.charAt(0) == '[' || uri.charAt(0) == '"' || uri.charAt(0) == '\'') {
       uri = uri.substring(1, uri.length() - 1);
     }
 
@@ -594,14 +607,17 @@ abstract class TemplateBuilder<it> extends HbsParserBaseVisitor<Object> {
       reportError(null, pathToken.getLine(), pathToken.getCharPositionInLine(), message);
     }
 
-    TerminalNode partialContext = ctx.QID(1);
-
     PartialInfo partial = new PartialInfo();
     partial.token = pathToken;
     partial.path = new Text(handlebars, uri);
-    partial.hash = hash(ctx.hash());
+    partial.hash = hash(hash);
     partial.context = partialContext != null ? partialContext.getText() : null;
     return partial;
+  }
+
+  @Override
+  public PartialInfo visitLiteralPath(final LiteralPathContext ctx) {
+    return staticPath(ctx.path, ctx.QID(), ctx.hash());
   }
 
   @Override
