@@ -40,6 +40,9 @@ import com.github.jknack.handlebars.internal.path.ThisPath;
  */
 public final class PathCompiler {
 
+  /** Initial expression capacity. */
+  private static final int SIZE = 5;
+
   /** Cache with path expressions. */
   private static Map<String, List<PathExpression>> cache = new ConcurrentHashMap<>();
 
@@ -77,7 +80,7 @@ public final class PathCompiler {
    * @return A path representation of the property (array based).
    */
   private static List<PathExpression> parse(final String path) {
-    List<PathExpression> resolvers = new ArrayList<>();
+    List<PathExpression> resolvers = new ArrayList<>(SIZE);
     if ("this".equals(path) || "./".equals(path) || ".".equals(path)) {
       resolvers.add(new ResolveThisPath(path));
       return resolvers;

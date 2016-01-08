@@ -24,6 +24,7 @@ import java.lang.reflect.Member;
 import java.lang.reflect.Modifier;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -40,38 +41,23 @@ import com.github.jknack.handlebars.ValueResolver;
  * @param <M> The member type.
  * @since 0.1.1
  */
-public abstract class MemberValueResolver<M extends Member>
-    implements ValueResolver {
+public abstract class MemberValueResolver<M extends Member> implements ValueResolver {
 
   /**
    * A concurrent and thread-safe cache for {@link Member}.
    */
-  private final Map<CacheKey, Object> cache = new ConcurrentHashMap<CacheKey, Object>();
+  private final Map<Class<?>, Map<String, M>> cache = new ConcurrentHashMap<>();
 
   @Override
   public final Object resolve(final Object context, final String name) {
-    CacheKey key = key(context, name);
-    Object value = cache.get(key);
-    if (value == UNRESOLVED) {
-      return value;
-    }
-    @SuppressWarnings("unchecked")
-    M member = (M) value;
+    Class<?> key = context.getClass();
+    Map<String, M> mcache = cache(key);
+    M member = mcache.get(name);
     if (member == null) {
-      member = find(context.getClass(), name);
-      if (member == null) {
-        // No luck, move to the next value resolver.
-        cache.put(key, UNRESOLVED);
-        return UNRESOLVED;
-      }
-      // Mark as accessible.
-      if (member instanceof AccessibleObject) {
-        ((AccessibleObject) member).setAccessible(true);
-      }
-
-      cache.put(key, member);
+      return UNRESOLVED;
+    } else {
+      return invokeMember(member, context);
     }
-    return invokeMember(member, context);
   }
 
   @Override
@@ -80,20 +66,26 @@ public abstract class MemberValueResolver<M extends Member>
   }
 
   /**
-   * Find a {@link Member} in the given class.
+   * Get or build a class member cache.
    *
-   * @param clazz The context's class.
-   * @param name The attribute's name.
-   * @return A {@link Member} or null.
+   * @param clazz Owner/key.
+   * @return A class cache.
    */
-  protected final M find(final Class<?> clazz, final String name) {
-    Set<M> members = membersFromCache(clazz);
-    for (M member : members) {
-      if (matches(member, name)) {
-        return member;
+  private Map<String, M> cache(final Class<?> clazz) {
+    Map<String, M> mcache = this.cache.get(clazz);
+    if (mcache == null) {
+      mcache = new HashMap<>();
+      Set<M> members = members(clazz);
+      for (M m : members) {
+        // Mark as accessible.
+        if (m instanceof AccessibleObject) {
+          ((AccessibleObject) m).setAccessible(true);
+        }
+        mcache.put(memberName(m), m);
       }
+      this.cache.put(clazz, mcache);
     }
-    return null;
+    return mcache;
   }
 
   /**
@@ -155,40 +147,12 @@ public abstract class MemberValueResolver<M extends Member>
   }
 
   /**
-   * Creates a key using the context and the attribute's name.
-   *
-   * @param context The context object.
-   * @param name The attribute's name.
-   * @return A unique key from the given parameters.
-   */
-  private CacheKey key(final Object context, final String name) {
-    return new CacheKey(context.getClass(), name);
-  }
-
-  /**
    * List all the possible members for the given class.
    *
    * @param clazz The base class.
    * @return All the possible members for the given class.
    */
   protected abstract Set<M> members(Class<?> clazz);
-
-  /**
-   * List all the possible members for the given class.
-   *
-   * @param clazz The base class.
-   * @return All the possible members for the given class.
-   */
-  protected Set<M> membersFromCache(final Class<?> clazz) {
-    CacheKey key = new CacheKey(clazz);
-    @SuppressWarnings("unchecked")
-    Set<M> members = (Set<M>) cache.get(key);
-    if (members == null) {
-      members = members(clazz);
-      cache.put(key, members);
-    }
-    return members;
-  }
 
   @Override
   public Set<Entry<String, Object>> propertySet(final Object context) {
@@ -198,7 +162,7 @@ public abstract class MemberValueResolver<M extends Member>
     } else if (context instanceof Collection) {
       return Collections.emptySet();
     }
-    Set<M> members = membersFromCache(context.getClass());
+    Collection<M> members = cache(context.getClass()).values();
     Map<String, Object> propertySet = new LinkedHashMap<String, Object>();
     for (M member : members) {
       String name = memberName(member);
@@ -215,72 +179,4 @@ public abstract class MemberValueResolver<M extends Member>
    */
   protected abstract String memberName(M member);
 
-  /**
-   * A value type used as the key for cache of {@link Member}.
-   * Consists of a class instance and an optional name.
-   */
-  private static class CacheKey {
-    /**
-     * The class of the member this cache key is for.
-     */
-    private final Class<?> clazz;
-
-    /**
-     * Optional name of the the member this cache key is for.
-     */
-    private final String name;
-
-    /** Key hash code. */
-    private int hash;
-
-    /**
-     * Constructor which should be used when the created key is to be used for all members of
-     * a class.
-     *
-     * @param clazz The class the constructed key is for.
-     */
-    public CacheKey(final Class<?> clazz) {
-      this(clazz, null);
-    }
-
-    /**
-     * The constructor which should be used when the created key is to be used for a specific
-     * member of a class.
-     *
-     * @param clazz The class of the member the constructed cache key is for.
-     * @param name The name of the the member the constructed key is for.
-     */
-    public CacheKey(final Class<?> clazz, final String name) {
-      this.clazz = clazz;
-      this.name = name;
-      this.hash = clazz.hashCode();
-      hash = 31 * hash + (name != null ? name.hashCode() : 0);
-    }
-
-    @Override
-    public int hashCode() {
-      return hash;
-    }
-
-    @Override
-    public boolean equals(final Object obj) {
-      if (obj instanceof CacheKey) {
-        CacheKey other = (CacheKey) obj;
-        return equal(clazz, other.clazz) && equal(name, other.name);
-      }
-      return false;
-    }
-
-    /**
-     * A helper useful when implementing {@link java.lang.Object#equals} according to the
-     * contract of that method as outlined in Chapter 3, Item 8 of Effective Java by Joshua Bloch.
-     *
-     * @param first The first object checked for equality against the second object.
-     * @param second The second object checked for equality against the first object.
-     * @return true if the first and second arguments are equal
-     */
-    private static boolean equal(final Object first, final Object second) {
-      return first == second || first != null && first.equals(second);
-    }
-  }
 }
