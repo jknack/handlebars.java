@@ -111,7 +111,7 @@ class Variable extends HelperResolver {
       final Map<String, Object> hash) {
     super(handlebars);
     this.name = name.trim();
-    this.path = PathCompiler.compile(name);
+    this.path = PathCompiler.compile(name, handlebars.parentScopeResolution());
     this.type = type;
     this.emptyVar = empty(this);
     params(params);

@@ -366,6 +366,9 @@ public class Handlebars implements HelperRegistry {
   /** Default formatter. */
   private Formatter.Chain formatter = Formatter.NOOP;
 
+  /** True, if we want to extend lookup to parent scope. */
+  private boolean parentScopeResolution = true;
+
   /**
    * Creates a new {@link Handlebars} with no cache.
    *
@@ -1112,6 +1115,82 @@ public class Handlebars implements HelperRegistry {
    */
   public String handlebarsJsFile() {
     return handlebarsJsFile;
+  }
+
+  /**
+   * @return True, if we want to extend lookup to parent scope, like Mustache Spec. Or false, if
+   *         lookup is restricted to current scope, like handlebars.js.
+   */
+  public boolean parentScopeResolution() {
+    return parentScopeResolution;
+  }
+
+  /**
+   * Given:
+   * <pre>
+   * {
+   *   "value": "Brett",
+   *   "child": {
+   *      "bestQB" : "Favre"
+   *    }
+   * }
+   * </pre>
+   *
+   * Handlebars.java will output: <code>Hello Favre Brett</code> while handlebars.js:
+   * <code>Hello Favre</code>.
+   *
+   * Why? Handlebars.java is a 100% Mustache implementation while handlebars.js isn't.
+   *
+   * This option forces Handlebars.java mimics handlebars.js behavior:
+   *
+   * <pre>
+   * Handlebars hbs = new Handlebars()
+   *   .parentScopeResolution(true);
+   * </pre>
+   *
+   * Outputs: <code>Hello Favre</code>.
+   *
+   *
+   * @param parentScopeResolution False, if we want to restrict lookup to current scope (like in
+   *        handlebars.js). Default is <code>true</code>
+   */
+  public void setParentScopeResolution(final boolean parentScopeResolution) {
+    this.parentScopeResolution = parentScopeResolution;
+  }
+
+  /**
+   * Given:
+   * <pre>
+   * {
+   *   "value": "Brett",
+   *   "child": {
+   *      "bestQB" : "Favre"
+   *    }
+   * }
+   * </pre>
+   *
+   * Handlebars.java will output: <code>Hello Favre Brett</code> while handlebars.js:
+   * <code>Hello Favre</code>.
+   *
+   * Why? Handlebars.java is a 100% Mustache implementation while handlebars.js isn't.
+   *
+   * This option forces Handlebars.java mimics handlebars.js behavior:
+   *
+   * <pre>
+   * Handlebars hbs = new Handlebars()
+   *   .parentScopeResolution(true);
+   * </pre>
+   *
+   * Outputs: <code>Hello Favre</code>.
+   *
+   *
+   * @param parentScopeResolution False, if we want to restrict lookup to current scope (like in
+   *        handlebars.js). Default is <code>true</code>
+   * @return This handlebars.
+   */
+  public Handlebars parentScopeResolution(final boolean parentScopeResolution) {
+    setParentScopeResolution(parentScopeResolution);
+    return this;
   }
 
   /**

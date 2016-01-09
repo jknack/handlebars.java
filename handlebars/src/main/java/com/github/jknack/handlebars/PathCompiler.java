@@ -58,16 +58,31 @@ public final class PathCompiler {
 
   /**
    * Split the property name by separator (except within a [] escaped blocked)
-   * and create an array of it.
+   * and create an array of it. The compiled expression will extend lookup to parent.
    *
    * @param key The property's name.
    * @return A path representation of the property (array based).
    */
   public static List<PathExpression> compile(final String key) {
-    List<PathExpression> path = cache.get(key);
+    return compile(key, true);
+  }
+
+  /**
+   * Split the property name by separator (except within a [] escaped blocked)
+   * and create an array of it.
+   *
+   * @param key The property's name.
+   * @param parentScopeResolution False, if we want to restrict lookup to current scope.
+   * @return A path representation of the property (array based).
+   */
+  public static List<PathExpression> compile(final String key,
+      final boolean parentScopeResolution) {
+    boolean local = !parentScopeResolution;
+    String ukey = key + local;
+    List<PathExpression> path = cache.get(ukey);
     if (path == null) {
-      path = parse(key);
-      cache.put(key, path);
+      path = parse(key, local);
+      cache.put(ukey, path);
     }
     return path;
   }
@@ -77,10 +92,17 @@ public final class PathCompiler {
    * and create an array of it.
    *
    * @param path The property's path.
+   * @param local True, if we want to restrict lookup to current scope.
    * @return A path representation of the property (array based).
    */
-  private static List<PathExpression> parse(final String path) {
-    List<PathExpression> resolvers = new ArrayList<>(SIZE);
+  private static List<PathExpression> parse(final String path, final boolean local) {
+    @SuppressWarnings("serial")
+    List<PathExpression> resolvers = new ArrayList<PathExpression>(SIZE) {
+      @Override
+      public String toString() {
+        return path;
+      }
+    };
     if ("this".equals(path) || "./".equals(path) || ".".equals(path)) {
       resolvers.add(new ResolveThisPath(path));
       return resolvers;
@@ -91,12 +113,12 @@ public final class PathCompiler {
     }
     if (path.startsWith("../")) {
       resolvers.add(new ParentPath());
-      resolvers.addAll(parse(path.substring("../".length())));
+      resolvers.addAll(parse(path.substring("../".length()), local));
       return resolvers;
     }
     if (path.startsWith("./")) {
       resolvers.add(new ThisPath("./"));
-      resolvers.addAll(parse(path.substring("./".length())));
+      resolvers.addAll(parse(path.substring("./".length()), local));
       return resolvers;
     }
     Matcher matcher = pattern.matcher(path);
@@ -111,9 +133,9 @@ public final class PathCompiler {
           key = key.substring(1, key.length() - 1);
         }
         try {
-          resolvers.add(new IndexedPath(Integer.parseInt(key), key));
+          resolvers.add(new IndexedPath(Integer.parseInt(key), key, local));
         } catch (NumberFormatException ex) {
-          resolvers.add(new PropertyPath(key));
+          resolvers.add(new PropertyPath(key, local));
         }
       }
     }

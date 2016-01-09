@@ -129,7 +129,7 @@ class Block extends HelperResolver {
       final Map<String, Object> hash, final List<String> blockParams) {
     super(handlebars);
     this.name = notNull(name, "The name is required.");
-    this.path = PathCompiler.compile(name);
+    this.path = PathCompiler.compile(name, handlebars.parentScopeResolution());
     this.inverted = inverted;
     this.type = type;
     params(params);

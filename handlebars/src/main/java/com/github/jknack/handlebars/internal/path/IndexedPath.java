@@ -38,15 +38,20 @@ public class IndexedPath implements PathExpression {
   /** Property path. */
   private String name;
 
+  /** True, if we want to restrict lookup to current scope. */
+  private boolean local;
+
   /**
    * A new {@link IndexedPath}.
    *
    * @param idx Index.
    * @param name Path.
+   * @param local True, if we want to restrict lookup to current scope.
    */
-  public IndexedPath(final int idx, final String name) {
+  public IndexedPath(final int idx, final String name, final boolean local) {
     this.idx = idx;
     this.name = name;
+    this.local = local;
   }
 
   @SuppressWarnings("rawtypes")
@@ -72,7 +77,7 @@ public class IndexedPath implements PathExpression {
 
   @Override
   public boolean local() {
-    return false;
+    return local;
   }
 
   @Override

@@ -32,13 +32,18 @@ public class PropertyPath implements PathExpression {
   /** Path. */
   private String name;
 
+  /** True, if we want to restrict lookup to current scope. */
+  private boolean local;
+
   /**
    * A new {@link PropertyPath}.
    *
    * @param name A property path.
+   * @param local True, if we want to restrict lookup to current scope.
    */
-  public PropertyPath(final String name) {
+  public PropertyPath(final String name, final boolean local) {
     this.name = name;
+    this.local = local;
   }
 
   @Override
@@ -49,7 +54,7 @@ public class PropertyPath implements PathExpression {
 
   @Override
   public boolean local() {
-    return false;
+    return local;
   }
 
   @Override

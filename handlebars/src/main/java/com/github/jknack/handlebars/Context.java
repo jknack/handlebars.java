@@ -521,11 +521,11 @@ public class Context {
     PathExpression head = path.get(0);
     boolean local = head.local();
     Object value = null;
+    PathExpressionChain expr = new PathExpressionChain(path);
+    Context it = this;
     if (local) {
-      value = new PathExpressionChain(path).next(resolver, this, model);
+      value = expr.next(resolver, it, it.model);
     } else {
-      Context it = this;
-      PathExpressionChain expr = new PathExpressionChain(path);
       while (value == null && it != null) {
         value = expr.eval(resolver, it, it.model);
         if (value == null) {
@@ -560,7 +560,28 @@ public class Context {
    * @return The value associated to the given key or <code>null</code> if no value is found.
    */
   public Object get(final String key) {
-    return get(PathCompiler.compile(key));
+    return get(key, true);
+  }
+
+  /**
+   * Lookup the given key inside the context stack.
+   * <ul>
+   * <li>Objects and hashes should be pushed onto the context stack.
+   * <li>All elements on the context stack should be accessible.
+   * <li>Multiple sections per template should be permitted.
+   * <li>Failed context lookups should be considered falsey.
+   * <li>Dotted names should be valid for Section tags.
+   * <li>Dotted names that cannot be resolved should be considered falsey.
+   * <li>Dotted Names - Context Precedence: Dotted names should be resolved against former
+   * resolutions.
+   * </ul>
+   *
+   * @param key The object key.
+   * @param parentScopeResolution False, if we want to restrict lookup to current scope.
+   * @return The value associated to the given key or <code>null</code> if no value is found.
+   */
+  public Object get(final String key, final boolean parentScopeResolution) {
+    return get(PathCompiler.compile(key, parentScopeResolution));
   }
 
   /**
