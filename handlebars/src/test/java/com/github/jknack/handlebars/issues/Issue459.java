@@ -9,7 +9,7 @@ import com.github.jknack.handlebars.v4Test;
 public class Issue459 extends v4Test {
 
   @Test
-  public void shouldNotRenderNullValues() throws IOException {
+  public void stringLiteralInPartials() throws IOException {
     shouldCompileTo("{{> \"loop\"}}", $("hash", $("foo", "bar"), "partials", $("loop", "{{foo}}")),
         "bar");
 

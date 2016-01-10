@@ -125,8 +125,8 @@ class Block extends HelperResolver {
    * @param blockParams The block param names.
    */
   public Block(final Handlebars handlebars, final String name,
-      final boolean inverted, final String type, final List<Object> params,
-      final Map<String, Object> hash, final List<String> blockParams) {
+      final boolean inverted, final String type, final List<Param> params,
+      final Map<String, Param> hash, final List<String> blockParams) {
     super(handlebars);
     this.name = notNull(name, "The name is required.");
     this.path = PathCompiler.compile(name, handlebars.parentScopeResolution());
@@ -392,20 +392,5 @@ class Block extends HelperResolver {
     paramNames.addAll(inverse.collectReferenceParameters());
     paramNames.addAll(super.collectReferenceParameters());
     return new ArrayList<String>(paramNames);
-  }
-
-  @Override
-  protected void collectReferenceParameters(final Collection<String> result) {
-    for (Object param : params) {
-      if (ParamType.REFERENCE.apply(param) && !ParamType.STRING.apply(param)) {
-        result.add((String) param);
-      }
-    }
-    for (Object hashValue : hash.values()) {
-      if (ParamType.REFERENCE.apply(hashValue) && !ParamType.STRING.apply(hashValue)) {
-        result.add((String) hashValue);
-      }
-    }
-    super.collectReferenceParameters(result);
   }
 }

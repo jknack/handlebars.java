@@ -55,7 +55,7 @@ public class BlockDecorator extends Block {
    * @param root True, if this is top level decorator.
    */
   public BlockDecorator(final Handlebars handlebars, final String name, final boolean inverted,
-      final List<Object> params, final Map<String, Object> hash, final List<String> blockParams,
+      final List<Param> params, final Map<String, Param> hash, final List<String> blockParams,
       final boolean root) {
     super(handlebars, name, inverted, "#*", params, hash, blockParams);
     this.root = root;

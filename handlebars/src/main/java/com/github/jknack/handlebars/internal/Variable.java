@@ -107,8 +107,8 @@ class Variable extends HelperResolver {
    * @param hash The variable's hash. Required.
    */
   public Variable(final Handlebars handlebars, final String name,
-      final TagType type, final List<Object> params,
-      final Map<String, Object> hash) {
+      final TagType type, final List<Param> params,
+      final Map<String, Param> hash) {
     super(handlebars);
     this.name = name.trim();
     this.path = PathCompiler.compile(name, handlebars.parentScopeResolution());
@@ -218,21 +218,6 @@ class Variable extends HelperResolver {
       result.add(name);
     }
     super.collect(result, tagType);
-  }
-
-  @Override
-  protected void collectReferenceParameters(final Collection<String> result) {
-    for (Object param : params) {
-      if (ParamType.REFERENCE.apply(param) && !ParamType.STRING.apply(param)) {
-        result.add((String) param);
-      }
-    }
-    for (Object hashValue : hash.values()) {
-      if (ParamType.REFERENCE.apply(hashValue) && !ParamType.STRING.apply(hashValue)) {
-        result.add((String) hashValue);
-      }
-    }
-    super.collectReferenceParameters(result);
   }
 
   /**

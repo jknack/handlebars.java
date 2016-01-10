@@ -55,7 +55,7 @@ public class VarDecorator extends Variable {
    * @param root True, if this is top level decorator.
    */
   public VarDecorator(final Handlebars handlebars, final String name, final TagType type,
-      final List<Object> params, final Map<String, Object> hash, final boolean root) {
+      final List<Param> params, final Map<String, Param> hash, final boolean root) {
     super(handlebars, name, type, params, hash);
     this.root = root;
   }

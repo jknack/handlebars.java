@@ -17,13 +17,13 @@
  */
 package com.github.jknack.handlebars;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.github.jknack.handlebars.internal.PathExpressionList;
 import com.github.jknack.handlebars.internal.path.DataPath;
 import com.github.jknack.handlebars.internal.path.IndexedPath;
 import com.github.jknack.handlebars.internal.path.ParentPath;
@@ -39,9 +39,6 @@ import com.github.jknack.handlebars.internal.path.ThisPath;
  * @since 4.0.1.
  */
 public final class PathCompiler {
-
-  /** Initial expression capacity. */
-  private static final int SIZE = 5;
 
   /** Cache with path expressions. */
   private static Map<String, List<PathExpression>> cache = new ConcurrentHashMap<>();
@@ -96,13 +93,8 @@ public final class PathCompiler {
    * @return A path representation of the property (array based).
    */
   private static List<PathExpression> parse(final String path, final boolean local) {
-    @SuppressWarnings("serial")
-    List<PathExpression> resolvers = new ArrayList<PathExpression>(SIZE) {
-      @Override
-      public String toString() {
-        return path;
-      }
-    };
+    List<PathExpression> resolvers = new PathExpressionList(path);
+
     if ("this".equals(path) || "./".equals(path) || ".".equals(path)) {
       resolvers.add(new ResolveThisPath(path));
       return resolvers;

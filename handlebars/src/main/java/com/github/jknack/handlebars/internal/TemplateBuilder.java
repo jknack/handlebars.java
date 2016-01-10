@@ -28,7 +28,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.antlr.v4.runtime.CommonToken;
-import org.antlr.v4.runtime.RuleContext;
 import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
@@ -41,6 +40,7 @@ import com.github.jknack.handlebars.HandlebarsError;
 import com.github.jknack.handlebars.HandlebarsException;
 import com.github.jknack.handlebars.Helper;
 import com.github.jknack.handlebars.HelperRegistry;
+import com.github.jknack.handlebars.PathCompiler;
 import com.github.jknack.handlebars.TagType;
 import com.github.jknack.handlebars.Template;
 import com.github.jknack.handlebars.internal.HbsParser.AmpvarContext;
@@ -98,7 +98,7 @@ abstract class TemplateBuilder<it> extends HbsParserBaseVisitor<Object> {
     private Token token;
 
     /** Partial params. */
-    private Map<String, Object> hash;
+    private Map<String, Param> hash;
 
     /** Partial path: static vs subexpression. */
     private Template path;
@@ -275,8 +275,8 @@ abstract class TemplateBuilder<it> extends HbsParserBaseVisitor<Object> {
       reportError(null, ctx.nameEnd.getLine(), ctx.nameEnd.getCharPositionInLine(),
           String.format("found: '%s', expected: '%s'", nameEnd, name));
     }
-    Block block = new Block(handlebars, name, true, "^", Collections.emptyList(),
-        Collections.<String, Object> emptyMap(), blockParams(ctx.blockParams()));
+    Block block = new Block(handlebars, name, true, "^", Collections.<Param> emptyList(),
+        Collections.<String, Param> emptyMap(), blockParams(ctx.blockParams()));
     block.filename(source.filename());
     block.position(nameStart.getLine(), nameStart.getCharPositionInLine());
     String startDelim = ctx.start.getText();
@@ -340,8 +340,8 @@ abstract class TemplateBuilder<it> extends HbsParserBaseVisitor<Object> {
    * @param decorator True, for var decorators.
    * @return A new {@link Variable}.
    */
-  private Template newVar(final Token name, final TagType varType, final List<Object> params,
-      final Map<String, Object> hash, final String startDelimiter, final String endDelimiter,
+  private Variable newVar(final Token name, final TagType varType, final List<Param> params,
+      final Map<String, Param> hash, final String startDelimiter, final String endDelimiter,
       final boolean decorator) {
     String varName = name.getText();
     boolean isHelper = ((params.size() > 0 || hash.size() > 0)
@@ -382,11 +382,12 @@ abstract class TemplateBuilder<it> extends HbsParserBaseVisitor<Object> {
     Variable var = decorator
         ? new VarDecorator(handlebars, varName, TagType.STAR_VAR, params, hash, level == 0)
         : new Variable(handlebars, varName, varType, params, hash);
-    return var
+    var
         .startDelimiter(startDelimiter)
         .endDelimiter(endDelimiter)
         .filename(source.filename())
         .position(name.getLine(), name.getCharPositionInLine());
+    return var;
   }
 
   /**
@@ -395,13 +396,13 @@ abstract class TemplateBuilder<it> extends HbsParserBaseVisitor<Object> {
    * @param ctx The hash context.
    * @return A new hash.
    */
-  private Map<String, Object> hash(final List<HashContext> ctx) {
+  private Map<String, Param> hash(final List<HashContext> ctx) {
     if (ctx == null || ctx.size() == 0) {
       return Collections.emptyMap();
     }
-    Map<String, Object> result = new LinkedHashMap<String, Object>();
+    Map<String, Param> result = new LinkedHashMap<>();
     for (HashContext hc : ctx) {
-      result.put(hc.QID().getText(), super.visit(hc.param()));
+      result.put(hc.QID().getText(), (Param) super.visit(hc.param()));
     }
     return result;
   }
@@ -433,63 +434,48 @@ abstract class TemplateBuilder<it> extends HbsParserBaseVisitor<Object> {
    * @param params The param context.
    * @return A new param list.
    */
-  private List<Object> params(final List<ParamContext> params) {
+  private List<Param> params(final List<ParamContext> params) {
     if (params == null || params.size() == 0) {
       return Collections.emptyList();
     }
-    List<Object> result = new ArrayList<Object>();
+    List<Param> result = new ArrayList<>();
     for (ParamContext param : params) {
-      result.add(super.visit(param));
+      result.add((Param) super.visit(param));
     }
     return result;
   }
 
   @Override
   public Object visitBoolParam(final BoolParamContext ctx) {
-    return Boolean.valueOf(ctx.getText());
+    return new DefParam(Boolean.valueOf(ctx.getText()));
   }
 
   @Override
   public Object visitSubParamExpr(final SubParamExprContext ctx) {
     SexprContext sexpr = ctx.sexpr();
-    return newVar(sexpr.QID().getSymbol(), TagType.SUB_EXPRESSION, params(sexpr.param()),
-        hash(sexpr.hash()), ctx.start.getText(), ctx.stop.getText(), false);
+    return new VarParam(
+        newVar(sexpr.QID().getSymbol(), TagType.SUB_EXPRESSION, params(sexpr.param()),
+            hash(sexpr.hash()), ctx.start.getText(), ctx.stop.getText(), false));
   }
 
   @Override
   public Object visitStringParam(final StringParamContext ctx) {
-    return stringLiteral(ctx);
+    return new StrParam(ctx.getText().replace("\\\"", "\""));
   }
 
   @Override
   public Object visitCharParam(final CharParamContext ctx) {
-    return charLiteral(ctx);
-  }
-
-  /**
-   * @param ctx The char literal context.
-   * @return A char literal.
-   */
-  private String charLiteral(final RuleContext ctx) {
-    return ctx.getText().replace("\\\'", "\'");
-  }
-
-  /**
-   * @param ctx The string literal context.
-   * @return A string literal.
-   */
-  private String stringLiteral(final RuleContext ctx) {
-    return ctx.getText().replace("\\\"", "\"");
+    return new StrParam(ctx.getText().replace("\\\'", "\'"));
   }
 
   @Override
   public Object visitRefParam(final RefParamContext ctx) {
-    return ctx.getText();
+    return new RefParam(PathCompiler.compile(ctx.getText(), handlebars.parentScopeResolution()));
   }
 
   @Override
   public Object visitIntParam(final IntParamContext ctx) {
-    return Integer.parseInt(ctx.getText());
+    return new DefParam(Integer.parseInt(ctx.getText()));
   }
 
   @Override

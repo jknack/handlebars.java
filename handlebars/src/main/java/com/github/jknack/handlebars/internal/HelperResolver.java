@@ -45,12 +45,12 @@ abstract class HelperResolver extends BaseTemplate {
   /**
    * The parameter list.
    */
-  protected List<Object> params = Collections.emptyList();
+  protected List<Param> params = Collections.emptyList();
 
   /**
    * The hash object.
    */
-  protected Map<String, Object> hash = Collections.emptyMap();
+  protected Map<String, Param> hash = Collections.emptyMap();
 
   /** Param's size. */
   protected int paramSize;
@@ -84,10 +84,9 @@ abstract class HelperResolver extends BaseTemplate {
       return Collections.emptyMap();
     }
     Map<String, Object> result = new LinkedHashMap<String, Object>();
-    for (Entry<String, Object> entry : hash.entrySet()) {
-      Object value = entry.getValue();
-      value = ParamType.parse(context, value);
-      result.put(entry.getKey(), value);
+    for (Entry<String, Param> entry : hash.entrySet()) {
+      Param value = entry.getValue();
+      result.put(entry.getKey(), value.apply(context));
     }
     return result;
   }
@@ -105,10 +104,10 @@ abstract class HelperResolver extends BaseTemplate {
     }
     Object[] values = new Object[paramSize - 1];
     for (int i = 1; i < paramSize; i++) {
-      Object value = params.get(i);
-      Object resolved = ParamType.parse(ctx, value);
+      Param value = params.get(i);
+      Object resolved = value.apply(ctx);
       values[i - 1] = resolved == null && handlebars.stringParams()
-          ? params.get(i) : resolved;
+          ? value.toString() : resolved;
     }
     return values;
   }
@@ -123,10 +122,10 @@ abstract class HelperResolver extends BaseTemplate {
   protected Object[] decoParams(final Context ctx) throws IOException {
     Object[] values = new Object[paramSize];
     for (int i = 0; i < paramSize; i++) {
-      Object value = params.get(i);
-      Object resolved = ParamType.parse(ctx, value);
+      Param value = params.get(i);
+      Object resolved = value.apply(ctx);
       values[i] = resolved == null && handlebars.stringParams()
-          ? value : resolved;
+          ? value.toString() : resolved;
     }
     return values;
   }
@@ -143,8 +142,7 @@ abstract class HelperResolver extends BaseTemplate {
     if (paramSize == 0) {
       return context.model();
     }
-    Object value = params.get(0);
-    return ParamType.parse(context, value);
+    return params.get(0).apply(context);
   }
 
   /**
@@ -185,7 +183,7 @@ abstract class HelperResolver extends BaseTemplate {
    * @param hash The new hash.
    * @return This resolver.
    */
-  public HelperResolver hash(final Map<String, Object> hash) {
+  public HelperResolver hash(final Map<String, Param> hash) {
     if (hash == null || hash.size() == 0) {
       this.hash = Collections.emptyMap();
     } else {
@@ -201,7 +199,7 @@ abstract class HelperResolver extends BaseTemplate {
    * @param params The new params.
    * @return This resolver.
    */
-  public HelperResolver params(final List<Object> params) {
+  public HelperResolver params(final List<Param> params) {
     if (params == null || params.size() == 0) {
       this.params = Collections.emptyList();
     } else {
@@ -243,11 +241,9 @@ abstract class HelperResolver extends BaseTemplate {
     if (hashSize > 0) {
       StringBuilder buffer = new StringBuilder();
       String sep = " ";
-      for (Entry<String, Object> hash : this.hash.entrySet()) {
-        Object hashValue = hash.getValue();
-        String hashText = hashValue instanceof Variable
-            ? ((Variable) hashValue).text()
-            : hashValue.toString();
+      for (Entry<String, Param> hash : this.hash.entrySet()) {
+        Param hashValue = hash.getValue();
+        String hashText = hashValue.toString();
         buffer.append(hash.getKey()).append("=").append(hashText)
             .append(sep);
       }
@@ -260,28 +256,26 @@ abstract class HelperResolver extends BaseTemplate {
   @Override
   protected void collect(final Collection<String> result, final TagType tagType) {
     for (Object param : this.params) {
-      if (param instanceof Variable) {
-        ((Variable) param).collect(result, tagType);
+      if (param instanceof VarParam) {
+        ((VarParam) param).fn.collect(result, tagType);
       }
     }
   }
 
   @Override
   protected void collectReferenceParameters(final Collection<String> result) {
-    for (Object param : this.params) {
-      if (param instanceof Variable) {
-        ((Variable) param).collectReferenceParameters(result);
-      }
-    }
     for (Object param : params) {
-      if (ParamType.REFERENCE.apply(param) && !ParamType.STRING.apply(param)) {
-        result.add((String) param);
+      if (param instanceof VarParam) {
+        ((VarParam) param).fn.collectReferenceParameters(result);
+      } else if (param instanceof RefParam) {
+        result.add(param.toString());
       }
     }
     for (Object hashValue : hash.values()) {
-      if (ParamType.REFERENCE.apply(hashValue) && !ParamType.STRING.apply(hashValue)) {
-        result.add((String) hashValue);
+      if (hashValue instanceof RefParam) {
+        result.add(hashValue.toString());
       }
     }
   }
+
 }
