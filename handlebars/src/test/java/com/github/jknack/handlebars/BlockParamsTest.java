@@ -24,8 +24,8 @@ public class BlockParamsTest extends AbstractTest {
   public void eachWithNamedKey() throws IOException {
     shouldCompileTo("{{#each users as |user userId|}}\n" +
         "  Id: {{userId}} Name: {{user.name}}\n" +
-        "{{/each}}", $("users", $("name", "Pedro")), "\n" +
-            "  Id: name Name: Pedro\n");
+        "{{/each}}", $("users", Arrays.asList($("name", "Pedro"))), "\n" +
+            "  Id: 0 Name: Pedro\n");
   }
 
   @Test

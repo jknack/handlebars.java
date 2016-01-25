@@ -76,6 +76,10 @@ public class Context {
     @Override
     public Object get(final List<PathExpression> path) {
       String key = path.get(0).toString();
+      // we must resolve this to parent context on block contexts (so tricky)
+      if (path.size() == 1 && key.equals("this")) {
+        return parent.model;
+      }
       // path variable should resolve from parent :S
       if (key.startsWith(".")) {
         return parent.get(path.subList(1, path.size()));

@@ -87,12 +87,13 @@ public class EachHelper implements Helper<Object> {
       while (loop.hasNext()) {
         Entry<String, Object> entry = loop.next();
         String key = entry.getKey();
-        Context itCtx = Context.newBuilder(parent, entry.getValue())
+        Object value = entry.getValue();
+        Context itCtx = Context.newBuilder(parent, value)
             .combine("@key", key)
             .combine("@first", first ? "first" : "")
             .combine("@last", !loop.hasNext() ? "last" : "")
             .build();
-        buffer.append(options.apply(fn, itCtx, Arrays.asList(context, key)));
+        buffer.append(options.apply(fn, itCtx, Arrays.asList(value, key)));
         first = false;
       }
       // empty?
