@@ -168,8 +168,8 @@ class Partial extends HelperResolver {
       ctx.data(hash);
       template.apply(ctx, writer);
     } catch (IOException ex) {
-      String reason = String.format("The partial '%s' could not be found",
-          loader.resolve(path.text()));
+      String reason = String.format("The partial '%s' at '%s' could not be found",
+          loader.resolve(path.text()), ex.getMessage());
       String message = String.format("%s:%s:%s: %s", filename, line, column, reason);
       HandlebarsError error = new HandlebarsError(filename, line,
           column, reason, text(), message);
