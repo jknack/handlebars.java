@@ -18,6 +18,7 @@
 package com.github.jknack.handlebars;
 
 import org.apache.commons.lang3.StringEscapeUtils;
+import org.apache.commons.lang3.text.translate.LookupTranslator;
 
 /**
  * <p>
@@ -42,14 +43,66 @@ import org.apache.commons.lang3.StringEscapeUtils;
 public interface EscapingStrategy {
 
   /**
-   * The default HTML Entity escaping strategy.
+   * Handlebars escaping strategy. Escape is done via a string map. See
+   * {@link EscapingStrategy#HTML_ENTITY}.
+   *
+   * @author edgar
+   * @since 4.0.4
    */
-  EscapingStrategy HTML_ENTITY = new EscapingStrategy() {
+  public class Hbs implements EscapingStrategy {
+
+    /** EMPTY. */
+    private static final String EMPTY = "";
+
+    /** Translator. */
+    private final LookupTranslator translator;
+
+    /**
+     * Creates a new {@link Hbs} escaping strategy.
+     *
+     * @param escapeMap A escape map.
+     */
+    public Hbs(final String[][] escapeMap) {
+      translator = new LookupTranslator(escapeMap);
+    }
+
     @Override
     public CharSequence escape(final CharSequence value) {
-      return Handlebars.Utils.escapeExpression(value);
+      if (value instanceof Handlebars.SafeString) {
+        return ((Handlebars.SafeString) value).content;
+      }
+      return value == null || value.length() == 0 ? EMPTY : translator.translate(value);
     }
-  };
+
+  }
+
+  /**
+   * The default HTML Entity escaping strategy.
+   */
+  EscapingStrategy HTML_ENTITY = new Hbs(new String[][]{
+      {"<", "&lt;" },
+      {">", "&gt;" },
+      {"\"", "&quot;" },
+      {"'", "&#x27;" },
+      {"`", "&#x60;" },
+      {"&", "&amp;" },
+      {"=", "&#x3D;" }
+  });
+
+  /**
+   * Like {@link #HTML_ENTITY} but ignores <code>=</code>.
+   */
+  EscapingStrategy HBS3 = new Hbs(new String[][]{
+      {"<", "&lt;" },
+      {">", "&gt;" },
+      {"\"", "&quot;" },
+      {"'", "&#x27;" },
+      {"`", "&#x60;" },
+      {"&", "&amp;" }
+  });
+
+  /** Default escaping strategy for Handlebars 4.x . */
+  EscapingStrategy HBS4 = HTML_ENTITY;
 
   /** Escape variable for CSV. */
   EscapingStrategy CSV = new EscapingStrategy() {
@@ -82,6 +135,9 @@ public interface EscapingStrategy {
       return value;
     }
   };
+
+  /** Default escaping strategy. */
+  EscapingStrategy DEF = HBS4;
 
   /**
    * Escape the {@link java.lang.CharSequence}.

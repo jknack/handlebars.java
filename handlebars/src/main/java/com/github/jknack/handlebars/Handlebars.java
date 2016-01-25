@@ -35,7 +35,6 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 
 import com.github.jknack.handlebars.cache.NullTemplateCache;
@@ -223,60 +222,7 @@ public class Handlebars implements HelperRegistry {
      *         SafeString.
      */
     public static CharSequence escapeExpression(final CharSequence input) {
-      if (StringUtils.isEmpty(input)) {
-        return "";
-      }
-      // Don't escape SafeStrings, since they're already safe
-      if (input instanceof SafeString) {
-        return ((SafeString) input).content;
-      }
-      StringBuilder out = null;
-      int prev = 0;
-      final int length = input.length();
-      for (int i = 0; i < length; i++) {
-        String newCh = null;
-        switch (input.charAt(i)) {
-          case '<':
-            newCh = "&lt;";
-            break;
-          case '>':
-            newCh = "&gt;";
-            break;
-          case '"':
-            newCh = "&quot;";
-            break;
-          case '\'':
-            newCh = "&#x27;";
-            break;
-          case '`':
-            newCh = "&#x60;";
-            break;
-          case '=':
-            newCh = "&#x3D;";
-            break;
-          case '&':
-            newCh = "&amp;";
-            break;
-          default:
-        }
-        if (newCh != null) {
-          if (out == null) {
-            out = new StringBuilder(length + 10);
-          }
-          if (prev < i) {
-            out.append(input, prev, i);
-          }
-          out.append(newCh);
-          prev = i + 1;
-        }
-      }
-      if (out == null) {
-        return input;
-      }
-      if (prev < length) {
-        out.append(input, prev, length);
-      }
-      return out;
+      return EscapingStrategy.DEF.escape(input);
     }
   }
 
