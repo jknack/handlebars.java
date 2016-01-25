@@ -200,6 +200,16 @@ public class RhinoHandlebars extends HandlebarsJs {
     }
 
     /**
+     * Apply the {@link #options#fn()} template using the provided context.
+     *
+     * @return The resulting text.
+     * @throws IOException If a resource cannot be loaded.
+     */
+    public CharSequence fn() throws IOException {
+      return options.fn();
+    }
+
+    /**
      * Apply the {@link #options#inverse(Object)} template using the provided context.
      *
      * @param context The context to use.
@@ -208,6 +218,16 @@ public class RhinoHandlebars extends HandlebarsJs {
      */
     public CharSequence inverse(final Object context) throws IOException {
       return options.inverse(context);
+    }
+
+    /**
+     * Apply the {@link #options#inverse()} template using the provided context.
+     *
+     * @return The resulting text.
+     * @throws IOException If a resource cannot be loaded.
+     */
+    public CharSequence inverse() throws IOException {
+      return options.inverse();
     }
   }
 
