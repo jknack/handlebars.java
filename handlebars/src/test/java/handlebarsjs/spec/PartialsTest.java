@@ -71,7 +71,7 @@ public class PartialsTest extends AbstractTest {
     } catch (HandlebarsException ex) {
       HandlebarsError error = ex.getError();
       assertNotNull(error);
-      assertEquals("The partial '/whatever.hbs' could not be found", error.reason);
+      assertEquals("The partial '/whatever.hbs' at '/whatever.hbs' could not be found", error.reason);
     }
   }
 
