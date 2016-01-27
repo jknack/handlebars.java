@@ -171,6 +171,7 @@ class Block extends HelperResolver {
     Template template = body;
     final Object it;
     Context itCtx = context;
+    Helper<Object> helper = this.helper;
     if (helper == null) {
       it = transform(itCtx.get(this.path));
       if (inverted) {
