@@ -40,12 +40,36 @@ import com.github.jknack.handlebars.internal.path.ThisPath;
  */
 public final class PathCompiler {
 
+  /** right parenthesis. */
+  private static final char RP = ']';
+
+  /** left parenthesis. */
+  private static final char LP = '[';
+
+  /** at symbol. */
+  private static final char AT = '@';
+
+  /** Parent traversal. */
+  private static final String PARENT_PATH = "../";
+
+  /** Parent. */
+  private static final String PARENT = "..";
+
+  /** This mustache. */
+  private static final String DOT = ".";
+
+  /** This handlebars. */
+  private static final String DOT_PATH = "./";
+
+  /** This handlebars. */
+  private static final String THIS = "this";
+
   /** Cache with path expressions. */
   private static Map<String, List<PathExpression>> cache = new ConcurrentHashMap<>();
 
   /** Split pattern. */
   private static Pattern pattern = Pattern
-      .compile("((\\[[^\\[\\]]+])|([^" + Pattern.quote("./") + "]+))");
+      .compile("((\\[[^\\[\\]]+])|(../)|([^" + Pattern.quote(DOT_PATH) + "]+))");
 
   /**
    * Not allowed.
@@ -95,39 +119,50 @@ public final class PathCompiler {
   private static List<PathExpression> parse(final String path, final boolean local) {
     List<PathExpression> resolvers = new PathExpressionList(path);
 
-    if ("this".equals(path) || "./".equals(path) || ".".equals(path)) {
+    if (THIS.equals(path) || DOT_PATH.equals(path) || DOT.equals(path)) {
       resolvers.add(new ResolveThisPath(path));
       return resolvers;
     }
-    if ("..".equals(path)) {
+    if (PARENT.equals(path)) {
       resolvers.add(new ResolveParentPath());
       return resolvers;
     }
-    if (path.startsWith("../")) {
+    if (path.startsWith(PARENT_PATH)) {
       resolvers.add(new ParentPath());
-      resolvers.addAll(parse(path.substring("../".length()), local));
+      resolvers.addAll(parse(path.substring(PARENT_PATH.length()), local));
       return resolvers;
     }
-    if (path.startsWith("./")) {
-      resolvers.add(new ThisPath("./"));
-      resolvers.addAll(parse(path.substring("./".length()), local));
+    if (path.startsWith(DOT_PATH)) {
+      resolvers.add(new ThisPath(DOT_PATH));
+      resolvers.addAll(parse(path.substring(DOT_PATH.length()), local));
       return resolvers;
     }
     Matcher matcher = pattern.matcher(path);
+    boolean data = false;
     while (matcher.find()) {
       String key = matcher.group(1);
-      if ("this".equals(key)) {
+      if (THIS.equals(key)) {
         resolvers.add(new ThisPath(key));
-      } else if (key.charAt(0) == '@') {
-        resolvers.add(new DataPath(key));
+      } else if (PARENT_PATH.equals(key)) {
+        resolvers.add(new ParentPath());
+      } else if (key.charAt(0) == AT) {
+        if (key.length() == 1) {
+          data = true;
+        } else {
+          resolvers.add(new DataPath(key));
+        }
       } else {
-        if (key.charAt(0) == '[' && key.charAt(key.length() - 1) == ']') {
+        if (key.charAt(0) == LP && key.charAt(key.length() - 1) == RP) {
           key = key.substring(1, key.length() - 1);
         }
         try {
           resolvers.add(new IndexedPath(Integer.parseInt(key), key, local));
         } catch (NumberFormatException ex) {
-          resolvers.add(new PropertyPath(key, local));
+          if (data) {
+            resolvers.add(new DataPath(AT + key));
+          } else {
+            resolvers.add(new PropertyPath(key, local));
+          }
         }
       }
     }

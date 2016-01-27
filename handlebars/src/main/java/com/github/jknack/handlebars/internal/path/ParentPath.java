@@ -33,7 +33,10 @@ public class ParentPath implements PathExpression {
   public Object eval(final ValueResolver resolver, final Context context, final Object data,
       final Chain chain) {
     Context parent = context.parent();
-    return chain.next(resolver, parent, parent == null ? null : parent.model());
+    if (parent == null) {
+      return null;
+    }
+    return parent.get(chain.path());
   }
 
   @Override

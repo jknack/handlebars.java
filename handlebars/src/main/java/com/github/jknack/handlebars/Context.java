@@ -293,6 +293,11 @@ public class Context {
       return data;
     }
 
+    @Override
+    public List<PathExpression> path() {
+      return path.subList(i, path.size());
+    }
+
     /**
      * Reset any previous state and restart the evaluation.
      *

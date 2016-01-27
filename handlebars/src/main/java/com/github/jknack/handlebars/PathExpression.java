@@ -17,6 +17,8 @@
  */
 package com.github.jknack.handlebars;
 
+import java.util.List;
+
 /**
  * Compiled version of path expression, like: <code>this</code>, <code>foo</code>,
  * <code>foo.bar</code>.
@@ -44,6 +46,11 @@ public interface PathExpression {
      * @return A resolved value or <code>null</code>.
      */
     Object next(ValueResolver resolver, Context context, Object data);
+
+    /**
+     * @return The current path to evaluate.
+     */
+    List<PathExpression> path();
   }
 
   /**

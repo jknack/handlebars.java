@@ -32,6 +32,7 @@ public class DataPath implements PathExpression {
 
   /** Property name. */
   private String name;
+
   /** Property name without @. */
   private String nameWithoutAtSymbol;
 
