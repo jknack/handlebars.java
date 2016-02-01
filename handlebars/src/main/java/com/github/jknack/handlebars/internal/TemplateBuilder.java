@@ -133,6 +133,11 @@ abstract class TemplateBuilder<it> extends HbsParserBaseVisitor<Object> {
    */
   private LinkedList<String> qualifier = new LinkedList<String>();
 
+  /**
+   * Keep track of block helpers params.
+   */
+  private LinkedList<String> paramStack = new LinkedList<String>();
+
   /** Keep track of block level, required for top level decorators. */
   private int level;
 
@@ -168,6 +173,11 @@ abstract class TemplateBuilder<it> extends HbsParserBaseVisitor<Object> {
     hasTag(true);
     Block block = new Block(handlebars, name, false, "{{", params(sexpr.param()),
         hash(sexpr.hash()), Collections.<String> emptyList());
+
+    if (block.paramSize > 0) {
+      paramStack.addLast(block.params.get(0).toString());
+    }
+
     block.filename(source.filename());
     block.position(nameStart.getLine(), nameStart.getCharPositionInLine());
     String startDelim = ctx.start.getText();
@@ -181,6 +191,11 @@ abstract class TemplateBuilder<it> extends HbsParserBaseVisitor<Object> {
     }
     hasTag(true);
     qualifier.removeLast();
+
+    if (block.paramSize > 0) {
+      paramStack.removeLast();
+    }
+
     level -= 1;
     return block;
   }
@@ -207,6 +222,9 @@ abstract class TemplateBuilder<it> extends HbsParserBaseVisitor<Object> {
     } else {
       block = new Block(handlebars, name, false, "#", params(sexpr.param()),
           hash(sexpr.hash()), blockParams(ctx.blockParams()));
+    }
+    if (block.paramSize > 0) {
+      paramStack.addLast(block.params.get(0).toString());
     }
     block.filename(source.filename());
     block.position(nameStart.getLine(), nameStart.getCharPositionInLine());
@@ -258,6 +276,9 @@ abstract class TemplateBuilder<it> extends HbsParserBaseVisitor<Object> {
     }
     hasTag(true);
     qualifier.removeLast();
+    if (block.paramSize > 0) {
+      paramStack.removeLast();
+    }
     level -= 1;
     return block;
   }
@@ -349,7 +370,12 @@ abstract class TemplateBuilder<it> extends HbsParserBaseVisitor<Object> {
     if (!isHelper && qualifier.size() > 0 && "with".equals(qualifier.getLast())
         && !varName.startsWith(".")) {
       // HACK to qualified 'with' in order to improve handlebars.js compatibility
-      varName = "this." + varName;
+      if (paramStack.size() > 0) {
+        String scope = paramStack.getLast();
+        if (varName.equals(scope) || varName.startsWith(scope + ".")) {
+          varName = "this." + varName;
+        }
+      }
     }
     String[] parts = varName.split("\\./");
     // TODO: try to catch this with ANTLR...
