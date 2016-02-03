@@ -28,6 +28,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import com.github.jknack.handlebars.internal.path.ThisPath;
 import com.github.jknack.handlebars.io.TemplateSource;
 
 /**
@@ -534,6 +535,10 @@ public class Context {
     Context it = this;
     if (local) {
       value = expr.next(resolver, it, it.model);
+      // extends local lookup to extended context if 'this' isn't present
+      if (value == null && !(head instanceof ThisPath)) {
+        value = expr.eval(resolver, it.extendedContext, it.extendedContext.model);
+      }
     } else {
       while (value == null && it != null) {
         value = expr.eval(resolver, it, it.model);

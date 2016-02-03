@@ -18,7 +18,6 @@
 package com.github.jknack.handlebars.internal.path;
 
 import com.github.jknack.handlebars.Context;
-import com.github.jknack.handlebars.PathExpression;
 import com.github.jknack.handlebars.ValueResolver;
 
 /**
@@ -27,10 +26,8 @@ import com.github.jknack.handlebars.ValueResolver;
  * @author edgar
  * @since 4.0.1
  */
-public class ResolveThisPath implements PathExpression {
+public class ResolveThisPath extends ThisPath {
 
-  /** This path. */
-  private String name;
 
   /**
    * Creates a new path resolver.
@@ -38,7 +35,7 @@ public class ResolveThisPath implements PathExpression {
    * @param name A this path.
    */
   public ResolveThisPath(final String name) {
-    this.name = name;
+    super(name);
   }
 
   @Override
@@ -48,14 +45,5 @@ public class ResolveThisPath implements PathExpression {
     return value == null ? data : value;
   }
 
-  @Override
-  public boolean local() {
-    return true;
-  }
-
-  @Override
-  public String toString() {
-    return name;
-  }
 
 }
