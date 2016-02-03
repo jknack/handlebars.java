@@ -272,7 +272,7 @@ public class RhinoHandlebars extends HandlebarsJs {
         if (paramSize == 0) {
           arg0 = "___NOT_SET_";
         } else {
-          arg0 = toJsObject(context, options.context);
+          arg0 = toJsObject(arg0, options.context);
         }
         Object result = helper.apply(jsContext, arg0, new OptionsJs(options));
         if (result instanceof CharSequence) {
@@ -390,6 +390,9 @@ public class RhinoHandlebars extends HandlebarsJs {
       return hash((Map) object, parent);
     } else if (Collection.class.isInstance(object)) {
       return new BetterNativeArray((Collection) object, parent);
+    } else if (object.getClass().isArray()) {
+      Object[] array = (Object[]) object;
+      return new BetterNativeArray(array, parent);
     }
     Context context = object instanceof Context
         ? (Context) object : Context.newContext(parent, object);
