@@ -25,6 +25,15 @@ public class BasicContextTest extends AbstractTest {
         "Goodbye\ncruel\nworld!",
         "It works if all the required keys are provided");
   }
+  
+  @Test
+  public void compilingWithBasicContextAccentsAndColon() throws IOException {
+    shouldCompileTo("Goodbye\n{{x:cruél}}\n{{world}}!",
+        "{'x:cruél': cruel, world: world}",
+        "Goodbye\ncruel\nworld!",
+        "It works if all the required keys are provided");
+  }
+
 
 
   @Test
