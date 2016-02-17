@@ -345,7 +345,7 @@ ID
 fragment
 ID_START
   :
-   [a-zA-Z_$@]
+   [a-zA-Z_$@:\u00C0-\u00FF]
   ;
 
 fragment
