@@ -143,23 +143,26 @@ public class HandlebarsViewResolver extends AbstractTemplateViewResolver
   }
 
   /**
-   * Creates a new {@link HandlebarsViewResolver} that utilizes the parameter handlebars for the underlying template
-   * lifecycle management.
+   * Creates a new {@link HandlebarsViewResolver} that utilizes the parameter handlebars for the
+   * underlying template lifecycle management.
    *
-   * @param handlebars The {@link Handlebars} instance used for template lifecycle management. Required.
+   * @param handlebars The {@link Handlebars} instance used for template lifecycle management.
+   *                   Required.
    */
-  public HandlebarsViewResolver(Handlebars handlebars) {
+  public HandlebarsViewResolver(final Handlebars handlebars) {
     this(handlebars, HandlebarsView.class);
   }
 
   /**
-   * Creates a new {@link HandlebarsViewResolver} that utilizes the parameter handlebars for the underlying template
-   * lifecycle management.
+   * Creates a new {@link HandlebarsViewResolver} that utilizes the parameter handlebars for the
+   * underlying template lifecycle management.
    *
-   * @param handlebars The {@link Handlebars} instance used for template lifecycle management. Required.
+   * @param handlebars The {@link Handlebars} instance used for template lifecycle management.
+   *                   Required.
    * @param viewClass The view's class. Required.
    */
-  public HandlebarsViewResolver(Handlebars handlebars, final Class<? extends HandlebarsView> viewClass) {
+  public HandlebarsViewResolver(final Handlebars handlebars,
+                                final Class<? extends HandlebarsView> viewClass) {
     this(viewClass);
 
     this.handlebars = handlebars;
@@ -213,7 +216,7 @@ public class HandlebarsViewResolver extends AbstractTemplateViewResolver
   @Override
   public void afterPropertiesSet() {
     // If no handlebars object was passed in as a constructor parameter
-    if(handlebars == null) {
+    if (handlebars == null) {
       // Creates a new template loader.
       URLTemplateLoader templateLoader = createTemplateLoader(getApplicationContext());
 
