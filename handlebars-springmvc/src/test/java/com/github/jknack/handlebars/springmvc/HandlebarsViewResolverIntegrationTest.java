@@ -30,6 +30,10 @@ public class HandlebarsViewResolverIntegrationTest {
   @Qualifier("viewResolverWithoutMessageHelper")
   HandlebarsViewResolver viewResolverWithoutMessageHelper;
 
+  @Autowired
+  @Qualifier("parameterizedHandlebarsViewResolver")
+  HandlebarsViewResolver parameterizedHandlebarsViewResolver;
+
   @Test
   public void getHandlebars() throws Exception {
     assertNotNull(viewResolver);
@@ -40,6 +44,14 @@ public class HandlebarsViewResolverIntegrationTest {
   public void resolveView() throws Exception {
     assertNotNull(viewResolver);
     View view = viewResolver.resolveViewName("template", Locale.getDefault());
+    assertNotNull(view);
+    assertEquals(HandlebarsView.class, view.getClass());
+  }
+
+  @Test
+  public void resolveViewWithParameterized() throws Exception {
+    assertNotNull(parameterizedHandlebarsViewResolver);
+    View view = parameterizedHandlebarsViewResolver.resolveViewName("template", Locale.getDefault());
     assertNotNull(view);
     assertEquals(HandlebarsView.class, view.getClass());
   }
@@ -56,6 +68,18 @@ public class HandlebarsViewResolverIntegrationTest {
     }
   }
 
+  @Test
+  public void resolveViewWithFallbackParameterized() throws Exception {
+    try {
+      assertNotNull(parameterizedHandlebarsViewResolver);
+      parameterizedHandlebarsViewResolver.setFailOnMissingFile(false);
+      View view = parameterizedHandlebarsViewResolver.resolveViewName("invalidView", Locale.getDefault());
+      assertNull(view);
+    } finally {
+      parameterizedHandlebarsViewResolver.setFailOnMissingFile(true);
+    }
+  }
+
   @Test(expected = IOException.class)
   public void failToResolve() throws Exception {
     try {
@@ -64,6 +88,17 @@ public class HandlebarsViewResolverIntegrationTest {
       viewResolver.resolveViewName("invalidView", Locale.getDefault());
     } finally {
       viewResolver.setFailOnMissingFile(true);
+    }
+  }
+
+  @Test(expected = IOException.class)
+  public void failToResolveParameterized() throws Exception {
+    try {
+      assertNotNull(parameterizedHandlebarsViewResolver);
+      parameterizedHandlebarsViewResolver.setFailOnMissingFile(true);
+      parameterizedHandlebarsViewResolver.resolveViewName("invalidView", Locale.getDefault());
+    } finally {
+      parameterizedHandlebarsViewResolver.setFailOnMissingFile(true);
     }
   }
 

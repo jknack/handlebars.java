@@ -143,6 +143,29 @@ public class HandlebarsViewResolver extends AbstractTemplateViewResolver
   }
 
   /**
+   * Creates a new {@link HandlebarsViewResolver} that utilizes the parameter handlebars for the underlying template
+   * lifecycle management.
+   *
+   * @param handlebars The {@link Handlebars} instance used for template lifecycle management. Required.
+   */
+  public HandlebarsViewResolver(Handlebars handlebars) {
+    this(handlebars, HandlebarsView.class);
+  }
+
+  /**
+   * Creates a new {@link HandlebarsViewResolver} that utilizes the parameter handlebars for the underlying template
+   * lifecycle management.
+   *
+   * @param handlebars The {@link Handlebars} instance used for template lifecycle management. Required.
+   * @param viewClass The view's class. Required.
+   */
+  public HandlebarsViewResolver(Handlebars handlebars, final Class<? extends HandlebarsView> viewClass) {
+    this(viewClass);
+
+    this.handlebars = handlebars;
+  }
+
+  /**
    * {@inheritDoc}
    */
   @Override
@@ -189,12 +212,15 @@ public class HandlebarsViewResolver extends AbstractTemplateViewResolver
 
   @Override
   public void afterPropertiesSet() {
-    // Creates a new template loader.
-    URLTemplateLoader templateLoader = createTemplateLoader(getApplicationContext());
+    // If no handlebars object was passed in as a constructor parameter
+    if(handlebars == null) {
+      // Creates a new template loader.
+      URLTemplateLoader templateLoader = createTemplateLoader(getApplicationContext());
 
-    // Creates a new handlebars object.
-    handlebars = notNull(createHandlebars(templateLoader),
-        "A handlebars object is required.");
+      // Creates a new handlebars object.
+      handlebars = notNull(createHandlebars(templateLoader),
+              "A handlebars object is required.");
+    }
 
     handlebars.with(registry);
 

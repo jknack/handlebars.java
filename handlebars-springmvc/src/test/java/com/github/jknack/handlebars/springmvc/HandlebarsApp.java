@@ -4,6 +4,9 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.github.jknack.handlebars.Handlebars;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,6 +17,9 @@ import com.github.jknack.handlebars.Options;
 
 @Configuration
 public class HandlebarsApp {
+
+  @Autowired
+  ApplicationContext applicationContext;
 
   @Bean
   public HandlebarsViewResolver viewResolver() {
@@ -34,6 +40,17 @@ public class HandlebarsApp {
     viewResolver.setCache(false);
 
     viewResolver.setBindI18nToMessageSource(true);
+
+    return viewResolver;
+  }
+
+  @Bean
+  public HandlebarsViewResolver parameterizedHandlebarsViewResolver() {
+    HandlebarsViewResolver viewResolver = new HandlebarsViewResolver(new Handlebars(
+        new SpringTemplateLoader(applicationContext)));
+
+    // no cache for testing
+    viewResolver.setCache(false);
 
     return viewResolver;
   }
