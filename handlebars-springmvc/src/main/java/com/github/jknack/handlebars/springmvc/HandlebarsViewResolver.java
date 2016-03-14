@@ -218,7 +218,7 @@ public class HandlebarsViewResolver extends AbstractTemplateViewResolver
     // If no handlebars object was passed in as a constructor parameter
     if (handlebars == null) {
       // Creates a new template loader.
-      URLTemplateLoader templateLoader = createTemplateLoader(getApplicationContext());
+      TemplateLoader templateLoader = createTemplateLoader(getApplicationContext());
 
       // Creates a new handlebars object.
       handlebars = notNull(createHandlebars(templateLoader),
@@ -286,12 +286,12 @@ public class HandlebarsViewResolver extends AbstractTemplateViewResolver
   }
 
   /**
-   * Creates a new {@link Handlebars} object using the {@link SpringTemplateLoader}.
+   * Creates a new {@link Handlebars} object using the parameter {@link TemplateLoader}.
    *
    * @param templateLoader A template loader.
    * @return A new handlebar's object.
    */
-  protected Handlebars createHandlebars(final URLTemplateLoader templateLoader) {
+  protected Handlebars createHandlebars(final TemplateLoader templateLoader) {
     return new Handlebars(templateLoader);
   }
 
@@ -301,7 +301,7 @@ public class HandlebarsViewResolver extends AbstractTemplateViewResolver
    * @param context The application's context.
    * @return A new template loader.
    */
-  protected URLTemplateLoader createTemplateLoader(final ApplicationContext context) {
+  protected TemplateLoader createTemplateLoader(final ApplicationContext context) {
     URLTemplateLoader templateLoader = new SpringTemplateLoader(context);
     // Override prefix and suffix.
     templateLoader.setPrefix(getPrefix());
