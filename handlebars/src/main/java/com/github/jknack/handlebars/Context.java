@@ -127,6 +127,46 @@ public class Context {
   }
 
   /**
+   * Partial context.
+   *
+   * @author edgar
+   * @since 4.0.5
+   */
+  private static class PartialCtx extends Context {
+
+    /**
+     * Creates a new partial context.
+     *
+     * @param parent Parent.
+     * @param model Model.
+     * @param hash Hash.
+     */
+    protected PartialCtx(final Context parent, final Object model, final Map<String, Object> hash) {
+      super(model);
+      this.extendedContext = new Context(hash);
+      this.extendedContext.resolver = parent.resolver;
+      this.extendedContext.extendedContext = new Context(Collections.emptyMap());
+      this.parent = parent;
+      this.data = parent.data;
+      this.resolver = parent.resolver;
+    }
+
+    @Override
+    public Object get(final List<PathExpression> path) {
+      String key = path.get(0).toString();
+      // hash first, except for this
+      if (key.equals("this")) {
+        return super.get(path);
+      }
+      Object value = extendedContext.get(path);
+      if (value == null) {
+        return super.get(path);
+      }
+      return value;
+    }
+  }
+
+  /**
    * A composite value resolver. It delegate the value resolution.
    *
    * @author edgar.espina
@@ -679,6 +719,19 @@ public class Context {
       hash.put(names.get(i), values.get(i));
     }
     return new BlockParam(parent, hash);
+  }
+
+  /**
+   * Creates a new partial context.
+   *
+   * @param ctx Current scope.
+   * @param scope Scope switch.
+   * @param hash Partial hash.
+   * @return A new context.
+   */
+  public static Context newPartialContext(final Context ctx, final String scope,
+      final Map<String, Object> hash) {
+    return new PartialCtx(ctx, ctx.get(scope), hash);
   }
 
   /**

@@ -158,8 +158,7 @@ class Partial extends HelperResolver {
         }
 
       }
-      Context ctx = Context.newContext(context, context.get(this.scontext))
-          .combine(hash(context));
+      Context ctx = Context.newPartialContext(context, this.scontext, hash(context));
       template.apply(ctx, writer);
     } catch (IOException ex) {
       String reason = String.format("The partial '%s' at '%s' could not be found",
