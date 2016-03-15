@@ -19,6 +19,8 @@ package com.github.jknack.handlebars;
 
 import static org.apache.commons.lang3.Validate.notEmpty;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
@@ -289,6 +291,23 @@ public class Context {
     public Builder resolver(final ValueResolver... resolvers) {
       notEmpty(resolvers, "At least one value-resolver must be present.");
       context.setResolver(new CompositeValueResolver(resolvers));
+      return this;
+    }
+
+    /**
+     * Add one or more value resolver to the defaults defined by
+     * {@link ValueResolver#VALUE_RESOLVERS}.
+     *
+     * @param resolvers The value resolvers. Required.
+     * @return This builder.
+     */
+    public Builder push(final ValueResolver... resolvers) {
+      notEmpty(resolvers, "At least one value-resolver must be present.");
+      List<ValueResolver> merged = new ArrayList<>();
+      merged.addAll(Arrays.asList(ValueResolver.VALUE_RESOLVERS));
+      merged.addAll(Arrays.asList(resolvers));
+      context.setResolver(
+          new CompositeValueResolver(merged.toArray(new ValueResolver[merged.size()])));
       return this;
     }
 
