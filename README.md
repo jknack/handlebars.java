@@ -659,7 +659,7 @@ In short, from a helper you can throw an Exception and Handlebars.java will add 
  Where is the ```hookContextStack``` method? Well, it depends on your application architecture.
 
 ### Using the ValueResolver
- By default, Handlebars.java use the JavaBean methods (i.e. public getXxx methods) and Map as value resolvers.
+ By default, Handlebars.java use the JavaBean methods (i.e. public getXxx and isXxx methods) and Map as value resolvers.
  
  You can choose a different value resolver. This section describe how to do this.
  
