@@ -30,7 +30,7 @@ public class Issue490 {
       }
 
       @Override
-      public Set<Entry<String, Object>> propertySet(final Object context) {
+      public Set<Entry<Object, Object>> propertySet(final Object context) {
         return null;
       }
     };
@@ -57,7 +57,7 @@ public class Issue490 {
       }
 
       @Override
-      public Set<Entry<String, Object>> propertySet(final Object context) {
+      public Set<Entry<Object, Object>> propertySet(final Object context) {
         return null;
       }
     };

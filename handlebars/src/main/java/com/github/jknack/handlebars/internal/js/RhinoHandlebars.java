@@ -406,8 +406,8 @@ public class RhinoHandlebars extends HandlebarsJs {
    * @return A Rhino js object.
    */
   private static Object toJsObject(final Context context) {
-    Map<String, Object> hash = new HashMap<String, Object>();
-    for (Entry<String, Object> property : context.propertySet()) {
+    Map<Object, Object> hash = new HashMap<Object, Object>();
+    for (Entry<Object, Object> property : context.propertySet()) {
       hash.put(property.getKey(), property.getValue());
     }
     return hash(hash, context);

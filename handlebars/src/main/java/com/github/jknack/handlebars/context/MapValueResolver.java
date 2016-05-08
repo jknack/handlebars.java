@@ -67,7 +67,7 @@ public enum MapValueResolver implements ValueResolver {
 
   @SuppressWarnings({"unchecked", "rawtypes" })
   @Override
-  public Set<Entry<String, Object>> propertySet(final Object context) {
+  public Set<Entry<Object, Object>> propertySet(final Object context) {
     if (context instanceof Map) {
       return ((Map) context).entrySet();
     }

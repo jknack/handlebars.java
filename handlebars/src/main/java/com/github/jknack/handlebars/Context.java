@@ -217,8 +217,8 @@ public class Context {
     }
 
     @Override
-    public Set<Entry<String, Object>> propertySet(final Object context) {
-      Set<Entry<String, Object>> propertySet = new LinkedHashSet<Map.Entry<String, Object>>();
+    public Set<Entry<Object, Object>> propertySet(final Object context) {
+      Set<Entry<Object, Object>> propertySet = new LinkedHashSet<Map.Entry<Object, Object>>();
       for (ValueResolver resolver : resolvers) {
         propertySet.addAll(resolver.propertySet(context));
       }
@@ -544,7 +544,7 @@ public class Context {
    * @param context The context object.
    * @return All the properties and values for the given object.
    */
-  public Set<Entry<String, Object>> propertySet(final Object context) {
+  public Set<Entry<Object, Object>> propertySet(final Object context) {
     if (context == null) {
       return Collections.emptySet();
     }
@@ -559,7 +559,7 @@ public class Context {
    *
    * @return All the properties and values of {@link #model()}.
    */
-  public Set<Entry<String, Object>> propertySet() {
+  public Set<Entry<Object, Object>> propertySet() {
     return propertySet(model);
   }
 
