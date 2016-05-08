@@ -15,7 +15,7 @@ public class Issue502 extends v4Test {
 
 	@Test
 	public void testMapOfArraysStringKey() throws IOException {
-		Map<String,Collection<String>> data = new HashMap<>();
+		Map<String,Collection<String>> data = new TreeMap<>();
 		Collection<String> d1 = new ArrayList<>();
 		d1.add("1");
 		d1.add("2");
