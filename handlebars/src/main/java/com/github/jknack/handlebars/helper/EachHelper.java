@@ -79,14 +79,14 @@ public class EachHelper implements Helper<Object> {
       }
       return buffer;
     } else if (context != null) {
-      Iterator<Entry<String, Object>> loop = options.propertySet(context).iterator();
+      Iterator<Entry<Object, Object>> loop = options.propertySet(context).iterator();
       Context parent = options.context;
       boolean first = true;
       Options.Buffer buffer = options.buffer();
       Template fn = options.fn;
       while (loop.hasNext()) {
-        Entry<String, Object> entry = loop.next();
-        String key = entry.getKey();
+        Entry<Object, Object> entry = loop.next();
+        Object key = entry.getKey();
         Object value = entry.getValue();
         Context itCtx = Context.newBuilder(parent, value)
             .combine("@key", key)

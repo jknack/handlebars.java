@@ -783,7 +783,7 @@ public class Options {
    * @param context The context object. Not null.
    * @return All the properties and their values for the given object.
    */
-  public Set<Entry<String, Object>> propertySet(final Object context) {
+  public Set<Entry<Object, Object>> propertySet(final Object context) {
     return this.context.propertySet(context instanceof Context
         ? ((Context) context).model()
         : context);

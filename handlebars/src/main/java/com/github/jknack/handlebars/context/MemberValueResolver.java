@@ -155,7 +155,7 @@ public abstract class MemberValueResolver<M extends Member> implements ValueReso
   protected abstract Set<M> members(Class<?> clazz);
 
   @Override
-  public Set<Entry<String, Object>> propertySet(final Object context) {
+  public Set<Entry<Object, Object>> propertySet(final Object context) {
     notNull(context, "The context is required.");
     if (context instanceof Map) {
       return Collections.emptySet();
@@ -163,7 +163,7 @@ public abstract class MemberValueResolver<M extends Member> implements ValueReso
       return Collections.emptySet();
     }
     Collection<M> members = cache(context.getClass()).values();
-    Map<String, Object> propertySet = new LinkedHashMap<String, Object>();
+    Map<Object, Object> propertySet = new LinkedHashMap<Object, Object>();
     for (M member : members) {
       String name = memberName(member);
       propertySet.put(name, resolve(context, name));

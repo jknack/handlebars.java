@@ -74,5 +74,5 @@ public interface ValueResolver {
    * @param context The context object. Not null.
    * @return All the properties and their values for the given object.
    */
-  Set<Entry<String, Object>> propertySet(Object context);
+  Set<Entry<Object, Object>> propertySet(Object context);
 }

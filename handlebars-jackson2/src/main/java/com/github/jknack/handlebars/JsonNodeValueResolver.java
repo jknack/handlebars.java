@@ -132,8 +132,8 @@ public enum JsonNodeValueResolver implements ValueResolver {
    * @param node A json node.
    * @return A map from a json node.
    */
-  private static Map<String, Object> toMap(final ObjectNode node) {
-    return new AbstractMap<String, Object>() {
+  private static Map<Object, Object> toMap(final ObjectNode node) {
+    return new AbstractMap<Object, Object>() {
       @Override
       public Object get(final Object key) {
         return resolve(node.get((String) key));
@@ -146,7 +146,7 @@ public enum JsonNodeValueResolver implements ValueResolver {
 
       @SuppressWarnings({"unchecked", "rawtypes" })
       @Override
-      public Set<Map.Entry<String, Object>> entrySet() {
+      public Set<Map.Entry<Object, Object>> entrySet() {
         Iterator<Map.Entry<String, JsonNode>> it = node.fields();
         Set set = new LinkedHashSet();
         while (it.hasNext()) {
@@ -158,11 +158,11 @@ public enum JsonNodeValueResolver implements ValueResolver {
   }
 
   @Override
-  public Set<Entry<String, Object>> propertySet(final Object context) {
+  public Set<Entry<Object, Object>> propertySet(final Object context) {
     if (context instanceof ObjectNode) {
       ObjectNode node = (ObjectNode) context;
       Iterator<String> fieldNames = node.fieldNames();
-      Map<String, Object> result = new LinkedHashMap<String, Object>();
+      Map<Object, Object> result = new LinkedHashMap<Object, Object>();
       while (fieldNames.hasNext()) {
         String key = fieldNames.next();
         result.put(key, resolve(node, key));
