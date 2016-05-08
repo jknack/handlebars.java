@@ -1,4 +1,4 @@
-package com.github.jknack.handlebars.i500;
+package com.github.jknack.handlebars.i502;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -11,7 +11,7 @@ import org.junit.Test;
 
 import com.github.jknack.handlebars.v4Test;
 
-public class Issue500 extends v4Test {
+public class Issue502 extends v4Test {
 
 	@Test
 	public void testMapOfArraysStringKey() throws IOException {
