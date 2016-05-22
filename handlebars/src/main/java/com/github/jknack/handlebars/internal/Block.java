@@ -208,9 +208,9 @@ class Block extends HelperResolver {
         params(itCtx), hash(itCtx), blockParams, writer);
     options.data(Context.PARAM_SIZE, this.params.size());
 
-    CharSequence result = helper.apply(it, options);
+    Object result = helper.apply(it, options);
     if (result != null) {
-      writer.append(result);
+      writer.append(result.toString());
     }
   }
 

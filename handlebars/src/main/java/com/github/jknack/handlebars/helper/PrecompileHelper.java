@@ -172,7 +172,7 @@ public final class PrecompileHelper implements Helper<String> {
   }
 
   @Override
-  public CharSequence apply(final String path, final Options options)
+  public Object apply(final String path, final Options options)
       throws IOException {
     notEmpty(path, "found: '%s', expected 'template path'", path);
     String wrapperName = options.hash("wrapper", "anonymous");

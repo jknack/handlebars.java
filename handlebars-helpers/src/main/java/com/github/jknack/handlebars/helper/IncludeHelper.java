@@ -42,7 +42,7 @@ public class IncludeHelper implements Helper<String> {
   public static final String NAME = "include";
 
   @Override
-  public CharSequence apply(final String partial, final Options options) throws IOException {
+  public Object apply(final String partial, final Options options) throws IOException {
     // merge all the hashes into the context
     options.context.data(options.hash);
     Template template = options.handlebars.compile(partial);

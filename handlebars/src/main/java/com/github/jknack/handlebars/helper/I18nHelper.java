@@ -152,7 +152,7 @@ public enum I18nHelper implements Helper<String> {
      * @throws IOException If the bundle wasn't resolve.
      */
     @Override
-    public CharSequence apply(final String key, final Options options) throws IOException {
+    public Object apply(final String key, final Options options) throws IOException {
       notEmpty(key, "found: '%s', expected 'bundle's key'", key);
       Locale locale = LocaleUtils
           .toLocale((String) options.hash("locale", defaultLocale.toString()));
@@ -228,7 +228,7 @@ public enum I18nHelper implements Helper<String> {
      * @throws IOException If bundle wasn't resolve.
      */
     @Override
-    public CharSequence apply(final String localeName, final Options options) throws IOException {
+    public Object apply(final String localeName, final Options options) throws IOException {
       Locale locale = LocaleUtils.toLocale(defaultIfEmpty(localeName, defaultLocale.toString()));
       String baseName = options.hash("bundle", defaultBundle);
       ClassLoader classLoader = options.hash("classLoader", getClass().getClassLoader());

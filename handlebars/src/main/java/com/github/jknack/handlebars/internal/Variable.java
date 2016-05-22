@@ -154,19 +154,23 @@ class Variable extends HelperResolver {
     return name;
   }
 
-  @SuppressWarnings("unchecked")
   @Override
   protected void merge(final Context scope, final Writer writer)
       throws IOException {
+    Object value = value(scope, writer);
+    if (value != null) {
+      writer.append(formatAndEscape(value, formatter));
+    }
+  }
+
+  @SuppressWarnings("unchecked")
+  public Object value(final Context scope, final Writer writer) throws IOException {
     boolean blockParam = scope.isBlockParams() && noArg;
     if (helper != null && !blockParam) {
       Options options = new Options(handlebars, name, type, scope, emptyVar, Template.EMPTY,
           params(scope), hash(scope), BPARAMS, writer);
       options.data(Context.PARAM_SIZE, this.params.size());
-      CharSequence value = helper.apply(determineContext(scope), options);
-      if (value != null) {
-        writer.append(formatAndEscape(value, Formatter.NOOP));
-      }
+      return helper.apply(determineContext(scope), options);
     } else {
       Object value = scope.get(path);
       if (value == null) {
@@ -180,9 +184,7 @@ class Variable extends HelperResolver {
       if (value instanceof Lambda) {
         value = Lambdas.merge(handlebars, (Lambda<Object, Object>) value, scope, this);
       }
-      if (value != null) {
-        writer.append(formatAndEscape(value, formatter));
-      }
+      return value;
     }
   }
 

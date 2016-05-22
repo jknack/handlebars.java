@@ -49,7 +49,7 @@ public enum HumanizeHelper implements Helper<Object> {
    */
   binaryPrefix {
     @Override
-    public CharSequence apply(final Object value, final Options options)
+    public Object apply(final Object value, final Options options)
         throws IOException {
       isTrue(value instanceof Number, "found '%s', expected: 'number'", value);
       return Humanize.binaryPrefix((Number) value, resolveLocale(options));
@@ -69,7 +69,7 @@ public enum HumanizeHelper implements Helper<Object> {
    */
   camelize {
     @Override
-    public CharSequence apply(final Object value, final Options options)
+    public Object apply(final Object value, final Options options)
         throws IOException {
       isTrue(value instanceof String, "found '%s', expected: 'string'", value);
       Boolean capFirst = options.hash("capFirst", true);
@@ -90,7 +90,7 @@ public enum HumanizeHelper implements Helper<Object> {
    */
   capitalize {
     @Override
-    public CharSequence apply(final Object value, final Options options)
+    public Object apply(final Object value, final Options options)
         throws IOException {
       isTrue(value instanceof String, "found '%s', expected: 'string'", value);
       return Humanize.capitalize((String) value);
@@ -110,7 +110,7 @@ public enum HumanizeHelper implements Helper<Object> {
    */
   decamelize {
     @Override
-    public CharSequence apply(final Object value, final Options options)
+    public Object apply(final Object value, final Options options)
         throws IOException {
       isTrue(value instanceof String, "found '%s', expected: 'string'", value);
       String replacement = options.hash("replacement", " ");
@@ -131,7 +131,7 @@ public enum HumanizeHelper implements Helper<Object> {
    */
   formatCurrency {
     @Override
-    public CharSequence apply(final Object value, final Options options)
+    public Object apply(final Object value, final Options options)
         throws IOException {
       isTrue(value instanceof Number, "found '%s', expected: 'number'", value);
       return Humanize.formatCurrency((Number) value, resolveLocale(options));
@@ -151,7 +151,7 @@ public enum HumanizeHelper implements Helper<Object> {
    */
   formatPercent {
     @Override
-    public CharSequence apply(final Object value, final Options options)
+    public Object apply(final Object value, final Options options)
         throws IOException {
       isTrue(value instanceof Number, "found '%s', expected: 'number'", value);
       return Humanize.formatPercent((Number) value, resolveLocale(options));
@@ -172,7 +172,7 @@ public enum HumanizeHelper implements Helper<Object> {
    */
   metricPrefix {
     @Override
-    public CharSequence apply(final Object value, final Options options)
+    public Object apply(final Object value, final Options options)
         throws IOException {
       isTrue(value instanceof Number, "found '%s', expected: 'number'", value);
       return Humanize.metricPrefix((Number) value, resolveLocale(options));
@@ -192,7 +192,7 @@ public enum HumanizeHelper implements Helper<Object> {
    */
   naturalDay {
     @Override
-    public CharSequence apply(final Object value, final Options options)
+    public Object apply(final Object value, final Options options)
         throws IOException {
       isTrue(value instanceof Date, "found '%s', expected: 'date'", value);
       return Humanize.naturalDay((Date) value);
@@ -214,7 +214,7 @@ public enum HumanizeHelper implements Helper<Object> {
    */
   naturalTime {
     @Override
-    public CharSequence apply(final Object value, final Options options)
+    public Object apply(final Object value, final Options options)
         throws IOException {
       isTrue(value instanceof Date, "found '%s', expected: 'date'", value);
       return Humanize.naturalTime((Date) value, resolveLocale(options));
@@ -235,7 +235,7 @@ public enum HumanizeHelper implements Helper<Object> {
    */
   ordinal {
     @Override
-    public CharSequence apply(final Object value, final Options options)
+    public Object apply(final Object value, final Options options)
         throws IOException {
       isTrue(value instanceof Number, "found '%s', expected: 'number'", value);
       return Humanize.ordinal((Number) value, resolveLocale(options));
@@ -289,7 +289,7 @@ public enum HumanizeHelper implements Helper<Object> {
    */
   pluralize {
     @Override
-    public CharSequence apply(final Object value, final Options options)
+    public Object apply(final Object value, final Options options)
         throws IOException {
       isTrue(value instanceof String, "found '%s', expected: 'string'", value);
       return Humanize.pluralizeFormat((String) value, resolveLocale(options))
@@ -324,7 +324,7 @@ public enum HumanizeHelper implements Helper<Object> {
    */
   slugify {
     @Override
-    public CharSequence apply(final Object value, final Options options)
+    public Object apply(final Object value, final Options options)
         throws IOException {
       isTrue(value instanceof String, "found '%s', expected: 'string'", value);
       return Humanize.slugify((String) value);
@@ -345,7 +345,7 @@ public enum HumanizeHelper implements Helper<Object> {
    */
   spellNumber {
     @Override
-    public CharSequence apply(final Object value, final Options options)
+    public Object apply(final Object value, final Options options)
         throws IOException {
       isTrue(value instanceof Number, "found '%s', expected: 'number'", value);
       return Humanize.spellBigNumber((Number) value, resolveLocale(options));
@@ -366,7 +366,7 @@ public enum HumanizeHelper implements Helper<Object> {
    */
   spellDigit {
     @Override
-    public CharSequence apply(final Object value, final Options options)
+    public Object apply(final Object value, final Options options)
         throws IOException {
       isTrue(value instanceof Number, "found '%s', expected: 'number'", value);
       return Humanize.spellDigit((Number) value, resolveLocale(options));
@@ -387,7 +387,7 @@ public enum HumanizeHelper implements Helper<Object> {
    */
   titleize {
     @Override
-    public CharSequence apply(final Object value, final Options options)
+    public Object apply(final Object value, final Options options)
         throws IOException {
       isTrue(value instanceof String, "found '%s', expected: 'string'", value);
       return Humanize.titleize((String) value);
@@ -407,7 +407,7 @@ public enum HumanizeHelper implements Helper<Object> {
    */
   transliterate {
     @Override
-    public CharSequence apply(final Object value, final Options options)
+    public Object apply(final Object value, final Options options)
         throws IOException {
       isTrue(value instanceof String, "found '%s', expected: 'string'", value);
       return Humanize.transliterate((String) value);
@@ -427,7 +427,7 @@ public enum HumanizeHelper implements Helper<Object> {
    */
   underscore {
     @Override
-    public CharSequence apply(final Object value, final Options options)
+    public Object apply(final Object value, final Options options)
         throws IOException {
       isTrue(value instanceof String, "found '%s', expected: 'string'", value);
       return Humanize.underscore((String) value);
@@ -448,7 +448,7 @@ public enum HumanizeHelper implements Helper<Object> {
    */
   wordWrap {
     @Override
-    public CharSequence apply(final Object value, final Options options)
+    public Object apply(final Object value, final Options options)
         throws IOException {
       isTrue(value instanceof String, "found '%s', expected: 'string'", value);
       Number length = options.param(0, null);

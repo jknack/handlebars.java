@@ -66,7 +66,7 @@ public class HelperErrorTest extends AbstractTest {
     try {
       Hash helpers = $("basic", new Helper<Object>() {
         @Override
-        public CharSequence apply(final Object context, final Options options)
+        public Object apply(final Object context, final Options options)
             throws IOException {
           throw new IllegalArgumentException("missing parameter: '0'.");
         }

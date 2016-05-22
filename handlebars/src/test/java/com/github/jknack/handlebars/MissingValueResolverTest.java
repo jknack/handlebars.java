@@ -13,7 +13,7 @@ public class MissingValueResolverTest {
     final Object hash = new Object();
     Handlebars handlebars = new Handlebars().registerHelperMissing(new Helper<Object>() {
       @Override
-      public CharSequence apply(final Object context, final Options options) throws IOException {
+      public Object apply(final Object context, final Options options) throws IOException {
         assertEquals(hash, context);
         assertEquals("missingVar", options.helperName);
         return "(none)";
@@ -28,7 +28,7 @@ public class MissingValueResolverTest {
     final Object hash = new Object();
     Handlebars handlebars = new Handlebars().registerHelperMissing(new Helper<Object>() {
       @Override
-      public CharSequence apply(final Object context, final Options options) throws IOException {
+      public Object apply(final Object context, final Options options) throws IOException {
         throw new IllegalStateException("Missing variable: " + options.helperName);
       }
     });

@@ -83,7 +83,7 @@ public enum JodaHelper implements Helper<ReadableInstant> {
   };
 
   @Override
-  public CharSequence apply(final ReadableInstant time, final Options options) throws IOException {
+  public Object apply(final ReadableInstant time, final Options options) throws IOException {
     return safeApply(time, options);
   }
 

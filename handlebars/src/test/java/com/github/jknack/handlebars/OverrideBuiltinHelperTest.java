@@ -10,7 +10,7 @@ public class OverrideBuiltinHelperTest extends v4Test {
   protected void configure(final Handlebars handlebars) {
     handlebars.registerHelper("each", new Helper<Object>() {
       @Override
-      public CharSequence apply(final Object context, final Options options) throws IOException {
+      public Object apply(final Object context, final Options options) throws IOException {
         return "custom";
       }
     });

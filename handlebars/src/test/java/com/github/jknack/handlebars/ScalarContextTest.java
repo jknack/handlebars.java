@@ -56,7 +56,7 @@ public class ScalarContextTest {
     Handlebars handlebars = new Handlebars();
     handlebars.registerHelper("quote", new Helper<String>() {
       @Override
-      public CharSequence apply(final String context, final Options options)
+      public Object apply(final String context, final Options options)
           throws IOException {
         return context;
       }
@@ -70,7 +70,7 @@ public class ScalarContextTest {
     Handlebars handlebars = new Handlebars();
     handlebars.registerHelper("quote", new Helper<String>() {
       @Override
-      public CharSequence apply(final String context, final Options options)
+      public Object apply(final String context, final Options options)
           throws IOException {
         return (CharSequence) options.hash.get("q");
       }

@@ -200,7 +200,7 @@ public class BasicContextTest extends AbstractTest {
     Hash helpers = $("foo", new Helper<Object>() {
 
       @Override
-      public CharSequence apply(final Object value, final Options options) throws IOException {
+      public Object apply(final Object value, final Options options) throws IOException {
         return "bar " + value;
       }
     });

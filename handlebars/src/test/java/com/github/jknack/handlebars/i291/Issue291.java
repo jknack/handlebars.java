@@ -15,7 +15,7 @@ public class Issue291 extends AbstractTest {
   protected Handlebars newHandlebars() {
     return super.newHandlebars().registerHelperMissing(new Helper<Object>() {
       @Override
-      public CharSequence apply(final Object context, final Options options) throws IOException {
+      public Object apply(final Object context, final Options options) throws IOException {
         return options.fn.position()[0] + ":" + options.fn.position()[1];
       }
     });

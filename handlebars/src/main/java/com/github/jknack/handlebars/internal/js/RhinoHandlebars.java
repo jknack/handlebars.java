@@ -265,7 +265,7 @@ public class RhinoHandlebars extends HandlebarsJs {
   public void registerHelper(final String name, final JsHelper helper) {
     registry.registerHelper(name, new Helper<Object>() {
       @Override
-      public CharSequence apply(final Object context, final Options options) throws IOException {
+      public Object apply(final Object context, final Options options) throws IOException {
         Object jsContext = toJsObject(options.context.model(), options.context);
         Object arg0 = context;
         Integer paramSize = options.data(Context.PARAM_SIZE);
@@ -275,10 +275,7 @@ public class RhinoHandlebars extends HandlebarsJs {
           arg0 = toJsObject(arg0, options.context);
         }
         Object result = helper.apply(jsContext, arg0, new OptionsJs(options));
-        if (result instanceof CharSequence) {
-          return (CharSequence) result;
-        }
-        return result == null ? null : result.toString();
+        return result;
       }
     });
   }

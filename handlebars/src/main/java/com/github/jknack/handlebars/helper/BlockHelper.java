@@ -59,7 +59,7 @@ public class BlockHelper implements Helper<Object> {
   public static final String NAME = "block";
 
   @Override
-  public CharSequence apply(final Object context, final Options options)
+  public Object apply(final Object context, final Options options)
       throws IOException {
     isTrue(context instanceof String, "found '%s', expected 'partial's name'",
         context);

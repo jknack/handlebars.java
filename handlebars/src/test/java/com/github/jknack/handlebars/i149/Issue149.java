@@ -14,7 +14,7 @@ public class Issue149 extends AbstractTest {
   public void negativeParam() throws IOException {
     shouldCompileTo("{{neg foo -1}}", $("foo", "x"), $("neg", new Helper<Object>() {
       @Override
-      public CharSequence apply(final Object context, final Options options) throws IOException {
+      public Object apply(final Object context, final Options options) throws IOException {
         return "" + context + options.param(0);
       }
     }), "x-1");
@@ -24,7 +24,7 @@ public class Issue149 extends AbstractTest {
   public void negativeHash() throws IOException {
     shouldCompileTo("{{neg foo h=-1}}", $("foo", "x"), $("neg", new Helper<Object>() {
       @Override
-      public CharSequence apply(final Object context, final Options options) throws IOException {
+      public Object apply(final Object context, final Options options) throws IOException {
         return "" + context + options.hash("h");
       }
     }), "x-1");

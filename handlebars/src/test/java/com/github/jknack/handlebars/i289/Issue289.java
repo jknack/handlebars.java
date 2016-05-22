@@ -14,12 +14,12 @@ public class Issue289 extends AbstractTest {
 
   private Hash helpers = $("lowercase", new Helper<Object>() {
     @Override
-    public CharSequence apply(final Object context, final Options options) throws IOException {
+    public Object apply(final Object context, final Options options) throws IOException {
       return context.toString().toLowerCase();
     }
   }, "concat", new Helper<Object>() {
     @Override
-    public CharSequence apply(final Object context, final Options options) throws IOException {
+    public Object apply(final Object context, final Options options) throws IOException {
       return options.param(0).toString() + options.param(1).toString();
     }
   });

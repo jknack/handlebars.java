@@ -55,7 +55,7 @@ public class v4Test {
         if (!(value instanceof Helper)) {
           helper = new Helper<Object>() {
             @Override
-            public CharSequence apply(final Object context, final Options options)
+            public Object apply(final Object context, final Options options)
                 throws IOException {
               return value.toString();
             }

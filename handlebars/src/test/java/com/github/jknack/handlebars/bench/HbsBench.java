@@ -29,7 +29,7 @@ public class HbsBench {
         new ClassPathTemplateLoader("/", ".html"))
             .registerHelper("minus", new Helper<Stock>() {
               @Override
-              public CharSequence apply(final Stock stock, final Options options)
+              public Object apply(final Stock stock, final Options options)
                   throws IOException {
                 return stock.getChange() < 0 ? new SafeString("class=\"minus\"") : null;
               }

@@ -81,7 +81,7 @@ public enum NumberHelper implements Helper<Object> {
   };
 
   @Override
-  public CharSequence apply(final Object context, final Options options)
+  public Object apply(final Object context, final Options options)
       throws IOException {
     if (context instanceof Number) {
       return safeApply((Number) context, options);

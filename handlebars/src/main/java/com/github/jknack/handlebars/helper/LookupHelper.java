@@ -48,20 +48,20 @@ public class LookupHelper implements Helper<Object> {
   public static final String NAME = "lookup";
 
   @Override
-  public CharSequence apply(final Object context, final Options options)
+  public Object apply(final Object context, final Options options)
       throws IOException {
     if (context == null) {
       return null;
     }
     if (options.params.length <= 0) {
-      return context.toString();
+      return context;
     }
     Context ctx = Context.newBuilder(options.context, context).build();
     Object lookup = ctx.get(options.param(0).toString());
     if (lookup == null) {
       return null;
     }
-    return lookup.toString();
+    return lookup;
   }
 
 }

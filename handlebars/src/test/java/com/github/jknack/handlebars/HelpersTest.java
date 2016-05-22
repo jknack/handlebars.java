@@ -39,7 +39,7 @@ public class HelpersTest extends SpecTest {
   protected HelperRegistry configure(final Handlebars handlebars) {
     handlebars.registerHelper("list", new Helper<List<Object>>() {
       @Override
-      public CharSequence apply(final List<Object> list, final Options options)
+      public Object apply(final List<Object> list, final Options options)
           throws IOException {
         String text = "";
         if (options.isFalsy(list)) {
@@ -58,7 +58,7 @@ public class HelpersTest extends SpecTest {
     });
     handlebars.registerHelper("fullName", new Helper<Map<String, Object>>() {
       @Override
-      public CharSequence apply(final Map<String, Object> context,
+      public Object apply(final Map<String, Object> context,
           final Options options) throws IOException {
         return context.get("firstName") + " " + context.get("lastName");
       }
@@ -66,7 +66,7 @@ public class HelpersTest extends SpecTest {
     handlebars.registerHelper("agree_button",
         new Helper<Map<String, Object>>() {
           @Override
-          public CharSequence apply(final Map<String, Object> context,
+          public Object apply(final Map<String, Object> context,
               final Options options)
               throws IOException {
             String text = "<button>I agree. I " + context.get("emotion") + " "
@@ -77,7 +77,7 @@ public class HelpersTest extends SpecTest {
     handlebars.registerHelper("link",
         new Helper<Object>() {
           @Override
-          public CharSequence apply(final Object context,
+          public Object apply(final Object context,
               final Options options)
               throws IOException {
             return "<a href='" + options.param(0) + "'>"
@@ -87,7 +87,7 @@ public class HelpersTest extends SpecTest {
     handlebars.registerHelper("link-hash",
         new Helper<String>() {
           @Override
-          public CharSequence apply(final String text,
+          public Object apply(final String text,
               final Options options)
               throws IOException {
             StringBuilder classes = new StringBuilder();

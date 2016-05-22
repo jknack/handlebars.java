@@ -19,7 +19,7 @@ public class DecoratorTest extends v4Test {
         "{{#helper}}{{*decorator}}{{/helper}}",
         $("helpers", $("helper", new Helper<Object>() {
           @Override
-          public CharSequence apply(final Object context, final Options options)
+          public Object apply(final Object context, final Options options)
               throws IOException {
             return options.data("run");
           }
@@ -38,7 +38,7 @@ public class DecoratorTest extends v4Test {
         "{{#helper}}{{*decorator}}suc{{/helper}}",
         $("helpers", $("helper", new Helper<Object>() {
           @Override
-          public CharSequence apply(final Object context, final Options options)
+          public Object apply(final Object context, final Options options)
               throws IOException {
             return options.fn().toString() + options.data("run");
           }
@@ -57,7 +57,7 @@ public class DecoratorTest extends v4Test {
         "{{#helper}}{{#*decorator}}success{{/decorator}}{{/helper}}",
         $("helpers", $("helper", new Helper<Object>() {
           @Override
-          public CharSequence apply(final Object context, final Options options)
+          public Object apply(final Object context, final Options options)
               throws IOException {
             return options.data("run");
           }
@@ -76,7 +76,7 @@ public class DecoratorTest extends v4Test {
         "{{#helper}}{{#*decorator}}{{#*nested}}suc{{/nested}}cess{{/decorator}}{{/helper}}",
         $("helpers", $("helper", new Helper<Object>() {
           @Override
-          public CharSequence apply(final Object context, final Options options)
+          public Object apply(final Object context, final Options options)
               throws IOException {
             return options.data("run");
           }
@@ -100,7 +100,7 @@ public class DecoratorTest extends v4Test {
         "{{#helper}}{{#*decorator}}suc{{/decorator}}{{#*decorator}}cess{{/decorator}}{{/helper}}",
         $("helpers", $("helper", new Helper<Object>() {
           @Override
-          public CharSequence apply(final Object context, final Options options)
+          public Object apply(final Object context, final Options options)
               throws IOException {
             return options.data("run");
           }
@@ -120,7 +120,7 @@ public class DecoratorTest extends v4Test {
         "{{#helper}}{{*decorator foo}}{{/helper}}",
         $("hash", $("foo", "success"), "helpers", $("helper", new Helper<Object>() {
           @Override
-          public CharSequence apply(final Object context, final Options options)
+          public Object apply(final Object context, final Options options)
               throws IOException {
             return options.data("run");
           }
@@ -251,7 +251,7 @@ public class DecoratorTest extends v4Test {
             "{{/grid}}",
         $("helpers", $("grid", new Helper<List<Hash>>() {
           @Override
-          public CharSequence apply(final List<Hash> people, final Options options)
+          public Object apply(final List<Hash> people, final Options options)
               throws IOException {
             List<Hash> columns = options.data("columns");
             String headers = "";

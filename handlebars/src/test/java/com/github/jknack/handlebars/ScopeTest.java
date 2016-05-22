@@ -28,7 +28,7 @@ public class ScopeTest extends AbstractTest {
     // A name conflict
     Hash helpers = $("name", new Helper<Object>() {
       @Override
-      public CharSequence apply(final Object context, final Options options)
+      public Object apply(final Object context, final Options options)
           throws IOException {
         return "helper response";
       }

@@ -16,7 +16,7 @@ public class Issue282 extends AbstractTest {
     Hash helpers = $(
         "vowels", new Helper<Object>() {
           @Override
-          public CharSequence apply(final Object context, final Options options) throws IOException {
+          public Object apply(final Object context, final Options options) throws IOException {
             return context.toString();
           }
         });
@@ -27,12 +27,12 @@ public class Issue282 extends AbstractTest {
   public void subexpression() throws Exception {
     Hash helpers = $("inner-helper", new Helper<Object>() {
       @Override
-      public CharSequence apply(final Object context, final Options options) throws IOException {
+      public Object apply(final Object context, final Options options) throws IOException {
         return options.helperName + "-" + context;
       }
     }, "outer-helper", new Helper<Object>() {
       @Override
-      public CharSequence apply(final Object context, final Options options) throws IOException {
+      public Object apply(final Object context, final Options options) throws IOException {
         return context.toString() + options.params[0];
       }
     });
@@ -45,37 +45,37 @@ public class Issue282 extends AbstractTest {
     Hash helpers = $(
         "a", new Helper<Object>() {
           @Override
-          public CharSequence apply(final Object context, final Options options) throws IOException {
+          public Object apply(final Object context, final Options options) throws IOException {
             return options.helperName + context;
           }
         },
         "e", new Helper<Object>() {
           @Override
-          public CharSequence apply(final Object context, final Options options) throws IOException {
+          public Object apply(final Object context, final Options options) throws IOException {
             return options.helperName + context;
           }
         },
         "i", new Helper<Object>() {
           @Override
-          public CharSequence apply(final Object context, final Options options) throws IOException {
+          public Object apply(final Object context, final Options options) throws IOException {
             return options.helperName + context;
           }
         },
         "o", new Helper<Object>() {
           @Override
-          public CharSequence apply(final Object context, final Options options) throws IOException {
+          public Object apply(final Object context, final Options options) throws IOException {
             return options.helperName + context;
           }
         },
         "u", new Helper<Object>() {
           @Override
-          public CharSequence apply(final Object context, final Options options) throws IOException {
+          public Object apply(final Object context, final Options options) throws IOException {
             return options.helperName;
           }
         },
         "vowels", new Helper<Object>() {
           @Override
-          public CharSequence apply(final Object context, final Options options) throws IOException {
+          public Object apply(final Object context, final Options options) throws IOException {
             return context.toString();
           }
         });
@@ -88,37 +88,37 @@ public class Issue282 extends AbstractTest {
     Hash helpers = $(
         "a", new Helper<Object>() {
           @Override
-          public CharSequence apply(final Object context, final Options options) throws IOException {
+          public Object apply(final Object context, final Options options) throws IOException {
             return options.helperName + ":" + options.params[0] + context;
           }
         },
         "e", new Helper<Object>() {
           @Override
-          public CharSequence apply(final Object context, final Options options) throws IOException {
+          public Object apply(final Object context, final Options options) throws IOException {
             return options.helperName + ":" + options.params[0] + context;
           }
         },
         "i", new Helper<Object>() {
           @Override
-          public CharSequence apply(final Object context, final Options options) throws IOException {
+          public Object apply(final Object context, final Options options) throws IOException {
             return options.helperName + ":" + options.params[0] + context;
           }
         },
         "o", new Helper<Object>() {
           @Override
-          public CharSequence apply(final Object context, final Options options) throws IOException {
+          public Object apply(final Object context, final Options options) throws IOException {
             return options.helperName + ":" + options.params[0] + context;
           }
         },
         "u", new Helper<Object>() {
           @Override
-          public CharSequence apply(final Object context, final Options options) throws IOException {
+          public Object apply(final Object context, final Options options) throws IOException {
             return options.helperName + ":" + context;
           }
         },
         "vowels", new Helper<Object>() {
           @Override
-          public CharSequence apply(final Object context, final Options options) throws IOException {
+          public Object apply(final Object context, final Options options) throws IOException {
             return context.toString();
           }
         });

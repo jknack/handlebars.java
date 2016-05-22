@@ -49,7 +49,7 @@ public class EachHelper implements Helper<Object> {
 
   @SuppressWarnings({"rawtypes", "unchecked" })
   @Override
-  public CharSequence apply(final Object context, final Options options)
+  public Object apply(final Object context, final Options options)
       throws IOException {
     if (context instanceof Iterable) {
       Options.Buffer buffer = options.buffer();

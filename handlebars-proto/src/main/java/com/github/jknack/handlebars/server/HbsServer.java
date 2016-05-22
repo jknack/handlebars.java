@@ -166,7 +166,7 @@ public class HbsServer {
      */
     handlebars.registerHelper(HelperRegistry.HELPER_MISSING, new Helper<Object>() {
       @Override
-      public CharSequence apply(final Object context,
+      public Object apply(final Object context,
           final com.github.jknack.handlebars.Options options)
           throws IOException {
         return new Handlebars.SafeString(options.fn.text());

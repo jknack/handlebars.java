@@ -20,7 +20,7 @@ public class HelperMissingTest extends AbstractTest {
   public void helperMissingName() throws IOException {
     shouldCompileTo("{{varx 7}}", $, $(HelperRegistry.HELPER_MISSING, new Helper<Object>() {
       @Override
-      public CharSequence apply(final Object context, final Options options) throws IOException {
+      public Object apply(final Object context, final Options options) throws IOException {
         return options.helperName;
       }
     }), "varx");
@@ -30,7 +30,7 @@ public class HelperMissingTest extends AbstractTest {
   public void helperBlockMissingName() throws IOException {
     shouldCompileTo("{{#varz 7}}{{/varz}}", $, $(HelperRegistry.HELPER_MISSING, new Helper<Object>() {
       @Override
-      public CharSequence apply(final Object context, final Options options) throws IOException {
+      public Object apply(final Object context, final Options options) throws IOException {
         return options.helperName;
       }
     }), "varz");
@@ -66,7 +66,7 @@ public class HelperMissingTest extends AbstractTest {
   public void helperMissingOverride() throws IOException {
     Hash helpers = $(HelperRegistry.HELPER_MISSING, new Helper<Object>() {
       @Override
-      public CharSequence apply(final Object context, final Options options)
+      public Object apply(final Object context, final Options options)
           throws IOException {
         return "empty";
       }
@@ -78,7 +78,7 @@ public class HelperMissingTest extends AbstractTest {
   public void blockHelperMissingOverride() throws IOException {
     Hash helpers = $(HelperRegistry.HELPER_MISSING, new Helper<Object>() {
       @Override
-      public CharSequence apply(final Object context, final Options options)
+      public Object apply(final Object context, final Options options)
           throws IOException {
         return options.fn.text();
       }

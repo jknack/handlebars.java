@@ -24,7 +24,7 @@ public class BlockHelperMissingTest extends AbstractTest {
     String context = "{ hello: Hello, world: world }";
     Hash helpers = $(HelperRegistry.HELPER_MISSING, new Helper<String>() {
       @Override
-      public CharSequence apply(final String context, final Options options) throws IOException {
+      public Object apply(final String context, final Options options) throws IOException {
         return new Handlebars.SafeString("<a>" + context + "</a>");
       }
     });
@@ -119,7 +119,7 @@ public class BlockHelperMissingTest extends AbstractTest {
     String string = "{{#let world=\"world\"}}{{#if foo}}{{#if foo}}Hello {{@world}}{{/if}}{{/if}}{{/let}}";
     Hash helpers = $("let", new Helper<Object>() {
       @Override
-      public CharSequence apply(final Object context, final Options options) throws IOException {
+      public Object apply(final Object context, final Options options) throws IOException {
         for (Entry<String, Object> entry : options.hash.entrySet()) {
           options.data(entry.getKey(), entry.getValue());
         }
@@ -135,7 +135,7 @@ public class BlockHelperMissingTest extends AbstractTest {
   public void parameterCanBeLookupViaAnnotation() throws IOException {
     Hash helpers = $("hello", new Helper<Object>() {
       @Override
-      public CharSequence apply(final Object context, final Options options) throws IOException {
+      public Object apply(final Object context, final Options options) throws IOException {
         return "Hello " + options.hash("noun");
       }
     });
@@ -149,7 +149,7 @@ public class BlockHelperMissingTest extends AbstractTest {
     String string = "{{#let foo=bar.baz}}{{@foo}}{{/let}}";
     Hash helpers = $("let", new Helper<Object>() {
       @Override
-      public CharSequence apply(final Object context, final Options options) throws IOException {
+      public Object apply(final Object context, final Options options) throws IOException {
         for (Entry<String, Object> entry : options.hash.entrySet()) {
           options.data(entry.getKey(), entry.getValue());
         }
@@ -167,7 +167,7 @@ public class BlockHelperMissingTest extends AbstractTest {
     Hash partials = $("my_partial", "{{hello}}");
     Hash helpers = $("hello", new Helper<Object>() {
       @Override
-      public CharSequence apply(final Object context, final Options options) throws IOException {
+      public Object apply(final Object context, final Options options) throws IOException {
         return options.data("adjective") + " " + options.get("noun");
       }
     });
@@ -181,12 +181,12 @@ public class BlockHelperMissingTest extends AbstractTest {
     String string = "{{#hello}}{{world}}{{/hello}}";
     Hash helpers = $("hello", new Helper<Object>() {
       @Override
-      public CharSequence apply(final Object context, final Options options) throws IOException {
+      public Object apply(final Object context, final Options options) throws IOException {
         return options.fn();
       }
     }, "world", new Helper<Object>() {
       @Override
-      public CharSequence apply(final Object thing, final Options options) throws IOException {
+      public Object apply(final Object thing, final Options options) throws IOException {
         Boolean exclaim = options.get("exclaim");
         return options.data("adjective") + " world" + (exclaim ? "!" : "");
       }
@@ -203,12 +203,12 @@ public class BlockHelperMissingTest extends AbstractTest {
     String string = "{{#hello}}{{world ../zomg}}{{/hello}}";
     Hash helpers = $("hello", new Helper<Object>() {
       @Override
-      public CharSequence apply(final Object context, final Options options) throws IOException {
+      public Object apply(final Object context, final Options options) throws IOException {
         return options.fn($("exclaim", "?"));
       }
     }, "world", new Helper<Object>() {
       @Override
-      public CharSequence apply(final Object thing, final Options options) throws IOException {
+      public Object apply(final Object thing, final Options options) throws IOException {
         return options.data("adjective") + " " + thing + options.get("exclaim", "");
       }
     });
@@ -224,12 +224,12 @@ public class BlockHelperMissingTest extends AbstractTest {
     String string = "{{#hello}}{{world ../zomg}}{{/hello}}";
     Hash helpers = $("hello", new Helper<Object>() {
       @Override
-      public CharSequence apply(final Object context, final Options options) throws IOException {
+      public Object apply(final Object context, final Options options) throws IOException {
         return options.data("accessData") + " " + options.fn($("exclaim", "?"));
       }
     }, "world", new Helper<Object>() {
       @Override
-      public CharSequence apply(final Object thing, final Options options) throws IOException {
+      public Object apply(final Object thing, final Options options) throws IOException {
         return options.data("adjective") + " " + thing + options.get("exclaim", "");
       }
     });
@@ -245,13 +245,13 @@ public class BlockHelperMissingTest extends AbstractTest {
     String string = "{{#hello}}{{world zomg}}{{/hello}}";
     Hash helpers = $("hello", new Helper<Object>() {
       @Override
-      public CharSequence apply(final Object context, final Options options) throws IOException {
+      public Object apply(final Object context, final Options options) throws IOException {
         return options.fn(Context.newContext($("exclaim", "?", "zomg", "world"))
             .data("adjective", "sad"));
       }
     }, "world", new Helper<Object>() {
       @Override
-      public CharSequence apply(final Object thing, final Options options) throws IOException {
+      public Object apply(final Object thing, final Options options) throws IOException {
         return options.data("adjective") + " " + thing + options.get("exclaim", "");
       }
     });
@@ -267,13 +267,13 @@ public class BlockHelperMissingTest extends AbstractTest {
     String string = "{{#hello}}{{world zomg}}{{/hello}}";
     Hash helpers = $("hello", new Helper<Object>() {
       @Override
-      public CharSequence apply(final Object context, final Options options) throws IOException {
+      public Object apply(final Object context, final Options options) throws IOException {
         return options.fn(Context.newContext($("exclaim", "?", "zomg", "world"))
             .data("adjective", "sad"));
       }
     }, "world", new Helper<Object>() {
       @Override
-      public CharSequence apply(final Object thing, final Options options) throws IOException {
+      public Object apply(final Object thing, final Options options) throws IOException {
         return options.data("adjective") + " " + thing + options.get("exclaim", "");
       }
     });
@@ -288,13 +288,13 @@ public class BlockHelperMissingTest extends AbstractTest {
   public void helpersTakePrecedenceOverSameNamedContextProperties() throws IOException {
     Hash helpers = $("goodbye", new Helper<Map<String, Object>>() {
       @Override
-      public CharSequence apply(final Map<String, Object> context, final Options options)
+      public Object apply(final Map<String, Object> context, final Options options)
           throws IOException {
         return context.get("goodbye").toString().toUpperCase();
       }
     }, "cruel", new Helper<String>() {
       @Override
-      public CharSequence apply(final String world, final Options options) throws IOException {
+      public Object apply(final String world, final Options options) throws IOException {
         return "cruel " + world.toUpperCase();
       }
     });
@@ -306,13 +306,13 @@ public class BlockHelperMissingTest extends AbstractTest {
   public void blockHelpersTakePrecedenceOverSameNamedContextProperties() throws IOException {
     Hash helpers = $("goodbye", new Helper<Map<String, Object>>() {
       @Override
-      public CharSequence apply(final Map<String, Object> context, final Options options)
+      public Object apply(final Map<String, Object> context, final Options options)
           throws IOException {
         return context.get("goodbye").toString().toUpperCase() + options.fn(context);
       }
     }, "cruel", new Helper<String>() {
       @Override
-      public CharSequence apply(final String world, final Options options) throws IOException {
+      public Object apply(final String world, final Options options) throws IOException {
         return "cruel " + world.toUpperCase();
       }
     });
@@ -324,13 +324,13 @@ public class BlockHelperMissingTest extends AbstractTest {
   public void scopedNamesTakePrecedenceOverHelpers() throws IOException {
     Hash helpers = $("goodbye", new Helper<Map<String, Object>>() {
       @Override
-      public CharSequence apply(final Map<String, Object> context, final Options options)
+      public Object apply(final Map<String, Object> context, final Options options)
           throws IOException {
         return context.get("goodbye").toString().toUpperCase();
       }
     }, "cruel", new Helper<String>() {
       @Override
-      public CharSequence apply(final String world, final Options options) throws IOException {
+      public Object apply(final String world, final Options options) throws IOException {
         return "cruel " + world.toUpperCase();
       }
     });
@@ -343,13 +343,13 @@ public class BlockHelperMissingTest extends AbstractTest {
   public void scopedNamesTakePrecedenceOverBlockHelpers() throws IOException {
     Hash helpers = $("goodbye", new Helper<Map<String, Object>>() {
       @Override
-      public CharSequence apply(final Map<String, Object> context, final Options options)
+      public Object apply(final Map<String, Object> context, final Options options)
           throws IOException {
         return context.get("goodbye").toString().toUpperCase() + options.fn(context);
       }
     }, "cruel", new Helper<String>() {
       @Override
-      public CharSequence apply(final String world, final Options options) throws IOException {
+      public Object apply(final String world, final Options options) throws IOException {
         return "cruel " + world.toUpperCase();
       }
     });
@@ -362,7 +362,7 @@ public class BlockHelperMissingTest extends AbstractTest {
   public void helperCanTakeOptionalHash() throws IOException {
     Hash helpers = $("goodbye", new Helper<Object>() {
       @Override
-      public CharSequence apply(final Object context, final Options options)
+      public Object apply(final Object context, final Options options)
           throws IOException {
         return "GOODBYE " + options.hash("cruel") + " " + options.hash("world") + " "
             + options.hash("times") + " TIMES";
@@ -376,7 +376,7 @@ public class BlockHelperMissingTest extends AbstractTest {
   public void helperCanTakeOptionalHashWithBooleans() throws IOException {
     Hash helpers = $("goodbye", new Helper<Object>() {
       @Override
-      public CharSequence apply(final Object context, final Options options)
+      public Object apply(final Object context, final Options options)
           throws IOException {
         Boolean print = options.hash("print");
         if (print) {
@@ -397,7 +397,7 @@ public class BlockHelperMissingTest extends AbstractTest {
   public void blockHelperCanTakeOptionalHash() throws IOException {
     Hash helpers = $("goodbye", new Helper<Object>() {
       @Override
-      public CharSequence apply(final Object context, final Options options)
+      public Object apply(final Object context, final Options options)
           throws IOException {
         return "GOODBYE " + options.hash("cruel") + " " + options.fn(context) + " "
             + options.hash("times") + " TIMES";
@@ -411,7 +411,7 @@ public class BlockHelperMissingTest extends AbstractTest {
   public void blockHelperCanTakeOptionalHashWithSingleQuotedStrings() throws IOException {
     Hash helpers = $("goodbye", new Helper<Object>() {
       @Override
-      public CharSequence apply(final Object context, final Options options)
+      public Object apply(final Object context, final Options options)
           throws IOException {
         return "GOODBYE " + options.hash("cruel") + " " + options.fn(context) + " "
             + options.hash("times") + " TIMES";
@@ -425,7 +425,7 @@ public class BlockHelperMissingTest extends AbstractTest {
   public void blockHelperCanTakeOptionalHashWithBooleans() throws IOException {
     Hash helpers = $("goodbye", new Helper<Object>() {
       @Override
-      public CharSequence apply(final Object context, final Options options)
+      public Object apply(final Object context, final Options options)
           throws IOException {
         Boolean print = options.hash("print");
         if (print) {
@@ -446,7 +446,7 @@ public class BlockHelperMissingTest extends AbstractTest {
   public void argumentsToHelpersCanBeRetrievedFromOptionsHashInStringForm() throws IOException {
     Hash helpers = $("wycats", new Helper<Object>() {
       @Override
-      public CharSequence apply(final Object context, final Options options)
+      public Object apply(final Object context, final Options options)
           throws IOException {
         return "HELP ME MY BOSS " + options.param(0) + ' ' + options.param(1);
       }
@@ -461,7 +461,7 @@ public class BlockHelperMissingTest extends AbstractTest {
       throws IOException {
     Hash helpers = $("wycats", new Helper<Object>() {
       @Override
-      public CharSequence apply(final Object context, final Options options)
+      public Object apply(final Object context, final Options options)
           throws IOException {
         return "HELP ME MY BOSS " + options.param(0) + ' ' + options.param(1) + ": " + options.fn();
       }
@@ -476,14 +476,14 @@ public class BlockHelperMissingTest extends AbstractTest {
       throws IOException {
     Hash helpers = $("tomdale", new Helper<Object>() {
       @Override
-      public CharSequence apply(final Object context, final Options options)
+      public Object apply(final Object context, final Options options)
           throws IOException {
         return "STOP ME FROM READING HACKER NEWS I " +
             context + " " + options.param(0);
       }
     }, "with", new Helper<Object>() {
       @Override
-      public CharSequence apply(final Object context, final Options options)
+      public Object apply(final Object context, final Options options)
           throws IOException {
         return options.fn(context);
       }
@@ -499,14 +499,14 @@ public class BlockHelperMissingTest extends AbstractTest {
       throws IOException {
     Hash helpers = $("tomdale", new Helper<Object>() {
       @Override
-      public CharSequence apply(final Object context, final Options options)
+      public Object apply(final Object context, final Options options)
           throws IOException {
         return "STOP ME FROM READING HACKER NEWS I " +
             context + " " + options.param(0) + " " + options.fn(context);
       }
     }, "with", new Helper<Object>() {
       @Override
-      public CharSequence apply(final Object context, final Options options)
+      public Object apply(final Object context, final Options options)
           throws IOException {
         return options.fn(context);
       }

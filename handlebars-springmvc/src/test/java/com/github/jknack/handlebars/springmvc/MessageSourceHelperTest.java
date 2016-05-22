@@ -60,7 +60,7 @@ public class MessageSourceHelperTest {
 
     replay(messageSource, hash);
 
-    CharSequence result =
+    Object result =
         new MessageSourceHelper(messageSource).apply(code, options);
     assertEquals(message, result);
 
@@ -94,7 +94,7 @@ public class MessageSourceHelperTest {
 
     replay(messageSource, hash);
 
-    CharSequence result =
+    Object result =
         new MessageSourceHelper(messageSource).apply(code, options);
     assertEquals(message, result);
 
@@ -128,7 +128,7 @@ public class MessageSourceHelperTest {
 
     replay(messageSource, hash);
 
-    CharSequence result =
+    Object result =
         new MessageSourceHelper(messageSource).apply(code, options);
     assertEquals(message, result);
 

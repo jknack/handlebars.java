@@ -38,5 +38,5 @@ public interface Helper<T> {
    * @return A string result.
    * @throws IOException If a template cannot be loaded.
    */
-  CharSequence apply(T context, Options options) throws IOException;
+  Object apply(T context, Options options) throws IOException;
 }

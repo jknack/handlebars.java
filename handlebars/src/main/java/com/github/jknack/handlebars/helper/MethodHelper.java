@@ -61,7 +61,7 @@ public class MethodHelper implements Helper<Object> {
   }
 
   @Override
-  public CharSequence apply(final Object context, final Options options) throws IOException {
+  public Object apply(final Object context, final Options options) throws IOException {
     try {
       Class<?>[] paramTypes = method.getParameterTypes();
       Object[] args = NO_ARGS;

@@ -13,7 +13,7 @@ public class Issue200 extends AbstractTest {
     Handlebars h = newHandlebars();
     h.registerHelper("replaceHelperTest", new Helper<String>() {
       @Override
-      public CharSequence apply(final String text,
+      public Object apply(final String text,
           final Options options) {
         return "foo";
       }

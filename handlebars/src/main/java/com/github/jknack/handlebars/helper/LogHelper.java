@@ -60,7 +60,7 @@ public class LogHelper implements Helper<Object> {
   public static final String NAME = "log";
 
   @Override
-  public CharSequence apply(final Object context, final Options options)
+  public Object apply(final Object context, final Options options)
       throws IOException {
     StringBuilder sb = new StringBuilder();
     String level = options.hash("level", "info");

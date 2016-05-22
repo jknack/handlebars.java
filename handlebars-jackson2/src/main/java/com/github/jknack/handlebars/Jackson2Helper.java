@@ -163,7 +163,7 @@ public class Jackson2Helper implements Helper<Object> {
   }
 
   @Override
-  public CharSequence apply(final Object context, final Options options)
+  public Object apply(final Object context, final Options options)
       throws IOException {
     if (context == null) {
       return options.hash("default", "");

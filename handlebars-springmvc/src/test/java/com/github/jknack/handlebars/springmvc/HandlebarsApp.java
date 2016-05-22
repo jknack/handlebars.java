@@ -27,7 +27,7 @@ public class HandlebarsApp {
 
     Helper<Object> helper = new Helper<Object>() {
       @Override
-      public CharSequence apply(final Object context, final Options options) throws IOException {
+      public Object apply(final Object context, final Options options) throws IOException {
         return "Spring Helper";
       }
     };

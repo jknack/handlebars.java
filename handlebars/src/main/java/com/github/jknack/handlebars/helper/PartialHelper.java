@@ -46,7 +46,7 @@ public class PartialHelper implements Helper<Object> {
   public static final String NAME = "partial";
 
   @Override
-  public CharSequence apply(final Object context, final Options options)
+  public Object apply(final Object context, final Options options)
       throws IOException {
     isTrue(context instanceof String, "found '%s', expected 'partial's name'",
         context);

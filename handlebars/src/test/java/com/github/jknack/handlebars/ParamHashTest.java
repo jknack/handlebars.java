@@ -25,7 +25,7 @@ public class ParamHashTest extends AbstractTest {
   public void truthParam() throws IOException {
     Hash helpers = $("helper", new Helper<Object>() {
       @Override
-      public CharSequence apply(final Object context, final Options options)
+      public Object apply(final Object context, final Options options)
           throws IOException {
         assertEquals(true, options.param(0));
         return "ok";
@@ -38,7 +38,7 @@ public class ParamHashTest extends AbstractTest {
   public void falsyParam() throws IOException {
     Hash helpers = $("helper", new Helper<Object>() {
       @Override
-      public CharSequence apply(final Object context, final Options options)
+      public Object apply(final Object context, final Options options)
           throws IOException {
         assertEquals(false, options.param(0));
         return "ok";
@@ -51,7 +51,7 @@ public class ParamHashTest extends AbstractTest {
   public void truthHash() throws IOException {
     Hash helpers = $("helper", new Helper<Object>() {
       @Override
-      public CharSequence apply(final Object context, final Options options)
+      public Object apply(final Object context, final Options options)
           throws IOException {
         assertEquals(true, options.hash("b"));
         return "ok";
@@ -64,7 +64,7 @@ public class ParamHashTest extends AbstractTest {
   public void falsyHash() throws IOException {
     Hash helpers = $("helper", new Helper<Object>() {
       @Override
-      public CharSequence apply(final Object context, final Options options)
+      public Object apply(final Object context, final Options options)
           throws IOException {
         assertEquals(false, options.hash("b"));
         return "ok";

@@ -44,7 +44,7 @@ public class IfHelper implements Helper<Object> {
   public static final String NAME = "if";
 
   @Override
-  public CharSequence apply(final Object context, final Options options)
+  public Object apply(final Object context, final Options options)
       throws IOException {
     Buffer buffer = options.buffer();
     if (options.isFalsy(context)) {

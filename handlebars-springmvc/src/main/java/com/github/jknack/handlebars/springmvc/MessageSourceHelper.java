@@ -68,7 +68,7 @@ public class MessageSourceHelper implements Helper<String> {
   }
 
   @Override
-  public CharSequence apply(final String code, final Options options)
+  public Object apply(final String code, final Options options)
       throws IOException {
     Object[] args = options.params;
     String defaultMessage = options.hash("default");

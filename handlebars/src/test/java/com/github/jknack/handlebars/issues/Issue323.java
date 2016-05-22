@@ -15,12 +15,12 @@ public class Issue323 extends AbstractTest {
     shouldCompileTo("{{someTemplate param1 param2 hashArg=(myHelper param3)}}",
         $("param1", "a", "param2", "b", "param3", "c"), $("someTemplate", new Helper<String>() {
           @Override
-          public CharSequence apply(final String context, final Options options) throws IOException {
+          public Object apply(final String context, final Options options) throws IOException {
             return context + options.param(0) + options.hash("hashArg");
           }
         }, "myHelper", new Helper<String>() {
           @Override
-          public CharSequence apply(final String context, final Options options) throws IOException {
+          public Object apply(final String context, final Options options) throws IOException {
             return context;
           }
         }), "abc");

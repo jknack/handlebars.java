@@ -13,7 +13,7 @@ public class RawHelperTest extends AbstractTest {
     shouldCompileTo("{{{{raw}}}} {{test}} {{{{/raw}}}}", $, $("raw", new Helper<Object>() {
 
       @Override
-      public CharSequence apply(final Object context, final Options options) throws IOException {
+      public Object apply(final Object context, final Options options) throws IOException {
         return options.fn();
       }
 
@@ -30,7 +30,7 @@ public class RawHelperTest extends AbstractTest {
     shouldCompileTo("{{{{raw 1 2 3}}}} {{test}} {{{{/raw}}}}", $, $("raw", new Helper<Object>() {
 
       @Override
-      public CharSequence apply(final Object context, final Options options) throws IOException {
+      public Object apply(final Object context, final Options options) throws IOException {
         return options.fn().toString() + context + options.param(0) + options.param(1);
       }
 

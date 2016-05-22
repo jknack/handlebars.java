@@ -16,7 +16,7 @@ public class Issue367 extends AbstractTest {
     handlebars.registerHelperMissing(new Helper<Object>() {
 
       @Override
-      public CharSequence apply(final Object context, final Options options) throws IOException {
+      public Object apply(final Object context, final Options options) throws IOException {
         return "nousers";
       }
 

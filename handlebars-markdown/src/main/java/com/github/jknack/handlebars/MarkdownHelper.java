@@ -35,7 +35,7 @@ public class MarkdownHelper implements Helper<Object> {
   public static final Helper<Object> INSTANCE = new MarkdownHelper();
 
   @Override
-  public CharSequence apply(final Object context, final Options options)
+  public Object apply(final Object context, final Options options)
       throws IOException {
     if (options.isFalsy(context)) {
       return "";

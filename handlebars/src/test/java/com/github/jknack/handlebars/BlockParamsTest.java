@@ -33,7 +33,7 @@ public class BlockParamsTest extends AbstractTest {
     shouldCompileTo("{{#goodbyes as |value|}}{{value}}{{/goodbyes}}{{value}}",
         $("value", "foo"), $("goodbyes", new Helper<Object>() {
           @Override
-          public CharSequence apply(final Object context, final Options options)
+          public Object apply(final Object context, final Options options)
               throws IOException {
             assertEquals(1, options.blockParams.size());
             return options.apply(options.fn, $("value", "bar"), Arrays.<Object> asList(1, 2));
@@ -46,7 +46,7 @@ public class BlockParamsTest extends AbstractTest {
     shouldCompileTo("{{#goodbyes as |value|}}{{value}}{{/goodbyes}}{{value}}",
         $, $("goodbyes", new Helper<Object>() {
           @Override
-          public CharSequence apply(final Object context, final Options options)
+          public Object apply(final Object context, final Options options)
               throws IOException {
             assertEquals(1, options.blockParams.size());
             return options.apply(options.fn, $, Arrays.<Object> asList(1, 2));
@@ -59,7 +59,7 @@ public class BlockParamsTest extends AbstractTest {
     shouldCompileTo("{{#goodbyes as |value|}}{{./value}}{{/goodbyes}}{{value}}",
         $("value", "bar"), $("goodbyes", new Helper<Object>() {
           @Override
-          public CharSequence apply(final Object context, final Options options)
+          public Object apply(final Object context, final Options options)
               throws IOException {
             assertEquals(1, options.blockParams.size());
             return options.apply(options.fn, $, Arrays.<Object> asList(1, 2));
@@ -75,7 +75,7 @@ public class BlockParamsTest extends AbstractTest {
           int value = 1;
 
           @Override
-          public CharSequence apply(final Object context, final Options options)
+          public Object apply(final Object context, final Options options)
               throws IOException {
             if (options.blockParams.size() > 0) {
               return options.apply(options.fn, $("value", "bar"),
@@ -94,7 +94,7 @@ public class BlockParamsTest extends AbstractTest {
           int value = 1;
 
           @Override
-          public CharSequence apply(final Object context, final Options options)
+          public Object apply(final Object context, final Options options)
               throws IOException {
             if (options.blockParams.size() > 0) {
               return options.apply(options.fn, $("value", "bar"),

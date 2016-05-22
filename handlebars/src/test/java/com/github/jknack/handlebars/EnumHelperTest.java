@@ -14,7 +14,7 @@ public class EnumHelperTest extends AbstractTest {
     h3;
 
     @Override
-    public CharSequence apply(final Object context, final Options options) throws IOException {
+    public Object apply(final Object context, final Options options) throws IOException {
       return name();
     }
   }

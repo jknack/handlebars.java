@@ -43,7 +43,7 @@ public class VarParam implements Param {
 
   @Override
   public Object apply(final Context context) throws IOException {
-    return this.fn.apply(context);
+    return this.fn.value(context, new FastStringWriter());
   }
 
   @Override

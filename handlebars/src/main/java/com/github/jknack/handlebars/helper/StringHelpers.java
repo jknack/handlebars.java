@@ -121,7 +121,7 @@ public enum StringHelpers implements Helper<Object> {
    */
   defaultIfEmpty {
     @Override
-    public CharSequence apply(final Object value, final Options options)
+    public Object apply(final Object value, final Options options)
         throws IOException {
       if (Handlebars.Utils.isEmpty(value)) {
         return options.param(0, "");
@@ -156,7 +156,7 @@ public enum StringHelpers implements Helper<Object> {
    */
   join {
     @Override
-    public CharSequence apply(final Object context, final Options options) {
+    public Object apply(final Object context, final Options options) {
       if (options.isFalsy(context)) {
         return "";
       }
@@ -476,7 +476,7 @@ public enum StringHelpers implements Helper<Object> {
    */
   yesno {
     @Override
-    public CharSequence apply(final Object value, final Options options)
+    public Object apply(final Object value, final Options options)
         throws IOException {
       if (value == null) {
         return options.hash("maybe", "maybe");
@@ -596,7 +596,7 @@ public enum StringHelpers implements Helper<Object> {
    */
   numberFormat {
     @Override
-    public CharSequence apply(final Object context, final Options options) throws IOException {
+    public Object apply(final Object context, final Options options) throws IOException {
       if (context instanceof Number) {
         return safeApply(context, options);
       }
@@ -703,7 +703,7 @@ public enum StringHelpers implements Helper<Object> {
   };
 
   @Override
-  public CharSequence apply(final Object context, final Options options) throws IOException {
+  public Object apply(final Object context, final Options options) throws IOException {
     if (options.isFalsy(context)) {
       Object param = options.param(0, null);
       return param == null ? null : param.toString();

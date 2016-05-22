@@ -14,12 +14,12 @@ public class TagTypeTest extends AbstractTest {
 
   Hash helpers = $("tag", new Helper<Object>() {
     @Override
-    public CharSequence apply(final Object context, final Options options) throws IOException {
+    public Object apply(final Object context, final Options options) throws IOException {
       return options.tagType.name();
     }
   }, "vowels", new Helper<Object>() {
     @Override
-    public CharSequence apply(final Object context, final Options options) throws IOException {
+    public Object apply(final Object context, final Options options) throws IOException {
       return options.helperName;
     }
   });

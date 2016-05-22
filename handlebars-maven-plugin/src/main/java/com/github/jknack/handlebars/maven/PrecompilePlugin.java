@@ -229,7 +229,7 @@ public class PrecompilePlugin extends HandlebarsPlugin {
                 .build();
 
         writer.append("// Source: ").append(file.getPath()).append("\n");
-        writer.append(PrecompileHelper.INSTANCE.apply(templateName, opts)).append("\n\n");
+        writer.append(PrecompileHelper.INSTANCE.apply(templateName, opts).toString()).append("\n\n");
       }
       // extras
       for (CharSequence extra : extras) {
@@ -266,7 +266,7 @@ public class PrecompilePlugin extends HandlebarsPlugin {
   private void silentHelpers(final Handlebars handlebars) {
     handlebars.registerHelper(HelperRegistry.HELPER_MISSING, new Helper<Object>() {
       @Override
-      public CharSequence apply(final Object context, final Options options) throws IOException {
+      public Object apply(final Object context, final Options options) throws IOException {
         return null;
       }
     });
@@ -280,7 +280,7 @@ public class PrecompilePlugin extends HandlebarsPlugin {
   private void i18n(final Handlebars handlebars) {
     handlebars.registerHelper(I18nHelper.i18n.name(), new Helper<String>() {
       @Override
-      public CharSequence apply(final String context, final Options options) throws IOException {
+      public Object apply(final String context, final Options options) throws IOException {
         return null;
       }
 
@@ -302,7 +302,7 @@ public class PrecompilePlugin extends HandlebarsPlugin {
       final URL[] classpath) {
     handlebars.registerHelper(I18nHelper.i18nJs.name(), new Helper<String>() {
       @Override
-      public CharSequence apply(final String context, final Options options) throws IOException {
+      public Object apply(final String context, final Options options) throws IOException {
         StringBuilder output = new StringBuilder();
         output.append("// i18nJs output:\n");
         output.append("// register an empty i18nJs helper:\n");

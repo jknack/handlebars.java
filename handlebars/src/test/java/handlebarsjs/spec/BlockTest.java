@@ -85,7 +85,7 @@ public class BlockTest extends AbstractTest {
         new Object[]{$("text", "Goodbye", "url", "goodbye") });
     Hash helpers = $("link", new Helper<Object>() {
       @Override
-      public CharSequence apply(final Object prefix, final Options options) throws IOException {
+      public Object apply(final Object prefix, final Options options) throws IOException {
         Object url = options.context.get("url");
         Object text = options.context.get("text");
         return "<a href='" + prefix + "/" + url + "'>" + text + "</a>";
@@ -100,7 +100,7 @@ public class BlockTest extends AbstractTest {
     String hash = "{name: Alan}";
     Hash helpers = $("goodbyes", new Helper<Object>() {
       @Override
-      public CharSequence apply(final Object context, final Options options) throws IOException {
+      public Object apply(final Object context, final Options options) throws IOException {
         String out = "";
         String[] byes = {"Goodbye", "goodbye", "GOODBYE" };
         for (String bye : byes) {
@@ -119,7 +119,7 @@ public class BlockTest extends AbstractTest {
         new Object[]{$("text", "Goodbye", "url", "goodbye") });
     Hash helpers = $("link", new Helper<Object>() {
       @Override
-      public CharSequence apply(final Object prefix, final Options options) throws IOException {
+      public Object apply(final Object prefix, final Options options) throws IOException {
         Object url = options.context.get("url");
         Object text = options.context.get("text");
         return "<a href='" + prefix + "/" + url + "'>" + text + "</a>";
@@ -144,7 +144,7 @@ public class BlockTest extends AbstractTest {
 
     Hash helpers = $("goodbyes", new Helper<Object>() {
       @Override
-      public CharSequence apply(final Object context, final Options options) throws IOException {
+      public Object apply(final Object context, final Options options) throws IOException {
         return options.fn($("text", "GOODBYE"));
       }
     });
@@ -159,7 +159,7 @@ public class BlockTest extends AbstractTest {
 
     Hash helpers = $("form", new Helper<Object>() {
       @Override
-      public CharSequence apply(final Object context, final Options options) throws IOException {
+      public Object apply(final Object context, final Options options) throws IOException {
         return "<form>" + options.fn(this) + "</form>";
       }
     });
@@ -178,7 +178,7 @@ public class BlockTest extends AbstractTest {
 
     Hash helpers = $("link", new Helper<Object>() {
       @Override
-      public CharSequence apply(final Object context, final Options options) throws IOException {
+      public Object apply(final Object context, final Options options) throws IOException {
         return "<a href=\"/people/" + options.get("id") + "\">" + options.fn(this) + "</a>";
       }
     });
@@ -199,7 +199,7 @@ public class BlockTest extends AbstractTest {
 
     Hash helpers = $("form", new Helper<Object>() {
       @Override
-      public CharSequence apply(final Object context, final Options options) throws IOException {
+      public Object apply(final Object context, final Options options) throws IOException {
         return "<form>" + options.fn(context) + "</form>";
       }
     });
@@ -214,7 +214,7 @@ public class BlockTest extends AbstractTest {
 
     Hash helpers = $("form", new Helper<Object>() {
       @Override
-      public CharSequence apply(final Object context, final Options options) throws IOException {
+      public Object apply(final Object context, final Options options) throws IOException {
         return "<form>" + options.fn(context) + "</form>";
       }
     });
@@ -229,12 +229,12 @@ public class BlockTest extends AbstractTest {
 
     Hash helpers = $("form", new Helper<Object>() {
       @Override
-      public CharSequence apply(final Object context, final Options options) throws IOException {
+      public Object apply(final Object context, final Options options) throws IOException {
         return "<form>" + options.fn(context) + "</form>";
       }
     }, "link", new Helper<Object>() {
       @Override
-      public CharSequence apply(final Object context, final Options options) throws IOException {
+      public Object apply(final Object context, final Options options) throws IOException {
         return "<a href='" + options.get("name") + "'>" + options.fn(this) + "</a>";
       }
     });
@@ -260,7 +260,7 @@ public class BlockTest extends AbstractTest {
     String string = "{{#list people}}{{name}}{{^}}<em>Nobody's here</em>{{/list}}";
     Hash helpers = $("list", new Helper<List<Object>>() {
       @Override
-      public CharSequence apply(final List<Object> context, final Options options) throws IOException {
+      public Object apply(final List<Object> context, final Options options) throws IOException {
         if (context.size() > 0) {
           String out = "<ul>";
           for (Object element : context) {

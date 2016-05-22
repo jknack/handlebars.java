@@ -14,7 +14,7 @@ public class Issue270 extends AbstractTest {
   public void charLiteral() throws IOException {
     shouldCompileTo("{{modifiers this 'clock'}}", $, $("modifiers", new Helper<Object>() {
       @Override
-      public CharSequence apply(final Object context, final Options options) throws IOException {
+      public Object apply(final Object context, final Options options) throws IOException {
         return options.params[0].toString();
       }
     }), "clock");

@@ -17,7 +17,7 @@ public class StringLiteralParametersTest extends AbstractTest {
 
     Hash helpers = $("hello", new Helper<Object>() {
       @Override
-      public CharSequence apply(final Object context, final Options options) throws IOException {
+      public Object apply(final Object context, final Options options) throws IOException {
         return "Hello " + context + " " + options.param(0) + " times: " + options.param(1)
             + " " + options.param(2);
       }
@@ -36,7 +36,7 @@ public class StringLiteralParametersTest extends AbstractTest {
     String string = "Message: {{{hello \"\\\"world\\\"\"}}}";
     Hash helpers = $("hello", new Helper<String>() {
       @Override
-      public CharSequence apply(final String param, final Options options) throws IOException {
+      public Object apply(final String param, final Options options) throws IOException {
         return "Hello " + param;
       }
     });
@@ -49,7 +49,7 @@ public class StringLiteralParametersTest extends AbstractTest {
     String string = "Message: {{{hello \"Alan\'s world\"}}}";
     Hash helpers = $("hello", new Helper<String>() {
       @Override
-      public CharSequence apply(final String param, final Options options) throws IOException {
+      public Object apply(final String param, final Options options) throws IOException {
         return "Hello " + param;
       }
     });
@@ -62,7 +62,7 @@ public class StringLiteralParametersTest extends AbstractTest {
     String hash = "{cruel: cruel, world: world}";
     Hash helpers = $("goodbye", new Helper<String>() {
       @Override
-      public CharSequence apply(final String cruel, final Options options) throws IOException {
+      public Object apply(final String cruel, final Options options) throws IOException {
         return "Goodbye " + cruel + " " + options.get("world");
       }
     });
@@ -76,7 +76,7 @@ public class StringLiteralParametersTest extends AbstractTest {
     String hash = "{cruel: cruel, world: world}";
     Hash helpers = $("goodbye", new Helper<String>() {
       @Override
-      public CharSequence apply(final String cruel, final Options options) throws IOException {
+      public Object apply(final String cruel, final Options options) throws IOException {
         return options.fn($("greeting", "Goodbye", "adj", "cruel", "noun", "world"));
       }
     });

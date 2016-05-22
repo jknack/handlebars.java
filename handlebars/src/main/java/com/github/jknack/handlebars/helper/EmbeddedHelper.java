@@ -90,7 +90,7 @@ public class EmbeddedHelper implements Helper<String> {
   public static final String NAME = "embedded";
 
   @Override
-  public CharSequence apply(final String path, final Options options)
+  public Object apply(final String path, final Options options)
       throws IOException {
     notEmpty(path, "found '%s', expected 'partial's name'", path);
     String suffix = options.handlebars.getLoader().getSuffix();

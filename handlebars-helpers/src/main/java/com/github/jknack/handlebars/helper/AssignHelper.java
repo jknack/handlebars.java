@@ -45,7 +45,7 @@ public class AssignHelper implements Helper<String> {
   public static final String NAME = "assign";
 
   @Override
-  public CharSequence apply(final String variableName, final Options options)
+  public Object apply(final String variableName, final Options options)
       throws IOException {
     CharSequence finalValue = options.apply(options.fn);
     options.context.data(variableName, finalValue.toString().trim());
