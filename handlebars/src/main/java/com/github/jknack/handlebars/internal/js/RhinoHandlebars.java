@@ -20,6 +20,7 @@ package com.github.jknack.handlebars.internal.js;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -97,6 +98,18 @@ public class RhinoHandlebars extends HandlebarsJs {
       return value;
     }
 
+    @Override
+    public String toString() {
+      StringBuilder buff = new StringBuilder();
+      String sep = ",";
+      for (Object v : this) {
+        buff.append(v).append(sep);
+      }
+      if (buff.length() > 0) {
+        buff.setLength(buff.length() - sep.length());
+      }
+      return buff.toString();
+    }
   }
 
   /**
@@ -264,6 +277,7 @@ public class RhinoHandlebars extends HandlebarsJs {
    */
   public void registerHelper(final String name, final JsHelper helper) {
     registry.registerHelper(name, new Helper<Object>() {
+      @SuppressWarnings({"unchecked", "rawtypes" })
       @Override
       public Object apply(final Object context, final Options options) throws IOException {
         Object jsContext = toJsObject(options.context.model(), options.context);
@@ -275,6 +289,9 @@ public class RhinoHandlebars extends HandlebarsJs {
           arg0 = toJsObject(arg0, options.context);
         }
         Object result = helper.apply(jsContext, arg0, new OptionsJs(options));
+        if (result instanceof NativeArray) {
+          return new BetterNativeArray((List) result, options.context);
+        }
         return result;
       }
     });
@@ -379,9 +396,6 @@ public class RhinoHandlebars extends HandlebarsJs {
     if (object instanceof CharSequence || object instanceof Character) {
       return object.toString();
     }
-    if (object instanceof Scriptable) {
-      return object;
-    }
 
     if (Map.class.isInstance(object)) {
       return hash((Map) object, parent);
@@ -390,6 +404,10 @@ public class RhinoHandlebars extends HandlebarsJs {
     } else if (object.getClass().isArray()) {
       Object[] array = (Object[]) object;
       return new BetterNativeArray(array, parent);
+    } else if (object instanceof NativeArray) {
+      return new BetterNativeArray((NativeArray) object, parent);
+    } else if (object instanceof Scriptable) {
+      return object;
     }
     Context context = object instanceof Context
         ? (Context) object : Context.newContext(parent, object);
