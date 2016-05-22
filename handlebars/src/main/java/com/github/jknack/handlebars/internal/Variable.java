@@ -163,6 +163,14 @@ class Variable extends HelperResolver {
     }
   }
 
+  /**
+   * Apply the template and return the raw value (not a CharSequence)
+   *
+   * @param scope Template scope.
+   * @param writer Writer.
+   * @return Resulting value.
+   * @throws IOException If something goes wrong.
+   */
   @SuppressWarnings("unchecked")
   public Object value(final Context scope, final Writer writer) throws IOException {
     boolean blockParam = scope.isBlockParams() && noArg;
