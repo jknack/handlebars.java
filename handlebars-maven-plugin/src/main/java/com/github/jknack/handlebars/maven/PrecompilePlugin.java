@@ -229,7 +229,8 @@ public class PrecompilePlugin extends HandlebarsPlugin {
                 .build();
 
         writer.append("// Source: ").append(file.getPath()).append("\n");
-        writer.append(PrecompileHelper.INSTANCE.apply(templateName, opts).toString()).append("\n\n");
+        writer.append(PrecompileHelper.INSTANCE.apply(templateName, opts).toString())
+            .append("\n\n");
       }
       // extras
       for (CharSequence extra : extras) {

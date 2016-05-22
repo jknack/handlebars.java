@@ -164,7 +164,7 @@ class Variable extends HelperResolver {
   }
 
   /**
-   * Apply the template and return the raw value (not a CharSequence)
+   * Apply the template and return the raw value (not a CharSequence).
    *
    * @param scope Template scope.
    * @param writer Writer.
