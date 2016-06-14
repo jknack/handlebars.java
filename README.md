@@ -23,7 +23,7 @@ Benchmark source code is available at: https://github.com/mbosecke/template-benc
 # Getting Started
  In general, the syntax of **Handlebars** templates is a superset of [Mustache](http://mustache.github.com) templates. For basic syntax, check out the [Mustache manpage](http://mustache.github.com).
  
- The [Handlebars.java blog](http://jknack.github.io/handlebars.java) is a good place for getting started too.
+ The [Handlebars.java blog](http://jknack.github.io/handlebars.java) is a good place for getting started too. Javadoc is available at [javadox.com](http://javadox.com/com.github.jknack/handlebars/2.3.2/overview-summary.html).
 
 ## Maven
 #### Stable version: [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.jknack/handlebars/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.jknack/handlebars)
