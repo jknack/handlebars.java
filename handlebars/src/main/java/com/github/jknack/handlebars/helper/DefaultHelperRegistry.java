@@ -79,9 +79,12 @@ public class DefaultHelperRegistry implements HelperRegistry {
   /**
    * A Handlebars.js implementation.
    */
-  private HandlebarsJs handlebarsJs = HandlebarsJs.create(this);
+  private HandlebarsJs handlebarsJs;
 
   {
+    Integer optimizationLevel = Integer.valueOf(Integer.parseInt(
+                System.getProperty("handlebars.rhino.optmizationLevel", "-1")));
+    this.handlebarsJs = HandlebarsJs.createRhino(this, optimizationLevel);
     // make sure default helpers are registered
     registerBuiltinsHelpers(this);
   }
