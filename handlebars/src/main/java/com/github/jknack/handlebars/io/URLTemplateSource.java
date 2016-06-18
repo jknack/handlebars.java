@@ -106,7 +106,7 @@ public class URLTemplateSource extends AbstractTemplateSource {
    * @return A reader.
    * @throws IOException If the stream can't be opened.
    */
-  private Reader reader() throws IOException {
+  protected Reader reader() throws IOException {
     InputStream in = resource.openStream();
     return new InputStreamReader(in, "UTF-8");
   }
