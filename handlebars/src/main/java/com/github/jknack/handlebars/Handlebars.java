@@ -952,7 +952,7 @@ public class Handlebars implements HelperRegistry {
    * @return This handlebars object.
    */
   public Handlebars with(final TemplateCache cache) {
-    this.cache = notNull(cache, "The template loader is required.");
+    this.cache = notNull(cache, "The template cache is required.");
     return this;
   }
 
