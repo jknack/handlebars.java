@@ -187,7 +187,8 @@ abstract class TemplateBuilder<it> extends HbsParserBaseVisitor<Object> {
 
     Template body = visitBody(ctx.thenBody);
     if (body != null) {
-      block.body(body);
+      // rewrite raw template
+      block.body(new Text(handlebars, body.text()));
     }
     hasTag(true);
     qualifier.removeLast();

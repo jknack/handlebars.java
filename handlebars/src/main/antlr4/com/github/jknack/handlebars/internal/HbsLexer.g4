@@ -233,23 +233,11 @@ DELIM
     .
   ;
 
-mode RAW;
-
-RAW_SPACE
-  :
-   [ \t\r\n]
-  ;
-
-RAW_CONTENT
-  :
-    {consumeUntil(start + "{{/")}? . -> popMode
-  ;
-
 mode VAR;
 
 END_RAW
   :
-    {endToken(end, "}}")}? . -> mode(RAW)
+    {endToken(end, "}}")}? . -> popMode
   ;
 
 END_T

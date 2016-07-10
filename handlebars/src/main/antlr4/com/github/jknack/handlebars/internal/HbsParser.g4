@@ -70,8 +70,6 @@ escape
 text
   :
     TEXT
-  | RAW_CONTENT
-  | RAW_SPACE
   ;
 
 spaces
