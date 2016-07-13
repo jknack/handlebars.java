@@ -1,6 +1,10 @@
 package com.github.jknack.handlebars;
 
+import static org.hamcrest.core.StringContains.containsString;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertThat;
 
 import java.io.IOException;
 
@@ -35,7 +39,6 @@ public class TypeSafeTemplateTest extends AbstractTest {
     User user = new User("edgar");
     TypeSafeTemplate<User> userTemplate = compile("Hello {{name}}!").as();
     assertEquals("Hello edgar!", userTemplate.apply(user));
-
   }
 
   @Test
@@ -58,6 +61,31 @@ public class TypeSafeTemplateTest extends AbstractTest {
         .setRole("Software Architect");
 
     assertEquals("Software Architect", userTemplate.apply(user));
+  }
+
+  @Test
+  public void testToString() throws IOException {
+    UserTemplate userTemplate = compile("Hello {{name}}").as(UserTemplate.class);
+    assertThat(userTemplate.toString(), containsString("UserTemplate"));
+  }
+
+  @Test
+  public void testHashCode() throws IOException {
+    Template template = compile("Hello {{name}}");
+    UserTemplate userTemplate = template.as(UserTemplate.class);
+
+    assertEquals(userTemplate.hashCode(), userTemplate.hashCode());
+    assertNotEquals(userTemplate.hashCode(), template.as(UserTemplate.class));
+  }
+
+  @Test
+  public void testEquals() throws IOException {
+    Template template = compile("Hello {{name}}");
+    UserTemplate userTemplate = template.as(UserTemplate.class);
+
+    assertEquals(userTemplate, userTemplate);
+    assertNotEquals(userTemplate, template.as(UserTemplate.class));
+    assertFalse(userTemplate.equals(null));
   }
 
   @Test(expected = UnsupportedOperationException.class)

@@ -253,14 +253,36 @@ abstract class BaseTemplate implements Template {
    * @return A new {@link TypeSafeTemplate}.
    */
   private static Object newTypeSafeTemplate(final Class<?> rootType, final Template template) {
-    return Proxy.newProxyInstance(rootType.getClassLoader(), new Class[]{rootType },
+    return Proxy.newProxyInstance(rootType.getClassLoader(), new Class[]{ rootType },
         new InvocationHandler() {
-          private Map<String, Object> attributes = new HashMap<String, Object>();
+
+          private final Map<String, Object> attributes = new HashMap<>();
+          private final Object[] NO_ARGS = {};
 
           @Override
-          public Object invoke(final Object proxy, final Method method, final Object[] args)
+          public Object invoke(final Object proxy, final Method method, Object[] args)
               throws IOException {
+
+            if (args == null) {
+              args = NO_ARGS;
+            }
+
             String methodName = method.getName();
+
+            if (args.length == 0 && methodName.equals("hashCode")) {
+              return hashCode();
+            }
+
+            if (args.length == 0 && methodName.equals("toString")) {
+              return String.format("TypeSafeTemplateProxy{interface=%s}", rootType.getSimpleName());
+            }
+
+            if (args.length == 1
+                    && methodName.equals("equals")
+                    && method.getParameterTypes()[0] == Object.class) {
+              return args[0] == proxy;
+            }
+
             if ("apply".equals(methodName)) {
               Context context = Context.newBuilder(args[0])
                   .combine(attributes)
@@ -275,7 +297,7 @@ abstract class BaseTemplate implements Template {
 
             if (Modifier.isPublic(method.getModifiers()) && methodName.startsWith("set")) {
               String attrName = StringUtils.uncapitalize(methodName.substring("set".length()));
-              if (args != null && args.length == 1 && attrName.length() > 0) {
+              if (args.length == 1 && attrName.length() > 0) {
                 attributes.put(attrName, args[0]);
                 if (TypeSafeTemplate.class.isAssignableFrom(method.getReturnType())) {
                   return proxy;
@@ -285,7 +307,7 @@ abstract class BaseTemplate implements Template {
             }
             String message = String.format(
                 "No handler method for: '%s(%s)', expected method signature is: 'setXxx(value)'",
-                methodName, args == null ? "" : join(args, ", "));
+                methodName, join(args, ", "));
             throw new UnsupportedOperationException(message);
           }
         });
