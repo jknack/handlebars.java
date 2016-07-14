@@ -253,19 +253,17 @@ abstract class BaseTemplate implements Template {
    * @return A new {@link TypeSafeTemplate}.
    */
   private static Object newTypeSafeTemplate(final Class<?> rootType, final Template template) {
-    return Proxy.newProxyInstance(rootType.getClassLoader(), new Class[]{ rootType },
+    return Proxy.newProxyInstance(rootType.getClassLoader(), new Class[]{rootType },
         new InvocationHandler() {
 
           private final Map<String, Object> attributes = new HashMap<>();
-          private final Object[] NO_ARGS = {};
+          private final Object[] emptyArgs = {};
 
           @Override
-          public Object invoke(final Object proxy, final Method method, Object[] args)
+          public Object invoke(final Object proxy, final Method method, final Object[] methodArgs)
               throws IOException {
 
-            if (args == null) {
-              args = NO_ARGS;
-            }
+            Object[] args = methodArgs == null ? emptyArgs : methodArgs;
 
             String methodName = method.getName();
 
