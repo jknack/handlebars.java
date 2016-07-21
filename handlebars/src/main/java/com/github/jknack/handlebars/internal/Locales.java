@@ -11,19 +11,22 @@ import org.apache.commons.lang3.LocaleUtils;
  */
 public final class Locales {
 
+  /**
+   * Not allowed.
+   */
   private Locales() {
   }
 
   /**
-   * <p>Converts {@link String}s to {@link Locale}s. Supports both 
-   * <a href="https://en.wikipedia.org/wiki/IETF_language_tag">IETF language tags</a> 
-   * using hyphens (e.g. &quot;de-AT&quot;) and the Java format using underscores (e.g. &quot;de_AT&quot;).</p>
-   * 
-   * 
-   * @param string, either in IETF or Java format (hyphen or underscore)
-   * @return locale
+   * <p>Converts {@link String}s to {@link Locale}s. Supports both
+   * <a href="https://en.wikipedia.org/wiki/IETF_language_tag">IETF language tags</a>
+   * using hyphens (e.g. &quot;de-AT&quot;) and the Java format using underscores
+   * (e.g. &quot;de_AT&quot;).</p>
+   *
+   * @param string the local string either in IETF or Java format
+   * @return The matching Locale
    */
-  public static final Locale fromString(String string) {
+  public static Locale fromString(final String string) {
     if (string == null) {
       return null;
     } else {
