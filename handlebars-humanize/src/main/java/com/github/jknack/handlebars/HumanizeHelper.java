@@ -25,8 +25,6 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.Locale;
 
-import org.apache.commons.lang3.LocaleUtils;
-
 import com.github.jknack.handlebars.internal.Locales;
 
 /**
