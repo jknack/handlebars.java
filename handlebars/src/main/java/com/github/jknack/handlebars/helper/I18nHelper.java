@@ -37,6 +37,7 @@ import org.apache.commons.lang3.LocaleUtils;
 import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Helper;
 import com.github.jknack.handlebars.Options;
+import com.github.jknack.handlebars.internal.Locales;
 
 /**
  * Implementation of i18n helper for Java and JavaScript.
@@ -154,8 +155,8 @@ public enum I18nHelper implements Helper<String> {
     @Override
     public Object apply(final String key, final Options options) throws IOException {
       notEmpty(key, "found: '%s', expected 'bundle's key'", key);
-      Locale locale = LocaleUtils
-          .toLocale((String) options.hash("locale", defaultLocale.toString()));
+      Locale locale = Locales
+          .fromString((String) options.hash("locale", defaultLocale.toString()));
       String baseName = options.hash("bundle", defaultBundle);
       ClassLoader classLoader = options.hash("classLoader", getClass().getClassLoader());
       I18nSource localSource = source == null
@@ -229,7 +230,7 @@ public enum I18nHelper implements Helper<String> {
      */
     @Override
     public Object apply(final String localeName, final Options options) throws IOException {
-      Locale locale = LocaleUtils.toLocale(defaultIfEmpty(localeName, defaultLocale.toString()));
+      Locale locale = Locales.fromString(defaultIfEmpty(localeName, defaultLocale.toString()));
       String baseName = options.hash("bundle", defaultBundle);
       ClassLoader classLoader = options.hash("classLoader", getClass().getClassLoader());
       I18nSource localSource = source == null
