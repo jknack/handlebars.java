@@ -25,7 +25,7 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.Locale;
 
-import org.apache.commons.lang3.LocaleUtils;
+import com.github.jknack.handlebars.internal.Locales;
 
 /**
  * Handlebars helper for the Humanize library.
@@ -467,7 +467,7 @@ public enum HumanizeHelper implements Helper<Object> {
    */
   protected static Locale resolveLocale(final Options options) {
     String locale = options.hash("locale", Locale.getDefault().toString());
-    return LocaleUtils.toLocale(locale);
+    return Locales.fromString(locale);
   }
 
   /**
