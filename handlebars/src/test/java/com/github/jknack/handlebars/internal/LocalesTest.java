@@ -1,5 +1,6 @@
 package com.github.jknack.handlebars.internal;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 import java.util.Arrays;
 import java.util.List;
@@ -28,6 +29,11 @@ public class LocalesTest {
       // l.toLanguageTag() returns format de-DE
       assertEquals(l, Locales.fromString(l.toLanguageTag()));
     }
+  }
+
+  @Test
+  public void testNull() {
+     assertNull(Locales.fromString(null));
   }
 
 }
