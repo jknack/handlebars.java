@@ -66,7 +66,8 @@ class TemplateList extends BaseTemplate implements Iterable<Template> {
    */
   public boolean add(final Template child) {
     nodes.add(child);
-    if (child instanceof VarDecorator || child instanceof BlockDecorator) {
+    if (child instanceof VarDecorator || child instanceof BlockDecorator
+        || child instanceof Partial) {
       decorators.add((BaseTemplate) child);
       decorate = true;
     }

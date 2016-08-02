@@ -24,6 +24,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -97,6 +98,18 @@ class Partial extends HelperResolver {
     this.scontext = context == null ? "this" : context;
     this.hash(hash);
     this.loader = handlebars.getLoader();
+  }
+
+  @Override
+  public void before(final Context context, final Writer writer) throws IOException {
+    LinkedList<Map<String, Template>> partials = context.data(Context.INLINE_PARTIALS);
+    partials.addLast(new HashMap<String, Template>(partials.getLast()));
+  }
+
+  @Override
+  public void after(final Context context, final Writer writer) throws IOException {
+    LinkedList<Map<String, Template>> partials = context.data(Context.INLINE_PARTIALS);
+    partials.removeLast();
   }
 
   @Override
