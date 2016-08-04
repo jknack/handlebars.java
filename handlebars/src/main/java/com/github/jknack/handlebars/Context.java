@@ -734,7 +734,7 @@ public class Context {
   public static Context newBlockParamContext(final Context parent, final List<String> names,
       final List<Object> values) {
     Map<String, Object> hash = new HashMap<String, Object>();
-    for (int i = 0; i < names.size(); i++) {
+    for (int i = 0; i < Math.min(values.size(), names.size()); i++) {
       hash.put(names.get(i), values.get(i));
     }
     return new BlockParam(parent, hash);
