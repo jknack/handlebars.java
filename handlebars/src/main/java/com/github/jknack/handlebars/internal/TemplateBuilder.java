@@ -482,7 +482,7 @@ abstract class TemplateBuilder<it> extends HbsParserBaseVisitor<Object> {
     SexprContext sexpr = ctx.sexpr();
     return new VarParam(
         newVar(sexpr.QID().getSymbol(), TagType.SUB_EXPRESSION, params(sexpr.param()),
-            hash(sexpr.hash()), ctx.start.getText(), ctx.stop.getText(), false));
+            hash(sexpr.hash()), "(", ")", false));
   }
 
   @Override
@@ -638,12 +638,13 @@ abstract class TemplateBuilder<it> extends HbsParserBaseVisitor<Object> {
     SexprContext sexpr = ctx.sexpr();
     TerminalNode qid = sexpr.QID();
     Template expression = newVar(qid.getSymbol(), TagType.SUB_EXPRESSION, params(sexpr.param()),
-        hash(sexpr.hash()), ctx.start.getText(), ctx.stop.getText(), false);
+        hash(sexpr.hash()), "(", ")", false);
 
     PartialInfo partial = new PartialInfo();
     partial.path = expression;
     partial.hash = hash(ctx.hash());
-    partial.context = null;
+    TerminalNode scope = ctx.QID();
+    partial.context = scope != null ? scope.getText() : null;
     partial.token = qid.getSymbol();
     return partial;
   }

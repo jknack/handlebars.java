@@ -59,7 +59,7 @@ public class LookupHelper implements Helper<Object> {
     Context ctx = Context.newBuilder(options.context, context).build();
     Object lookup = ctx.get(options.param(0).toString());
     if (lookup == null) {
-      return null;
+      return context;
     }
     return lookup;
   }
