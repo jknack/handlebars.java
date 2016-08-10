@@ -23,7 +23,6 @@
     <module>handlebars-guava-cache</module>
     <module>handlebars-maven-plugin</module>
     <module>handlebars-maven-plugin-tests</module>
-    <module>handlebars-jdk8-tests</module>
     <module>integration-tests</module>
   </modules>
 
@@ -330,6 +329,26 @@
   </build>
 
   <profiles>
+    <profile>
+      <id>jdk8</id>
+      <modules>
+          <module>handlebars</module>
+          <module>handlebars-helpers</module>
+          <module>handlebars-springmvc</module>
+          <module>handlebars-jackson2</module>
+          <module>handlebars-markdown</module>
+          <module>handlebars-humanize</module>
+          <module>handlebars-proto</module>
+          <module>handlebars-guava-cache</module>
+          <module>handlebars-maven-plugin</module>
+          <module>handlebars-maven-plugin-tests</module>
+          <module>integration-tests</module>
+          <module>handlebars-jdk8-tests</module>
+      </modules>
+      <activation>
+        <jdk>[1.8,)</jdk>
+      </activation>
+    </profile>
     <profile>
       <id>bench</id>
       <build>
