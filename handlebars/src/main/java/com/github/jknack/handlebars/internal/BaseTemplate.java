@@ -24,6 +24,8 @@ import static org.apache.commons.lang3.Validate.notNull;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.lang.invoke.MethodHandles;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -259,11 +261,37 @@ abstract class BaseTemplate implements Template {
           private final Map<String, Object> attributes = new HashMap<>();
           private final Object[] emptyArgs = {};
 
+          private boolean isDefault(final Method method) {
+            return ((method.getModifiers()
+                    & (Modifier.ABSTRACT | Modifier.PUBLIC | Modifier.STATIC)) == Modifier.PUBLIC)
+                    && method.getDeclaringClass().isInterface();
+          }
+
+          private Object invokeDefaultMethod(final Method method, final Class<?> lookupClass,
+                                             final Object proxy, final Object ... args)
+                  throws Throwable {
+            // Jumping through these hoops is needed because calling unreflectSpecial requires that
+            // the lookup instance have private access to the special caller. None of the static
+            // factory methods for Lookup will give us an instance with the access modes we need,
+            // so we work around it by calling the private constructor via reflection.
+            Constructor<MethodHandles.Lookup> constructor = MethodHandles.Lookup.class
+                    .getDeclaredConstructor(Class.class, int.class);
+            constructor.setAccessible(true);
+            return constructor.newInstance(lookupClass, -1 /* trusted */)
+                    .unreflectSpecial(method, lookupClass)
+                    .bindTo(proxy)
+                    .invokeWithArguments(args);
+          }
+
           @Override
           public Object invoke(final Object proxy, final Method method, final Object[] methodArgs)
-              throws IOException {
+              throws Throwable {
 
             Object[] args = methodArgs == null ? emptyArgs : methodArgs;
+
+            if (isDefault(method)) {
+              return invokeDefaultMethod(method, rootType, proxy, args);
+            }
 
             String methodName = method.getName();
 

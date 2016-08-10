@@ -34,6 +34,10 @@ public class TypeSafeTemplateTest extends AbstractTest {
     public void set(int v);
   }
 
+  private static TypeSafeTemplate<User> createTemplate() {
+      return null;
+  }
+
   @Test
   public void genericTypeSafe() throws IOException {
     User user = new User("edgar");
