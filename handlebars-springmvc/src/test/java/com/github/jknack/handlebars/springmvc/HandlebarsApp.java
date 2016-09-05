@@ -1,6 +1,7 @@
 package com.github.jknack.handlebars.springmvc;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -31,8 +32,9 @@ public class HandlebarsApp {
         return "Spring Helper";
       }
     };
+
     viewResolver.registerHelper("spring", helper);
-    viewResolver.registerHelpers(HandlebarsApp.class);
+    viewResolver.setHelperSources(Arrays.asList(HandlebarsApp.class));
     Map<String, Helper<?>> helpers = new HashMap<String, Helper<?>>();
     helpers.put("setHelper", helper);
     viewResolver.setHelpers(helpers);

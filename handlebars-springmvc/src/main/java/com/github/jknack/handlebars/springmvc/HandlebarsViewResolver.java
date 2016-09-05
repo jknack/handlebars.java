@@ -399,7 +399,7 @@ public class HandlebarsViewResolver extends AbstractTemplateViewResolver
    * @see Handlebars#registerHelpers(Class)
    * @see Handlebars#registerHelpers(Object)
    */
-  public void setHelpers(final List<Object> helpers) {
+  public void setHelperSources(final List<?> helpers) {
     notNull(helpers, "The helpers are required.");
     for (Object helper : helpers) {
       registry.registerHelpers(helper);
