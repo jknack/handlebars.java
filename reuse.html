@@ -71,7 +71,7 @@ Output:
 
 <li><strong>template inheritance</strong>
 <p>
-Template inheritance can be done with <code>inline partial decorator</code>.
+Template inheritance can be done with <code>block/partial syntax</code>.
 </p>
 
 <div style="float: right;">Support by:
@@ -84,16 +84,16 @@ base.hbs:
 
 <div class="highlight">
 <pre>
-{{ "{{#> header" }}}}
+{{ "{{#block &quot;header&quot;" }}}}
 <span class="nt">&lt;h1&gt;</span>Title<span class="nt">&lt;/h1&gt;</span>
-{{ "{{/header" }}}}
+{{ "{{/block" }}}}
 
-{{ "{{#> content" }}}}
-{{ "{{/content" }}}}
+{{ "{{#block &quot;content&quot;" }}}}
+{{ "{{/block" }}}}
 
-{{ "{{#> &quot;footer&quot; " }}}}
+{{ "{{#block &quot;footer&quot; " }}}}
 <span class="nt">&lt;span&gt;</span>Powered by Handlebars.java<span class="nt">&lt;/span&gt;</span>
-{{ "{{/footer" }}}}
+{{ "{{/block" }}}}
 </pre>
 </div>
 
@@ -103,9 +103,9 @@ home.hbs:
 
 <div class="highlight">
 <pre>
-{{ "{{#*inline content " }}}}
+{{ "{{#partial &quot;content&quot; " }}}}
 <span class="nt">&lt;p&gt;</span>Home page<span class="nt">&lt;/p&gt;</span>
-{{ "{{/inline" }}}}
+{{ "{{/partial" }}}}
 
 {{ "{{> base" }}}}
 </pre>
