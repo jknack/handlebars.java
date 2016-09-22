@@ -90,6 +90,7 @@ public class EachHelper implements Helper<Object> {
         Object value = entry.getValue();
         Context itCtx = Context.newBuilder(parent, value)
             .combine("@key", key)
+            .combine("@value", value)
             .combine("@first", first ? "first" : "")
             .combine("@last", !loop.hasNext() ? "last" : "")
             .build();
