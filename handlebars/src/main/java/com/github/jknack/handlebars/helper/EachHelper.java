@@ -63,6 +63,7 @@ public class EachHelper implements Helper<Object> {
         Object it = loop.next();
         Context itCtx = Context.newContext(parent, it);
         itCtx.combine("@index", index)
+            .combine("@value", it)
             .combine("@first", index == base ? "first" : "")
             .combine("@last", !loop.hasNext() ? "last" : "")
             .combine("@odd", even ? "" : "odd")
