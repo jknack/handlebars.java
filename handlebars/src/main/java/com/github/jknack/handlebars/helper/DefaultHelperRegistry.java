@@ -103,7 +103,7 @@ public class DefaultHelperRegistry implements HelperRegistry {
 
     Helper<?> oldHelper = helpers.put(name, helper);
     if (oldHelper != null) {
-      logger.warn("Helper '{}' has been replaced by '{}'", name, helper);
+      logger.info("Helper '{}' has been replaced by '{}'", name, helper);
     }
     return this;
   }
