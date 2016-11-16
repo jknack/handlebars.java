@@ -24,6 +24,7 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.HashMap;
 import java.util.Map.Entry;
 
 import com.github.jknack.handlebars.Context;
@@ -80,8 +81,8 @@ abstract class HelperResolver extends BaseTemplate {
    * @throws IOException If param can't be applied.
    */
   protected Map<String, Object> hash(final Context context) throws IOException {
-    if (hashSize == 0) {
-      return Collections.emptyMap();
+    if (hashSize == 0) {      
+      return new HashMap<>();
     }
     Map<String, Object> result = new LinkedHashMap<String, Object>();
     for (Entry<String, Param> entry : hash.entrySet()) {
