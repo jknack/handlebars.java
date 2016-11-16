@@ -81,7 +81,7 @@ abstract class HelperResolver extends BaseTemplate {
    * @throws IOException If param can't be applied.
    */
   protected Map<String, Object> hash(final Context context) throws IOException {
-    if (hashSize == 0) {      
+    if (hashSize == 0) {
       return new HashMap<>();
     }
     Map<String, Object> result = new LinkedHashMap<String, Object>();
