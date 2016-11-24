@@ -60,6 +60,6 @@ public class ClassPathTemplateLoader extends URLTemplateLoader {
 
   @Override
   protected URL getResource(final String location) {
-    return  getClass().getResource(location);
+    return  getClass().getClassLoader().getResource(location);
   }
 }
