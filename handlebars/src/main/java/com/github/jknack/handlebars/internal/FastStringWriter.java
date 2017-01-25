@@ -29,11 +29,26 @@ import org.apache.commons.lang3.text.StrBuilder;
  * @since 0.1.0
  */
 class FastStringWriter extends Writer {
+
+  /**
+   * buffer size for StrBuilder.
+   */
+  private static final int BUFFER_SIZE;
+
+  static {
+    int value;
+    try {
+      value = Integer.parseInt(System.getProperty("hbs.buffer", "1600"));
+    } catch (Throwable e) {
+      value = 1600;
+    }
+    BUFFER_SIZE = value;
+  }
+
   /**
    * The internal buffer.
    */
-  private StrBuilder buffer = new StrBuilder(Integer
-      .parseInt(System.getProperty("hbs.buffer", "1600")));
+  private StrBuilder buffer = new StrBuilder(BUFFER_SIZE);
 
   @Override
   public Writer append(final char c) throws IOException {
