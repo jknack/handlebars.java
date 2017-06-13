@@ -888,15 +888,19 @@ public class Handlebars implements HelperRegistry {
   }
 
   /**
-   * If true, partial blocks will implicitly be evaluated before the partials will actually be executed.
-   * If false, you need to explicitly evaluate and render partial blocks with
+   * If true, partial blocks will implicitly be evaluated before the partials will actually
+   * be executed. If false, you need to explicitly evaluate and render partial blocks with
+   *
    * <pre>
    *     {{> @partial-block}}
    * </pre>
    * Attention: If this is set to true, Handlebars works *much* slower!
    *
-   * @param preEvaluatePartialBlocks If true partial blocks will be evaluated before the partial will be rendered to allow inline block side effects.
-   *                                  If false, you will have to evaluate and render partial blocks explitly (this option is *much* faster).
+   * @param preEvaluatePartialBlocks If true partial blocks will be evaluated before the
+   *                                 partial will be rendered to allow inline block side
+   *                                 effects.
+   *                                 If false, you will have to evaluate and render partial
+   *                                 blocks explitly (this option is *much* faster).
    * @return The Handlebars object
    */
   public Handlebars preEvaluatePartialBlocks(final boolean preEvaluatePartialBlocks) {
