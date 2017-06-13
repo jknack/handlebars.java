@@ -38,6 +38,24 @@ public class PartialBlockTest extends AbstractTest {
   }
 
   @Test
+  public void shouldOverrideBlockParams() throws IOException {
+    shouldCompileToWithPartials("{{#> dude x=23}}{{#> dude x=12}}{{/dude}}{{/dude}}",
+            $, $("dude", "<div {{#if x}}x={{x}}{{/if}}>{{> @partial-block}}</div>"), "<div x=23><div x=12></div></div>");
+  }
+
+  @Test
+  public void shouldOverrideBlockParamsWithoutPreEvaluation() throws IOException {
+    shouldCompileToWithPartialsWithoutPreEvaluation("{{#> dude x=23}}{{#> dude x=12}}{{/dude}}{{/dude}}",
+            $, $("dude", "<div {{#if x}}x={{x}}{{/if}}>{{> @partial-block}}</div>"), "<div x=23><div x=12></div></div>");
+  }
+
+  @Test
+  public void shouldOverrideBlockParamsWithFalse() throws IOException {
+    shouldCompileToWithPartials("{{#> dude x=23}}{{#> dude x=false}}{{/dude}}{{/dude}}",
+            $, $("dude", "<div {{#if x}}x={{x}}{{/if}}>{{> @partial-block}}</div>"), "<div x=23><div ></div></div>");
+  }
+
+  @Test
   public void shouldDefineInlinePartialsInPartialCall() throws IOException {
     shouldCompileToWithPartials(
             "{{#> dude}}{{#*inline \"myPartial\"}}success{{/inline}}{{/dude}}",

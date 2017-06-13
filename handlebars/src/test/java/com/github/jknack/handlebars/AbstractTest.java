@@ -99,6 +99,10 @@ public class AbstractTest {
     return compile(template, new Hash());
   }
 
+  public Template compileWithoutInfiniteLoops(final String template) throws IOException {
+    return compile(template, new Hash(), new Hash(), false, true, false);
+  }
+
   public Template compile(final String template, final Hash helpers)
       throws IOException {
     return compile(template, helpers, new Hash(), false, true);
@@ -115,13 +119,19 @@ public class AbstractTest {
   }
 
   public Template compile(final String template, final Hash helpers, final Hash partials,
-      final boolean stringParams, final boolean preEvaluatePartialBlocks)
+                          final boolean stringParams, final boolean preEvaluatePartialBlocks)
+          throws IOException {
+    return compile(template, helpers, partials, stringParams, preEvaluatePartialBlocks, true);
+  }
+
+  public Template compile(final String template, final Hash helpers, final Hash partials,
+      final boolean stringParams, final boolean preEvaluatePartialBlocks, final boolean infiniteLoops)
       throws IOException {
     MapTemplateLoader loader = new MapTemplateLoader();
     for (Entry<String, Object> entry : partials.entrySet()) {
       loader.define(entry.getKey(), (String) entry.getValue());
     }
-    Handlebars handlebars = newHandlebars().with(loader).preEvaluatePartialBlocks(preEvaluatePartialBlocks);
+    Handlebars handlebars = newHandlebars().with(loader).preEvaluatePartialBlocks(preEvaluatePartialBlocks).infiniteLoops(infiniteLoops);
     configure(handlebars);
     handlebars.setStringParams(stringParams);
 
