@@ -121,7 +121,7 @@ class Partial extends HelperResolver {
       Map<String, Template> inlineTemplates = partials.getLast();
 
       if (this.partial != null) {
-        if(handlebars.preEvaluatePartialBlocks()) {
+        if (handlebars.preEvaluatePartialBlocks()) {
           this.partial.apply(context);
         }
         inlineTemplates.put("@partial-block", this.partial);

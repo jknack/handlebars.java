@@ -282,8 +282,10 @@ public class Handlebars implements HelperRegistry {
   private boolean deletePartialAfterMerge;
 
   /**
-   * If true partial blocks will be evaluated to allow side effects by defining inline blocks within the partials blocks.
-   * Attention: This feature slows down the performance severly if your templates use deeply nested partial blocks.
+   * If true partial blocks will be evaluated to allow side effects by defining inline
+   * blocks within the partials blocks.
+   * Attention: This feature slows down the performance severly if your templates use
+   * deeply nested partial blocks.
    * Handlebars works *much* faster if this feature is set to false.
    *
    * Example of a feature that is usable when this is set to true:
@@ -853,30 +855,37 @@ public class Handlebars implements HelperRegistry {
   }
 
   /**
-   * If true, partial blocks will implicitly be evaluated before the partials will actually be executed.
-   * If false, you need to explicitly evaluate and render partial blocks with
+   * If true, partial blocks will implicitly be evaluated before the partials will actually
+   * be executed. If false, you need to explicitly evaluate and render partial blocks with
    * <pre>
    *     {{> @partial-block}}
    * </pre>
    * Attention: If this is set to true, Handlebars works *much* slower!
    *
-   * @return If true partial blocks will be evaluated before the partial will be rendered to allow inline block side effects.
-   *         If false, you will have to evaluate and render partial blocks explitly (this option is *much* faster).
+   * @return If true partial blocks will be evaluated before the partial will be rendered
+   *         to allow inline block side effects.
+   *         If false, you will have to evaluate and render partial blocks explitly (this
+   *         option is *much* faster).
    */
   public boolean preEvaluatePartialBlocks() { return preEvaluatePartialBlocks; }
 
   /**
-   * If true, partial blocks will implicitly be evaluated before the partials will actually be executed.
-   * If false, you need to explicitly evaluate and render partial blocks with
+   * If true, partial blocks will implicitly be evaluated before the partials will actually
+   * be executed. If false, you need to explicitly evaluate and render partial blocks with
    * <pre>
    *     {{> @partial-block}}
    * </pre>
    * Attention: If this is set to true, Handlebars works *much* slower!
    *
-   * @param preEvaluatePartialBlocks If true partial blocks will be evaluated before the partial will be rendered to allow inline block side effects.
-   *                                  If false, you will have to evaluate and render partial blocks explitly (this option is *much* faster).
+   * @param preEvaluatePartialBlocks If true partial blocks will be evaluated before the
+   *                                 partial will be rendered to allow inline block side
+   *                                 effects.
+   *                                 If false, you will have to evaluate and render partial
+   *                                 blocks explitly (this option is *much* faster).
    */
-  public void setPreEvaluatePartialBlocks(final boolean preEvaluatePartialBlocks) { this.preEvaluatePartialBlocks = preEvaluatePartialBlocks; }
+  public void setPreEvaluatePartialBlocks(final boolean preEvaluatePartialBlocks) {
+    this.preEvaluatePartialBlocks = preEvaluatePartialBlocks;
+  }
 
   /**
    * If true, partial blocks will implicitly be evaluated before the partials will actually be executed.
