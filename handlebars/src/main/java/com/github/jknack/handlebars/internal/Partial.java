@@ -17,9 +17,13 @@
  */
 package com.github.jknack.handlebars.internal;
 
-import static org.apache.commons.lang3.StringUtils.join;
-import static org.apache.commons.lang3.Validate.notNull;
-
+import com.github.jknack.handlebars.Context;
+import com.github.jknack.handlebars.Handlebars;
+import com.github.jknack.handlebars.HandlebarsError;
+import com.github.jknack.handlebars.HandlebarsException;
+import com.github.jknack.handlebars.Template;
+import com.github.jknack.handlebars.io.TemplateLoader;
+import com.github.jknack.handlebars.io.TemplateSource;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.Writer;
@@ -29,13 +33,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import com.github.jknack.handlebars.Context;
-import com.github.jknack.handlebars.Handlebars;
-import com.github.jknack.handlebars.HandlebarsError;
-import com.github.jknack.handlebars.HandlebarsException;
-import com.github.jknack.handlebars.Template;
-import com.github.jknack.handlebars.io.TemplateLoader;
-import com.github.jknack.handlebars.io.TemplateSource;
+import static org.apache.commons.lang3.StringUtils.join;
+import static org.apache.commons.lang3.Validate.notNull;
 
 /**
  * Partials begin with a greater than sign, like {{> box}}.
@@ -122,8 +121,9 @@ class Partial extends HelperResolver {
       Map<String, Template> inlineTemplates = partials.getLast();
 
       if (this.partial != null) {
-        this.partial.apply(context);
+        //this.partial.apply(context);
         inlineTemplates.put("@partial-block", this.partial);
+        //System.out.print(String.format("{\npath: %s\n**************\n%s\n**************\nTiefe: %d\n}\n", path, this.partial.text(), partials.size()));
       }
 
       Template template = inlineTemplates.get(path);
