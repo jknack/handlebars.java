@@ -17,11 +17,16 @@
  */
 package com.github.jknack.handlebars;
 
-import static org.apache.commons.lang3.Validate.isTrue;
-import static org.apache.commons.lang3.Validate.notEmpty;
-import static org.apache.commons.lang3.Validate.notNull;
-import static org.slf4j.LoggerFactory.getLogger;
-
+import com.github.jknack.handlebars.cache.NullTemplateCache;
+import com.github.jknack.handlebars.cache.TemplateCache;
+import com.github.jknack.handlebars.helper.DefaultHelperRegistry;
+import com.github.jknack.handlebars.internal.FormatterChain;
+import com.github.jknack.handlebars.internal.HbsParserFactory;
+import com.github.jknack.handlebars.io.ClassPathTemplateLoader;
+import com.github.jknack.handlebars.io.CompositeTemplateLoader;
+import com.github.jknack.handlebars.io.StringTemplateSource;
+import com.github.jknack.handlebars.io.TemplateLoader;
+import com.github.jknack.handlebars.io.TemplateSource;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -34,19 +39,12 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
-
 import org.slf4j.Logger;
 
-import com.github.jknack.handlebars.cache.NullTemplateCache;
-import com.github.jknack.handlebars.cache.TemplateCache;
-import com.github.jknack.handlebars.helper.DefaultHelperRegistry;
-import com.github.jknack.handlebars.internal.FormatterChain;
-import com.github.jknack.handlebars.internal.HbsParserFactory;
-import com.github.jknack.handlebars.io.ClassPathTemplateLoader;
-import com.github.jknack.handlebars.io.CompositeTemplateLoader;
-import com.github.jknack.handlebars.io.StringTemplateSource;
-import com.github.jknack.handlebars.io.TemplateLoader;
-import com.github.jknack.handlebars.io.TemplateSource;
+import static org.apache.commons.lang3.Validate.isTrue;
+import static org.apache.commons.lang3.Validate.notEmpty;
+import static org.apache.commons.lang3.Validate.notNull;
+import static org.slf4j.LoggerFactory.getLogger;
 
 /**
  * <p>
@@ -282,6 +280,31 @@ public class Handlebars implements HelperRegistry {
    * </pre>
    */
   private boolean deletePartialAfterMerge;
+
+  /**
+   * If true partial blocks will be evaluated to allow side effects by defining inline blocks within the partials blocks.
+   * Attention: This feature slows down the performance severly if your templates use deeply nested partial blocks.
+   * Handlebars works *much* faster if this feature is set to false.
+   *
+   * Example of a feature that is usable when this is set to true:
+   * <pre>
+   *     {{#> myPartial}}{{#*inline 'myInline'}}Wow!!!{{/inline}}{{/myPartial}}
+   * </pre>
+   * With a myPartial.hbs template like this:
+   * <pre>
+   *     {{> myInline}}
+   * </pre>
+   * The text "Wow!!!" will actually be rendered.
+   *
+   * If this flag is set to false, you need to explicitly evaluate the partial block.
+   * The template myPartial.hbs will have to look like this:
+   * <pre>
+   *     {{> @partial-block}}{{> myInline}}
+   * </pre>
+   *
+   * Default is: true for compatibility reasons
+   */
+  private boolean preEvaluatePartialBlocks = true;
 
   /**
    * The escaping strategy.
@@ -826,6 +849,49 @@ public class Handlebars implements HelperRegistry {
    */
   public Handlebars infiniteLoops(final boolean infiniteLoops) {
     setInfiniteLoops(infiniteLoops);
+    return this;
+  }
+
+  /**
+   * If true, partial blocks will implicitly be evaluated before the partials will actually be executed.
+   * If false, you need to explicitly evaluate and render partial blocks with
+   * <pre>
+   *     {{> @partial-block}}
+   * </pre>
+   * Attention: If this is set to true, Handlebars works *much* slower!
+   *
+   * @return If true partial blocks will be evaluated before the partial will be rendered to allow inline block side effects.
+   *         If false, you will have to evaluate and render partial blocks explitly (this option is *much* faster).
+   */
+  public boolean preEvaluatePartialBlocks() { return preEvaluatePartialBlocks; }
+
+  /**
+   * If true, partial blocks will implicitly be evaluated before the partials will actually be executed.
+   * If false, you need to explicitly evaluate and render partial blocks with
+   * <pre>
+   *     {{> @partial-block}}
+   * </pre>
+   * Attention: If this is set to true, Handlebars works *much* slower!
+   *
+   * @param preEvaluatePartialBlocks If true partial blocks will be evaluated before the partial will be rendered to allow inline block side effects.
+   *                                  If false, you will have to evaluate and render partial blocks explitly (this option is *much* faster).
+   */
+  public void setPreEvaluatePartialBlocks(final boolean preEvaluatePartialBlocks) { this.preEvaluatePartialBlocks = preEvaluatePartialBlocks; }
+
+  /**
+   * If true, partial blocks will implicitly be evaluated before the partials will actually be executed.
+   * If false, you need to explicitly evaluate and render partial blocks with
+   * <pre>
+   *     {{> @partial-block}}
+   * </pre>
+   * Attention: If this is set to true, Handlebars works *much* slower!
+   *
+   * @param preEvaluatePartialBlocks If true partial blocks will be evaluated before the partial will be rendered to allow inline block side effects.
+   *                                  If false, you will have to evaluate and render partial blocks explitly (this option is *much* faster).
+   * @return The Handlebars object
+   */
+  public Handlebars preEvaluatePartialBlocks(final boolean preEvaluatePartialBlocks) {
+    setPreEvaluatePartialBlocks(preEvaluatePartialBlocks);
     return this;
   }
 

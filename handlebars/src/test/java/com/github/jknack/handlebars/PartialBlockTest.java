@@ -18,18 +18,25 @@ public class PartialBlockTest extends AbstractTest {
   }
 
   @Test
-  public void shouldNotDefineInlinePartialsInPartialBlockCall() throws IOException {
+  public void shouldDefineInlinePartialsInPartialBlockCallByDefault() throws IOException {
     shouldCompileToWithPartials(
         "{{#> dude}}{{#*inline \"myPartial\"}}success{{/inline}}{{/dude}}",
-        $, $("dude", "{{#> myPartial }}{{/myPartial}}"), "");
+        $, $("dude", "{{#> myPartial }}{{/myPartial}}"), "success");
   }
 
+  @Test
+  public void shouldNotDefineInlinePartialsInPartialBlockCallWithoutPreEvaluation() throws IOException {
+    shouldCompileToWithPartialsWithoutPreEvaluation(
+            "{{#> dude}}{{#*inline \"myPartial\"}}success{{/inline}}{{/dude}}",
+            $, $("dude", "{{#> myPartial }}{{/myPartial}}"), "");
+  }
   @Test
   public void shouldDefineInlinePartialsInPartialBlockCall() throws IOException {
     shouldCompileToWithPartials(
             "{{#> dude}}{{#*inline \"myPartial\"}}success{{/inline}}{{/dude}}",
             $, $("dude", "{{> @partial-block}}{{#> myPartial }}{{/myPartial}}"), "success");
   }
+
   @Test
   public void shouldDefineInlinePartialsInPartialCall() throws IOException {
     shouldCompileToWithPartials(

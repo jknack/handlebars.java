@@ -1,12 +1,11 @@
 package com.github.jknack.handlebars;
 
-import static org.junit.Assert.assertEquals;
-
 import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.Map.Entry;
-
 import org.yaml.snakeyaml.Yaml;
+
+import static org.junit.Assert.assertEquals;
 
 public class AbstractTest {
 
@@ -60,23 +59,34 @@ public class AbstractTest {
 
   public void shouldCompileTo(final String template, final Object context,
       final Hash helpers, final String expected, final String message) throws IOException {
-    shouldCompileTo(template, context, helpers, new Hash(), expected, message);
+    shouldCompileTo(template, context, helpers, new Hash(), expected, message, true);
   }
 
   public void shouldCompileToWithPartials(final String template, final Object context,
       final Hash partials, final String expected) throws IOException {
-    shouldCompileTo(template, context, new Hash(), partials, expected, "");
+    shouldCompileTo(template, context, new Hash(), partials, expected, "", true);
+  }
+
+  public void shouldCompileToWithPartialsWithoutPreEvaluation(final String template, final Object context,
+                                          final Hash partials, final String expected) throws IOException {
+    shouldCompileTo(template, context, new Hash(), partials, expected, "", false);
   }
 
   public void shouldCompileToWithPartials(final String template, final Object context,
       final Hash partials, final String expected, final String message) throws IOException {
-    shouldCompileTo(template, context, new Hash(), partials, expected, message);
+    shouldCompileTo(template, context, new Hash(), partials, expected, message, true);
   }
 
   public void shouldCompileTo(final String template, final Object context,
-      final Hash helpers, final Hash partials, final String expected, final String message)
+                              final Hash helpers, final Hash partials, final String expected, final String message)
+          throws IOException {
+    shouldCompileTo(template, context, helpers, partials, expected, message, true);
+  }
+
+    public void shouldCompileTo(final String template, final Object context,
+      final Hash helpers, final Hash partials, final String expected, final String message, final boolean preEvaluatePartialBlocks)
       throws IOException {
-    Template t = compile(template, helpers, partials);
+    Template t = compile(template, helpers, partials, false, preEvaluatePartialBlocks);
     String result = t.apply(configureContext(context));
     assertEquals("'" + expected + "' should === '" + result + "': " + message, expected, result);
   }
@@ -91,27 +101,27 @@ public class AbstractTest {
 
   public Template compile(final String template, final Hash helpers)
       throws IOException {
-    return compile(template, helpers, new Hash(), false);
+    return compile(template, helpers, new Hash(), false, true);
   }
 
   public Template compile(final String template, final Hash helpers, final boolean stringParams)
       throws IOException {
-    return compile(template, helpers, new Hash(), stringParams);
+    return compile(template, helpers, new Hash(), stringParams, true);
   }
 
   public Template compile(final String template, final Hash helpers, final Hash partials)
       throws IOException {
-    return compile(template, helpers, partials, false);
+    return compile(template, helpers, partials, false, true);
   }
 
   public Template compile(final String template, final Hash helpers, final Hash partials,
-      final boolean stringParams)
+      final boolean stringParams, final boolean preEvaluatePartialBlocks)
       throws IOException {
     MapTemplateLoader loader = new MapTemplateLoader();
     for (Entry<String, Object> entry : partials.entrySet()) {
       loader.define(entry.getKey(), (String) entry.getValue());
     }
-    Handlebars handlebars = newHandlebars().with(loader);
+    Handlebars handlebars = newHandlebars().with(loader).preEvaluatePartialBlocks(preEvaluatePartialBlocks);
     configure(handlebars);
     handlebars.setStringParams(stringParams);
 

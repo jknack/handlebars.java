@@ -31,7 +31,7 @@ public class Hbs523 extends v4Test {
             + "-------------<br>\n"
             + "{{>inherit2}}";
 
-    shouldCompileTo(
+    shouldCompileToWithoutPreEvaluation(
         main,
         $("partials", $("base", base, "inherit1", inherit1, "inherit2", inherit2)),
         "main has partials:<br>\n"

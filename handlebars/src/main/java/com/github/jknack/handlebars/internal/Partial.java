@@ -121,9 +121,10 @@ class Partial extends HelperResolver {
       Map<String, Template> inlineTemplates = partials.getLast();
 
       if (this.partial != null) {
-        //this.partial.apply(context);
+        if(handlebars.preEvaluatePartialBlocks()) {
+          this.partial.apply(context);
+        }
         inlineTemplates.put("@partial-block", this.partial);
-        //System.out.print(String.format("{\npath: %s\n**************\n%s\n**************\nTiefe: %d\n}\n", path, this.partial.text(), partials.size()));
       }
 
       Template template = inlineTemplates.get(path);
