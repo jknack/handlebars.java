@@ -306,7 +306,7 @@ public class Handlebars implements HelperRegistry {
    *
    * Default is: true for compatibility reasons
    */
-  private boolean preEvaluatePartialBlocks = true;
+  private boolean preEvaluatePartialBlocks = false;
 
   /**
    * The escaping strategy.

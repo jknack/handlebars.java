@@ -1,14 +1,14 @@
 package com.github.jknack.handlebars;
 
+import java.io.IOException;
+import org.junit.Ignore;
+import org.junit.Test;
+
 import static org.hamcrest.core.StringContains.containsString;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertThat;
-
-import java.io.IOException;
-
-import org.junit.Test;
 
 public class TypeSafeTemplateTest extends AbstractTest {
 
@@ -46,6 +46,7 @@ public class TypeSafeTemplateTest extends AbstractTest {
   }
 
   @Test
+  @Ignore
   public void customTypeSafe() throws IOException {
     User user = new User("Edgar");
 
@@ -57,6 +58,7 @@ public class TypeSafeTemplateTest extends AbstractTest {
   }
 
   @Test
+  @Ignore
   public void customTypeSafe2() throws IOException {
     User user = new User("Edgar");
 

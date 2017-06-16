@@ -1,24 +1,23 @@
 /**
  * Copyright (c) 2012-2015 Edgar Espina
  *
- * This file is part of Handlebars.java.
+ * <p>This file is part of Handlebars.java.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * <p>Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * <p>http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
+ * <p>Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ * express or implied. See the License for the specific language governing permissions and
  * limitations under the License.
  */
 package com.github.jknack.handlebars;
 
-import static org.apache.commons.lang3.Validate.notEmpty;
-
+import com.github.jknack.handlebars.internal.path.PropertyPath;
+import com.github.jknack.handlebars.internal.path.ThisPath;
+import com.github.jknack.handlebars.io.TemplateSource;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -30,12 +29,12 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import com.github.jknack.handlebars.internal.path.ThisPath;
-import com.github.jknack.handlebars.io.TemplateSource;
+import static org.apache.commons.lang3.Validate.notEmpty;
 
 /**
- * Mustache/Handlebars are contextual template engines. This class represent the
- * 'context stack' of a template.
+ * Mustache/Handlebars are contextual template engines. This class represent the 'context stack' of
+ * a template.
+ *
  * <ul>
  * <li>Objects and hashes should be pushed onto the context stack.
  * <li>All elements on the context stack should be accessible.
@@ -44,7 +43,7 @@ import com.github.jknack.handlebars.io.TemplateSource;
  * <li>Dotted names should be valid for Section tags.
  * <li>Dotted names that cannot be resolved should be considered falsy.
  * <li>Dotted Names - Context Precedence: Dotted names should be resolved against former
- * resolutions.
+ *     resolutions.
  * </ul>
  *
  * @author edgar.espina
@@ -176,9 +175,7 @@ public class Context {
    */
   private static class CompositeValueResolver implements ValueResolver {
 
-    /**
-     * The internal value resolvers.
-     */
+    /** The internal value resolvers. */
     private ValueResolver[] resolvers;
 
     /**
@@ -234,9 +231,7 @@ public class Context {
    */
   public static final class Builder {
 
-    /**
-     * The context product.
-     */
+    /** The context product. */
     private Context context;
 
     /**
@@ -295,8 +290,8 @@ public class Context {
     }
 
     /**
-     * Add one or more value resolver to the defaults defined by
-     * {@link ValueResolver#VALUE_RESOLVERS}.
+     * Add one or more value resolver to the defaults defined by {@link
+     * ValueResolver#VALUE_RESOLVERS}.
      *
      * @param resolvers The value resolvers. Required.
      * @return This builder.
@@ -374,57 +369,36 @@ public class Context {
       }
       return value;
     }
-
   }
 
-  /**
-   * Mark for fail context lookup.
-   */
+  /** Mark for fail context lookup. */
   private static final Object NULL = new Object();
 
-  /**
-   * The qualified name for partials. Internal use.
-   */
+  /** The qualified name for partials. Internal use. */
   public static final String PARTIALS = Context.class.getName() + "#partials";
 
-  /**
-   * Inline partials.
-   */
+  /** Inline partials. */
   public static final String INLINE_PARTIALS = "__inline_partials_";
 
-  /**
-   * The qualified name for partials. Internal use.
-   */
+  /** The qualified name for partials. Internal use. */
   public static final String INVOCATION_STACK = Context.class.getName() + "#invocationStack";
 
-  /**
-   * Number of parameters of a helper. Internal use.
-   */
+  /** Number of parameters of a helper. Internal use. */
   public static final String PARAM_SIZE = Context.class.getName() + "#paramSize";
 
-  /**
-   * The parent context. Optional.
-   */
+  /** The parent context. Optional. */
   protected Context parent;
 
-  /**
-   * The target value. Resolved as '.' or 'this' inside templates. Required.
-   */
+  /** The target value. Resolved as '.' or 'this' inside templates. Required. */
   Object model;
 
-  /**
-   * A thread safe storage.
-   */
+  /** A thread safe storage. */
   protected Map<String, Object> data;
 
-  /**
-   * Additional, data can be stored here.
-   */
+  /** Additional, data can be stored here. */
   protected Context extendedContext;
 
-  /**
-   * The value resolver.
-   */
+  /** The value resolver. */
   protected ValueResolver resolver;
 
   /**
@@ -441,8 +415,7 @@ public class Context {
   /**
    * Creates a root context.
    *
-   * @param model The target value. Resolved as '.' or 'this' inside
-   *        templates. Required.
+   * @param model The target value. Resolved as '.' or 'this' inside templates. Required.
    * @return A root context.
    */
   private static Context root(final Object model) {
@@ -465,7 +438,7 @@ public class Context {
    * @param model The model data.
    * @return This context.
    */
-  @SuppressWarnings({"unchecked" })
+  @SuppressWarnings({"unchecked"})
   public Context combine(final String name, final Object model) {
     Map<String, Object> map = (Map<String, Object>) extendedContext.model;
     map.put(name, model);
@@ -478,7 +451,7 @@ public class Context {
    * @param model The model attributes.
    * @return This context.
    */
-  @SuppressWarnings({"unchecked" })
+  @SuppressWarnings({"unchecked"})
   public Context combine(final Map<String, ?> model) {
     Map<String, Object> map = (Map<String, Object>) extendedContext.model;
     map.putAll(model);
@@ -563,15 +536,14 @@ public class Context {
     return propertySet(model);
   }
 
-  /**
-   * @return True, if this context is a block param context.
-   */
+  /** @return True, if this context is a block param context. */
   public boolean isBlockParams() {
     return this instanceof BlockParam;
   }
 
   /**
    * Lookup the given key inside the context stack.
+   *
    * <ul>
    * <li>Objects and hashes should be pushed onto the context stack.
    * <li>All elements on the context stack should be accessible.
@@ -580,7 +552,7 @@ public class Context {
    * <li>Dotted names should be valid for Section tags.
    * <li>Dotted names that cannot be resolved should be considered falsey.
    * <li>Dotted Names - Context Precedence: Dotted names should be resolved against former
-   * resolutions.
+   *     resolutions.
    * </ul>
    *
    * @param path The object path.
@@ -603,7 +575,9 @@ public class Context {
         value = expr.eval(resolver, it, it.model);
         if (value == null) {
           // No luck, check the extended context.
-          value = expr.eval(resolver, it.extendedContext, it.extendedContext.model);
+          if (!(head instanceof PropertyPath)) {
+            value = expr.eval(resolver, it.extendedContext, it.extendedContext.model);
+          }
 
           if (value == null) {
             // data context
@@ -618,6 +592,7 @@ public class Context {
 
   /**
    * Lookup the given key inside the context stack.
+   *
    * <ul>
    * <li>Objects and hashes should be pushed onto the context stack.
    * <li>All elements on the context stack should be accessible.
@@ -626,7 +601,7 @@ public class Context {
    * <li>Dotted names should be valid for Section tags.
    * <li>Dotted names that cannot be resolved should be considered falsey.
    * <li>Dotted Names - Context Precedence: Dotted names should be resolved against former
-   * resolutions.
+   *     resolutions.
    * </ul>
    *
    * @param key The object key.
@@ -638,6 +613,7 @@ public class Context {
 
   /**
    * Lookup the given key inside the context stack.
+   *
    * <ul>
    * <li>Objects and hashes should be pushed onto the context stack.
    * <li>All elements on the context stack should be accessible.
@@ -646,7 +622,7 @@ public class Context {
    * <li>Dotted names should be valid for Section tags.
    * <li>Dotted names that cannot be resolved should be considered falsey.
    * <li>Dotted Names - Context Precedence: Dotted names should be resolved against former
-   * resolutions.
+   *     resolutions.
    * </ul>
    *
    * @param key The object key.
@@ -667,9 +643,7 @@ public class Context {
     extendedContext.resolver = resolver;
   }
 
-  /**
-   * Destroy this context by cleaning up instance attributes.
-   */
+  /** Destroy this context by cleaning up instance attributes. */
   public void destroy() {
     model = null;
     if (parent == null) {
@@ -731,8 +705,8 @@ public class Context {
    * @param values A list of values to set in the block param context.
    * @return A new block param context.
    */
-  public static Context newBlockParamContext(final Context parent, final List<String> names,
-      final List<Object> values) {
+  public static Context newBlockParamContext(
+      final Context parent, final List<String> names, final List<Object> values) {
     Map<String, Object> hash = new HashMap<String, Object>();
     for (int i = 0; i < Math.min(values.size(), names.size()); i++) {
       hash.put(names.get(i), values.get(i));
@@ -748,8 +722,8 @@ public class Context {
    * @param hash Partial hash.
    * @return A new context.
    */
-  public static Context newPartialContext(final Context ctx, final String scope,
-      final Map<String, Object> hash) {
+  public static Context newPartialContext(
+      final Context ctx, final String scope, final Map<String, Object> hash) {
     return new PartialCtx(ctx, ctx.get(scope), hash);
   }
 
@@ -801,5 +775,4 @@ public class Context {
     ctx.resolver = context.resolver;
     return ctx;
   }
-
 }
