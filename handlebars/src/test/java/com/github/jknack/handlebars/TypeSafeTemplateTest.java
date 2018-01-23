@@ -1,14 +1,13 @@
 package com.github.jknack.handlebars;
 
-import java.io.IOException;
-import org.junit.Ignore;
-import org.junit.Test;
-
 import static org.hamcrest.core.StringContains.containsString;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertThat;
+
+import java.io.IOException;
+import org.junit.Test;
 
 public class TypeSafeTemplateTest extends AbstractTest {
 
@@ -35,7 +34,7 @@ public class TypeSafeTemplateTest extends AbstractTest {
   }
 
   private static TypeSafeTemplate<User> createTemplate() {
-      return null;
+    return null;
   }
 
   @Test
@@ -46,25 +45,21 @@ public class TypeSafeTemplateTest extends AbstractTest {
   }
 
   @Test
-  @Ignore
   public void customTypeSafe() throws IOException {
     User user = new User("Edgar");
 
-    UserTemplate userTemplate = compile("{{name}} is {{age}} years old!")
-        .as(UserTemplate.class)
-        .setAge(32);
+    UserTemplate userTemplate =
+        compile("{{name}} is {{age}} years old!").as(UserTemplate.class).setAge(32);
 
     assertEquals("Edgar is 32 years old!", userTemplate.apply(user));
   }
 
   @Test
-  @Ignore
   public void customTypeSafe2() throws IOException {
     User user = new User("Edgar");
 
-    UserTemplate userTemplate = compile("{{role}}")
-        .as(UserTemplate.class)
-        .setRole("Software Architect");
+    UserTemplate userTemplate =
+        compile("{{role}}").as(UserTemplate.class).setRole("Software Architect");
 
     assertEquals("Software Architect", userTemplate.apply(user));
   }
@@ -96,16 +91,14 @@ public class TypeSafeTemplateTest extends AbstractTest {
 
   @Test(expected = UnsupportedOperationException.class)
   public void noHandlerMethod() throws IOException {
-    UserTemplate userTemplate = compile("{{role}}")
-        .as(UserTemplate.class);
+    UserTemplate userTemplate = compile("{{role}}").as(UserTemplate.class);
 
     userTemplate.set(6);
   }
 
   @Test(expected = UnsupportedOperationException.class)
   public void noHandlerMethod2() throws IOException {
-    UserTemplate userTemplate = compile("{{role}}")
-        .as(UserTemplate.class);
+    UserTemplate userTemplate = compile("{{role}}").as(UserTemplate.class);
 
     userTemplate.set();
   }

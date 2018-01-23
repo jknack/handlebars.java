@@ -15,7 +15,8 @@
  */
 package com.github.jknack.handlebars;
 
-import com.github.jknack.handlebars.internal.path.PropertyPath;
+import static org.apache.commons.lang3.Validate.notEmpty;
+
 import com.github.jknack.handlebars.internal.path.ThisPath;
 import com.github.jknack.handlebars.io.TemplateSource;
 import java.util.ArrayList;
@@ -28,8 +29,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-
-import static org.apache.commons.lang3.Validate.notEmpty;
 
 /**
  * Mustache/Handlebars are contextual template engines. This class represent the 'context stack' of
@@ -575,9 +574,7 @@ public class Context {
         value = expr.eval(resolver, it, it.model);
         if (value == null) {
           // No luck, check the extended context.
-          if (!(head instanceof PropertyPath)) {
-            value = expr.eval(resolver, it.extendedContext, it.extendedContext.model);
-          }
+          value = expr.eval(resolver, it.extendedContext, it.extendedContext.model);
 
           if (value == null) {
             // data context
