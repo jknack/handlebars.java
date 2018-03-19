@@ -327,7 +327,7 @@ public class RhinoHandlebars extends HandlebarsJs {
   private org.mozilla.javascript.Context newContext() {
     final ContextFactory factory = new ContextFactory() {
       @Override
-      protected boolean hasFeature(final org.mozilla.javascript.Context cx, 
+      protected boolean hasFeature(final org.mozilla.javascript.Context cx,
                                    final int featureIndex) {
         if (featureIndex == org.mozilla.javascript.Context
              .FEATURE_INTEGER_WITHOUT_DECIMAL_PLACE) {

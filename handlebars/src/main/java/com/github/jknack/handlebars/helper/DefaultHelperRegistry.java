@@ -280,16 +280,22 @@ public class DefaultHelperRegistry implements HelperRegistry {
   }
 
   /**
-   * Changes value of isIntegerWithoutDecimalPlaceEnabled field,
-   * see {@link #isIntegerWithoutDecimalPlaceEnabled}
+   * Changes value of isIntegerWithoutDecimalPlaceEnabled field.
+   * See {@link #isIntegerWithoutDecimalPlaceEnabled}.
+   *
+   * @return <code>true</code> if 'Integer without decimal place' feature is enabled,
+   * <code>false</code> otherwise.
    * */
   public boolean isIntegerWithoutDecimalPlaceEnabled() {
     return isIntegerWithoutDecimalPlaceEnabled;
   }
 
   /**
-   * Returns value of isIntegerWithoutDecimalPlaceEnabled field,
-   * see {@link #isIntegerWithoutDecimalPlaceEnabled}
+   * Returns value of isIntegerWithoutDecimalPlaceEnabled field.
+   * See {@link #isIntegerWithoutDecimalPlaceEnabled}.
+   *
+   * @param integerWithoutDecimalPlaceEnabled boolean value whether feature
+   *                                          has to be enabled or not.
    */
   public void setIntegerWithoutDecimalPlaceEnabled(
       final boolean integerWithoutDecimalPlaceEnabled) {
