@@ -82,8 +82,9 @@ public class DefaultHelperRegistry implements HelperRegistry {
   private HandlebarsJs handlebarsJs;
 
   /**
-   * A flag to indicate whether integer numbers should be returned with decimal place or not. For instance assume
-   * there is a js function that return 7. After Rhino has processed this function, 7.0 will be returned. Using this
+   * A flag to indicate whether integer numbers should be returned with decimal
+   * place or not. For instance assume there is a js function that return 7.
+   * After Rhino has processed this function, 7.0 will be returned. Using this
    * flag Rhino result can be controlled.
    */
   private boolean isIntegerWithoutDecimalPlaceEnabled = false;
@@ -278,11 +279,20 @@ public class DefaultHelperRegistry implements HelperRegistry {
     return this;
   }
 
+  /**
+   * Changes value of isIntegerWithoutDecimalPlaceEnabled field,
+   * see {@link #isIntegerWithoutDecimalPlaceEnabled}
+   * */
   public boolean isIntegerWithoutDecimalPlaceEnabled() {
     return isIntegerWithoutDecimalPlaceEnabled;
   }
 
-  public void setIntegerWithoutDecimalPlaceEnabled(boolean integerWithoutDecimalPlaceEnabled) {
+  /**
+   * Returns value of isIntegerWithoutDecimalPlaceEnabled field,
+   * see {@link #isIntegerWithoutDecimalPlaceEnabled}
+   */
+  public void setIntegerWithoutDecimalPlaceEnabled(
+      final boolean integerWithoutDecimalPlaceEnabled) {
     isIntegerWithoutDecimalPlaceEnabled = integerWithoutDecimalPlaceEnabled;
   }
 }

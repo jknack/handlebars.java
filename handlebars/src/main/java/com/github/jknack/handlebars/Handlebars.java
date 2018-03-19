@@ -1248,11 +1248,21 @@ public class Handlebars implements HelperRegistry {
     return this;
   }
 
-  public void setIntegerWithoutDecimalPlaceFeatureEnabled(boolean value) {
-    ((DefaultHelperRegistry) registry).setIntegerWithoutDecimalPlaceEnabled(value);
+  /**
+  * Changes value of isIntegerWithoutDecimalPlaceEnabled
+  * in DefaultHelperRegistry, see {@link DefaultHelperRegistry}
+  */
+  public void setIntegerWithoutDecimalPlaceFeatureEnabled(final boolean value) {
+    ((DefaultHelperRegistry) registry)
+      .setIntegerWithoutDecimalPlaceEnabled(value);
   }
 
+  /**
+  * Returns value of isIntegerWithoutDecimalPlaceEnabled
+  * in DefaultHelperRegistry, see {@link DefaultHelperRegistry}
+  */
   public boolean isIntegerWithoutDecimalPlaceFeatureEnabled() {
-    return ((DefaultHelperRegistry) registry).isIntegerWithoutDecimalPlaceEnabled();
+    return ((DefaultHelperRegistry) registry)
+      .isIntegerWithoutDecimalPlaceEnabled();
   }
 }

@@ -325,14 +325,17 @@ public class RhinoHandlebars extends HandlebarsJs {
    * @return A Rhino Context.
    */
   private org.mozilla.javascript.Context newContext() {
-      final ContextFactory factory = new ContextFactory() {
-          @Override
-          protected boolean hasFeature(org.mozilla.javascript.Context cx, int featureIndex) {
-              if(featureIndex == org.mozilla.javascript.Context.FEATURE_INTEGER_WITHOUT_DECIMAL_PLACE) {
-                  return ((DefaultHelperRegistry)registry).isIntegerWithoutDecimalPlaceEnabled();
-              }
-              return super.hasFeature(cx, featureIndex);
-          }
+    final ContextFactory factory = new ContextFactory() {
+      @Override
+      protected boolean hasFeature(final org.mozilla.javascript.Context cx, 
+                                   final int featureIndex) {
+        if (featureIndex == org.mozilla.javascript.Context
+             .FEATURE_INTEGER_WITHOUT_DECIMAL_PLACE) {
+          return ((DefaultHelperRegistry) registry)
+                   .isIntegerWithoutDecimalPlaceEnabled();
+        }
+          return super.hasFeature(cx, featureIndex);
+        }
       };
 
     org.mozilla.javascript.Context ctx = factory.enterContext();
