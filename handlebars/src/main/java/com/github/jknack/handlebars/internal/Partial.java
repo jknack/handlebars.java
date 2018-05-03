@@ -123,8 +123,14 @@ class Partial extends HelperResolver {
       Map<String, Template> inlineTemplates = partials.getLast();
       Template callee = context.data("callee");
 
-      if("@partial-block".equals(path) && !isCalleeOf(callee, inlineTemplates.get("@partial-block"))) {
-        throw new IllegalArgumentException(callee + " does not provide a @partial-block for " + this);
+      final boolean pathIsPartialBlock = "@partial-block".equals(path);
+      final Template lastPartialBlock = inlineTemplates.get("@partial-block");
+      final boolean parentIsNotLastPartialBlock = !isCalleeOf(callee, lastPartialBlock);
+
+      if (pathIsPartialBlock && parentIsNotLastPartialBlock) {
+        throw new IllegalArgumentException(
+                callee + " does not provide a @partial-block for " + this
+        );
       }
 
       if (this.partial != null) {
@@ -194,12 +200,17 @@ class Partial extends HelperResolver {
     }
   }
 
-  private boolean isCalleeOf(Template callee, Template partialBlock) {
-    if(callee == null || partialBlock == null) {
+  /**
+   * @param callee parent template of the currently traversed template
+   * @param partialBlock partial block candidate
+   * @return returns if callee and partialBlock are the same
+   */
+  private boolean isCalleeOf(final Template callee, final Template partialBlock) {
+    if (callee == null || partialBlock == null) {
       return false;
     }
 
-    if(!callee.filename().equalsIgnoreCase(partialBlock.filename())) {
+    if (!callee.filename().equalsIgnoreCase(partialBlock.filename())) {
       return false;
     }
 
