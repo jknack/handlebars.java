@@ -92,7 +92,7 @@ class Partial extends HelperResolver {
    * @param hash Template params
    */
   public Partial(final Handlebars handlebars, final Template path, final String context,
-      final Map<String, Param> hash) {
+                 final Map<String, Param> hash) {
     super(handlebars);
     this.path = notNull(path, "The path is required.");
     this.context = context;
@@ -115,7 +115,7 @@ class Partial extends HelperResolver {
 
   @Override
   protected void merge(final Context context, final Writer writer)
-      throws IOException {
+          throws IOException {
     try {
       String path = this.path.apply(context);
       /** Inline partial? */
@@ -134,10 +134,14 @@ class Partial extends HelperResolver {
       }
 
       if (this.partial != null) {
-        Text partialBlock = new Text(handlebars, this.partial.apply(context));
-        partialBlock.filename(this.filename());
-        partialBlock.position(this.position()[0], this.position()[1]);
-        inlineTemplates.put("@partial-block", partialBlock);
+        inlineTemplates.put("@partial-block",
+                new PartialBlockForwardingTemplate(this,
+                        this.partial,
+                        inlineTemplates.get("@partial-block"),
+                        callee,
+                        handlebars
+                )
+        );
       }
 
       Template template = inlineTemplates.get(path);
@@ -157,18 +161,20 @@ class Partial extends HelperResolver {
             final String reason;
             if (invocationStack.isEmpty()) {
               reason = String.format("infinite loop detected, partial '%s' is calling itself",
-                  source.filename());
+                      source.filename());
 
               message = String.format("%s:%s:%s: %s", caller.filename(), line, column, reason);
             } else {
               reason = String.format(
-                  "infinite loop detected, partial '%s' was previously loaded", source.filename());
+                      "infinite loop detected, partial '%s' was previously loaded",
+                      source.filename()
+              );
 
               message = String.format("%s:%s:%s: %s\n%s", caller.filename(), line, column, reason,
-                  "at " + join(invocationStack, "\nat "));
+                      "at " + join(invocationStack, "\nat "));
             }
             HandlebarsError error = new HandlebarsError(caller.filename(), line,
-                column, reason, text(), message);
+                    column, reason, text(), message);
             throw new HandlebarsException(error);
           }
 
@@ -192,10 +198,10 @@ class Partial extends HelperResolver {
       context.data("callee", callee);
     } catch (IOException ex) {
       String reason = String.format("The partial '%s' at '%s' could not be found",
-          loader.resolve(path.text()), ex.getMessage());
+              loader.resolve(path.text()), ex.getMessage());
       String message = String.format("%s:%s:%s: %s", filename, line, column, reason);
       HandlebarsError error = new HandlebarsError(filename, line,
-          column, reason, text(), message);
+              column, reason, text(), message);
       throw new HandlebarsException(error);
     }
   }
@@ -225,7 +231,7 @@ class Partial extends HelperResolver {
    * @return True, if the file was already processed.
    */
   private static boolean exists(final List<TemplateSource> invocationStack,
-      final String filename) {
+                                final String filename) {
     for (TemplateSource ts : invocationStack) {
       if (ts.filename().equals(filename)) {
         return true;
@@ -302,8 +308,8 @@ class Partial extends HelperResolver {
   public String text() {
     String path = this.path.text();
     StringBuilder buffer = new StringBuilder(startDelimiter)
-        .append('>')
-        .append(path);
+            .append('>')
+            .append(path);
 
     if (context != null) {
       buffer.append(' ').append(context);
@@ -313,7 +319,7 @@ class Partial extends HelperResolver {
 
     if (this.partial != null) {
       buffer.append(this.partial.text()).append(startDelimiter, 0, startDelimiter.length() - 1)
-          .append("/").append(path).append(endDelimiter);
+              .append("/").append(path).append(endDelimiter);
     }
     return buffer.toString();
   }
