@@ -262,6 +262,12 @@ public class Handlebars implements HelperRegistry {
   private boolean prettyPrint;
 
   /**
+   * If true, given partial blocks are not evaluated when defined but when used.
+   * If false, partial blocks are evaluated when defined and used.
+   */
+  private boolean lazyPartialBlockEvaluation;
+
+  /**
    * The helper registry.
    */
   private HelperRegistry registry = new DefaultHelperRegistry();
@@ -739,6 +745,37 @@ public class Handlebars implements HelperRegistry {
   public boolean stringParams() {
     return stringParams;
   }
+
+
+  /**
+   * If true, given partial blocks are not evaluated when defined but when used.
+   * If false, partial blocks are evaluated when defined and used.
+   * @return If true, given partial blocks are not evaluated when defined but when used.
+   *   If false, partial blocks are evaluated when defined and used.
+   */
+  public boolean lazyPartialBlockEvaluation() {
+    return lazyPartialBlockEvaluation;
+  }
+
+
+  /**
+   * If true, given partial blocks are not evaluated when defined but when used.
+   * If false, partial blocks are evaluated when defined and used.
+   */
+  public void setLazyPartialBlockEvaluation(final boolean lazyPartialBlockEvaluation) {
+    this.lazyPartialBlockEvaluation = lazyPartialBlockEvaluation;
+  }
+
+  /**
+   * If true, given partial blocks are not evaluated when defined but when used.
+   * If false, partial blocks are evaluated when defined and used.
+   * @return The handlebars object.
+   */
+  public Handlebars lazyPartialBlockEvaluation(final boolean lazyPartialBlockEvaluation) {
+    setLazyPartialBlockEvaluation(lazyPartialBlockEvaluation);
+    return this;
+  }
+
 
   /**
    * If true, unnecessary spaces and new lines will be removed from output. Default is: false.

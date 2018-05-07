@@ -134,15 +134,18 @@ class Partial extends HelperResolver {
       }
 
       if (this.partial != null) {
+        if (!handlebars.lazyPartialBlockEvaluation()) {
           this.partial.apply(context);
-          inlineTemplates.put("@partial-block",
-                new PartialBlockForwardingTemplate(this,
-                        this.partial,
-                        inlineTemplates.get("@partial-block"),
-                        callee,
-                        handlebars
-                )
-          );
+        }
+
+        inlineTemplates.put("@partial-block",
+            new PartialBlockForwardingTemplate(this,
+              this.partial,
+              inlineTemplates.get("@partial-block"),
+              callee,
+              handlebars
+            )
+        );
       }
 
       Template template = inlineTemplates.get(path);
