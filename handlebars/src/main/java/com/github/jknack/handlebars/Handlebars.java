@@ -761,6 +761,7 @@ public class Handlebars implements HelperRegistry {
   /**
    * If true, given partial blocks are not evaluated when defined but when used.
    * If false, partial blocks are evaluated when defined and used.
+   * @param lazyPartialBlockEvaluation Flag to turn it off and on
    */
   public void setLazyPartialBlockEvaluation(final boolean lazyPartialBlockEvaluation) {
     this.lazyPartialBlockEvaluation = lazyPartialBlockEvaluation;
@@ -769,6 +770,7 @@ public class Handlebars implements HelperRegistry {
   /**
    * If true, given partial blocks are not evaluated when defined but when used.
    * If false, partial blocks are evaluated when defined and used.
+   * @param lazyPartialBlockEvaluation Flag to turn it off and on
    * @return The handlebars object.
    */
   public Handlebars lazyPartialBlockEvaluation(final boolean lazyPartialBlockEvaluation) {
