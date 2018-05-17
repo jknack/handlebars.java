@@ -78,13 +78,13 @@ public class PartialBlockForwardingTemplate extends BaseTemplate {
         LinkedList<Map<String, Template>> partials = context.data(Context.INLINE_PARTIALS);
         Map<String, Template> inlineTemplates = partials.getLast();
         Template oldPartialBlock = inlineTemplates.get("@partial-block");
-        Template oldCallee = context.data("callee");
+        Template oldCallee = context.data(Context.CALLEE);
 
-        context.data("callee", callee);
+        context.data(Context.CALLEE, callee);
         inlineTemplates.put("@partial-block", parentPartialBlock);
         block.apply(context, writer);
         inlineTemplates.put("@partial-block", oldPartialBlock);
-        context.data("callee", oldCallee);
+        context.data(Context.CALLEE, oldCallee);
     }
 
     /**

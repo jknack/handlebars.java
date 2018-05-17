@@ -403,6 +403,11 @@ public class Context {
   public static final String PARAM_SIZE = Context.class.getName() + "#paramSize";
 
   /**
+   * Last callee of a partial block. Internal use.
+   */
+  public static final String CALLEE = Context.class.getName() + "#callee";
+
+  /**
    * The parent context. Optional.
    */
   protected Context parent;
