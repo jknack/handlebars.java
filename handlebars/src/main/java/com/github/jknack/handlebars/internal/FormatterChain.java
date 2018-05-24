@@ -19,7 +19,6 @@ package com.github.jknack.handlebars.internal;
 
 import static org.apache.commons.lang3.Validate.notNull;
 
-import java.util.Iterator;
 import java.util.List;
 
 import com.github.jknack.handlebars.Formatter;
@@ -32,8 +31,11 @@ import com.github.jknack.handlebars.Formatter;
  */
 public class FormatterChain implements Formatter.Chain {
 
-  /** Pointer to next formatter. */
-  private Iterator<Formatter> chain;
+  /** List of available formatters. */
+  private List<Formatter> chain;
+
+  /** Index of the current formatter. */
+  private int index;
 
   /**
    * Creates a new {@link FormatterChain}.
@@ -41,15 +43,34 @@ public class FormatterChain implements Formatter.Chain {
    * @param formatter List of available formatters.
    */
   public FormatterChain(final List<Formatter> formatter) {
-    this.chain = formatter.iterator();
+    this.chain = formatter;
+  }
+
+  /**
+   * Creates a new {@link FormatterChain}.
+   *
+   * @param formatter List of available formatters.
+   * @param index Index of the current formatter.
+   */
+  private FormatterChain(final List<Formatter> formatter, final int index) {
+    this.chain = formatter;
+    this.index = index;
+  }
+
+  /**
+   * Gets the next formatter in the chain.
+   * @return The formatter at the next index.
+   */
+  private FormatterChain next() {
+    return new FormatterChain(chain, index + 1);
   }
 
   @Override
   public Object format(final Object value) {
     Object output;
-    if (chain.hasNext()) {
-      Formatter formatter = chain.next();
-      output = formatter.format(value, this);
+    Formatter formatter = chain.get(index);
+    if (formatter != null) {
+      output = formatter.format(value, next());
       notNull(output, "Formatter " + formatter.getClass() + " returned a null result for " + value);
     } else {
       output = value.toString();
