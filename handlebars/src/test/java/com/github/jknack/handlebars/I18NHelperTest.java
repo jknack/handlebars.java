@@ -1,11 +1,10 @@
 package com.github.jknack.handlebars;
 
-import static org.junit.Assert.assertEquals;
-
 import java.io.IOException;
-
 import org.junit.ComparisonFailure;
 import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
 
 public class I18NHelperTest extends AbstractTest {
 
@@ -60,7 +59,7 @@ public class I18NHelperTest extends AbstractTest {
         "  };\n" +
         "</script>\n";
 
-    String result = compile("{{i18nJs \"es_AR\"}}").apply(null);
+    String result = compileWithoutInfiniteLoops("{{i18nJs \"es_AR\"}}").apply(null);
     try {
       assertEquals(expectedJava17, result);
     } catch (ComparisonFailure ex) {

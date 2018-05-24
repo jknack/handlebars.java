@@ -7,7 +7,6 @@ import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertThat;
 
 import java.io.IOException;
-
 import org.junit.Test;
 
 public class TypeSafeTemplateTest extends AbstractTest {
@@ -35,7 +34,7 @@ public class TypeSafeTemplateTest extends AbstractTest {
   }
 
   private static TypeSafeTemplate<User> createTemplate() {
-      return null;
+    return null;
   }
 
   @Test
@@ -49,9 +48,8 @@ public class TypeSafeTemplateTest extends AbstractTest {
   public void customTypeSafe() throws IOException {
     User user = new User("Edgar");
 
-    UserTemplate userTemplate = compile("{{name}} is {{age}} years old!")
-        .as(UserTemplate.class)
-        .setAge(32);
+    UserTemplate userTemplate =
+        compile("{{name}} is {{age}} years old!").as(UserTemplate.class).setAge(32);
 
     assertEquals("Edgar is 32 years old!", userTemplate.apply(user));
   }
@@ -60,9 +58,8 @@ public class TypeSafeTemplateTest extends AbstractTest {
   public void customTypeSafe2() throws IOException {
     User user = new User("Edgar");
 
-    UserTemplate userTemplate = compile("{{role}}")
-        .as(UserTemplate.class)
-        .setRole("Software Architect");
+    UserTemplate userTemplate =
+        compile("{{role}}").as(UserTemplate.class).setRole("Software Architect");
 
     assertEquals("Software Architect", userTemplate.apply(user));
   }
@@ -94,16 +91,14 @@ public class TypeSafeTemplateTest extends AbstractTest {
 
   @Test(expected = UnsupportedOperationException.class)
   public void noHandlerMethod() throws IOException {
-    UserTemplate userTemplate = compile("{{role}}")
-        .as(UserTemplate.class);
+    UserTemplate userTemplate = compile("{{role}}").as(UserTemplate.class);
 
     userTemplate.set(6);
   }
 
   @Test(expected = UnsupportedOperationException.class)
   public void noHandlerMethod2() throws IOException {
-    UserTemplate userTemplate = compile("{{role}}")
-        .as(UserTemplate.class);
+    UserTemplate userTemplate = compile("{{role}}").as(UserTemplate.class);
 
     userTemplate.set();
   }

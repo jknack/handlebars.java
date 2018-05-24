@@ -1,18 +1,16 @@
 /**
  * Copyright (c) 2012-2015 Edgar Espina
  *
- * This file is part of Handlebars.java.
+ * <p>This file is part of Handlebars.java.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * <p>Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * <p>http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
+ * <p>Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ * express or implied. See the License for the specific language governing permissions and
  * limitations under the License.
  */
 package com.github.jknack.handlebars;
@@ -27,8 +25,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 /**
- * Options available for {@link Helper#apply(Object, Options)}.
- * Usage:
+ * Options available for {@link Helper#apply(Object, Options)}. Usage:
  *
  * <pre>
  *   Options options = new Options.Builder(handlebars, context, fn)
@@ -55,12 +52,11 @@ public class Options {
    * @author edgar
    * @since 2.3.2
    */
-  public interface Buffer extends Appendable, CharSequence {
-  }
+  public interface Buffer extends Appendable, CharSequence {}
 
   /**
-   * This buffer will write into the underlying writer. It won't be any visible output and
-   * {@link #toString()} returns an empty string.
+   * This buffer will write into the underlying writer. It won't be any visible output and {@link
+   * #toString()} returns an empty string.
    *
    * @author edgar
    * @since 2.3.2
@@ -165,7 +161,6 @@ public class Options {
     public CharSequence subSequence(final int start, final int end) {
       return buffer.subSequence(start, end);
     }
-
   }
 
   /**
@@ -175,42 +170,28 @@ public class Options {
    * @since 0.9.0
    */
   public static class Builder {
-    /**
-     * The {@link Handlebars} object. Not null.
-     */
+    /** The {@link Handlebars} object. Not null. */
     private Handlebars handlebars;
 
-    /**
-     * The current context. Not null.
-     */
+    /** The current context. Not null. */
     private Context context;
 
-    /**
-     * The current template. Not null.
-     */
+    /** The current template. Not null. */
     private Template fn;
 
-    /**
-     * The current inverse template. Not null.
-     */
+    /** The current inverse template. Not null. */
     private Template inverse = Template.EMPTY;
 
     /** Empty params. */
     private static Object[] EMPTY_PARAMS = {};
 
-    /**
-     * The parameters. Not null.
-     */
+    /** The parameters. Not null. */
     private Object[] params = EMPTY_PARAMS;
 
-    /**
-     * The hash options. Not null.
-     */
+    /** The hash options. Not null. */
     private Map<String, Object> hash = Collections.emptyMap();
 
-    /**
-     * The {@link TagType} from where the helper was called.
-     */
+    /** The {@link TagType} from where the helper was called. */
     private TagType tagType;
 
     /** The name of the helper. */
@@ -231,8 +212,12 @@ public class Options {
      * @param context A context object. Required.
      * @param fn A template object. Required.
      */
-    public Builder(final Handlebars handlebars, final String helperName, final TagType tagType,
-        final Context context, final Template fn) {
+    public Builder(
+        final Handlebars handlebars,
+        final String helperName,
+        final TagType tagType,
+        final Context context,
+        final Template fn) {
       this.handlebars = handlebars;
       this.helperName = helperName;
       this.tagType = tagType;
@@ -246,8 +231,9 @@ public class Options {
      * @return A new {@link Options} object.
      */
     public Options build() {
-      Options options = new Options(handlebars, helperName, tagType, context, fn, inverse, params,
-          hash, blockParams);
+      Options options =
+          new Options(
+              handlebars, helperName, tagType, context, fn, inverse, params, hash, blockParams);
       options.writer = writer;
       // clear out references
       handlebars = null;
@@ -315,42 +301,27 @@ public class Options {
       this.writer = writer;
       return this;
     }
-
   }
 
-  /**
-   * The {@link Handlebars} object. Not null.
-   */
+  /** The {@link Handlebars} object. Not null. */
   public final Handlebars handlebars;
 
-  /**
-   * The current context. Not null.
-   */
+  /** The current context. Not null. */
   public final Context context;
 
-  /**
-   * The current template. Not null.
-   */
+  /** The current template. Not null. */
   public final Template fn;
 
-  /**
-   * The current inverse template. Not null.
-   */
+  /** The current inverse template. Not null. */
   public final Template inverse;
 
-  /**
-   * The parameters. Not null.
-   */
+  /** The parameters. Not null. */
   public final Object[] params;
 
-  /**
-   * The hash options. Not null.
-   */
+  /** The hash options. Not null. */
   public final Map<String, Object> hash;
 
-  /**
-   * The {@link TagType} from where the helper was called.
-   */
+  /** The {@link TagType} from where the helper was called. */
   public final TagType tagType;
 
   /** The name of the helper. */
@@ -378,9 +349,16 @@ public class Options {
    * @param hash The optional hash. Required.
    * @param blockParams The block param names. Required.
    */
-  public Options(final Handlebars handlebars, final String helperName, final TagType tagType,
-      final Context context, final Template fn, final Template inverse, final Object[] params,
-      final Map<String, Object> hash, final List<String> blockParams) {
+  public Options(
+      final Handlebars handlebars,
+      final String helperName,
+      final TagType tagType,
+      final Context context,
+      final Template fn,
+      final Template inverse,
+      final Object[] params,
+      final Map<String, Object> hash,
+      final List<String> blockParams) {
     this.handlebars = handlebars;
     this.helperName = helperName;
     this.tagType = tagType;
@@ -407,9 +385,17 @@ public class Options {
    * @param blockParams The block param names. Required.
    * @param writer A writer. Optional.
    */
-  public Options(final Handlebars handlebars, final String helperName, final TagType tagType,
-      final Context context, final Template fn, final Template inverse, final Object[] params,
-      final Map<String, Object> hash, final List<String> blockParams, final Writer writer) {
+  public Options(
+      final Handlebars handlebars,
+      final String helperName,
+      final TagType tagType,
+      final Context context,
+      final Template fn,
+      final Template inverse,
+      final Object[] params,
+      final Map<String, Object> hash,
+      final List<String> blockParams,
+      final Writer writer) {
     this.handlebars = handlebars;
     this.helperName = helperName;
     this.tagType = tagType;
@@ -492,8 +478,8 @@ public class Options {
   }
 
   /**
-   * Apply the given template to the provided context. The context stack is
-   * propagated allowing the access to the whole stack.
+   * Apply the given template to the provided context. The context stack is propagated allowing the
+   * access to the whole stack.
    *
    * @param template The template.
    * @param context The context object.
@@ -506,8 +492,8 @@ public class Options {
   }
 
   /**
-   * Apply the given template to the provided context. The context stack is
-   * propagated allowing the access to the whole stack.
+   * Apply the given template to the provided context. The context stack is propagated allowing the
+   * access to the whole stack.
    *
    * @param template The template.
    * @param context The context object.
@@ -520,8 +506,8 @@ public class Options {
   }
 
   /**
-   * Apply the given template to the provided context. The context stack is
-   * propagated allowing the access to the whole stack.
+   * Apply the given template to the provided context. The context stack is propagated allowing the
+   * access to the whole stack.
    *
    * @param template The template.
    * @param context The context object.
@@ -529,8 +515,9 @@ public class Options {
    * @return The resulting text.
    * @throws IOException If a resource cannot be loaded.
    */
-  public CharSequence apply(final Template template, final Context context,
-      final List<Object> blockParams) throws IOException {
+  public CharSequence apply(
+      final Template template, final Context context, final List<Object> blockParams)
+      throws IOException {
     Context ctx = context;
     if (hasBlockParams) {
       ctx = Context.newBlockParamContext(context, this.blockParams, blockParams);
@@ -539,8 +526,8 @@ public class Options {
   }
 
   /**
-   * Apply the given template to the provided context. The context stack is
-   * propagated allowing the access to the whole stack.
+   * Apply the given template to the provided context. The context stack is propagated allowing the
+   * access to the whole stack.
    *
    * @param template The template.
    * @param context The context object.
@@ -548,14 +535,15 @@ public class Options {
    * @return The resulting text.
    * @throws IOException If a resource cannot be loaded.
    */
-  public CharSequence apply(final Template template, final Object context,
-      final List<Object> blockParams) throws IOException {
+  public CharSequence apply(
+      final Template template, final Object context, final List<Object> blockParams)
+      throws IOException {
     return apply(template, wrap(context), blockParams);
   }
 
   /**
-   * Apply the given template to the default context. The context stack is
-   * propagated allowing the access to the whole stack.
+   * Apply the given template to the default context. The context stack is propagated allowing the
+   * access to the whole stack.
    *
    * @param template The template.
    * @return The resulting text.
@@ -566,16 +554,11 @@ public class Options {
   }
 
   /**
-   * <p>
-   * Return a parameter at given index. This is analogous to:
-   * </p>
-   * <code>
+   * Return a parameter at given index. This is analogous to: <code>
    *  Object param = options.params[index]
    * </code>
-   * <p>
-   * The only difference is the type safe feature:
-   * </p>
-   * <code>
+   *
+   * <p>The only difference is the type safe feature: <code>
    *  MyType param = options.param(index)
    * </code>
    *
@@ -589,23 +572,17 @@ public class Options {
   }
 
   /**
-   * <p>
-   * Return a parameter at given index. This is analogous to:
-   * </p>
-   * <code>
+   * Return a parameter at given index. This is analogous to: <code>
    *  Object param = options.params[index]
    * </code>
-   * <p>
-   * The only difference is the type safe feature:
-   * </p>
-   * <code>
+   *
+   * <p>The only difference is the type safe feature: <code>
    *  MyType param = options.param(index)
    * </code>
    *
    * @param <T> The runtime type.
    * @param index The parameter position.
-   * @param defaultValue The default value to return if the parameter is not
-   *        present or if null.
+   * @param defaultValue The default value to return if the parameter is not present or if null.
    * @return The paramater's value.
    */
   @SuppressWarnings("unchecked")
@@ -622,8 +599,7 @@ public class Options {
    *
    * @param <T> The runtime type.
    * @param name The property's name.
-   * @param defaultValue The default value to return if the attribute is not
-   *        present or if null.
+   * @param defaultValue The default value to return if the attribute is not present or if null.
    * @return The associated value or <code>null</code> if it's not found.
    */
   public <T> T get(final String name, final T defaultValue) {
@@ -647,8 +623,8 @@ public class Options {
    * Return a previously registered partial in the current execution context.
    *
    * @param path The partial's path. Required.
-   * @return A previously registered partial in the current execution context.
-   *         Or <code> null</code> if not found.
+   * @return A previously registered partial in the current execution context. Or <code> null</code>
+   *     if not found.
    */
   public Template partial(final String path) {
     return partials().get(path);
@@ -665,16 +641,11 @@ public class Options {
   }
 
   /**
-   * <p>
-   * Find a value inside the {@link #hash} attributes. This is analogous to:
-   * </p>
-   * <code>
+   * Find a value inside the {@link #hash} attributes. This is analogous to: <code>
    *  Object myClass = options.hash.get("class");
    * </code>
-   * <p>
-   * This mehtod works as a shorthand and type safe call:
-   * </p>
-   * <code>
+   *
+   * <p>This mehtod works as a shorthand and type safe call: <code>
    *  String myClass = options.hash("class");
    * </code>
    *
@@ -687,16 +658,11 @@ public class Options {
   }
 
   /**
-   * <p>
-   * Find a value inside the {@link #hash} attributes. This is analogous to:
-   * </p>
-   * <code>
+   * Find a value inside the {@link #hash} attributes. This is analogous to: <code>
    *  Object myClass = options.hash.get("class");
    * </code>
-   * <p>
-   * This method works as a shorthand and type safe call:
-   * </p>
-   * <code>
+   *
+   * <p>This method works as a shorthand and type safe call: <code>
    *  String myClass = options.hash("class");
    * </code>
    *
@@ -712,24 +678,21 @@ public class Options {
   }
 
   /**
-   * Returns false if its argument is false, null or empty list/array (a "falsy"
-   * value).
+   * Returns false if its argument is false, null or empty list/array (a "falsy" value).
    *
    * @param value A value.
-   * @return False if its argument is false, null or empty list/array (a "falsy"
-   *         value).
+   * @return False if its argument is false, null or empty list/array (a "falsy" value).
    */
   public boolean isFalsy(final Object value) {
     return Handlebars.Utils.isEmpty(value);
   }
 
   /**
-   * Creates a {@link Context} from the given model. If the object is a context
-   * already the same object will be returned.
+   * Creates a {@link Context} from the given model. If the object is a context already the same
+   * object will be returned.
    *
    * @param model The model object.
-   * @return A context representing the model or the same model if it's a
-   *         context already.
+   * @return A context representing the model or the same model if it's a context already.
    */
   public Context wrap(final Object model) {
     if (model == context.model || model == context) {
@@ -742,12 +705,11 @@ public class Options {
   }
 
   /**
-   * Creates a {@link Context} from the given model. If the object is a context
-   * already the same object will be returned.
+   * Creates a {@link Context} from the given model. If the object is a context already the same
+   * object will be returned.
    *
    * @param context The model object.
-   * @return A context representing the model or the same model if it's a
-   *         context already.
+   * @return A context representing the model or the same model if it's a context already.
    */
   private Context wrap(final Context context) {
     if (context != null) {
@@ -784,9 +746,8 @@ public class Options {
    * @return All the properties and their values for the given object.
    */
   public Set<Entry<String, Object>> propertySet(final Object context) {
-    return this.context.propertySet(context instanceof Context
-        ? ((Context) context).model()
-        : context);
+    return this.context.propertySet(
+        context instanceof Context ? ((Context) context).model() : context);
   }
 
   /**
@@ -830,8 +791,15 @@ public class Options {
    */
   private List<Object> blockParams(final Object context) {
     if (this.blockParams.size() == 1) {
-      return Arrays.<Object> asList(context);
+      return Arrays.<Object>asList(context);
     }
     return Collections.emptyList();
+  }
+
+  private Context blockParamContext(Context context) {
+    if (hasBlockParams) {
+      return Context.newBlockParamContext(context, this.blockParams, blockParams(context.model));
+    }
+    return null;
   }
 }

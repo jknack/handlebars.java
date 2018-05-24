@@ -1,10 +1,10 @@
 package com.github.jknack.handlebars;
 
-import static org.junit.Assert.assertEquals;
-
 import java.io.IOException;
-
+import org.junit.Ignore;
 import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
 
 public class PartialBlockTest extends AbstractTest {
 
@@ -18,10 +18,48 @@ public class PartialBlockTest extends AbstractTest {
   }
 
   @Test
-  public void shouldDefineInlinePartialsInPartialBlockCall() throws IOException {
+  public void shouldDefineInlinePartialsInPartialBlockCallByDefault() throws IOException {
     shouldCompileToWithPartials(
         "{{#> dude}}{{#*inline \"myPartial\"}}success{{/inline}}{{/dude}}",
-        $, $("dude", "{{> myPartial }}"), "success");
+        $, $("dude", "{{#> myPartial }}{{/myPartial}}"), "success");
+  }
+
+  @Test
+  public void shouldNotDefineInlinePartialsInPartialBlockCallWithoutPreEvaluation() throws IOException {
+    shouldCompileToWithPartialsWithoutPreEvaluation(
+            "{{#> dude}}{{#*inline \"myPartial\"}}success{{/inline}}{{/dude}}",
+            $, $("dude", "{{#> myPartial }}{{/myPartial}}"), "");
+  }
+  @Test
+  public void shouldDefineInlinePartialsInPartialBlockCall() throws IOException {
+    shouldCompileToWithPartials(
+            "{{#> dude}}{{#*inline \"myPartial\"}}success{{/inline}}{{/dude}}",
+            $, $("dude", "{{> @partial-block}}{{#> myPartial }}{{/myPartial}}"), "success");
+  }
+
+  @Test
+  public void shouldOverrideBlockParams() throws IOException {
+    shouldCompileToWithPartials("{{#> dude x=23}}{{#> dude x=12}}{{/dude}}{{/dude}}",
+            $, $("dude", "<div {{#if x}}x={{x}}{{/if}}>{{> @partial-block}}</div>"), "<div x=23><div x=12></div></div>");
+  }
+
+  @Test
+  public void shouldOverrideBlockParamsWithoutPreEvaluation() throws IOException {
+    shouldCompileToWithPartialsWithoutPreEvaluation("{{#> dude x=23}}{{#> dude x=12}}{{/dude}}{{/dude}}",
+            $, $("dude", "<div {{#if x}}x={{x}}{{/if}}>{{> @partial-block}}</div>"), "<div x=23><div x=12></div></div>");
+  }
+
+  @Test
+  public void shouldOverrideBlockParamsWithFalse() throws IOException {
+    shouldCompileToWithPartials("{{#> dude x=23}}{{#> dude x=false}}{{/dude}}{{/dude}}",
+            $, $("dude", "<div {{#if x}}x={{x}}{{/if}}>{{> @partial-block}}</div>"), "<div x=23><div ></div></div>");
+  }
+
+  @Test
+  public void shouldDefineInlinePartialsInPartialCall() throws IOException {
+    shouldCompileToWithPartials(
+            "{{#> dude}}{{#*inline \"myPartial\"}}success{{/inline}}{{/dude}}",
+            $, $("dude", "{{> @partial-block}}{{> myPartial }}"), "success");
   }
 
   @Test
@@ -76,6 +114,7 @@ public class PartialBlockTest extends AbstractTest {
         $("dude", "{{#with context}}{{> @partial-block }}{{/with}}"), "success");
   }
 
+  @Ignore
   @Test
   public void eachInlinePartialIsAvailableToTheCurrentBlockAndAllChildren() throws IOException {
     shouldCompileToWithPartials(

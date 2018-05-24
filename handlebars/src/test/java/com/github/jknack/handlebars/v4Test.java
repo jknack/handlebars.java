@@ -1,10 +1,10 @@
 package com.github.jknack.handlebars;
 
-import static org.junit.Assert.assertEquals;
-
 import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.Map.Entry;
+
+import static org.junit.Assert.assertEquals;
 
 public class v4Test {
 
@@ -24,6 +24,13 @@ public class v4Test {
     assertEquals("'" + expected + "' should === '" + result + "': ", expected, result);
   }
 
+  public void shouldCompileToWithoutPreEvaluation(final String template, final Hash data, final String expected) throws IOException {
+    Template t = compile(template, data, false);
+    Object hash = data.get("hash");
+    String result = t.apply(configureContext(hash));
+    assertEquals("'" + expected + "' should === '" + result + "': ", expected, result);
+  }
+
   protected Object configureContext(final Object context) {
     return context;
   }
@@ -37,6 +44,10 @@ public class v4Test {
   }
 
   public Template compile(final String template, final Hash data) throws IOException {
+    return compile(template, data, true);
+  }
+
+  public Template compile(final String template, final Hash data, final boolean preEvaluation) throws IOException {
     MapTemplateLoader loader = new MapTemplateLoader();
     Hash partials = (Hash) data.get("partials");
     if (partials != null) {
@@ -44,7 +55,7 @@ public class v4Test {
         loader.define(entry.getKey(), (String) entry.getValue());
       }
     }
-    Handlebars handlebars = newHandlebars().with(loader);
+    Handlebars handlebars = newHandlebars().with(loader).preEvaluatePartialBlocks(preEvaluation);
     configure(handlebars);
 
     Hash helpers = (Hash) data.get("helpers");

@@ -3,7 +3,6 @@ package com.github.jknack.handlebars;
 import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
-
 import org.junit.Test;
 
 public class InlinePartialsTest extends AbstractTest {
@@ -60,11 +59,13 @@ public class InlinePartialsTest extends AbstractTest {
         $("dude", "{{> myPartial}}"), "success");
   }
 
+
   @Test
   public void shouldDefineInlinePartialsInPartialBlockCall() throws IOException {
     shouldCompileToWithPartials("{{#> dude}}{{#*inline \"myPartial\"}}success{{/inline}}{{/dude}}", $,
         $("dude", "{{> myPartial}}"), "success");
   }
+
 
   @Test
   public void inlinePartialText() throws IOException {
