@@ -9,7 +9,7 @@ import static junit.framework.TestCase.assertEquals;
 public class LazyPartialBlockEvaluationTest extends AbstractTest {
     @Override
     protected void configure(Handlebars handlebars) {
-        handlebars.setLazyPartialBlockEvaluation(true);
+        handlebars.setPreEvaluatePartialBlocks(false);
     }
 
     @Test
