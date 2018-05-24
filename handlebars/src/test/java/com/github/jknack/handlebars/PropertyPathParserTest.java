@@ -39,6 +39,11 @@ public class PropertyPathParserTest {
     eq(array("foo.bar.baz"), PathCompiler.compile("[foo.bar.baz]"));
     eq(array("foo/bar/baz"), PathCompiler.compile("[foo/bar/baz]"));
     eq(array("foo/bar.baz"), PathCompiler.compile("[foo/bar.baz]"));
+    eq(array("/foo/bar.baz"), PathCompiler.compile("[/foo/bar.baz]"));
+    eq(array("../foo/bar.baz"), PathCompiler.compile("[../foo/bar.baz]"));
+    eq(array("./foo/bar.baz"), PathCompiler.compile("[./foo/bar.baz]"));
+    eq(array("../"), PathCompiler.compile("[../]"));
+    eq(array("./"), PathCompiler.compile("[./]"));
   }
 
   @Test

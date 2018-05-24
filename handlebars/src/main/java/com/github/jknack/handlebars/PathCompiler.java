@@ -69,7 +69,8 @@ public final class PathCompiler {
 
   /** Split pattern. */
   private static Pattern pattern = Pattern
-      .compile("((\\[[^\\[\\]]+])|(../)|([^" + Pattern.quote(DOT_PATH) + "]+))");
+      .compile("((\\[[^\\[\\]]+])|"
+              + "(" + Pattern.quote(PARENT_PATH) + ")|([^" + Pattern.quote(DOT_PATH) + "]+))");
 
   /**
    * Not allowed.
