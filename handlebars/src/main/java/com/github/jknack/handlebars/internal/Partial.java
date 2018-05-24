@@ -290,6 +290,14 @@ class Partial extends HelperResolver {
     if (context != null) {
       buffer.append(' ').append(context);
     }
+    String params = paramsToString(this.params);
+    if (params.length() > 0) {
+      buffer.append(" ").append(params);
+    }
+    String hash = hashToString();
+    if (hash.length() > 0) {
+      buffer.append(" ").append(hash);
+    }
 
     buffer.append(endDelimiter);
 
