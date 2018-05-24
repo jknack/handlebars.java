@@ -58,7 +58,7 @@ public enum StringHelpers implements Helper<Object> {
    * For example:
    *
    * <pre>
-   * {{capFirst value}}
+   * {{capitalizeFirst value}}
    * </pre>
    *
    * If value is "handlebars.java", the output will be "Handlebars.java".
