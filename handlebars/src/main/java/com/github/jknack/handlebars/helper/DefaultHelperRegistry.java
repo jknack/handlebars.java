@@ -81,7 +81,15 @@ public class DefaultHelperRegistry implements HelperRegistry {
    */
   private HandlebarsJs handlebarsJs;
 
-  {
+  /**
+   * A flag to indicate whether integer numbers should be returned with decimal
+   * place or not. For instance assume there is a js function that return 7.
+   * After Rhino has processed this function, 7.0 will be returned. Using this
+   * flag Rhino result can be controlled.
+   */
+  private boolean isIntegerWithoutDecimalPlaceEnabled = false;
+
+    {
     Integer optimizationLevel = Integer.valueOf(Integer.parseInt(
                 System.getProperty("handlebars.rhino.optmizationLevel", "-1")));
     this.handlebarsJs = HandlebarsJs.createRhino(this, optimizationLevel);
@@ -271,4 +279,26 @@ public class DefaultHelperRegistry implements HelperRegistry {
     return this;
   }
 
+  /**
+   * Changes value of isIntegerWithoutDecimalPlaceEnabled field.
+   * See {@link #isIntegerWithoutDecimalPlaceEnabled}.
+   *
+   * @return <code>true</code> if 'Integer without decimal place' feature is enabled,
+   * <code>false</code> otherwise.
+   * */
+  public boolean isIntegerWithoutDecimalPlaceEnabled() {
+    return isIntegerWithoutDecimalPlaceEnabled;
+  }
+
+  /**
+   * Returns value of isIntegerWithoutDecimalPlaceEnabled field.
+   * See {@link #isIntegerWithoutDecimalPlaceEnabled}.
+   *
+   * @param integerWithoutDecimalPlaceEnabled boolean value whether feature
+   *                                          has to be enabled or not.
+   */
+  public void setIntegerWithoutDecimalPlaceEnabled(
+      final boolean integerWithoutDecimalPlaceEnabled) {
+    isIntegerWithoutDecimalPlaceEnabled = integerWithoutDecimalPlaceEnabled;
+  }
 }
