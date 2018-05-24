@@ -206,7 +206,7 @@ public class DefaultHelperRegistry implements HelperRegistry {
       for (Method method : methods) {
         boolean isPublic = Modifier.isPublic(method.getModifiers());
         String helperName = method.getName();
-        if (isPublic && CharSequence.class.isAssignableFrom(method.getReturnType())) {
+        if (isPublic) {
           boolean isStatic = Modifier.isStatic(method.getModifiers());
           if (source != null || isStatic) {
             isTrue(overloaded.add(helperName), "name conflict found: " + helperName);

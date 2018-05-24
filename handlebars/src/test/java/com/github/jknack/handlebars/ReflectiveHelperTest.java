@@ -71,7 +71,7 @@ public class ReflectiveHelperTest extends AbstractTest {
   }
 
   @Test
-  public void params() throws IOException {
+  public void testParams() throws IOException {
     shouldCompileTo("{{params this l d f c b s}}",
         $("l", 1L, "d", 2.0D, "f", 3.0f, "c", '4', "b", (byte) 5, "s", (short) 6),
         "1, 2.0, 3.0, 4, 5, 6");
