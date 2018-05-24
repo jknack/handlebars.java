@@ -65,7 +65,10 @@ public enum JsonNodeValueResolver implements ValueResolver {
       }
     } else if (context instanceof JsonNode) {
       value = resolve(((JsonNode) context).get(name));
+    } else if (context instanceof AbstractMap) {
+      value = ((AbstractMap) context).get(name);
     }
+
     return value == null ? UNRESOLVED : value;
   }
 
