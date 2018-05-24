@@ -340,6 +340,11 @@ public class Handlebars implements HelperRegistry {
 
   /**
    * Compile the resource located at the given uri.
+   * The implementation uses a cache for previously compiled Templates. By default,
+   * if the resource has been compiled previously, and no changes have occurred
+   * since in the resource, compilation will be skipped and the previously created
+   * Template will be returned. You can set an alternate cache implementation
+   * using {@link #with(TemplateCache cache) with}.
    *
    * @param location The resource's location. Required.
    * @return A compiled template.
@@ -351,6 +356,11 @@ public class Handlebars implements HelperRegistry {
 
   /**
    * Compile the resource located at the given uri.
+   * The implementation uses a cache for previously compiled Templates. By default,
+   * if the resource has been compiled previously, and no changes have occurred
+   * since in the resource, compilation will be skipped and the previously created
+   * Template will be returned. You can set an alternate cache implementation
+   * using {@link #with(TemplateCache cache) with}.
    *
    * @param location The resource's location. Required.
    * @param startDelimiter The start delimiter. Required.
@@ -365,6 +375,10 @@ public class Handlebars implements HelperRegistry {
 
   /**
    * Compile a handlebars template.
+   * The implementation uses a cache for previously compiled Templates. By default,
+   * if same input string has been compiled previously, compilation will be skipped
+   * and the previously created Template will be returned. You can set an alternate
+   * cache implementation using {@link #with(TemplateCache cache) with}.
    *
    * @param input The handlebars input. Required.
    * @return A compiled template.
@@ -376,6 +390,10 @@ public class Handlebars implements HelperRegistry {
 
   /**
    * Compile a handlebars template.
+   * The implementation uses a cache for previously compiled Templates. By default,
+   * if same input string has been compiled previously, compilation will be skipped
+   * and the previously created Template will be returned. You can set an alternate
+   * cache implementation using {@link #with(TemplateCache cache) with}.
    *
    * @param input The input text. Required.
    * @param startDelimiter The start delimiter. Required.
@@ -393,6 +411,11 @@ public class Handlebars implements HelperRegistry {
 
   /**
    * Compile a handlebars template.
+   * The implementation uses a cache for previously compiled Templates. By default,
+   * if the resource has been compiled previously, and no changes have occurred
+   * since in the resource, compilation will be skipped and the previously created
+   * Template will be returned. You can set an alternate cache implementation
+   * using {@link #with(TemplateCache cache) with}.
    *
    * @param source The template source. Required.
    * @return A handlebars template.
@@ -404,6 +427,11 @@ public class Handlebars implements HelperRegistry {
 
   /**
    * Compile a handlebars template.
+   * The implementation uses a cache for previously compiled Templates. By default,
+   * if the resource has been compiled previously, and no changes have occurred
+   * since in the resource, compilation will be skipped and the previously created
+   * Template will be returned. You can set an alternate cache implementation
+   * using {@link #with(TemplateCache cache) with}.
    *
    * @param source The template source. Required.
    * @param startDelimiter The start delimiter. Required.
