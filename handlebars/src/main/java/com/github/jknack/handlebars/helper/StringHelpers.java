@@ -284,7 +284,7 @@ public enum StringHelpers implements Helper<Object> {
   },
 
   /**
-   * Converts a string into all lowercase.
+   * Converts a string into all uppercase.
    * For example:
    *
    * <pre>
