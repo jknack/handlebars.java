@@ -309,7 +309,7 @@ class Block extends HelperResolver {
 
   @Override
   public String text() {
-    return text(true);
+    return text(true, true);
   }
 
   /**
@@ -318,7 +318,7 @@ class Block extends HelperResolver {
    * @param complete True if the inner block should be added.
    * @return A string version of this block.
    */
-  private String text(final boolean complete) {
+  private String text(final boolean complete, boolean close) {
     StringBuilder buffer = new StringBuilder();
     buffer.append(startDelimiter).append(type).append(name);
     String params = paramsToString(this.params);
@@ -335,15 +335,25 @@ class Block extends HelperResolver {
     buffer.append(endDelimiter);
     if (complete) {
       buffer.append(body == null ? "" : body.text());
-      buffer.append(inverse == Template.EMPTY ? "" : "{{" + inverseLabel + "}}" + inverse.text());
+      if (inverse != EMPTY) {
+        if (inverse instanceof Block) {
+          String elseif = ((Block) inverse).text(true, false);
+          buffer.append(elseif);
+        } else {
+          buffer.append(startDelimiter).append(inverseLabel).append(endDelimiter)
+              .append(inverse.text());
+        }
+      }
     } else {
       buffer.append("\n...\n");
     }
-    buffer.append(startDelimiter);
-    if (type.equals("{{")) {
-      buffer.append("{{");
+    if (close) {
+      buffer.append(startDelimiter);
+      if (type.equals("{{")) {
+        buffer.append("{{");
+      }
+      buffer.append('/').append(name).append(endDelimiter);
     }
-    buffer.append('/').append(name).append(endDelimiter);
     return buffer.toString();
   }
 

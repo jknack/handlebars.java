@@ -216,7 +216,7 @@ abstract class TemplateBuilder<it> extends HbsParserBaseVisitor<Object> {
     }
 
     hasTag(true);
-    Block block = null;
+    Block block;
     if (decorator) {
       block = new BlockDecorator(handlebars, name, false, params(sexpr.param()),
           hash(sexpr.hash()), blockParams(ctx.blockParams()), level == 1);
@@ -258,12 +258,16 @@ abstract class TemplateBuilder<it> extends HbsParserBaseVisitor<Object> {
         SexprContext elseexpr = elseStmtChain.sexpr();
         Token elsenameStart = elseexpr.QID().getSymbol();
         String elsename = elsenameStart.getText();
-        Block elseblock = new Block(handlebars, elsename, false, "#", params(elseexpr.param()),
+        String type = elseStmtChain.inverseToken.getText();
+        if (type.equals("else")) {
+          type = "else ";
+        }
+        Block elseblock = new Block(handlebars, elsename, false, type, params(elseexpr.param()),
             hash(elseexpr.hash()), blockParams(elseStmtChain.blockParams()));
         elseblock.filename(source.filename());
         elseblock.position(elsenameStart.getLine(), elsenameStart.getCharPositionInLine());
         elseblock.startDelimiter(startDelim);
-        elseblock.endDelimiter(elseBlock.stop.getText());
+        elseblock.endDelimiter(elseStmtChain.END().getText());
         Template elsebody = visitBody(elseStmtChain.unlessBody);
         elseblock.body(elsebody);
 
