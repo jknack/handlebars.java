@@ -8,6 +8,11 @@ import org.junit.Test;
 
 public class PartialBlockTest extends AbstractTest {
 
+  @Override
+  protected Handlebars newHandlebars() {
+    return super.newHandlebars().lazyPartialBlockEvaluation(false);
+  }
+
   @Test
   public void text() throws IOException {
     assertEquals("{{#>dude}}{{#*inline \"myPartial\"}}success{{/inline}}{{/dude}}",

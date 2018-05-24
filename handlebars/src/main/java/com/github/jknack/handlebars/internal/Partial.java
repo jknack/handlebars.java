@@ -23,6 +23,7 @@ import static org.apache.commons.lang3.Validate.notNull;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.Writer;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -120,10 +121,31 @@ class Partial extends HelperResolver {
       /** Inline partial? */
       LinkedList<Map<String, Template>> partials = context.data(Context.INLINE_PARTIALS);
       Map<String, Template> inlineTemplates = partials.getLast();
+      Template callee = context.data(Context.CALLEE);
+
+      final boolean pathIsPartialBlock = "@partial-block".equals(path);
+      final Template lastPartialBlock = inlineTemplates.get("@partial-block");
+      final boolean parentIsNotLastPartialBlock = !isCalleeOf(callee, lastPartialBlock);
+
+      if (pathIsPartialBlock && parentIsNotLastPartialBlock) {
+        throw new IllegalArgumentException(
+                callee + " does not provide a @partial-block for " + this
+        );
+      }
 
       if (this.partial != null) {
-        this.partial.apply(context);
-        inlineTemplates.put("@partial-block", this.partial);
+        if (!handlebars.lazyPartialBlockEvaluation()) {
+          this.partial.apply(context);
+        }
+
+        inlineTemplates.put("@partial-block",
+            new PartialBlockForwardingTemplate(this,
+              this.partial,
+              inlineTemplates.get("@partial-block"),
+              callee,
+              handlebars
+            )
+        );
       }
 
       Template template = inlineTemplates.get(path);
@@ -171,8 +193,10 @@ class Partial extends HelperResolver {
         }
 
       }
+      context.data(Context.CALLEE, this);
       Context ctx = Context.newPartialContext(context, this.scontext, hash(context));
       template.apply(ctx, writer);
+      context.data(Context.CALLEE, callee);
     } catch (IOException ex) {
       String reason = String.format("The partial '%s' at '%s' could not be found",
           loader.resolve(path.text()), ex.getMessage());
@@ -181,6 +205,23 @@ class Partial extends HelperResolver {
           column, reason, text(), message);
       throw new HandlebarsException(error);
     }
+  }
+
+  /**
+   * @param callee parent template of the currently traversed template
+   * @param partialBlock partial block candidate
+   * @return returns if callee and partialBlock are the same
+   */
+  private boolean isCalleeOf(final Template callee, final Template partialBlock) {
+    if (callee == null || partialBlock == null) {
+      return false;
+    }
+
+    if (!callee.filename().equalsIgnoreCase(partialBlock.filename())) {
+      return false;
+    }
+
+    return Arrays.equals(callee.position(), partialBlock.position());
   }
 
   /**
