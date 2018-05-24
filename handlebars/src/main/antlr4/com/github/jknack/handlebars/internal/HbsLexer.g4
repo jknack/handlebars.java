@@ -348,7 +348,7 @@ ID_SUFFIX
 fragment
 ID_ESCAPE
   :
-    '[' ~[\]]+? ']'
+    '[' ('\\]' | ~[\]])+? ']'
   ;
 
 fragment

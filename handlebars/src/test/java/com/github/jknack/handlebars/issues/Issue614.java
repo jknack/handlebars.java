@@ -7,7 +7,7 @@ import org.junit.Test;
 public class Issue614 extends v4Test {
 
   @Test
-  public void shouldFavorIntOverDouble() throws Exception {
+  public void shouldGetTextFromElseIf() throws Exception {
     String text = compile("{{#if a}}a{{else if b}}b{{else}}c{{/if}}").text();
     assertEquals("{{#if a}}a{{else if b}}b{{else}}c{{/if}}", text);
   }
