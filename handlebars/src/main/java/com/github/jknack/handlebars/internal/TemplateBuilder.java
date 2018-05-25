@@ -56,7 +56,6 @@ import com.github.jknack.handlebars.internal.HbsParser.ElseStmtChainContext;
 import com.github.jknack.handlebars.internal.HbsParser.ElseStmtContext;
 import com.github.jknack.handlebars.internal.HbsParser.EscapeContext;
 import com.github.jknack.handlebars.internal.HbsParser.HashContext;
-import com.github.jknack.handlebars.internal.HbsParser.IntParamContext;
 import com.github.jknack.handlebars.internal.HbsParser.LiteralPathContext;
 import com.github.jknack.handlebars.internal.HbsParser.NewlineContext;
 import com.github.jknack.handlebars.internal.HbsParser.ParamContext;
@@ -504,9 +503,12 @@ abstract class TemplateBuilder<it> extends HbsParserBaseVisitor<Object> {
     return new RefParam(PathCompiler.compile(ctx.getText(), handlebars.parentScopeResolution()));
   }
 
-  @Override
-  public Object visitIntParam(final IntParamContext ctx) {
-    return new DefParam(Integer.parseInt(ctx.getText()));
+  @Override public Object visitNumberParam(HbsParser.NumberParamContext ctx) {
+    try {
+      return new DefParam(Integer.parseInt(ctx.getText()));
+    } catch (NumberFormatException x) {
+      return new DefParam(Double.parseDouble(ctx.getText()));
+    }
   }
 
   @Override
