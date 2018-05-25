@@ -44,7 +44,7 @@ public class ForwardingTemplateSource extends AbstractTemplateSource {
     this.source = notNull(source, "The source is required.");
   }
 
-  @Override public String content(Charset charset) throws IOException {
+  @Override public String content(final Charset charset) throws IOException {
     return source.content(charset);
   }
 

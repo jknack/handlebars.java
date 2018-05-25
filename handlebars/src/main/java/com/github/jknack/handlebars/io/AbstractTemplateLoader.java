@@ -103,8 +103,8 @@ public abstract class AbstractTemplateLoader implements TemplateLoader {
   }
 
   @Override
-  public void setCharset(Charset charset) {
-    this.charset = charset;
+  public void setCharset(final Charset charset) {
+    this.charset = notNull(charset, "Charset required.");
   }
 
   @Override

@@ -71,8 +71,8 @@ public class HbsParserFactory implements ParserFactory {
         final ANTLRErrorListener errorReporter = new HbsErrorReporter(source.filename());
 
         // 1. Lexer
-        final HbsLexer lexer = newLexer(newStream(source.filename(), source.content(handlebars.getCharset())),
-            startDelimiter, endDelimiter);
+        final HbsLexer lexer = newLexer(newStream(source.filename(),
+            source.content(handlebars.getCharset())), startDelimiter, endDelimiter);
         configure(lexer, errorReporter);
 
         // 2. Parser

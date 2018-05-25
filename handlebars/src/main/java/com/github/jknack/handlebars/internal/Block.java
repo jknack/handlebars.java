@@ -316,9 +316,10 @@ class Block extends HelperResolver {
    * Build a text version of this block.
    *
    * @param complete True if the inner block should be added.
+   * @param close If we must close the block.
    * @return A string version of this block.
    */
-  private String text(final boolean complete, boolean close) {
+  private String text(final boolean complete, final boolean close) {
     StringBuilder buffer = new StringBuilder();
     buffer.append(startDelimiter).append(type).append(name);
     String params = paramsToString(this.params);

@@ -262,7 +262,7 @@ public class DefaultHelperRegistry implements HelperRegistry {
     return this;
   }
 
-  @Override public DefaultHelperRegistry setCharset(Charset charset) {
+  @Override public DefaultHelperRegistry setCharset(final Charset charset) {
     this.charset = notNull(charset, "Charset required.");
     return this;
   }

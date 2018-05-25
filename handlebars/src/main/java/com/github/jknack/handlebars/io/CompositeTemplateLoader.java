@@ -115,7 +115,7 @@ public class CompositeTemplateLoader implements TemplateLoader {
   }
 
   @Override
-  public void setCharset(Charset charset) {
+  public void setCharset(final Charset charset) {
     for (TemplateLoader delegate : delegates) {
       delegate.setCharset(charset);
     }

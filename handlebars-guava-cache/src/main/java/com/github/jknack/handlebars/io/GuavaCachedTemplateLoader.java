@@ -126,7 +126,7 @@ public class GuavaCachedTemplateLoader implements TemplateLoader {
     delegate.setSuffix(suffix);
   }
 
-  @Override public void setCharset(Charset charset) {
+  @Override public void setCharset(final Charset charset) {
    delegate.setCharset(charset);
   }
 

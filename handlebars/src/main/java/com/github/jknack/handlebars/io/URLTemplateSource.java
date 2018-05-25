@@ -66,7 +66,7 @@ public class URLTemplateSource extends AbstractTemplateSource {
     this.resource = notNull(resource, "A resource is required.");
   }
 
-  @Override public String content(Charset charset) throws IOException {
+  @Override public String content(final Charset charset) throws IOException {
     Reader reader = null;
     final int bufferSize = 1024;
     try {
@@ -103,12 +103,12 @@ public class URLTemplateSource extends AbstractTemplateSource {
   /**
    * Open the stream under the URL.
    *
+   * @param charset Charset.
    * @return A reader.
    * @throws IOException If the stream can't be opened.
    */
-  protected Reader reader(Charset charset) throws IOException {
-    InputStream in = resource.openStream();
-    return new InputStreamReader(in, charset);
+  protected Reader reader(final Charset charset) throws IOException {
+    return new InputStreamReader(resource.openStream(), charset);
   }
 
   /**

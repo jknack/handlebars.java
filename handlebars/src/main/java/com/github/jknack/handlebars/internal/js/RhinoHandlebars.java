@@ -334,6 +334,9 @@ public class RhinoHandlebars extends HandlebarsJs {
     return ctx;
   }
 
+  /**
+   * @return Context factory.
+   */
   private static ContextFactory newFactory() {
     return new ContextFactory() {
       @Override

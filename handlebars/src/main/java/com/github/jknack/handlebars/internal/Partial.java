@@ -24,8 +24,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.Writer;
 import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -240,7 +238,7 @@ class Partial extends HelperResolver {
       }
 
       @Override
-      public String content(Charset charset) throws IOException {
+      public String content(final Charset charset) throws IOException {
         return partialInput(source.content(charset), indent);
       }
 
