@@ -44,12 +44,12 @@ public class HandlebarsView extends AbstractTemplateView {
   /**
    * The compiled template.
    */
-  private Template template;
+  protected Template template;
 
   /**
    * The value's resolvers.
    */
-  private ValueResolver[] valueResolvers;
+  protected ValueResolver[] valueResolvers;
 
   /**
    * Merge model into the view. {@inheritDoc}
