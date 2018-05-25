@@ -20,7 +20,7 @@ package com.github.jknack.handlebars.io;
 import static org.apache.commons.lang3.Validate.notNull;
 
 import java.io.IOException;
-
+import java.nio.charset.Charset;
 
 /**
  * String implementation of {@link TemplateSource}.
@@ -57,8 +57,7 @@ public class StringTemplateSource extends AbstractTemplateSource {
     this.lastModified = content.hashCode();
   }
 
-  @Override
-  public String content() throws IOException {
+  @Override public String content(Charset charset) {
     return content;
   }
 

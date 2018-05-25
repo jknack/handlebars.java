@@ -18,6 +18,7 @@
 package com.github.jknack.handlebars.io;
 
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -125,4 +126,11 @@ public class GuavaCachedTemplateLoader implements TemplateLoader {
     delegate.setSuffix(suffix);
   }
 
+  @Override public void setCharset(Charset charset) {
+   delegate.setCharset(charset);
+  }
+
+  @Override public Charset getCharset() {
+    return delegate.getCharset();
+  }
 }

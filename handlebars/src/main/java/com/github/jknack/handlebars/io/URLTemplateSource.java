@@ -28,6 +28,7 @@ import java.io.Reader;
 import java.net.JarURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
+import java.nio.charset.Charset;
 
 import com.github.jknack.handlebars.Handlebars;
 
@@ -65,12 +66,11 @@ public class URLTemplateSource extends AbstractTemplateSource {
     this.resource = notNull(resource, "A resource is required.");
   }
 
-  @Override
-  public String content() throws IOException {
+  @Override public String content(Charset charset) throws IOException {
     Reader reader = null;
     final int bufferSize = 1024;
     try {
-      reader = reader();
+      reader = reader(charset);
       char[] cbuf = new char[bufferSize];
       StringBuilder sb = new StringBuilder(bufferSize);
       int len;
@@ -106,9 +106,9 @@ public class URLTemplateSource extends AbstractTemplateSource {
    * @return A reader.
    * @throws IOException If the stream can't be opened.
    */
-  protected Reader reader() throws IOException {
+  protected Reader reader(Charset charset) throws IOException {
     InputStream in = resource.openStream();
-    return new InputStreamReader(in, "UTF-8");
+    return new InputStreamReader(in, charset);
   }
 
   /**

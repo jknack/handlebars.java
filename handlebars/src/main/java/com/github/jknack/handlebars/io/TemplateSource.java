@@ -18,6 +18,7 @@
 package com.github.jknack.handlebars.io;
 
 import java.io.IOException;
+import java.nio.charset.Charset;
 
 /**
  * The template source. Implementation of {@link TemplateSource} must implement
@@ -32,10 +33,11 @@ public interface TemplateSource {
   /**
    * The template content.
    *
+   * @param charset Charset to use.
    * @return The template content.
    * @throws IOException If the template can't read.
    */
-  String content() throws IOException;
+  String content(Charset charset) throws IOException;
 
   /**
    * The file's name.

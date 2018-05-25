@@ -18,6 +18,7 @@
 package com.github.jknack.handlebars.internal.js;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -367,7 +368,7 @@ public class RhinoHandlebars extends HandlebarsJs {
    */
   private static String envSource(final String location) {
     try {
-      return Files.read(location);
+      return Files.read(location, StandardCharsets.UTF_8);
     } catch (IOException ex) {
       throw new IllegalStateException("Unable to read " + location, ex);
     }

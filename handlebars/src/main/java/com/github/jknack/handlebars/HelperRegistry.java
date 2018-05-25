@@ -35,6 +35,7 @@ import java.io.File;
 import java.io.InputStream;
 import java.io.Reader;
 import java.net.URI;
+import java.nio.charset.Charset;
 import java.util.Map.Entry;
 import java.util.Set;
 
@@ -322,5 +323,14 @@ public interface HelperRegistry {
    * @since 4.0.0
    */
   HelperRegistry registerDecorator(String name, Decorator decorator);
+
+  /**
+   * Set the charset to use.
+   *
+   * @param charset Charset.
+   * @return This registry.
+   * @since 4.0.6
+   */
+  HelperRegistry setCharset(Charset charset);
 
 }

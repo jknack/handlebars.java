@@ -29,6 +29,8 @@ import java.io.Reader;
 import java.lang.reflect.Array;
 import java.net.URI;
 import java.net.URL;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -341,6 +343,9 @@ public class Handlebars implements HelperRegistry {
    * Default is: true for compatibility reasons
    */
   private boolean preEvaluatePartialBlocks = true;
+
+  /** Standard charset. */
+  private Charset charset = StandardCharsets.UTF_8;
 
   /**
    * Creates a new {@link Handlebars} with no cache.
@@ -795,7 +800,6 @@ public class Handlebars implements HelperRegistry {
     return stringParams;
   }
 
-
   /**
    * If true, unnecessary spaces and new lines will be removed from output. Default is: false.
    *
@@ -1208,7 +1212,9 @@ public class Handlebars implements HelperRegistry {
    *         If false, you will have to evaluate and render partial blocks explitly (this
    *         option is *much* faster).
    */
-  public boolean preEvaluatePartialBlocks() { return preEvaluatePartialBlocks; }
+  public boolean preEvaluatePartialBlocks() {
+    return preEvaluatePartialBlocks;
+  }
 
   /**
    * If true, partial blocks will implicitly be evaluated before the partials will actually
@@ -1358,4 +1364,18 @@ public class Handlebars implements HelperRegistry {
     return this;
   }
 
+  @Override
+  public Handlebars setCharset(final Charset charset) {
+    this.charset = notNull(charset, "Charset required.");
+    registry.setCharset(charset);
+    loader.setCharset(charset);
+    return this;
+  }
+
+  /**
+   * @return Charset.
+   */
+  public Charset getCharset() {
+    return charset;
+  }
 }

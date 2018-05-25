@@ -21,6 +21,7 @@ import static org.apache.commons.lang3.Validate.isTrue;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.Arrays;
 
 import org.slf4j.Logger;
@@ -110,6 +111,18 @@ public class CompositeTemplateLoader implements TemplateLoader {
 
   @Override
   public void setSuffix(final String suffix) {
+    throw new UnsupportedOperationException();
+  }
+
+  @Override
+  public void setCharset(Charset charset) {
+    for (TemplateLoader delegate : delegates) {
+      delegate.setCharset(charset);
+    }
+  }
+
+  @Override
+  public Charset getCharset() {
     throw new UnsupportedOperationException();
   }
 

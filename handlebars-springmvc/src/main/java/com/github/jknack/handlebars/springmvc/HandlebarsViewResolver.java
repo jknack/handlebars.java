@@ -25,6 +25,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.net.URI;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
@@ -121,6 +123,9 @@ public class HandlebarsViewResolver extends AbstractTemplateViewResolver
 
   /** Template cache. */
   private TemplateCache templateCache = new HighConcurrencyTemplateCache();
+
+  /** Charset. */
+  private Charset charset = StandardCharsets.UTF_8;
 
   /**
    * Creates a new {@link HandlebarsViewResolver}.
@@ -256,6 +261,8 @@ public class HandlebarsViewResolver extends AbstractTemplateViewResolver
 
     // set delete partial after merge
     handlebars.setDeletePartialAfterMerge(deletePartialAfterMerge);
+
+    handlebars.setCharset(charset);
   }
 
   /**
@@ -596,6 +603,11 @@ public class HandlebarsViewResolver extends AbstractTemplateViewResolver
   @Override
   public HandlebarsViewResolver registerDecorator(final String name, final Decorator decorator) {
     registry.registerDecorator(name, decorator);
+    return this;
+  }
+
+  @Override public HandlebarsViewResolver setCharset(final Charset charset) {
+    this.charset = notNull(charset, "Charset required.");
     return this;
   }
 }

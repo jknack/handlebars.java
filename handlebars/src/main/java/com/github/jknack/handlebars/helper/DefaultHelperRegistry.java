@@ -15,20 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/**
- * This copy of Woodstox XML processor is licensed under the
- * Apache (Software) License, version 2.0 ("the License").
- * See the License for details about distribution rights, and the
- * specific rights regarding derivate works.
- *
- * You may obtain a copy of the License at:
- *
- * http://www.apache.org/licenses/
- *
- * A copy is also included in the downloadable source code package
- * containing Woodstox, in file "ASL2.0", under the same directory
- * as this file.
- */
 package com.github.jknack.handlebars.helper;
 
 import static org.apache.commons.lang3.Validate.isTrue;
@@ -41,6 +27,8 @@ import java.io.Reader;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.net.URI;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -80,6 +68,9 @@ public class DefaultHelperRegistry implements HelperRegistry {
    * A Handlebars.js implementation.
    */
   private HandlebarsJs handlebarsJs;
+
+  /** Charset. */
+  private Charset charset = StandardCharsets.UTF_8;
 
   {
     Integer optimizationLevel = Integer.valueOf(Integer.parseInt(
@@ -156,12 +147,12 @@ public class DefaultHelperRegistry implements HelperRegistry {
 
   @Override
   public HelperRegistry registerHelpers(final URI location) throws Exception {
-    return registerHelpers(location.getPath(), Files.read(location.toString()));
+    return registerHelpers(location.getPath(), Files.read(location.toString(), charset));
   }
 
   @Override
   public HelperRegistry registerHelpers(final File input) throws Exception {
-    return registerHelpers(input.getAbsolutePath(), Files.read(input));
+    return registerHelpers(input.getAbsolutePath(), Files.read(input, charset));
   }
 
   @Override
@@ -173,7 +164,7 @@ public class DefaultHelperRegistry implements HelperRegistry {
   @Override
   public HelperRegistry registerHelpers(final String filename, final InputStream source)
       throws Exception {
-    return registerHelpers(filename, Files.read(source));
+    return registerHelpers(filename, Files.read(source, charset));
   }
 
   @Override
@@ -271,4 +262,8 @@ public class DefaultHelperRegistry implements HelperRegistry {
     return this;
   }
 
+  @Override public DefaultHelperRegistry setCharset(Charset charset) {
+    this.charset = notNull(charset, "Charset required.");
+    return this;
+  }
 }

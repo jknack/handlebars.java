@@ -46,33 +46,36 @@ public final class Files {
    * Read a file from a classpath location.
    *
    * @param location The classpath location.
+   * @param charset Charset.
    * @return The file content.
    * @throws IOException If the file can't be read.
    */
-  public static String read(final String location) throws IOException {
-    return read(Files.class.getResourceAsStream(location));
+  public static String read(final String location,  final Charset charset) throws IOException {
+    return read(Files.class.getResourceAsStream(location),  charset);
   }
 
   /**
    * Read a file content.
    *
    * @param source The file.
+   * @param charset Charset.
    * @return The file content.
    * @throws IOException If the file can't be read.
    */
-  public static String read(final File source) throws IOException {
-    return read(new FileInputStream(source));
+  public static String read(final File source,  final Charset charset) throws IOException {
+    return read(new FileInputStream(source), charset);
   }
 
   /**
    * Read a file source.
    *
    * @param source The file source.
+   * @param charset Charset.
    * @return The file content.
    * @throws IOException If the file can't be read.
    */
-  public static String read(final InputStream source) throws IOException {
-    return read(new InputStreamReader(source, Charset.forName("UTF-8")));
+  public static String read(final InputStream source, final Charset charset) throws IOException {
+    return read(new InputStreamReader(source, charset));
   }
 
   /**

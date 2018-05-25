@@ -20,6 +20,9 @@ package com.github.jknack.handlebars.io;
 import static org.apache.commons.lang3.StringUtils.defaultString;
 import static org.apache.commons.lang3.Validate.notNull;
 
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+
 /**
  * <p>
  * Strategy interface for loading resources from class path, file system, etc.
@@ -48,6 +51,9 @@ public abstract class AbstractTemplateLoader implements TemplateLoader {
    * The suffix that gets appended to view names when building a URI.
    */
   private String suffix = DEFAULT_SUFFIX;
+
+  /** Charset. */
+  private Charset charset;
 
   /**
    * Resolve the uri to an absolute location.
@@ -94,6 +100,16 @@ public abstract class AbstractTemplateLoader implements TemplateLoader {
    */
   public void setSuffix(final String suffix) {
     this.suffix = defaultString(suffix, "");
+  }
+
+  @Override
+  public void setCharset(Charset charset) {
+    this.charset = charset;
+  }
+
+  @Override
+  public Charset getCharset() {
+    return charset == null ? StandardCharsets.UTF_8 : charset;
   }
 
   /**

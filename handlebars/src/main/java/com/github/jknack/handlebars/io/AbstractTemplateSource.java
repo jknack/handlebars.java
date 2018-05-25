@@ -19,6 +19,9 @@ package com.github.jknack.handlebars.io;
 
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+
 /**
  * Base class for {@link TemplateSource} with default implementation of {@link #equals(Object)} and
  * {@link #hashCode()}.
