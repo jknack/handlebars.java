@@ -25,7 +25,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import static org.mozilla.javascript.Context.FEATURE_INTEGER_WITHOUT_DECIMAL_PLACE;
 import org.mozilla.javascript.ContextFactory;
 import org.mozilla.javascript.NativeArray;
 import org.mozilla.javascript.NativeObject;
@@ -338,16 +337,7 @@ public class RhinoHandlebars extends HandlebarsJs {
    * @return Context factory.
    */
   private static ContextFactory newFactory() {
-    return new ContextFactory() {
-      @Override
-      protected boolean hasFeature(final org.mozilla.javascript.Context cx,
-          final int featureIndex) {
-        if (featureIndex == FEATURE_INTEGER_WITHOUT_DECIMAL_PLACE) {
-          return true;
-        }
-        return super.hasFeature(cx, featureIndex);
-      }
-    };
+    return new ContextFactory();
   }
 
   /**
