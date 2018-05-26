@@ -84,7 +84,7 @@ public class Context {
         return parent.model;
       }
       // path variable should resolve from parent :S
-      if (key.startsWith(".")) {
+      if (key.startsWith(".") && path.size() > 1) {
         return parent.get(path.subList(1, path.size()));
       }
       return super.get(path);
