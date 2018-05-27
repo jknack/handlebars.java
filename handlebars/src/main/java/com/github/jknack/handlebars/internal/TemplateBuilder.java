@@ -503,7 +503,7 @@ abstract class TemplateBuilder<it> extends HbsParserBaseVisitor<Object> {
     return new RefParam(PathCompiler.compile(ctx.getText(), handlebars.parentScopeResolution()));
   }
 
-  @Override public Object visitNumberParam(HbsParser.NumberParamContext ctx) {
+  @Override public Object visitNumberParam(final HbsParser.NumberParamContext ctx) {
     try {
       return new DefParam(Integer.parseInt(ctx.getText()));
     } catch (NumberFormatException x) {

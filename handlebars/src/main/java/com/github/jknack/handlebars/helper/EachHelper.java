@@ -47,7 +47,7 @@ public class EachHelper implements Helper<Object> {
    */
   public static final String NAME = "each";
 
-  @SuppressWarnings({"rawtypes", "unchecked"})
+  @SuppressWarnings({"rawtypes", "unchecked" })
   @Override
   public Object apply(final Object context, final Options options)
       throws IOException {
@@ -79,7 +79,7 @@ public class EachHelper implements Helper<Object> {
         buffer.append(options.inverse());
       }
       return buffer;
-    } else if(context != null) {
+    } else if (context != null) {
       int index = 0;
       Iterator loop = options.propertySet(context).iterator();
       Context parent = options.context;
