@@ -123,8 +123,6 @@ class Partial extends HelperResolver {
       Map<String, Template> inlineTemplates = partials.getLast();
       Template callee = context.data(Context.CALLEE);
 
-      final Template lastPartialBlock = inlineTemplates.get("@partial-block");
-
       if (this.partial != null) {
         if (handlebars.preEvaluatePartialBlocks()) {
           this.partial.apply(context);

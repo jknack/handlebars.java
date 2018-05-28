@@ -136,7 +136,7 @@ public class MustacheSpec extends HbsParserBaseListener {
     hasTag(true);
   }
 
-  @Override public void enterElseBlock(HbsParser.ElseBlockContext ctx) {
+  @Override public void enterElseBlock(final HbsParser.ElseBlockContext ctx) {
     hasTag(true);
   }
 
