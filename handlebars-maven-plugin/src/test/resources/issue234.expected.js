@@ -6,9 +6,9 @@ define('a.hbs', ['handlebars'], function(Handlebars) {
     + "!";
 },"useData":true});
   var templates = Handlebars.templates = Handlebars.templates || {};
-  templates['a.hbs'] = template;
+  templates['a'] = template;
   var partials = Handlebars.partials = Handlebars.partials || {};
-  partials['a.hbs'] = template;
+  partials['a'] = template;
   return template;
 });
 
@@ -20,9 +20,9 @@ define('c.hbs', ['handlebars'], function(Handlebars) {
     + "!";
 },"useData":true});
   var templates = Handlebars.templates = Handlebars.templates || {};
-  templates['c.hbs'] = template;
+  templates['c'] = template;
   var partials = Handlebars.partials = Handlebars.partials || {};
-  partials['c.hbs'] = template;
+  partials['c'] = template;
   return template;
 });
 

@@ -5,8 +5,8 @@ define('input.hbs', ['handlebars'], function(Handlebars) {
     + "!";
 },"useData":true});
   var templates = Handlebars.templates = Handlebars.templates || {};
-  templates['input.hbs'] = template;
+  templates['input'] = template;
   var partials = Handlebars.partials = Handlebars.partials || {};
-  partials['input.hbs'] = template;
+  partials['input'] = template;
   return template;
 });
