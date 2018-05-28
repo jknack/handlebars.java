@@ -229,9 +229,10 @@ abstract class TemplateBuilder<it> extends HbsParserBaseVisitor<Object> {
     block.filename(source.filename());
     block.position(nameStart.getLine(), nameStart.getCharPositionInLine());
     String startDelim = ctx.start.getText();
+    String endDelim = ctx.stop.getText();
     startDelim = startDelim.substring(0, startDelim.length() - 1);
     block.startDelimiter(startDelim);
-    block.endDelimiter(ctx.stop.getText());
+    block.endDelimiter(endDelim);
 
     Template body = visitBody(ctx.thenBody);
     if (body != null) {
@@ -248,6 +249,9 @@ abstract class TemplateBuilder<it> extends HbsParserBaseVisitor<Object> {
           String inverseLabel = elseStmt.inverseToken.getText();
           if (inverseLabel.startsWith(startDelim)) {
             inverseLabel = inverseLabel.substring(startDelim.length());
+          }
+          if (inverseLabel.endsWith("~")) {
+            inverseLabel = inverseLabel.substring(0, inverseLabel.length() - 1);
           }
           elseroot.inverse(inverseLabel, unless);
         }

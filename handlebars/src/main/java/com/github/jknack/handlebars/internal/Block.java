@@ -261,7 +261,7 @@ class Block extends HelperResolver {
   public Template inverse(final String inverseLabel, final Template inverse) {
     notNull(inverseLabel, "The inverseLabel can't be null.");
     isTrue(inverseLabel.equals("^") || inverseLabel.equals("else"),
-        "The inverseLabel must be one of '^' or 'else'.");
+        "The inverseLabel must be one of '^' or 'else'. Found: " + inverseLabel);
     this.inverseLabel = inverseLabel;
     this.inverse = notNull(inverse, "The inverse's template is required.");
     return this;

@@ -293,7 +293,7 @@ BOOLEAN
 
 ELSE
   :
-   '~'? 'else' '~'?
+   'else'
   ;
 
 QID

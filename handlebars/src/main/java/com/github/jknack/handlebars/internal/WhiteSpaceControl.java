@@ -167,7 +167,7 @@ public class WhiteSpaceControl extends HbsParserBaseListener {
     }
 
     String end = text(endToken);
-    if (end.indexOf("~") == 0) {
+    if (end.indexOf("~") >= 0) {
       pending += 1;
     }
 
