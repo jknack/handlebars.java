@@ -136,6 +136,10 @@ public class MustacheSpec extends HbsParserBaseListener {
     hasTag(true);
   }
 
+  @Override public void enterElseBlock(HbsParser.ElseBlockContext ctx) {
+    hasTag(true);
+  }
+
   @Override
   public void exitUnless(final UnlessContext ctx) {
     hasTag(true);
