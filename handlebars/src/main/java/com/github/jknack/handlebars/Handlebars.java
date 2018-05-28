@@ -17,6 +17,7 @@
  */
 package com.github.jknack.handlebars;
 
+import com.github.jknack.handlebars.helper.I18nHelper;
 import static org.apache.commons.lang3.Validate.isTrue;
 import static org.apache.commons.lang3.Validate.notEmpty;
 import static org.apache.commons.lang3.Validate.notNull;
@@ -1369,6 +1370,8 @@ public class Handlebars implements HelperRegistry {
     this.charset = notNull(charset, "Charset required.");
     registry.setCharset(charset);
     loader.setCharset(charset);
+    I18nHelper.i18n.setCharset(charset);
+    I18nHelper.i18nJs.setCharset(charset);
     return this;
   }
 
