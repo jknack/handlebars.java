@@ -1,5 +1,7 @@
 package com.github.jknack.handlebars.issues;
 
+import com.github.jknack.handlebars.EscapingStrategy;
+import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.v4Test;
 import org.junit.Test;
 
@@ -7,16 +9,27 @@ import java.io.IOException;
 
 public class Issue478 extends v4Test {
 
+  public static class Foo implements EscapingStrategy {
+
+    @Override public CharSequence escape(CharSequence value) {
+      return value.toString().replace("foo", "bar");
+    }
+  }
+
+  public static class Bar implements EscapingStrategy {
+
+    @Override public CharSequence escape(CharSequence value) {
+      return value.toString().replace("bar", "$bar$");
+    }
+  }
+
+  @Override protected void configure(Handlebars handlebars) {
+    handlebars.with(new Foo(), new Bar());
+  }
+
   @Test
-  public void whiteSpaceControlShouldWorkOnElse() throws IOException {
-    shouldCompileTo("\n{{~#if bold~}}\n<b>\n{{else}}\n<i>\n{{~/if~}}\n", $("hash", $("bold", true)), "<b>\n");
-    shouldCompileTo("\n{{~#if bold~}}\n<b>\n{{else}}\n<i>\n{{~/if~}}\n", $("hash", $("bold", false)), "\n<i>");
-
-    shouldCompileTo("\n{{~#if bold~}}\n<b>\n{{~else~}}\n<i>\n{{~/if~}}\n", $("hash", $("bold", true)), "<b>");
-    shouldCompileTo("\n{{~#if bold~}}\n<b>\n{{~else~}}\n<i>\n{{~/if~}}\n", $("hash", $("bold", false)), "<i>");
-
-    shouldCompileTo("\n{{~#if bold~}}\n<b>\n{{~^~}}\n<i>\n{{~/if~}}\n", $("hash", $("bold", true)), "<b>");
-    shouldCompileTo("\n{{~#if bold~}}\n<b>\n{{~^~}}\n<i>\n{{~/if~}}\n", $("hash", $("bold", false)), "<i>");
+  public void shouldAllowToChainEscapeStrategy() throws IOException {
+    shouldCompileTo("{{var}}", $("hash", $("var", "foo")), "$bar$");
   }
 
 }

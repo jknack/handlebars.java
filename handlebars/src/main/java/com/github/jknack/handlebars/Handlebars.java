@@ -1043,6 +1043,16 @@ public class Handlebars implements HelperRegistry {
   }
 
   /**
+   * Set a new {@link EscapingStrategy}.
+   *
+   * @param chain The escaping strategy. Required.
+   * @return This handlebars object.
+   */
+  public Handlebars with(final EscapingStrategy... chain) {
+    return with(newEscapeChain(chain));
+  }
+
+  /**
    * @return A formatter chain.
    */
   public Formatter.Chain getFormatter() {
@@ -1380,5 +1390,23 @@ public class Handlebars implements HelperRegistry {
    */
   public Charset getCharset() {
     return charset;
+  }
+
+  /**
+   * Chain escape strategies.
+   *
+   * @param chain Escape to chain.
+   * @return Composite escape strategy.
+   */
+  private static EscapingStrategy newEscapeChain(final EscapingStrategy[] chain) {
+    return new EscapingStrategy() {
+      @Override public CharSequence escape(final CharSequence value) {
+        CharSequence result = value;
+        for (EscapingStrategy escape : chain) {
+          result = escape.escape(result);
+        }
+        return result;
+      }
+    };
   }
 }

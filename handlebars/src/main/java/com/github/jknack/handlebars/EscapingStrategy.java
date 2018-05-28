@@ -49,7 +49,7 @@ public interface EscapingStrategy {
    * @author edgar
    * @since 4.0.4
    */
-  public class Hbs implements EscapingStrategy {
+  class Hbs implements EscapingStrategy {
 
     /** EMPTY. */
     private static final String EMPTY = "";
