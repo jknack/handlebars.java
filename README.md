@@ -13,14 +13,6 @@ Handlebars provides the power necessary to let you build semantic templates effe
 
 [Mustache](http://mustache.github.com/mustache.5.html) templates are compatible with Handlebars, so you can take a [Mustache](http://mustache.github.com) template, import it into Handlebars, and start taking advantage of the extra Handlebars features.
 
-# Performance
-
-Handlebars.java is a modern and full featured template engine, but also has a very good performance (Hbs):
-
-![Template Comparison](http://jknack.github.io/handlebars.java/images/bench.png)
-
-Benchmark source code is available at: https://github.com/mbosecke/template-benchmark
-
 # Getting Started
  In general, the syntax of **Handlebars** templates is a superset of [Mustache](http://mustache.github.com) templates. For basic syntax, check out the [Mustache manpage](http://mustache.github.com).
  
@@ -388,12 +380,12 @@ The generated code looks like this:
 Finally, it converts message patterns like: ```Hi {0}``` into ```Hi {{arg0}}```. This make possible for the [I18n](https://github.com/fnando/i18n-js) JS library to interpolate variables.
 
 ### string helpers
- Functions like abbreviate, capitalize, join, dateFormat, yesno, etc., are available from [StringHelpers] (https://github.com/jknack/handlebars.java/blob/master/handlebars/src/main/java/com/github/jknack/handlebars/helper/StringHelpers.java).
+ Functions like abbreviate, capitalize, join, dateFormat, yesno, etc., are available from [StringHelpers](https://github.com/jknack/handlebars.java/blob/master/handlebars/src/main/java/com/github/jknack/handlebars/helper/StringHelpers.java).
  
 > NOTE: You need to register string helpers (they are not added by default)
 
 ### conditional helpers
- Functions like eq, neq, lt, gt, and, or, not, etc., are available from [ConditionalHelpers] (https://github.com/jknack/handlebars.java/blob/master/handlebars/src/main/java/com/github/jknack/handlebars/helper/ConditionalHelpers.java).
+ Functions like eq, neq, lt, gt, and, or, not, etc., are available from [ConditionalHelpers](https://github.com/jknack/handlebars.java/blob/master/handlebars/src/main/java/com/github/jknack/handlebars/helper/ConditionalHelpers.java).
  
 > NOTE: You need to register conditional helpers (they are not added by default)
 
@@ -979,6 +971,14 @@ where:
 
 Checkout the [HandlebarsViewResolver](https://github.com/jknack/handlebars.java/blob/master/handlebars-springmvc/src/main/java/com/github/jknack/handlebars/springmvc/HandlebarsViewResolver.java).
 
+# Performance
+
+Handlebars.java is a modern and full featured template engine, but also has a very good performance (Hbs):
+
+![Template Comparison](http://jknack.github.io/handlebars.java/images/bench.png)
+
+Benchmark source code is available at: https://github.com/mbosecke/template-benchmark
+
 # Architecture and API Design
  * Handlebars.java follows the JavaScript API with some minors exceptions due to the nature of the Java language.
  * The parser is built on top of [ANTLR v4] (http://www.antlr.org/).
@@ -1071,7 +1071,7 @@ Hello {{#child}}{{this.value}}{{/child}}
  * [ANTLRv4](http://www.antlr.org/)
 
 ## Author
- [Edgar Espina] (https://twitter.com/edgarespina)
+ [Edgar Espina](https://twitter.com/edgarespina)
 
 ## License
 [Apache License 2](http://www.apache.org/licenses/LICENSE-2.0.html)
