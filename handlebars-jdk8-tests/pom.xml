@@ -6,7 +6,7 @@
   <parent>
     <artifactId>handlebars.java</artifactId>
     <groupId>com.github.jknack</groupId>
-    <version>4.0.7</version>
+    <version>4.1.0-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
