@@ -202,6 +202,7 @@ Please note you don't have to specify the extension file.
  * **embedded**
  * **i18n** and **i18nJs** 
  * **string helpers**
+ * **conditional helpers**
 
 ### with, each, if, unless:
  See the [built-in helper documentation](http://handlebarsjs.com/block_helpers.html).
@@ -388,7 +389,13 @@ Finally, it converts message patterns like: ```Hi {0}``` into ```Hi {{arg0}}```.
 
 ### string helpers
  Functions like abbreviate, capitalize, join, dateFormat, yesno, etc., are available from [StringHelpers] (https://github.com/jknack/handlebars.java/blob/master/handlebars/src/main/java/com/github/jknack/handlebars/helper/StringHelpers.java).
+ 
+> NOTE: You need to register string helpers (they are not added by default)
 
+### conditional helpers
+ Functions like eq, neq, lt, gt, and, or, not, etc., are available from [ConditionalHelpers] (https://github.com/jknack/handlebars.java/blob/master/handlebars/src/main/java/com/github/jknack/handlebars/helper/ConditionalHelpers.java).
+ 
+> NOTE: You need to register conditional helpers (they are not added by default)
 
 ### TypeSafe Templates
  TypeSafe templates are created by extending the ```TypeSafeTemplate``` interface. For example:
