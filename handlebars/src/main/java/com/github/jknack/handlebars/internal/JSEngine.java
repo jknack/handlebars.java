@@ -34,7 +34,7 @@ import com.github.jknack.handlebars.Template;
  * @author edgar
  *
  */
-enum JSEngine {
+public enum JSEngine {
 
   /**
    * The default JS Engine.
@@ -42,15 +42,20 @@ enum JSEngine {
   RHINO {
     @Override
     public String toJavaScript(final String hbslocation, final Template template) {
+      return toJavaScript(hbslocation, template.filename(), template.text());
+    }
+
+    @Override public String toJavaScript(final String hbslocation, final String filename,
+        final String template) {
       Context ctx = null;
       try {
         ctx = newContext();
 
         Scriptable scope = newScope(hbslocation, ctx);
-        scope.put("template", scope, template.text());
+        scope.put("template", scope, template);
 
         String js = "Handlebars.precompile(template);";
-        Object precompiled = ctx.evaluateString(scope, js, template.toString(), 1,
+        Object precompiled = ctx.evaluateString(scope, js, filename, 1,
             null);
 
         return (String) precompiled;
@@ -127,4 +132,15 @@ enum JSEngine {
    * @return A pre-compiled JavaScript version of this template.
    */
   public abstract String toJavaScript(String hbslocation, Template template);
+
+  /**
+   * Convert a template text to JavaScript template (a.k.a precompiled template). Compilation is
+   * done by handlebars.js and a JS Engine (usually Rhino).
+   *
+   * @param hbslocation Location of the handlebars.js file.
+   * @param filename Template file name.
+   * @param template The template to convert.
+   * @return A pre-compiled JavaScript version of this template.
+   */
+  public abstract String toJavaScript(String hbslocation, String filename, String template);
 }
