@@ -323,6 +323,6 @@ public class DecoratorTest extends v4Test {
   }
 
   private void assertSetEquals(final List<String> list, final List<String> list2) {
-    assertEquals(new HashSet<String>(list), new HashSet<String>(list2));
+    assertEquals(new HashSet<>(list), new HashSet<>(list2));
   }
 }

@@ -15,7 +15,7 @@ public class Issue177 extends AbstractTest {
 
   // model classes
   public class Model1 {
-    private List<String> listOfValues1 = new ArrayList<String>();
+    private List<String> listOfValues1 = new ArrayList<>();
 
     public List<String> getListOfValues1() {
       return listOfValues1;
@@ -44,7 +44,7 @@ public class Issue177 extends AbstractTest {
   }
 
   public class Model2 {
-    private List<User> users = new ArrayList<User>();
+    private List<User> users = new ArrayList<>();
 
     public List<User> getUsers() {
       return users;
@@ -61,11 +61,11 @@ public class Issue177 extends AbstractTest {
   @Before
   public void before() {
     // model map
-    modelMap = new HashMap<String, Object>();
+    modelMap = new HashMap<>();
 
     // model1
     Model1 model1 = new Model1();
-    List<String> listOfValues1 = new ArrayList<String>();
+    List<String> listOfValues1 = new ArrayList<>();
     listOfValues1.add("m1-1");
     listOfValues1.add("m1-2");
     listOfValues1.add("m1-3");
@@ -74,7 +74,7 @@ public class Issue177 extends AbstractTest {
 
     // model2
     Model2 model2 = new Model2();
-    List<User> users = new ArrayList<User>();
+    List<User> users = new ArrayList<>();
     User u1 = new User();
     u1.setName("User 1");
     users.add(u1);

@@ -41,7 +41,7 @@ public class HighConcurrencyTemplateCacheTest {
 
   @Test
   public void get() throws IOException {
-    ConcurrentMap<TemplateSource, Future<Pair<TemplateSource, Template>>> cache = new ConcurrentHashMap<TemplateSource, Future<Pair<TemplateSource, Template>>>();
+    ConcurrentMap<TemplateSource, Future<Pair<TemplateSource, Template>>> cache = new ConcurrentHashMap<>();
 
     TemplateSource source = new URLTemplateSource("/template.hbs", getClass().getResource(
         "/template.hbs"));
@@ -129,7 +129,7 @@ public class HighConcurrencyTemplateCacheTest {
 
   @Test
   public void getAndReload() throws IOException, InterruptedException {
-    ConcurrentMap<TemplateSource, Future<Pair<TemplateSource, Template>>> cache = new ConcurrentHashMap<TemplateSource, Future<Pair<TemplateSource, Template>>>();
+    ConcurrentMap<TemplateSource, Future<Pair<TemplateSource, Template>>> cache = new ConcurrentHashMap<>();
 
     TemplateSource source = source("/template.hbs");
 
@@ -192,8 +192,8 @@ public class HighConcurrencyTemplateCacheTest {
     expect(future.get()).andThrow(new CancellationException());
     expect(future.get()).andReturn(ImmutablePair.<TemplateSource, Template> of(source, template));
 
-    Capture<TemplateSource> keyGet = new Capture<TemplateSource>();
-    Capture<TemplateSource> keyRemove = new Capture<TemplateSource>();
+    Capture<TemplateSource> keyGet = new Capture<>();
+    Capture<TemplateSource> keyRemove = new Capture<>();
 
     ConcurrentMap<TemplateSource, Future<Pair<TemplateSource, Template>>> cache = createMock(
         ConcurrentMap.class);
@@ -223,8 +223,8 @@ public class HighConcurrencyTemplateCacheTest {
     Future<Pair<TemplateSource, Template>> future = createMock(Future.class);
     expect(future.get()).andThrow(new ExecutionException(new IllegalArgumentException()));
 
-    Capture<TemplateSource> keyGet = new Capture<TemplateSource>();
-    Capture<TemplateSource> keyRemove = new Capture<TemplateSource>();
+    Capture<TemplateSource> keyGet = new Capture<>();
+    Capture<TemplateSource> keyRemove = new Capture<>();
 
     ConcurrentMap<TemplateSource, Future<Pair<TemplateSource, Template>>> cache = createMock(
         ConcurrentMap.class);
@@ -255,7 +255,7 @@ public class HighConcurrencyTemplateCacheTest {
     Future<Pair<TemplateSource, Template>> future = createMock(Future.class);
     expect(future.get()).andThrow(new ExecutionException(new Error()));
 
-    Capture<TemplateSource> keyGet = new Capture<TemplateSource>();
+    Capture<TemplateSource> keyGet = new Capture<>();
 
     ConcurrentMap<TemplateSource, Future<Pair<TemplateSource, Template>>> cache = createMock(
         ConcurrentMap.class);
@@ -285,8 +285,8 @@ public class HighConcurrencyTemplateCacheTest {
     Future<Pair<TemplateSource, Template>> future = createMock(Future.class);
     expect(future.get()).andThrow(new ExecutionException(new Exception()));
 
-    Capture<TemplateSource> keyGet = new Capture<TemplateSource>();
-    Capture<TemplateSource> keyRemove = new Capture<TemplateSource>();
+    Capture<TemplateSource> keyGet = new Capture<>();
+    Capture<TemplateSource> keyRemove = new Capture<>();
 
     ConcurrentMap<TemplateSource, Future<Pair<TemplateSource, Template>>> cache = createMock(
         ConcurrentMap.class);

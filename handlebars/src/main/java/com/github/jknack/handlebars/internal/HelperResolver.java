@@ -84,7 +84,7 @@ abstract class HelperResolver extends BaseTemplate {
     if (hashSize == 0) {
       return new HashMap<>();
     }
-    Map<String, Object> result = new LinkedHashMap<String, Object>();
+    Map<String, Object> result = new LinkedHashMap<>();
     for (Entry<String, Param> entry : hash.entrySet()) {
       Param value = entry.getValue();
       result.put(entry.getKey(), value.apply(context));

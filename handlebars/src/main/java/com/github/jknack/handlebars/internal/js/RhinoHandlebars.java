@@ -65,7 +65,7 @@ public class RhinoHandlebars extends HandlebarsJs {
     private Context context;
 
     /** Internal state of array. */
-    private Map<Object, Object> state = new HashMap<Object, Object>();
+    private Map<Object, Object> state = new HashMap<>();
 
     /**
      * A JS array.
@@ -127,7 +127,7 @@ public class RhinoHandlebars extends HandlebarsJs {
     private Context context;
 
     /** Internal state. */
-    private Map<Object, Object> state = new HashMap<Object, Object>();
+    private Map<Object, Object> state = new HashMap<>();
 
     /**
      * Creates a new {@link BetterNativeObject}.
@@ -431,7 +431,7 @@ public class RhinoHandlebars extends HandlebarsJs {
    * @return A Rhino js object.
    */
   private static Object toJsObject(final Context context) {
-    Map<String, Object> hash = new HashMap<String, Object>();
+    Map<String, Object> hash = new HashMap<>();
     for (Entry<String, Object> property : context.propertySet()) {
       hash.put(property.getKey(), property.getValue());
     }

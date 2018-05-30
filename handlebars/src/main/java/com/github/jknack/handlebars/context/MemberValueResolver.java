@@ -163,7 +163,7 @@ public abstract class MemberValueResolver<M extends Member> implements ValueReso
       return Collections.emptySet();
     }
     Collection<M> members = cache(context.getClass()).values();
-    Map<String, Object> propertySet = new LinkedHashMap<String, Object>();
+    Map<String, Object> propertySet = new LinkedHashMap<>();
     for (M member : members) {
       String name = memberName(member);
       propertySet.put(name, resolve(context, name));

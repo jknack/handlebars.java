@@ -104,7 +104,7 @@ class Partial extends HelperResolver {
   @Override
   public void before(final Context context, final Writer writer) throws IOException {
     LinkedList<Map<String, Template>> partials = context.data(Context.INLINE_PARTIALS);
-    partials.addLast(new HashMap<String, Template>(partials.getLast()));
+    partials.addLast(new HashMap<>(partials.getLast()));
   }
 
   @Override

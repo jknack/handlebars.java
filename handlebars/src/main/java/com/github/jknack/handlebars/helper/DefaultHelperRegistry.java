@@ -59,7 +59,7 @@ public class DefaultHelperRegistry implements HelperRegistry {
   /**
    * The helper registry.
    */
-  private final Map<String, Helper<?>> helpers = new HashMap<String, Helper<?>>();
+  private final Map<String, Helper<?>> helpers = new HashMap<>();
 
   /** Decorators. */
   private final Map<String, Decorator> decorators = new HashMap<>();
@@ -191,7 +191,7 @@ public class DefaultHelperRegistry implements HelperRegistry {
    */
   private void registerDynamicHelper(final Object source, final Class<?> clazz) {
     if (clazz != Object.class) {
-      Set<String> overloaded = new HashSet<String>();
+      Set<String> overloaded = new HashSet<>();
       // Keep backing up the inheritance hierarchy.
       Method[] methods = clazz.getDeclaredMethods();
       for (Method method : methods) {

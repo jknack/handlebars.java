@@ -378,13 +378,13 @@ class Block extends HelperResolver {
 
   @Override
   public List<String> collect(final TagType... tagType) {
-    Set<String> tagNames = new LinkedHashSet<String>();
+    Set<String> tagNames = new LinkedHashSet<>();
     if (body != null) {
       tagNames.addAll(body.collect(tagType));
     }
     tagNames.addAll(inverse.collect(tagType));
     tagNames.addAll(super.collect(tagType));
-    return new ArrayList<String>(tagNames);
+    return new ArrayList<>(tagNames);
   }
 
   @Override
@@ -397,12 +397,12 @@ class Block extends HelperResolver {
 
   @Override
   public List<String> collectReferenceParameters() {
-    Set<String> paramNames = new LinkedHashSet<String>();
+    Set<String> paramNames = new LinkedHashSet<>();
     if (body != null) {
       paramNames.addAll(body.collectReferenceParameters());
     }
     paramNames.addAll(inverse.collectReferenceParameters());
     paramNames.addAll(super.collectReferenceParameters());
-    return new ArrayList<String>(paramNames);
+    return new ArrayList<>(paramNames);
   }
 }

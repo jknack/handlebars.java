@@ -128,7 +128,7 @@ public abstract class SpecTest {
     List<Map<String, Object>> tests =
         (List<Map<String, Object>>) data.get("tests");
     int number = 0;
-    Collection<Object[]> dataset = new ArrayList<Object[]>();
+    Collection<Object[]> dataset = new ArrayList<>();
     for (Map<String, Object> test : tests) {
       test.put("number", number++);
       dataset.add(new Object[]{new Spec(test) });

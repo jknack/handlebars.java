@@ -17,7 +17,7 @@ public class Issue237 extends AbstractTest {
 
   @Test
   public void workForEnumMap() throws IOException {
-    Map<Status, Integer> statuses = new EnumMap<Status, Integer>(Status.class);
+    Map<Status, Integer> statuses = new EnumMap<>(Status.class);
     statuses.put(Status.NEW, 10);
     statuses.put(Status.DONE, 20);
     statuses.put(Status.CLOSED, 3);
@@ -26,7 +26,7 @@ public class Issue237 extends AbstractTest {
 
   @Test
   public void wontWorkForNormalMap() throws IOException {
-    Map<Status, Integer> statuses = new HashMap<Status, Integer>();
+    Map<Status, Integer> statuses = new HashMap<>();
     statuses.put(Status.NEW, 10);
     statuses.put(Status.DONE, 20);
     statuses.put(Status.CLOSED, 3);

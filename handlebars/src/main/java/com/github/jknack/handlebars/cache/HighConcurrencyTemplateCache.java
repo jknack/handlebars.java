@@ -161,7 +161,7 @@ public class HighConcurrencyTemplateCache implements TemplateCache {
    */
   private FutureTask<Pair<TemplateSource, Template>> newTask(final TemplateSource source,
       final Parser parser) {
-    return new FutureTask<Pair<TemplateSource, Template>>(
+    return new FutureTask<>(
         new Callable<Pair<TemplateSource, Template>>() {
           @Override
           public Pair<TemplateSource, Template> call() throws IOException {

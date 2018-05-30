@@ -81,7 +81,7 @@ public class BlockHelper implements Helper<Object> {
       template = options.fn;
     }
     // Get hash from current block and merge partial hash (if any).
-    Map<String, Object> hash = new LinkedHashMap<String, Object>(options.hash);
+    Map<String, Object> hash = new LinkedHashMap<>(options.hash);
     Map<String, Object> partialHash = options.data(Context.PARTIALS + "#" + context + "#hash");
     if (partialHash != null) {
       hash.putAll(partialHash);

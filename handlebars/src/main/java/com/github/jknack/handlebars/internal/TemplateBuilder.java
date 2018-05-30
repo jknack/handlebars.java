@@ -130,12 +130,12 @@ abstract class TemplateBuilder<it> extends HbsParserBaseVisitor<Object> {
   /**
    * Keep track of block helpers.
    */
-  private LinkedList<String> qualifier = new LinkedList<String>();
+  private LinkedList<String> qualifier = new LinkedList<>();
 
   /**
    * Keep track of block helpers params.
    */
-  private LinkedList<String> paramStack = new LinkedList<String>();
+  private LinkedList<String> paramStack = new LinkedList<>();
 
   /** Keep track of block level, required for top level decorators. */
   private int level;
@@ -455,7 +455,7 @@ abstract class TemplateBuilder<it> extends HbsParserBaseVisitor<Object> {
     if (ids == null || ids.size() == 0) {
       return Collections.emptyList();
     }
-    List<String> result = new ArrayList<String>();
+    List<String> result = new ArrayList<>();
     for (TerminalNode id : ids) {
       result.add(id.getText());
     }

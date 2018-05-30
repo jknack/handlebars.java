@@ -218,7 +218,7 @@ public class Context {
 
     @Override
     public Set<Entry<String, Object>> propertySet(final Object context) {
-      Set<Entry<String, Object>> propertySet = new LinkedHashSet<Map.Entry<String, Object>>();
+      Set<Entry<String, Object>> propertySet = new LinkedHashSet<>();
       for (ValueResolver resolver : resolvers) {
         propertySet.addAll(resolver.propertySet(context));
       }
@@ -453,7 +453,7 @@ public class Context {
   private static Context root(final Object model) {
     Context root = new Context(model);
     root.extendedContext = new Context(new HashMap<String, Object>());
-    root.data = new HashMap<String, Object>();
+    root.data = new HashMap<>();
     root.data.put(PARTIALS, new HashMap<String, Template>());
     LinkedList<Map<String, Template>> partials = new LinkedList<>();
     partials.push(new HashMap<String, Template>());
@@ -738,7 +738,7 @@ public class Context {
    */
   public static Context newBlockParamContext(final Context parent, final List<String> names,
       final List<Object> values) {
-    Map<String, Object> hash = new HashMap<String, Object>();
+    Map<String, Object> hash = new HashMap<>();
     for (int i = 0; i < Math.min(values.size(), names.size()); i++) {
       hash.put(names.get(i), values.get(i));
     }

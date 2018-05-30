@@ -410,7 +410,7 @@ class DefI18nSource implements I18nSource {
   @Override
   public String[] keys(final String basename, final Locale locale) {
     Enumeration<String> keys = bundle.getKeys();
-    List<String> result = new ArrayList<String>();
+    List<String> result = new ArrayList<>();
     while (keys.hasMoreElements()) {
       String key = keys.nextElement();
       result.add(key);
