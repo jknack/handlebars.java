@@ -354,7 +354,7 @@ class DefI18nSource implements I18nSource {
   /**
    * UTF8 resource bundle control.
    *
-   * Source: Source: ckoverflow.com/questions/4659929
+   * Source: Source: https://stackoverflow.com/questions/4659929
    *
    * @author edgar
    *

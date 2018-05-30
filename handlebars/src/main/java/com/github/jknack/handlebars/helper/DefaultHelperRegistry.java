@@ -123,7 +123,7 @@ public class DefaultHelperRegistry implements HelperRegistry {
     } catch (RuntimeException ex) {
       throw ex;
     } catch (Exception ex) {
-      throw new IllegalArgumentException("Can't register helpres", ex);
+      throw new IllegalArgumentException("Can't register helpers", ex);
     }
     registerDynamicHelper(helperSource, helperSource.getClass());
     return this;

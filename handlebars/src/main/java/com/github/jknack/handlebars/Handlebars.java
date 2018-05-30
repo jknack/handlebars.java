@@ -66,7 +66,7 @@ import com.github.jknack.handlebars.io.TemplateSource;
  * </pre>
  *
  * <h2>Loading templates</h2> Templates are loaded using the ```TemplateLoader``` class.
- * Handlebars.java provides three implementations of a ```TemplateLodaer```:
+ * Handlebars.java provides three implementations of a ```TemplateLoader```:
  * <ul>
  * <li>ClassPathTemplateLoader (default)</li>
  * <li>FileTemplateLoader</li>

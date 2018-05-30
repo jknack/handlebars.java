@@ -140,7 +140,7 @@ public abstract class MemberValueResolver<M extends Member> implements ValueReso
    * True if the member is static.
    *
    * @param member The member object.
-   * @return True if the member is statuc.
+   * @return True if the member is static.
    */
   protected boolean isStatic(final M member) {
     return Modifier.isStatic(member.getModifiers());
