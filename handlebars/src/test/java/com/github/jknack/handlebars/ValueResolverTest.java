@@ -105,7 +105,7 @@ public class ValueResolverTest {
 
   @Test
   public void mapResolver() {
-    Map<String, Object> map = new HashMap<String, Object>();
+    Map<String, Object> map = new HashMap<>();
     map.put("base", "a");
     map.put("child", "b");
 
@@ -120,7 +120,7 @@ public class ValueResolverTest {
 
   @Test
   public void multipleValueResolvers() {
-    Map<String, Object> map = new HashMap<String, Object>();
+    Map<String, Object> map = new HashMap<>();
     map.put("base", "a");
     map.put("child", "b");
 

@@ -25,7 +25,7 @@ public class Blog {
 
   private String body;
 
-  private List<Comment> comments = new ArrayList<Comment>();
+  private List<Comment> comments = new ArrayList<>();
 
   public Blog(final String title, final String body) {
     this.title = title;

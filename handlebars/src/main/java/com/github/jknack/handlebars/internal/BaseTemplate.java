@@ -342,11 +342,11 @@ abstract class BaseTemplate implements Template {
   @Override
   public List<String> collect(final TagType... tagType) {
     isTrue(tagType.length > 0, "At least one tag type is required.");
-    Set<String> tagNames = new LinkedHashSet<String>();
+    Set<String> tagNames = new LinkedHashSet<>();
     for (TagType tt : tagType) {
       collect(tagNames, tt);
     }
-    return new ArrayList<String>(tagNames);
+    return new ArrayList<>(tagNames);
   }
 
   /**
@@ -361,9 +361,9 @@ abstract class BaseTemplate implements Template {
 
   @Override
   public List<String> collectReferenceParameters() {
-    Set<String> paramNames = new LinkedHashSet<String>();
+    Set<String> paramNames = new LinkedHashSet<>();
     collectReferenceParameters(paramNames);
-    return new ArrayList<String>(paramNames);
+    return new ArrayList<>(paramNames);
   }
 
   /**

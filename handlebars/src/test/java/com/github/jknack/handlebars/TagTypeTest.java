@@ -107,6 +107,6 @@ public class TagTypeTest extends AbstractTest {
   }
 
   private void assertSetEquals(List<String> list, List<String> list2) {
-    assertEquals(new HashSet<String>(list), new HashSet<String>(list2));
+    assertEquals(new HashSet<>(list), new HashSet<>(list2));
   }
 }

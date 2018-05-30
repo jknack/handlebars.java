@@ -68,7 +68,7 @@ public class MethodValueResolver extends MemberValueResolver<Method> {
 
   @Override
   protected Set<Method> members(final Class<?> clazz) {
-    Set<Method> members = new LinkedHashSet<Method>();
+    Set<Method> members = new LinkedHashSet<>();
     members(clazz, members);
     return members;
   }

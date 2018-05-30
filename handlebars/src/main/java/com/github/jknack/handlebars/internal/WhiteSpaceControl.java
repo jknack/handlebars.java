@@ -50,7 +50,7 @@ public class WhiteSpaceControl extends HbsParserBaseListener {
   /**
    * Track the spaces/lines that need to be excluded.
    */
-  private List<CommonToken> spaces = new ArrayList<CommonToken>();
+  private List<CommonToken> spaces = new ArrayList<>();
 
   /** Greater than zero, if a trim-right operation is required. */
   private int pending = 0;

@@ -310,7 +310,7 @@ public class Handlebars implements HelperRegistry {
   private String handlebarsJsFile = "/handlebars-v4.0.4.js";
 
   /** List of formatters. */
-  private List<Formatter> formatters = new ArrayList<Formatter>();
+  private List<Formatter> formatters = new ArrayList<>();
 
   /** Default formatter. */
   private Formatter.Chain formatter = Formatter.NOOP;
