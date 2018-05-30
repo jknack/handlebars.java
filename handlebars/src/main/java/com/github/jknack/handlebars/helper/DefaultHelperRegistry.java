@@ -73,8 +73,11 @@ public class DefaultHelperRegistry implements HelperRegistry {
   private Charset charset = StandardCharsets.UTF_8;
 
   {
-    Integer optimizationLevel = Integer.valueOf(Integer.parseInt(
-                System.getProperty("handlebars.rhino.optmizationLevel", "-1")));
+    int optimizationLevel = Integer.valueOf(
+                System.getProperty(
+                        "handlebars.rhino.optimizationLevel",
+                        System.getProperty("handlebars.rhino.optmizationLevel", "-1")
+                ));
     this.handlebarsJs = HandlebarsJs.createRhino(this, optimizationLevel);
     // make sure default helpers are registered
     registerBuiltinsHelpers(this);
