@@ -195,23 +195,23 @@
       <!-- We're on 1.7 -->
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.1</version>
+        <version>3.7.0</version>
         <configuration>
-          <source>1.7</source>
-          <target>1.7</target>
+          <source>1.8</source>
+          <target>1.8</target>
         </configuration>
       </plugin>
 
       <plugin>
         <artifactId>maven-jar-plugin</artifactId>
-        <version>2.4</version>
+        <version>3.1.0</version>
       </plugin>
 
       <!-- sure-fire -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
-        <version>2.16</version>
+        <version>2.21.0</version>
         <configuration>
           <!-- set default locale of the test JVM to en_US because some tests expect e.g. the dollar sign as currency symbol -->
           <argLine>-Duser.language=en -Duser.country=US</argLine>
@@ -262,7 +262,7 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>cobertura-maven-plugin</artifactId>
-        <version>2.6</version>
+        <version>2.7</version>
         <configuration>
           <format>xml</format>
           <maxmem>256m</maxmem>
@@ -282,7 +282,7 @@
       <plugin>
         <groupId>org.eluder.coveralls</groupId>
         <artifactId>coveralls-maven-plugin</artifactId>
-        <version>2.1.0</version>
+        <version>4.3.0</version>
       </plugin>
 
       <plugin>
@@ -311,7 +311,7 @@
       <plugin>
         <groupId>org.sonatype.plugins</groupId>
         <artifactId>nexus-staging-maven-plugin</artifactId>
-        <version>1.6.3</version>
+        <version>1.6.8</version>
         <extensions>true</extensions>
         <configuration>
           <serverId>ossrh</serverId>
@@ -356,7 +356,7 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-surefire-plugin</artifactId>
-            <version>2.12.3</version>
+            <version>2.21.0</version>
             <inherited>false</inherited>
             <configuration>
               <includes>
@@ -412,7 +412,7 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-source-plugin</artifactId>
-            <version>2.2.1</version>
+            <version>3.0.1</version>
             <executions>
               <execution>
                 <id>attach-sources</id>
@@ -427,7 +427,7 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-javadoc-plugin</artifactId>
-            <version>2.9.1</version>
+            <version>3.0.1</version>
             <executions>
               <execution>
                 <id>attach-javadocs</id>
@@ -442,7 +442,7 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-gpg-plugin</artifactId>
-            <version>1.4</version>
+            <version>1.6</version>
             <executions>
               <execution>
                 <id>sign-artifacts</id>
@@ -452,22 +452,6 @@
                 </goals>
               </execution>
             </executions>
-          </plugin>
-
-          <!-- Release plugin -->
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-release-plugin</artifactId>
-            <version>2.4.2</version>
-            <configuration>
-              <mavenExecutorId>forked-path</mavenExecutorId>
-              <useReleaseProfile>false</useReleaseProfile>
-              <arguments>-Psonatype-oss-release</arguments>
-              <autoVersionSubmodules>true</autoVersionSubmodules>
-              <tagNameFormat>v@{project.version}</tagNameFormat>
-              <scmCommentPrefix>release</scmCommentPrefix>
-              <goals>deploy</goals>
-            </configuration>
           </plugin>
         </plugins>
       </build>
