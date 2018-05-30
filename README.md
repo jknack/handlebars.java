@@ -1,5 +1,6 @@
+[![Become a Patreon](https://img.shields.io/badge/patreon-donate-orange.svg)](https://patreon.com/edgarespina)
 [![Build Status](https://secure.travis-ci.org/jknack/handlebars.java.png?branch=master)](https://travis-ci.org/jknack/handlebars.java)
-[![Coverage Status](https://coveralls.io/repos/jknack/handlebars.java/badge.png)](https://coveralls.io/r/jknack/handlebars.java)
+[![coveralls.io](https://img.shields.io/coveralls/jknack/handlebars.java.svg)](https://coveralls.io/r/jknack/handlebars.java?branch=master)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.jknack/handlebars/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.jknack/handlebars)
 [![javadoc](https://javadoc.io/badge/com.github.jknack/handlebars.svg)](https://javadoc.io/doc/com.github.jknack/handlebars)
 
