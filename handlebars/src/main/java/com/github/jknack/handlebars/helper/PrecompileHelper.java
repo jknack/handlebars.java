@@ -17,8 +17,6 @@
  */
 package com.github.jknack.handlebars.helper;
 
-import com.github.jknack.handlebars.internal.JSEngine;
-import com.github.jknack.handlebars.io.TemplateSource;
 import static org.apache.commons.lang3.Validate.notEmpty;
 import static org.apache.commons.lang3.Validate.notNull;
 
@@ -195,10 +193,7 @@ public final class PrecompileHelper implements Helper<String> {
     if (wrapper == JsWrapper.AMD) {
       name += handlebars.getLoader().getSuffix();
     }
-    TemplateSource source = handlebars.getLoader().sourceAt(path);
-    String precompiled = JSEngine.RHINO
-        .toJavaScript(handlebars.handlebarsJsFile(), source.filename(),
-            source.content(handlebars.getCharset()));
+    String precompiled = handlebars.precompile(path);
     return new Handlebars.SafeString(wrapper.wrap(name, precompiled));
   }
 

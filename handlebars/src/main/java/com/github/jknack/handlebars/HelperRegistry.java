@@ -32,6 +32,7 @@
 package com.github.jknack.handlebars;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.net.URI;
@@ -301,9 +302,9 @@ public interface HelperRegistry {
    * @param filename The file name (just for debugging purpose). Required.
    * @param source The JavaScript source. Required.
    * @return This registry.
-   * @throws Exception If the JavaScript helpers can't be registered.
+   * @throws IOException If the JavaScript helpers can't be registered.
    */
-  HelperRegistry registerHelpers(String filename, String source) throws Exception;
+  HelperRegistry registerHelpers(String filename, String source) throws IOException;
 
   /**
    * Find a decorator by name.

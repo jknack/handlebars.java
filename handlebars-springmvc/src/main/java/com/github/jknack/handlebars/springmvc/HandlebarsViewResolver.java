@@ -529,7 +529,7 @@ public class HandlebarsViewResolver extends AbstractTemplateViewResolver
 
   @Override
   public HandlebarsViewResolver registerHelpers(final String filename, final String source)
-      throws Exception {
+      throws IOException {
     registry.registerHelpers(filename, source);
     return this;
   }

@@ -28,7 +28,7 @@ public class Issue243 extends AbstractTest {
   @Test
   public void zeroValueForJavaScriptHelper() throws IOException {
     shouldCompileTo("{{#each item}}{{getIndex @index}} {{/each}}",
-        $("item", new Object[]{10, 20, 30 }), "0.0 1.0 2.0 ");
+        $("item", new Object[]{10, 20, 30 }), "0 1 2 ");
   }
 
   @Test

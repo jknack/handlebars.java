@@ -124,7 +124,13 @@ public class JavaScriptHelperTest extends AbstractTest {
 
   @Test
   public void helper_block_with_complex_lookup_expression() throws Exception {
-    eval("{{#goodbyes2}}{{../name}}{{/goodbyes2}}", $("name", "Alan"),
+    eval("{{#goodbyes2}}{{name}}{{/goodbyes2}}", $("name", "Alan"),
+        "Goodbye Alan! goodbye Alan! GOODBYE Alan! ");
+  }
+
+  @Test
+  public void helper_block_with_complex_lookup_expression4() throws Exception {
+    eval("{{#goodbyes4}}{{../name}}{{/goodbyes4}}", $("name", "Alan"),
         "Goodbye Alan! goodbye Alan! GOODBYE Alan! ");
   }
 

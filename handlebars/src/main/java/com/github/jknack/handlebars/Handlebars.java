@@ -18,6 +18,8 @@
 package com.github.jknack.handlebars;
 
 import com.github.jknack.handlebars.helper.I18nHelper;
+import com.github.jknack.handlebars.internal.Files;
+import com.github.jknack.handlebars.internal.Throwing;
 import static org.apache.commons.lang3.Validate.isTrue;
 import static org.apache.commons.lang3.Validate.notEmpty;
 import static org.apache.commons.lang3.Validate.notNull;
@@ -50,6 +52,10 @@ import com.github.jknack.handlebars.io.CompositeTemplateLoader;
 import com.github.jknack.handlebars.io.StringTemplateSource;
 import com.github.jknack.handlebars.io.TemplateLoader;
 import com.github.jknack.handlebars.io.TemplateSource;
+
+import javax.script.Bindings;
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
 
 /**
  * <p>
@@ -348,6 +354,9 @@ public class Handlebars implements HelperRegistry {
   /** Standard charset. */
   private Charset charset = StandardCharsets.UTF_8;
 
+  /** Engine. */
+  private ScriptEngine engine;
+
   /**
    * Creates a new {@link Handlebars} with no cache.
    *
@@ -363,6 +372,35 @@ public class Handlebars implements HelperRegistry {
    */
   public Handlebars() {
     this(new ClassPathTemplateLoader());
+  }
+
+  /**
+   * Precompile a template to JavaScript.
+   *
+   * @param path Template path.
+   * @return JavaScript.
+   */
+  public String precompile(final String path) {
+    return Throwing.get(() ->
+        precompileInline(loader.sourceAt(path).content(charset))
+    );
+  }
+
+  /**
+   * Precompile a template to JavaScript.
+   *
+   * @param template Template.
+   * @return JavaScript.
+   */
+  public String precompileInline(final String template) {
+    return Throwing.get(() -> {
+      ScriptEngine engine = engine();
+      Object handlebars = engine.getContext().getAttribute("Handlebars");
+      Bindings bindings = engine.createBindings();
+      bindings.put("Handlebars", handlebars);
+      bindings.put("template", template);
+      return (String) engine.eval("Handlebars.precompile(template);", bindings);
+    });
   }
 
   /**
@@ -755,7 +793,7 @@ public class Handlebars implements HelperRegistry {
    * @throws Exception If the JavaScript helpers can't be registered.
    */
   @Override
-  public Handlebars registerHelpers(final String filename, final String source) throws Exception {
+  public Handlebars registerHelpers(final String filename, final String source) throws IOException {
     registry.registerHelpers(filename, source);
     return this;
   }
@@ -1408,5 +1446,20 @@ public class Handlebars implements HelperRegistry {
         return result;
       }
     };
+  }
+
+  /**
+   * @return Nashorn engine.
+   */
+  private ScriptEngine engine() {
+    synchronized (this) {
+      if (this.engine == null) {
+
+        this.engine = new ScriptEngineManager().getEngineByName("nashorn");
+
+        Throwing.run(() -> engine.eval(Files.read(this.handlebarsJsFile, charset)));
+      }
+      return this.engine;
+    }
   }
 }

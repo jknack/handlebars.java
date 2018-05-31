@@ -37,6 +37,7 @@ import static org.apache.commons.lang3.Validate.notNull;
 import java.io.File;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
@@ -110,6 +111,7 @@ public class I18nJsPlugin extends HandlebarsPlugin {
     notNull(output, "The output parameter is required.");
 
     Handlebars handlebars = new Handlebars();
+    handlebars.setCharset(Charset.forName(encoding));
     Context context = Context.newContext(null);
     URL[] classpath = projectClasspath();
 

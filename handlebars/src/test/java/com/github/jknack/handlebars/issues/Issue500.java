@@ -1,6 +1,7 @@
 package com.github.jknack.handlebars.issues;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -17,15 +18,8 @@ public class Issue500 extends v4Test {
           .registerHelpers("500.js",
               "Handlebars.registerHelper(\"chunk\",function(arr,size,options){\n" +
                   "\n" +
-                  "var t = JSON.stringify(arr);\n" +
-                  "var temp = JSON.parse(t);\n" +
                   "\n" +
-                  "\n" +
-                  "var newArr=[]\n" +
-                  "\n" +
-                  "while(temp.length) {\n" +
-                  "    newArr.push(temp.splice(0,size));\n" +
-                  "}\n" +
+                  "var newArr=['a', 'bc', 'd', size, arr.length];\n" +
                   "\n" +
                   "return newArr;\n" +
                   "});");
@@ -35,9 +29,12 @@ public class Issue500 extends v4Test {
   }
 
   @Test
-  public void shouldEachHelperIterateOverRhinoNativeArrays() throws IOException {
+  public void shouldEachHelperIterateOverJSNativeArrays() throws IOException {
     shouldCompileTo("{{#each (chunk array 2) }}{{this}}{{/each}}",
-        $("hash", $("array", new String[]{"a", "b", "c", "d" })), "a,bc,d");
+        $("hash", $("array", new String[]{"a", "b", "c", "d" })), "abcd24");
+
+    shouldCompileTo("{{#each (chunk array 2) }}{{this}}{{/each}}",
+        $("hash", $("array", Arrays.asList("a", "b", "c", "d" ))), "abcd24");
   }
 
 }

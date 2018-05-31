@@ -36,13 +36,7 @@ class FastStringWriter extends Writer {
   private static final int BUFFER_SIZE;
 
   static {
-    int value;
-    try {
-      value = Integer.parseInt(System.getProperty("hbs.buffer", "1600"));
-    } catch (Throwable e) {
-      value = 1600;
-    }
-    BUFFER_SIZE = value;
+    BUFFER_SIZE = Integer.parseInt(System.getProperty("hbs.buffer", "1600"));
   }
 
   /**

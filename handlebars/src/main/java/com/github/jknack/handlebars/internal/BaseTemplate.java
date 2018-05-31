@@ -374,13 +374,11 @@ abstract class BaseTemplate implements Template {
 
   @Override
   public String toJavaScript() {
-    synchronized (jsLock) {
       if (javaScript == null) {
-        javaScript = JSEngine.RHINO.toJavaScript(handlebars.handlebarsJsFile(), this);
+        javaScript = handlebars.precompileInline(text());
       }
       return javaScript;
     }
-  }
 
   /**
    * @return True if this template has decorators.

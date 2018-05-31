@@ -125,12 +125,6 @@
       </exclusions>
     </dependency>
 
-    <!-- Rhino -->
-    <dependency>
-      <groupId>org.mozilla</groupId>
-      <artifactId>rhino</artifactId>
-    </dependency>
-
     <!-- Logging System -->
     <dependency>
       <groupId>org.slf4j</groupId>

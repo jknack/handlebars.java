@@ -39,8 +39,17 @@ Handlebars.registerHelper('link', function(prefix) {
 Handlebars.registerHelper('goodbyes2', function(options) {
   var out = "";
   var byes = ["Goodbye", "goodbye", "GOODBYE"];
-  for (var i = 0,j = byes.length; i < j; i++) {
+  for (var i = 0, j = byes.length; i < j; i++) {
     out += byes[i] + " " + options.fn(this) + "! ";
+  }
+  return out;
+});
+
+Handlebars.registerHelper('goodbyes4', function(options) {
+  var out = "";
+  var byes = ["Goodbye", "goodbye", "GOODBYE"];
+  for (var i = 0, j = byes.length; i < j; i++) {
+    out += byes[i] + " " + options.fn({}) + "! ";
   }
   return out;
 });

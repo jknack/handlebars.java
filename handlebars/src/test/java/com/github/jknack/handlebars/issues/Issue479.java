@@ -8,7 +8,7 @@ import com.github.jknack.handlebars.v4Test;
 
 public class Issue479 extends v4Test {
   @Test
-  public void partialWithHashOverride() throws IOException {
+  public void partialWithHashOverride() throws Exception {
     shouldCompileTo("{{> dude _greeting=\"Hello\"}}",
         $("hash", $("name", "Elliot", "_greeting", "Good Morning"),
             "partials", $("dude", "{{_greeting}} {{name}}!")),
@@ -16,7 +16,7 @@ public class Issue479 extends v4Test {
   }
 
   @Test
-  public void partialWithHash() throws IOException {
+  public void partialWithHash() throws Exception {
     shouldCompileTo("{{> dude}}",
         $("hash", $("name", "Elliot", "_greeting", "Good Morning"),
             "partials", $("dude", "{{_greeting}} {{name}}!")),
