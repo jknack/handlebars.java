@@ -187,7 +187,7 @@ public class HbsServer {
         try {
           server.stop();
         } catch (Exception ex) {
-          logger.info("Cann't stop the server", ex);
+          logger.info("Can't stop the server", ex);
         }
       }
     }));

@@ -143,12 +143,12 @@ abstract class TemplateBuilder<it> extends HbsParserBaseVisitor<Object> {
   /**
    * Creates a new {@link TemplateBuilder}.
    *
-   * @param handlebars A handlbars object. required.
+   * @param handlebars A handlebars object. required.
    * @param source The template source. required.
    */
   public TemplateBuilder(final Handlebars handlebars, final TemplateSource source) {
     this.handlebars = notNull(handlebars, "The handlebars can't be null.");
-    this.source = notNull(source, "The template source is requied.");
+    this.source = notNull(source, "The template source is required.");
   }
 
   @Override

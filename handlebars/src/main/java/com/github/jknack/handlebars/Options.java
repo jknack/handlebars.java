@@ -672,7 +672,7 @@ public class Options {
    *  Object myClass = options.hash.get("class");
    * </code>
    * <p>
-   * This mehtod works as a shorthand and type safe call:
+   * This method works as a shorthand and type safe call:
    * </p>
    * <code>
    *  String myClass = options.hash("class");

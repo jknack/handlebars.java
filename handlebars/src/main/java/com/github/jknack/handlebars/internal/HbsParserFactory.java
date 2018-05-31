@@ -193,7 +193,7 @@ public class HbsParserFactory implements ParserFactory {
   /**
    * Configure a recognizer with an error reporter.
    *
-   * @param recognizer A recongnizer.
+   * @param recognizer A recognizer.
    * @param errorReporter The error reporter.
    */
   private void configure(final Recognizer<?, ?> recognizer,
