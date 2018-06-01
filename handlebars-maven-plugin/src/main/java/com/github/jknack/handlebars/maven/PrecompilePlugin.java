@@ -267,12 +267,7 @@ public class PrecompilePlugin extends HandlebarsPlugin {
    * @param handlebars The handlebars object.
    */
   private void silentHelpers(final Handlebars handlebars) {
-    handlebars.registerHelper(HelperRegistry.HELPER_MISSING, new Helper<Object>() {
-      @Override
-      public Object apply(final Object context, final Options options) throws IOException {
-        return null;
-      }
-    });
+    handlebars.registerHelper(HelperRegistry.HELPER_MISSING, (context, options) -> null);
   }
 
   /**
