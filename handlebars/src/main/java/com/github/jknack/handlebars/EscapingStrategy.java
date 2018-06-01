@@ -105,36 +105,19 @@ public interface EscapingStrategy {
   EscapingStrategy HBS4 = HTML_ENTITY;
 
   /** Escape variable for CSV. */
-  EscapingStrategy CSV = new EscapingStrategy() {
-    @Override
-    public CharSequence escape(final CharSequence value) {
-      return value == null ? null : StringEscapeUtils.escapeCsv(value.toString());
-    }
-  };
+  EscapingStrategy CSV = value ->
+    value == null ? null : StringEscapeUtils.escapeCsv(value.toString());
 
   /** Escape variable for XML. */
-  EscapingStrategy XML = new EscapingStrategy() {
-    @Override
-    public CharSequence escape(final CharSequence value) {
-      return value == null ? null : StringEscapeUtils.escapeXml(value.toString());
-    }
-  };
+  EscapingStrategy XML = value ->
+    value == null ? null : StringEscapeUtils.escapeXml(value.toString());
 
   /** Escape variable for JavaScript. */
-  EscapingStrategy JS = new EscapingStrategy() {
-    @Override
-    public CharSequence escape(final CharSequence value) {
-      return value == null ? null : StringEscapeUtils.escapeEcmaScript(value.toString());
-    }
-  };
+  EscapingStrategy JS = value ->
+    value == null ? null : StringEscapeUtils.escapeEcmaScript(value.toString());
 
   /** NOOP escaping. */
-  EscapingStrategy NOOP = new EscapingStrategy() {
-    @Override
-    public CharSequence escape(final CharSequence value) {
-      return value;
-    }
-  };
+  EscapingStrategy NOOP = value -> value;
 
   /** Default escaping strategy. */
   EscapingStrategy DEF = HBS4;

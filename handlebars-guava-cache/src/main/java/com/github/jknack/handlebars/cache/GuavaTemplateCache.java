@@ -20,7 +20,6 @@ package com.github.jknack.handlebars.cache;
 import static org.apache.commons.lang3.Validate.notNull;
 
 import java.io.IOException;
-import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 
 import com.github.jknack.handlebars.HandlebarsException;
@@ -72,12 +71,7 @@ public class GuavaTemplateCache implements TemplateCache {
     notNull(source, "The source is required.");
     notNull(parser, "The parser is required.");
     try {
-      return cache.get(key(source), new Callable<Template>() {
-        @Override
-        public Template call() throws IOException {
-          return parser.parse(source);
-        }
-      });
+      return cache.get(key(source), () -> parser.parse(source));
     } catch (ExecutionException ex) {
       throw launderThrowable(source, ex.getCause());
     }

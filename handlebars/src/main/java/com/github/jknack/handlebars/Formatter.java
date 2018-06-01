@@ -69,12 +69,7 @@ public interface Formatter {
    *
    * @author edgar
    */
-  Formatter.Chain NOOP = new Formatter.Chain() {
-    @Override
-    public Object format(final Object value) {
-      return value;
-    }
-  };
+  Formatter.Chain NOOP = value -> value;
 
   /**
    * Format a value if possible or call next formatter in the chain.

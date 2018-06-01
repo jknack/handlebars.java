@@ -1437,14 +1437,12 @@ public class Handlebars implements HelperRegistry {
    * @return Composite escape strategy.
    */
   private static EscapingStrategy newEscapeChain(final EscapingStrategy[] chain) {
-    return new EscapingStrategy() {
-      @Override public CharSequence escape(final CharSequence value) {
-        CharSequence result = value;
-        for (EscapingStrategy escape : chain) {
-          result = escape.escape(result);
-        }
-        return result;
+    return value -> {
+      CharSequence result = value;
+      for (EscapingStrategy escape : chain) {
+        result = escape.escape(result);
       }
+      return result;
     };
   }
 

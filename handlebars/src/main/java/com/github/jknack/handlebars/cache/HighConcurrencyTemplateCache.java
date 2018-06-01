@@ -20,7 +20,6 @@ package com.github.jknack.handlebars.cache;
 import static org.apache.commons.lang3.Validate.notNull;
 
 import java.io.IOException;
-import java.util.concurrent.Callable;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -162,12 +161,7 @@ public class HighConcurrencyTemplateCache implements TemplateCache {
   private FutureTask<Pair<TemplateSource, Template>> newTask(final TemplateSource source,
       final Parser parser) {
     return new FutureTask<>(
-        new Callable<Pair<TemplateSource, Template>>() {
-          @Override
-          public Pair<TemplateSource, Template> call() throws IOException {
-            return Pair.of(source, parser.parse(source));
-          }
-        });
+            () -> Pair.of(source, parser.parse(source)));
   }
 
   /**
