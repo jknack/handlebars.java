@@ -17,8 +17,6 @@
  */
 package com.github.jknack.handlebars;
 
-import static org.apache.commons.lang3.Validate.isTrue;
-import static org.apache.commons.lang3.Validate.notNull;
 import humanize.Humanize;
 
 import java.io.IOException;
@@ -26,6 +24,7 @@ import java.util.Date;
 import java.util.Locale;
 
 import com.github.jknack.handlebars.internal.Locales;
+import static java.util.Objects.requireNonNull;
 
 /**
  * Handlebars helper for the Humanize library.
@@ -51,7 +50,6 @@ public enum HumanizeHelper implements Helper<Object> {
     @Override
     public Object apply(final Object value, final Options options)
         throws IOException {
-      isTrue(value instanceof Number, "found '%s', expected: 'number'", value);
       return Humanize.binaryPrefix((Number) value, resolveLocale(options));
     }
   },
@@ -71,7 +69,6 @@ public enum HumanizeHelper implements Helper<Object> {
     @Override
     public Object apply(final Object value, final Options options)
         throws IOException {
-      isTrue(value instanceof String, "found '%s', expected: 'string'", value);
       Boolean capFirst = options.hash("capFirst", true);
       return Humanize.camelize((String) value, capFirst);
     }
@@ -92,7 +89,6 @@ public enum HumanizeHelper implements Helper<Object> {
     @Override
     public Object apply(final Object value, final Options options)
         throws IOException {
-      isTrue(value instanceof String, "found '%s', expected: 'string'", value);
       return Humanize.capitalize((String) value);
     }
   },
@@ -112,7 +108,6 @@ public enum HumanizeHelper implements Helper<Object> {
     @Override
     public Object apply(final Object value, final Options options)
         throws IOException {
-      isTrue(value instanceof String, "found '%s', expected: 'string'", value);
       String replacement = options.hash("replacement", " ");
       return Humanize.decamelize((String) value, replacement);
     }
@@ -133,7 +128,6 @@ public enum HumanizeHelper implements Helper<Object> {
     @Override
     public Object apply(final Object value, final Options options)
         throws IOException {
-      isTrue(value instanceof Number, "found '%s', expected: 'number'", value);
       return Humanize.formatCurrency((Number) value, resolveLocale(options));
     }
   },
@@ -153,7 +147,6 @@ public enum HumanizeHelper implements Helper<Object> {
     @Override
     public Object apply(final Object value, final Options options)
         throws IOException {
-      isTrue(value instanceof Number, "found '%s', expected: 'number'", value);
       return Humanize.formatPercent((Number) value, resolveLocale(options));
     }
   },
@@ -174,7 +167,6 @@ public enum HumanizeHelper implements Helper<Object> {
     @Override
     public Object apply(final Object value, final Options options)
         throws IOException {
-      isTrue(value instanceof Number, "found '%s', expected: 'number'", value);
       return Humanize.metricPrefix((Number) value, resolveLocale(options));
     }
   },
@@ -194,7 +186,6 @@ public enum HumanizeHelper implements Helper<Object> {
     @Override
     public Object apply(final Object value, final Options options)
         throws IOException {
-      isTrue(value instanceof Date, "found '%s', expected: 'date'", value);
       return Humanize.naturalDay((Date) value);
     }
   },
@@ -216,7 +207,6 @@ public enum HumanizeHelper implements Helper<Object> {
     @Override
     public Object apply(final Object value, final Options options)
         throws IOException {
-      isTrue(value instanceof Date, "found '%s', expected: 'date'", value);
       return Humanize.naturalTime((Date) value, resolveLocale(options));
     }
   },
@@ -237,7 +227,6 @@ public enum HumanizeHelper implements Helper<Object> {
     @Override
     public Object apply(final Object value, final Options options)
         throws IOException {
-      isTrue(value instanceof Number, "found '%s', expected: 'number'", value);
       return Humanize.ordinal((Number) value, resolveLocale(options));
     }
   },
@@ -291,7 +280,6 @@ public enum HumanizeHelper implements Helper<Object> {
     @Override
     public Object apply(final Object value, final Options options)
         throws IOException {
-      isTrue(value instanceof String, "found '%s', expected: 'string'", value);
       return Humanize.pluralizeFormat((String) value, resolveLocale(options))
           .render(options.params);
     }
@@ -326,7 +314,6 @@ public enum HumanizeHelper implements Helper<Object> {
     @Override
     public Object apply(final Object value, final Options options)
         throws IOException {
-      isTrue(value instanceof String, "found '%s', expected: 'string'", value);
       return Humanize.slugify((String) value);
     }
   },
@@ -347,7 +334,6 @@ public enum HumanizeHelper implements Helper<Object> {
     @Override
     public Object apply(final Object value, final Options options)
         throws IOException {
-      isTrue(value instanceof Number, "found '%s', expected: 'number'", value);
       return Humanize.spellBigNumber((Number) value, resolveLocale(options));
     }
   },
@@ -368,7 +354,6 @@ public enum HumanizeHelper implements Helper<Object> {
     @Override
     public Object apply(final Object value, final Options options)
         throws IOException {
-      isTrue(value instanceof Number, "found '%s', expected: 'number'", value);
       return Humanize.spellDigit((Number) value, resolveLocale(options));
     }
   },
@@ -389,7 +374,6 @@ public enum HumanizeHelper implements Helper<Object> {
     @Override
     public Object apply(final Object value, final Options options)
         throws IOException {
-      isTrue(value instanceof String, "found '%s', expected: 'string'", value);
       return Humanize.titleize((String) value);
     }
   },
@@ -409,7 +393,6 @@ public enum HumanizeHelper implements Helper<Object> {
     @Override
     public Object apply(final Object value, final Options options)
         throws IOException {
-      isTrue(value instanceof String, "found '%s', expected: 'string'", value);
       return Humanize.transliterate((String) value);
     }
   },
@@ -429,7 +412,6 @@ public enum HumanizeHelper implements Helper<Object> {
     @Override
     public Object apply(final Object value, final Options options)
         throws IOException {
-      isTrue(value instanceof String, "found '%s', expected: 'string'", value);
       return Humanize.underscore((String) value);
     }
   },
@@ -450,11 +432,8 @@ public enum HumanizeHelper implements Helper<Object> {
     @Override
     public Object apply(final Object value, final Options options)
         throws IOException {
-      isTrue(value instanceof String, "found '%s', expected: 'string'", value);
       Number length = options.param(0, null);
-      notNull(length, "found 'null', expected 'word wrap length'");
-      isTrue(length.intValue() > 0, "found '%s', expected 'a positive number'",
-          length);
+      requireNonNull(length, "found 'null', expected 'word wrap length'");
       return Humanize.wordWrap((String) value, length.intValue());
     }
   };
@@ -476,7 +455,6 @@ public enum HumanizeHelper implements Helper<Object> {
    * @param handlebars The helper's owner.
    */
   public static void register(final Handlebars handlebars) {
-    notNull(handlebars, "A handlebars object is required.");
     for (HumanizeHelper helper : values()) {
       handlebars.registerHelper(helper.name(), helper);
     }

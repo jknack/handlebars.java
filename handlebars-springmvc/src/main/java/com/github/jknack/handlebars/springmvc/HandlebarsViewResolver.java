@@ -17,8 +17,7 @@
  */
 package com.github.jknack.handlebars.springmvc;
 
-import static org.apache.commons.lang3.Validate.notEmpty;
-import static org.apache.commons.lang3.Validate.notNull;
+import static java.util.Objects.requireNonNull;
 
 import java.io.File;
 import java.io.IOException;
@@ -226,7 +225,7 @@ public class HandlebarsViewResolver extends AbstractTemplateViewResolver
       TemplateLoader templateLoader = createTemplateLoader(getApplicationContext());
 
       // Creates a new handlebars object.
-      handlebars = notNull(createHandlebars(templateLoader),
+      handlebars = requireNonNull(createHandlebars(templateLoader),
               "A handlebars object is required.");
     }
 
@@ -335,7 +334,7 @@ public class HandlebarsViewResolver extends AbstractTemplateViewResolver
    * @param valueResolvers The value resolvers. Required.
    */
   public void setValueResolvers(final ValueResolver... valueResolvers) {
-    this.valueResolvers = notEmpty(valueResolvers,
+    this.valueResolvers = requireNonNull(valueResolvers,
         "At least one value-resolver must be present.");
   }
 
@@ -345,7 +344,7 @@ public class HandlebarsViewResolver extends AbstractTemplateViewResolver
    * @param formatters Formatters to add.
    */
   public void setFormatters(final Formatter... formatters) {
-    this.formatters = notEmpty(formatters,
+    this.formatters = requireNonNull(formatters,
         "At least one formatter must be present.");
   }
 
@@ -373,7 +372,7 @@ public class HandlebarsViewResolver extends AbstractTemplateViewResolver
    * @param location A classpath location of the handlebar.js file.
    */
   public void setHandlebarsJsFile(final String location) {
-    this.handlebarsJsFile = notEmpty(location, "Location is required");
+    this.handlebarsJsFile = requireNonNull(location, "Location is required");
   }
 
   /**
@@ -393,7 +392,7 @@ public class HandlebarsViewResolver extends AbstractTemplateViewResolver
    * @see Handlebars#registerHelper(String, Helper)
    */
   public void setHelpers(final Map<String, Helper<?>> helpers) {
-    notNull(helpers, "The helpers are required.");
+    requireNonNull(helpers, "The helpers are required.");
     for (Entry<String, Helper<?>> helper : helpers.entrySet()) {
       registry.registerHelper(helper.getKey(), helper.getValue());
     }
@@ -407,7 +406,7 @@ public class HandlebarsViewResolver extends AbstractTemplateViewResolver
    * @see Handlebars#registerHelpers(Object)
    */
   public void setHelperSources(final List<?> helpers) {
-    notNull(helpers, "The helpers are required.");
+    requireNonNull(helpers, "The helpers are required.");
     for (Object helper : helpers) {
       registry.registerHelpers(helper);
     }
@@ -607,7 +606,7 @@ public class HandlebarsViewResolver extends AbstractTemplateViewResolver
   }
 
   @Override public HandlebarsViewResolver setCharset(final Charset charset) {
-    this.charset = notNull(charset, "Charset required.");
+    this.charset = requireNonNull(charset, "Charset required.");
     return this;
   }
 }

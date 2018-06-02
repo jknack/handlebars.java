@@ -17,11 +17,10 @@
  */
 package com.github.jknack.handlebars.springmvc;
 
-import static org.apache.commons.lang3.Validate.notNull;
-
 import java.io.IOException;
 import java.util.Locale;
 
+import static java.util.Objects.requireNonNull;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 
@@ -59,12 +58,12 @@ public class MessageSourceHelper implements Helper<String> {
   private MessageSource messageSource;
 
   /**
-   * Creates a new {@link MessageSourceHelperTest}.
+   * Creates a new {@link MessageSourceHelper}.
    *
    * @param messageSource The message source. Required.
    */
   public MessageSourceHelper(final MessageSource messageSource) {
-    this.messageSource = notNull(messageSource, "A message source is required.");
+    this.messageSource = requireNonNull(messageSource, "A message source is required.");
   }
 
   @Override

@@ -17,11 +17,10 @@
  */
 package com.github.jknack.handlebars.springmvc;
 
-import static org.apache.commons.lang3.Validate.notNull;
-
 import java.io.IOException;
 import java.net.URL;
 
+import static java.util.Objects.requireNonNull;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
@@ -54,7 +53,7 @@ public class SpringTemplateLoader extends URLTemplateLoader {
    * @param loader The resource loader. Required.
    */
   public SpringTemplateLoader(final ResourceLoader loader) {
-    this.loader = notNull(loader, "A resource loader is required.");
+    this.loader = requireNonNull(loader, "A resource loader is required.");
   }
 
   /**

@@ -17,10 +17,6 @@
  */
 package com.github.jknack.handlebars;
 
-import static org.apache.commons.lang3.StringUtils.isEmpty;
-import static org.apache.commons.lang3.Validate.notEmpty;
-import static org.apache.commons.lang3.Validate.notNull;
-
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -32,6 +28,7 @@ import com.fasterxml.jackson.core.io.CharacterEscapes;
 import com.fasterxml.jackson.core.io.SegmentedStringWriter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
+import static java.util.Objects.requireNonNull;
 
 /**
  * A Jackson 2.x helper.
@@ -152,7 +149,7 @@ public class Jackson2Helper implements Helper<Object> {
    * @param objectMapper The object's mapper. Required.
    */
   public Jackson2Helper(final ObjectMapper objectMapper) {
-    mapper = notNull(objectMapper, "The object mapper is required.");
+    mapper = requireNonNull(objectMapper, "The object mapper is required.");
   }
 
   /**
@@ -173,7 +170,7 @@ public class Jackson2Helper implements Helper<Object> {
     try {
       final ObjectWriter writer;
       // do we need to use a view?
-      if (!isEmpty(viewName)) {
+      if (!Handlebars.Utils.isEmpty(viewName)) {
         Class<?> viewClass = alias.get(viewName);
         if (viewClass == null) {
           viewClass = getClass().getClassLoader().loadClass(viewName);
@@ -225,8 +222,8 @@ public class Jackson2Helper implements Helper<Object> {
    */
   public Jackson2Helper viewAlias(final String alias,
       final Class<?> viewClass) {
-    this.alias.put(notEmpty(alias, "A view alias is required."),
-        notNull(viewClass, "A view class is required."));
+    this.alias.put(requireNonNull(alias, "A view alias is required."),
+        requireNonNull(viewClass, "A view class is required."));
     return this;
   }
 }
