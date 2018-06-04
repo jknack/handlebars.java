@@ -20,7 +20,8 @@ package com.github.jknack.handlebars.internal;
 import java.io.IOException;
 
 import org.antlr.v4.runtime.ANTLRErrorListener;
-import org.antlr.v4.runtime.ANTLRInputStream;
+import org.antlr.v4.runtime.CharStream;
+import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonToken;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.LexerNoViableAltException;
@@ -68,11 +69,12 @@ public class HbsParserFactory implements ParserFactory {
       @Override
       public Template parse(final TemplateSource source) throws IOException {
         logger.debug("About to parse: {}", source);
-        final ANTLRErrorListener errorReporter = new HbsErrorReporter(source.filename());
+        String sourceName = source.filename();
+        final ANTLRErrorListener errorReporter = new HbsErrorReporter(sourceName);
 
         // 1. Lexer
-        final HbsLexer lexer = newLexer(newStream(source.filename(),
-            source.content(handlebars.getCharset())), startDelimiter, endDelimiter);
+        String content = source.content(handlebars.getCharset());
+        final HbsLexer lexer = newLexer(CharStreams.fromString(content, sourceName), startDelimiter, endDelimiter);
         configure(lexer, errorReporter);
 
         // 2. Parser
@@ -97,7 +99,7 @@ public class HbsParserFactory implements ParserFactory {
         /**
          * Build the AST.
          */
-        TemplateBuilder<Template> builder = new TemplateBuilder<Template>(handlebars, source) {
+        TemplateBuilder builder = new TemplateBuilder(handlebars, source) {
           @Override
           protected void reportError(final CommonToken offendingToken, final int line,
               final int column,
@@ -114,21 +116,6 @@ public class HbsParserFactory implements ParserFactory {
   }
 
   /**
-   * Creates a new {@link ANTLRInputStream}.
-   *
-   * @param filename The file's name.
-   * @param content A content.
-   * @return A new {@link ANTLRInputStream}.
-   * @throws IOException If the reader can't be open.
-   */
-  private ANTLRInputStream newStream(final String filename, final String content)
-      throws IOException {
-    ANTLRInputStream stream = new ANTLRInputStream(content);
-    stream.name = filename;
-    return stream;
-  }
-
-  /**
    * Creates a new {@link HbsLexer}.
    *
    * @param stream The input stream.
@@ -136,7 +123,7 @@ public class HbsParserFactory implements ParserFactory {
    * @param endDelimiter The end delimiter.
    * @return A new {@link HbsLexer}.
    */
-  private HbsLexer newLexer(final ANTLRInputStream stream, final String startDelimiter,
+  private HbsLexer newLexer(final CharStream stream, final String startDelimiter,
       final String endDelimiter) {
     return new HbsLexer(stream, startDelimiter, endDelimiter) {
 

@@ -80,10 +80,9 @@ import com.github.jknack.handlebars.io.TemplateSource;
  * Traverse the parse tree and build templates.
  *
  * @author edgar.espina
- * @param <it>
  * @since 0.10.0
  */
-abstract class TemplateBuilder<it> extends HbsParserBaseVisitor<Object> {
+abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
 
   /**
    * Get partial info: static vs dynamic.
@@ -171,7 +170,7 @@ abstract class TemplateBuilder<it> extends HbsParserBaseVisitor<Object> {
 
     hasTag(true);
     Block block = new Block(handlebars, name, false, "{{", params(sexpr.param()),
-        hash(sexpr.hash()), Collections.<String> emptyList());
+        hash(sexpr.hash()), Collections.emptyList());
 
     if (block.paramSize > 0) {
       paramStack.addLast(block.params.get(0).toString());
@@ -304,8 +303,8 @@ abstract class TemplateBuilder<it> extends HbsParserBaseVisitor<Object> {
       reportError(null, ctx.nameEnd.getLine(), ctx.nameEnd.getCharPositionInLine(),
           String.format("found: '%s', expected: '%s'", nameEnd, name));
     }
-    Block block = new Block(handlebars, name, true, "^", Collections.<Param> emptyList(),
-        Collections.<String, Param> emptyMap(), blockParams(ctx.blockParams()));
+    Block block = new Block(handlebars, name, true, "^", Collections.emptyList(),
+        Collections.emptyMap(), blockParams(ctx.blockParams()));
     block.filename(source.filename());
     block.position(nameStart.getLine(), nameStart.getCharPositionInLine());
     String startDelim = ctx.start.getText();
@@ -388,7 +387,7 @@ abstract class TemplateBuilder<it> extends HbsParserBaseVisitor<Object> {
     String[] parts = varName.split("\\./");
     // TODO: try to catch this with ANTLR...
     // foo.0 isn't allowed, it must be foo.0.
-    if (parts.length > 0 && NumberUtils.isNumber(parts[parts.length - 1])
+    if (parts.length > 0 && NumberUtils.isCreatable(parts[parts.length - 1])
         && !varName.endsWith(".")) {
       String evidence = varName;
       String reason = "found: " + varName + ", expecting: " + varName + ".";
