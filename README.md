@@ -1,12 +1,26 @@
 [![Become a Patreon](https://img.shields.io/badge/patreon-donate-orange.svg)](https://patreon.com/edgarespina)
 [![Build Status](https://travis-ci.org/jknack/handlebars.java.svg?branch=master)](https://travis-ci.org/jknack/handlebars.java)
 [![coveralls.io](https://img.shields.io/coveralls/jknack/handlebars.java.svg)](https://coveralls.io/r/jknack/handlebars.java?branch=master)
+[![codecov](https://codecov.io/gh/jknack/handlebars.java/branch/master/graph/badge.svg)](https://codecov.io/gh/jknack/handlebars.java)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.jknack/handlebars/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.jknack/handlebars)
 [![javadoc](https://javadoc.io/badge/com.github.jknack/handlebars.svg)](https://javadoc.io/doc/com.github.jknack/handlebars)
 
 Handlebars.java
 ===============
 ## Logic-less and semantic Mustache templates with Java
+
+```java
+Handlebars handlebars = new Handlebars();
+
+Template template = handlebars.compileInline("Hello {{this}}!");
+
+System.out.println(template.apply("Handlebars.java"));
+```
+
+Output:
+```
+Hello Handlebars.java!
+```
 
 Handlebars.java is a Java port of [handlebars](http://handlebarsjs.com/).
 
@@ -34,21 +48,6 @@ Handlebars provides the power necessary to let you build semantic templates effe
 #### Development version
 
 SNAPSHOT versions are NOT synchronized to Central. If you want to use a snapshot version you need to add the https://oss.sonatype.org/content/repositories/snapshots/ repository to your pom.xml.
-
-## Hello Handlebars.java
-
-```java
-Handlebars handlebars = new Handlebars();
-
-Template template = handlebars.compileInline("Hello {{this}}!");
-
-System.out.println(template.apply("Handlebars.java"));
-```
-
-Output:
-```
-Hello Handlebars.java!
-```
 
 ### Loading templates
 Templates are loaded using the ```TemplateLoader``` class. Handlebars.java provides three implementations of a ```TemplateLoader```:
@@ -1063,6 +1062,10 @@ Hello {{#child}}{{this.value}}{{/child}}
  [Help and discussion](https://groups.google.com/forum/#!forum/handlebarsjava)
 
  [Bugs, Issues and Features](https://github.com/jknack/handlebars.java/issues)
+
+## Donate
+
+Buy [Edgar](https://patreon.com/edgarespina) a beer!
 
 ## Related Projects
  * [Handlebars.js](http://handlebarsjs.com/)
