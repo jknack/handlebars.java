@@ -40,6 +40,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -155,6 +156,7 @@ public class PrecompilePlugin extends HandlebarsPlugin {
 
       Handlebars handlebars = new Handlebars(new FileTemplateLoader(basedir, suffix));
       handlebars.handlebarsJsFile(handlebarsJsFile);
+      handlebars.setCharset(Charset.forName(encoding));
 
       final List<CharSequence> extras = new ArrayList<CharSequence>();
 
@@ -265,12 +267,7 @@ public class PrecompilePlugin extends HandlebarsPlugin {
    * @param handlebars The handlebars object.
    */
   private void silentHelpers(final Handlebars handlebars) {
-    handlebars.registerHelper(HelperRegistry.HELPER_MISSING, new Helper<Object>() {
-      @Override
-      public Object apply(final Object context, final Options options) throws IOException {
-        return null;
-      }
-    });
+    handlebars.registerHelper(HelperRegistry.HELPER_MISSING, (context, options) -> null);
   }
 
   /**
@@ -354,7 +351,7 @@ public class PrecompilePlugin extends HandlebarsPlugin {
   private void minimize(final File output) throws IOException, MojoFailureException {
     final CompilerOptions options = new CompilerOptions();
     options.setCodingConvention(new ClosureCodingConvention());
-    options.setOutputCharset("UTF-8");
+    options.setOutputCharset(Charset.forName(encoding));
     options.setWarningLevel(DiagnosticGroups.CHECK_VARIABLES, CheckLevel.WARNING);
     CompilationLevel.SIMPLE_OPTIMIZATIONS.setOptionsForCompilationLevel(options);
 

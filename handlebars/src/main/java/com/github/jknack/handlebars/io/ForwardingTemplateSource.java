@@ -20,6 +20,7 @@ package com.github.jknack.handlebars.io;
 import static org.apache.commons.lang3.Validate.notNull;
 
 import java.io.IOException;
+import java.nio.charset.Charset;
 
 /**
  * A template source which forwards all its method calls to another template source..
@@ -43,9 +44,8 @@ public class ForwardingTemplateSource extends AbstractTemplateSource {
     this.source = notNull(source, "The source is required.");
   }
 
-  @Override
-  public String content() throws IOException {
-    return source.content();
+  @Override public String content(final Charset charset) throws IOException {
+    return source.content(charset);
   }
 
   @Override

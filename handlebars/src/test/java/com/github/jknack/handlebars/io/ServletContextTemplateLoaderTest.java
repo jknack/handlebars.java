@@ -132,7 +132,7 @@ public class ServletContextTemplateLoaderTest {
 
   private void expectGetResource(final ServletContext servletContext, final String prefix)
       throws IOException {
-    final Capture<String> path = new Capture<String>();
+    final Capture<String> path = new Capture<>();
     expect(servletContext.getResource(capture(path))).andAnswer(
         new IAnswer<URL>() {
           @Override

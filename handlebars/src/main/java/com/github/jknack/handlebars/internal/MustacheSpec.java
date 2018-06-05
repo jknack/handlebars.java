@@ -62,7 +62,7 @@ public class MustacheSpec extends HbsParserBaseListener {
   /**
    * Track the spaces/lines that need to be excluded.
    */
-  private List<CommonToken> spaces = new ArrayList<CommonToken>();
+  private List<CommonToken> spaces = new ArrayList<>();
 
   @Override
   public void enterSpaces(final SpacesContext ctx) {
@@ -133,6 +133,10 @@ public class MustacheSpec extends HbsParserBaseListener {
 
   @Override
   public void enterUnless(final UnlessContext ctx) {
+    hasTag(true);
+  }
+
+  @Override public void enterElseBlock(final HbsParser.ElseBlockContext ctx) {
     hasTag(true);
   }
 

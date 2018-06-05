@@ -120,7 +120,7 @@ public class CompilationPerSecondBenchTest {
   @Test
   public void recursion() throws IOException {
     final String template = "{{name}}{{#each kids}}{{>recursion}}{{/each}}";
-    final Map<String, String> templates = new HashMap<String, String>();
+    final Map<String, String> templates = new HashMap<>();
     templates.put("/recursion.hbs",
         "{{name}}{{#each kids}}{{>recursion}}{{/each}}");
     final Handlebars handlebars =
@@ -144,7 +144,7 @@ public class CompilationPerSecondBenchTest {
   @Test
   public void partial() throws IOException {
     final String template = "{{#each peeps}}{{>variables}}{{/each}}";
-    final Map<String, String> templates = new HashMap<String, String>();
+    final Map<String, String> templates = new HashMap<>();
     templates.put("/variables.hbs",
         "Hello {{name}}! You have {{count}} new messages.");
     final Handlebars handlebars = new Handlebars(new MapTemplateLoader(templates));

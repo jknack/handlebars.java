@@ -18,7 +18,7 @@
 package com.github.jknack.handlebars.io;
 
 import java.io.IOException;
-import java.util.concurrent.Callable;
+import java.nio.charset.Charset;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
@@ -78,12 +78,7 @@ public class GuavaCachedTemplateLoader implements TemplateLoader {
    */
   public TemplateSource sourceAt(final String location) throws IOException {
     try {
-      return cache.get(location, new Callable<TemplateSource>() {
-        @Override
-        public TemplateSource call() throws Exception {
-          return delegate.sourceAt(location);
-        }
-      });
+      return cache.get(location, () -> delegate.sourceAt(location));
     } catch (ExecutionException e) {
       Throwables.propagateIfPossible(e.getCause(), IOException.class);
       throw Throwables.propagate(e.getCause());
@@ -125,4 +120,11 @@ public class GuavaCachedTemplateLoader implements TemplateLoader {
     delegate.setSuffix(suffix);
   }
 
+  @Override public void setCharset(final Charset charset) {
+   delegate.setCharset(charset);
+  }
+
+  @Override public Charset getCharset() {
+    return delegate.getCharset();
+  }
 }

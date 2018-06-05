@@ -58,6 +58,9 @@ public enum JsonNodeValueResolver implements ValueResolver {
     Object value = null;
     if (context instanceof ArrayNode) {
       try {
+        if (name.equals("length")) {
+          return ((ArrayNode) context).size();
+        }
         value = resolve(((ArrayNode) context).get(Integer.parseInt(name)));
       } catch (NumberFormatException ex) {
         // ignore undefined key and move on, see https://github.com/jknack/handlebars.java/pull/280

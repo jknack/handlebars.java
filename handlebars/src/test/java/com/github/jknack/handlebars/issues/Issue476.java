@@ -26,7 +26,7 @@ public class Issue476 extends v4Test {
   @Test
   public void jsLengthMisbehaviorWithLists() throws IOException {
     shouldCompileTo("{{length this}}",
-        $("hash", new ArrayList<String>(Arrays.asList("1", "3", "4"))), "3");
+        $("hash", new ArrayList<>(Arrays.asList("1", "3", "4"))), "3");
   }
 
   @Test

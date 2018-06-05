@@ -1,10 +1,26 @@
-[![Build Status](https://secure.travis-ci.org/jknack/handlebars.java.png?branch=master)](https://travis-ci.org/jknack/handlebars.java)
-[![Coverage Status](https://coveralls.io/repos/jknack/handlebars.java/badge.png)](https://coveralls.io/r/jknack/handlebars.java)
+[![Become a Patreon](https://img.shields.io/badge/patreon-donate-orange.svg)](https://patreon.com/edgarespina)
+[![Build Status](https://travis-ci.org/jknack/handlebars.java.svg?branch=master)](https://travis-ci.org/jknack/handlebars.java)
+[![coveralls.io](https://img.shields.io/coveralls/jknack/handlebars.java.svg)](https://coveralls.io/r/jknack/handlebars.java?branch=master)
+[![codecov](https://codecov.io/gh/jknack/handlebars.java/branch/master/graph/badge.svg)](https://codecov.io/gh/jknack/handlebars.java)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.jknack/handlebars/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.jknack/handlebars)
+[![javadoc](https://javadoc.io/badge/com.github.jknack/handlebars.svg)](https://javadoc.io/doc/com.github.jknack/handlebars)
 
 Handlebars.java
 ===============
 ## Logic-less and semantic Mustache templates with Java
+
+```java
+Handlebars handlebars = new Handlebars();
+
+Template template = handlebars.compileInline("Hello {{this}}!");
+
+System.out.println(template.apply("Handlebars.java"));
+```
+
+Output:
+```
+Hello Handlebars.java!
+```
 
 Handlebars.java is a Java port of [handlebars](http://handlebarsjs.com/).
 
@@ -12,18 +28,10 @@ Handlebars provides the power necessary to let you build semantic templates effe
 
 [Mustache](http://mustache.github.com/mustache.5.html) templates are compatible with Handlebars, so you can take a [Mustache](http://mustache.github.com) template, import it into Handlebars, and start taking advantage of the extra Handlebars features.
 
-# Performance
-
-Handlebars.java is a modern and full featured template engine, but also has a very good performance (Hbs):
-
-![Template Comparison](http://jknack.github.io/handlebars.java/images/bench.png)
-
-Benchmark source code is available at: https://github.com/mbosecke/template-benchmark
-
 # Getting Started
  In general, the syntax of **Handlebars** templates is a superset of [Mustache](http://mustache.github.com) templates. For basic syntax, check out the [Mustache manpage](http://mustache.github.com).
  
- The [Handlebars.java blog](http://jknack.github.io/handlebars.java) is a good place for getting started too.
+ The [Handlebars.java blog](http://jknack.github.io/handlebars.java) is a good place for getting started too. Javadoc is available at [javadoc.io](https://javadoc.io/doc/com.github.jknack/handlebars).
 
 ## Maven
 #### Stable version: [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.jknack/handlebars/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.jknack/handlebars)
@@ -40,21 +48,6 @@ Benchmark source code is available at: https://github.com/mbosecke/template-benc
 #### Development version
 
 SNAPSHOT versions are NOT synchronized to Central. If you want to use a snapshot version you need to add the https://oss.sonatype.org/content/repositories/snapshots/ repository to your pom.xml.
-
-## Hello Handlebars.java
-
-```java
-Handlebars handlebars = new Handlebars();
-
-Template template = handlebars.compileInline("Hello {{this}}!");
-
-System.out.println(template.apply("Handlebars.java"));
-```
-
-Output:
-```
-Hello Handlebars.java!
-```
 
 ### Loading templates
 Templates are loaded using the ```TemplateLoader``` class. Handlebars.java provides three implementations of a ```TemplateLoader```:
@@ -201,6 +194,7 @@ Please note you don't have to specify the extension file.
  * **embedded**
  * **i18n** and **i18nJs** 
  * **string helpers**
+ * **conditional helpers**
 
 ### with, each, if, unless:
  See the [built-in helper documentation](http://handlebarsjs.com/block_helpers.html).
@@ -386,8 +380,14 @@ The generated code looks like this:
 Finally, it converts message patterns like: ```Hi {0}``` into ```Hi {{arg0}}```. This make possible for the [I18n](https://github.com/fnando/i18n-js) JS library to interpolate variables.
 
 ### string helpers
- Functions like abbreviate, capitalize, join, dateFormat, yesno, etc., are available from [StringHelpers] (https://github.com/jknack/handlebars.java/blob/master/handlebars/src/main/java/com/github/jknack/handlebars/helper/StringHelpers.java).
+ Functions like abbreviate, capitalize, join, dateFormat, yesno, etc., are available from [StringHelpers](https://github.com/jknack/handlebars.java/blob/master/handlebars/src/main/java/com/github/jknack/handlebars/helper/StringHelpers.java).
+ 
+> NOTE: You need to register string helpers (they are not added by default)
 
+### conditional helpers
+ Functions like eq, neq, lt, gt, and, or, not, etc., are available from [ConditionalHelpers](https://github.com/jknack/handlebars.java/blob/master/handlebars/src/main/java/com/github/jknack/handlebars/helper/ConditionalHelpers.java).
+ 
+> NOTE: You need to register conditional helpers (they are not added by default)
 
 ### TypeSafe Templates
  TypeSafe templates are created by extending the ```TypeSafeTemplate``` interface. For example:
@@ -971,6 +971,14 @@ where:
 
 Checkout the [HandlebarsViewResolver](https://github.com/jknack/handlebars.java/blob/master/handlebars-springmvc/src/main/java/com/github/jknack/handlebars/springmvc/HandlebarsViewResolver.java).
 
+# Performance
+
+Handlebars.java is a modern and full featured template engine, but also has a very good performance (Hbs):
+
+![Template Comparison](http://jknack.github.io/handlebars.java/images/bench.png)
+
+Benchmark source code is available at: https://github.com/mbosecke/template-benchmark
+
 # Architecture and API Design
  * Handlebars.java follows the JavaScript API with some minors exceptions due to the nature of the Java language.
  * The parser is built on top of [ANTLR v4] (http://www.antlr.org/).
@@ -1055,6 +1063,10 @@ Hello {{#child}}{{this.value}}{{/child}}
 
  [Bugs, Issues and Features](https://github.com/jknack/handlebars.java/issues)
 
+## Donate
+
+Buy [Edgar](https://patreon.com/edgarespina) a beer!
+
 ## Related Projects
  * [Handlebars.js](http://handlebarsjs.com/)
  * [Try Handlebars.js](http://tryhandlebarsjs.com/)
@@ -1063,7 +1075,7 @@ Hello {{#child}}{{this.value}}{{/child}}
  * [ANTLRv4](http://www.antlr.org/)
 
 ## Author
- [Edgar Espina] (https://twitter.com/edgarespina)
+ [Edgar Espina](https://twitter.com/edgarespina)
 
 ## License
 [Apache License 2](http://www.apache.org/licenses/LICENSE-2.0.html)

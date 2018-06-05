@@ -150,7 +150,7 @@ public class ScalarContextTest {
 
   @Parameters
   public static Collection<Object[]> data() {
-    Collection<Object[]> selectors = new ArrayList<Object[]>();
+    Collection<Object[]> selectors = new ArrayList<>();
     selectors.add(new Object[] {"." });
     selectors.add(new Object[] {"this" });
     return selectors;

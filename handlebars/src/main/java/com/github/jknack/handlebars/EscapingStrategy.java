@@ -17,8 +17,11 @@
  */
 package com.github.jknack.handlebars;
 
-import org.apache.commons.lang3.StringEscapeUtils;
-import org.apache.commons.lang3.text.translate.LookupTranslator;
+import org.apache.commons.text.StringEscapeUtils;
+import org.apache.commons.text.translate.LookupTranslator;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * <p>
@@ -49,7 +52,7 @@ public interface EscapingStrategy {
    * @author edgar
    * @since 4.0.4
    */
-  public class Hbs implements EscapingStrategy {
+  class Hbs implements EscapingStrategy {
 
     /** EMPTY. */
     private static final String EMPTY = "";
@@ -63,6 +66,15 @@ public interface EscapingStrategy {
      * @param escapeMap A escape map.
      */
     public Hbs(final String[][] escapeMap) {
+      this(escapeMap(escapeMap));
+    }
+
+    /**
+     * Creates a new {@link Hbs} escaping strategy.
+     *
+     * @param escapeMap A escape map.
+     */
+    public Hbs(final Map<CharSequence, CharSequence> escapeMap) {
       translator = new LookupTranslator(escapeMap);
     }
 
@@ -74,6 +86,19 @@ public interface EscapingStrategy {
       return value == null || value.length() == 0 ? EMPTY : translator.translate(value);
     }
 
+    /**
+     * Convert a table to a hash (internal usage).
+     *
+     * @param table Table.
+     * @return A hash.
+     */
+    private static Map<CharSequence, CharSequence> escapeMap(final String[][] table) {
+      Map<CharSequence, CharSequence> result = new HashMap<>();
+      for (String[] row : table) {
+        result.put(row[0], row[1]);
+      }
+      return result;
+    }
   }
 
   /**
@@ -105,36 +130,19 @@ public interface EscapingStrategy {
   EscapingStrategy HBS4 = HTML_ENTITY;
 
   /** Escape variable for CSV. */
-  EscapingStrategy CSV = new EscapingStrategy() {
-    @Override
-    public CharSequence escape(final CharSequence value) {
-      return value == null ? null : StringEscapeUtils.escapeCsv(value.toString());
-    }
-  };
+  EscapingStrategy CSV = value ->
+    value == null ? null : StringEscapeUtils.escapeCsv(value.toString());
 
   /** Escape variable for XML. */
-  EscapingStrategy XML = new EscapingStrategy() {
-    @Override
-    public CharSequence escape(final CharSequence value) {
-      return value == null ? null : StringEscapeUtils.escapeXml(value.toString());
-    }
-  };
+  EscapingStrategy XML = value ->
+    value == null ? null : StringEscapeUtils.escapeXml11(value.toString());
 
   /** Escape variable for JavaScript. */
-  EscapingStrategy JS = new EscapingStrategy() {
-    @Override
-    public CharSequence escape(final CharSequence value) {
-      return value == null ? null : StringEscapeUtils.escapeEcmaScript(value.toString());
-    }
-  };
+  EscapingStrategy JS = value ->
+    value == null ? null : StringEscapeUtils.escapeEcmaScript(value.toString());
 
   /** NOOP escaping. */
-  EscapingStrategy NOOP = new EscapingStrategy() {
-    @Override
-    public CharSequence escape(final CharSequence value) {
-      return value;
-    }
-  };
+  EscapingStrategy NOOP = value -> value;
 
   /** Default escaping strategy. */
   EscapingStrategy DEF = HBS4;

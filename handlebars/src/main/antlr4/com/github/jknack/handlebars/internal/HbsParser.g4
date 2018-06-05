@@ -179,7 +179,7 @@ param
   :
     DOUBLE_STRING #stringParam
   | SINGLE_STRING #charParam
-  | INT           #intParam
+  | NUMBER           #numberParam
   | BOOLEAN       #boolParam
   | QID           #refParam
   | LP sexpr RP   #subParamExpr

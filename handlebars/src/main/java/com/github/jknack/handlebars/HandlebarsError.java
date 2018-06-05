@@ -72,9 +72,9 @@ public class HandlebarsError {
       final int column, final String reason, final String evidence,
       final String message) {
     this.filename = notEmpty(filename, "The file's name is required");
-    isTrue(line > 0, "The error's line number must be greather than zero");
+    isTrue(line > 0, "The error's line number must be greater than zero");
     this.line = line;
-    isTrue(column > 0, "The error's column number must be greather than zero");
+    isTrue(column > 0, "The error's column number must be greater than zero");
     this.column = column;
     this.reason = notEmpty(reason, "The file's reason is required");
     this.evidence = notEmpty(evidence, "The file's evidence is required");

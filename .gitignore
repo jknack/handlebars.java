@@ -20,3 +20,5 @@ dependency-reduced-pom.xml
 
 *.versionsBackup
 pom.xml.versionsBackup
+
+jacoco.exec

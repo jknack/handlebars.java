@@ -56,7 +56,6 @@ import com.github.jknack.handlebars.internal.HbsParser.ElseStmtChainContext;
 import com.github.jknack.handlebars.internal.HbsParser.ElseStmtContext;
 import com.github.jknack.handlebars.internal.HbsParser.EscapeContext;
 import com.github.jknack.handlebars.internal.HbsParser.HashContext;
-import com.github.jknack.handlebars.internal.HbsParser.IntParamContext;
 import com.github.jknack.handlebars.internal.HbsParser.LiteralPathContext;
 import com.github.jknack.handlebars.internal.HbsParser.NewlineContext;
 import com.github.jknack.handlebars.internal.HbsParser.ParamContext;
@@ -81,10 +80,9 @@ import com.github.jknack.handlebars.io.TemplateSource;
  * Traverse the parse tree and build templates.
  *
  * @author edgar.espina
- * @param <it>
  * @since 0.10.0
  */
-abstract class TemplateBuilder<it> extends HbsParserBaseVisitor<Object> {
+abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
 
   /**
    * Get partial info: static vs dynamic.
@@ -131,12 +129,12 @@ abstract class TemplateBuilder<it> extends HbsParserBaseVisitor<Object> {
   /**
    * Keep track of block helpers.
    */
-  private LinkedList<String> qualifier = new LinkedList<String>();
+  private LinkedList<String> qualifier = new LinkedList<>();
 
   /**
    * Keep track of block helpers params.
    */
-  private LinkedList<String> paramStack = new LinkedList<String>();
+  private LinkedList<String> paramStack = new LinkedList<>();
 
   /** Keep track of block level, required for top level decorators. */
   private int level;
@@ -144,12 +142,12 @@ abstract class TemplateBuilder<it> extends HbsParserBaseVisitor<Object> {
   /**
    * Creates a new {@link TemplateBuilder}.
    *
-   * @param handlebars A handlbars object. required.
+   * @param handlebars A handlebars object. required.
    * @param source The template source. required.
    */
   public TemplateBuilder(final Handlebars handlebars, final TemplateSource source) {
     this.handlebars = notNull(handlebars, "The handlebars can't be null.");
-    this.source = notNull(source, "The template source is requied.");
+    this.source = notNull(source, "The template source is required.");
   }
 
   @Override
@@ -172,7 +170,7 @@ abstract class TemplateBuilder<it> extends HbsParserBaseVisitor<Object> {
 
     hasTag(true);
     Block block = new Block(handlebars, name, false, "{{", params(sexpr.param()),
-        hash(sexpr.hash()), Collections.<String> emptyList());
+        hash(sexpr.hash()), Collections.emptyList());
 
     if (block.paramSize > 0) {
       paramStack.addLast(block.params.get(0).toString());
@@ -216,7 +214,7 @@ abstract class TemplateBuilder<it> extends HbsParserBaseVisitor<Object> {
     }
 
     hasTag(true);
-    Block block = null;
+    Block block;
     if (decorator) {
       block = new BlockDecorator(handlebars, name, false, params(sexpr.param()),
           hash(sexpr.hash()), blockParams(ctx.blockParams()), level == 1);
@@ -230,9 +228,10 @@ abstract class TemplateBuilder<it> extends HbsParserBaseVisitor<Object> {
     block.filename(source.filename());
     block.position(nameStart.getLine(), nameStart.getCharPositionInLine());
     String startDelim = ctx.start.getText();
+    String endDelim = ctx.stop.getText();
     startDelim = startDelim.substring(0, startDelim.length() - 1);
     block.startDelimiter(startDelim);
-    block.endDelimiter(ctx.stop.getText());
+    block.endDelimiter(endDelim);
 
     Template body = visitBody(ctx.thenBody);
     if (body != null) {
@@ -250,6 +249,9 @@ abstract class TemplateBuilder<it> extends HbsParserBaseVisitor<Object> {
           if (inverseLabel.startsWith(startDelim)) {
             inverseLabel = inverseLabel.substring(startDelim.length());
           }
+          if (inverseLabel.endsWith("~")) {
+            inverseLabel = inverseLabel.substring(0, inverseLabel.length() - 1);
+          }
           elseroot.inverse(inverseLabel, unless);
         }
       } else {
@@ -258,12 +260,16 @@ abstract class TemplateBuilder<it> extends HbsParserBaseVisitor<Object> {
         SexprContext elseexpr = elseStmtChain.sexpr();
         Token elsenameStart = elseexpr.QID().getSymbol();
         String elsename = elsenameStart.getText();
-        Block elseblock = new Block(handlebars, elsename, false, "#", params(elseexpr.param()),
+        String type = elseStmtChain.inverseToken.getText();
+        if (type.equals("else")) {
+          type = "else ";
+        }
+        Block elseblock = new Block(handlebars, elsename, false, type, params(elseexpr.param()),
             hash(elseexpr.hash()), blockParams(elseStmtChain.blockParams()));
         elseblock.filename(source.filename());
         elseblock.position(elsenameStart.getLine(), elsenameStart.getCharPositionInLine());
         elseblock.startDelimiter(startDelim);
-        elseblock.endDelimiter(elseBlock.stop.getText());
+        elseblock.endDelimiter(elseStmtChain.END().getText());
         Template elsebody = visitBody(elseStmtChain.unlessBody);
         elseblock.body(elsebody);
 
@@ -297,8 +303,8 @@ abstract class TemplateBuilder<it> extends HbsParserBaseVisitor<Object> {
       reportError(null, ctx.nameEnd.getLine(), ctx.nameEnd.getCharPositionInLine(),
           String.format("found: '%s', expected: '%s'", nameEnd, name));
     }
-    Block block = new Block(handlebars, name, true, "^", Collections.<Param> emptyList(),
-        Collections.<String, Param> emptyMap(), blockParams(ctx.blockParams()));
+    Block block = new Block(handlebars, name, true, "^", Collections.emptyList(),
+        Collections.emptyMap(), blockParams(ctx.blockParams()));
     block.filename(source.filename());
     block.position(nameStart.getLine(), nameStart.getCharPositionInLine());
     String startDelim = ctx.start.getText();
@@ -381,7 +387,7 @@ abstract class TemplateBuilder<it> extends HbsParserBaseVisitor<Object> {
     String[] parts = varName.split("\\./");
     // TODO: try to catch this with ANTLR...
     // foo.0 isn't allowed, it must be foo.0.
-    if (parts.length > 0 && NumberUtils.isNumber(parts[parts.length - 1])
+    if (parts.length > 0 && NumberUtils.isCreatable(parts[parts.length - 1])
         && !varName.endsWith(".")) {
       String evidence = varName;
       String reason = "found: " + varName + ", expecting: " + varName + ".";
@@ -448,7 +454,7 @@ abstract class TemplateBuilder<it> extends HbsParserBaseVisitor<Object> {
     if (ids == null || ids.size() == 0) {
       return Collections.emptyList();
     }
-    List<String> result = new ArrayList<String>();
+    List<String> result = new ArrayList<>();
     for (TerminalNode id : ids) {
       result.add(id.getText());
     }
@@ -500,9 +506,12 @@ abstract class TemplateBuilder<it> extends HbsParserBaseVisitor<Object> {
     return new RefParam(PathCompiler.compile(ctx.getText(), handlebars.parentScopeResolution()));
   }
 
-  @Override
-  public Object visitIntParam(final IntParamContext ctx) {
-    return new DefParam(Integer.parseInt(ctx.getText()));
+  @Override public Object visitNumberParam(final HbsParser.NumberParamContext ctx) {
+    try {
+      return new DefParam(Integer.parseInt(ctx.getText()));
+    } catch (NumberFormatException x) {
+      return new DefParam(Double.parseDouble(ctx.getText()));
+    }
   }
 
   @Override

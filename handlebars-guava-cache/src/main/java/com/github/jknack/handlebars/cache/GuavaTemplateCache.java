@@ -17,10 +17,7 @@
  */
 package com.github.jknack.handlebars.cache;
 
-import static org.apache.commons.lang3.Validate.notNull;
-
 import java.io.IOException;
-import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 
 import com.github.jknack.handlebars.HandlebarsException;
@@ -29,6 +26,7 @@ import com.github.jknack.handlebars.Template;
 import com.github.jknack.handlebars.io.ReloadableTemplateSource;
 import com.github.jknack.handlebars.io.TemplateSource;
 import com.google.common.cache.Cache;
+import static java.util.Objects.requireNonNull;
 
 /**
  * An implementation of {@link TemplateCache} built on top of Guava. If {@link #setReload(boolean)}
@@ -54,7 +52,7 @@ public class GuavaTemplateCache implements TemplateCache {
    * @param cache The guava cache to use. Required.
    */
   public GuavaTemplateCache(final Cache<TemplateSource, Template> cache) {
-    this.cache = notNull(cache, "The cache is required.");
+    this.cache = requireNonNull(cache, "The cache is required.");
   }
 
   @Override
@@ -69,15 +67,10 @@ public class GuavaTemplateCache implements TemplateCache {
 
   @Override
   public Template get(final TemplateSource source, final Parser parser) throws IOException {
-    notNull(source, "The source is required.");
-    notNull(parser, "The parser is required.");
+    requireNonNull(source, "The source is required.");
+    requireNonNull(parser, "The parser is required.");
     try {
-      return cache.get(key(source), new Callable<Template>() {
-        @Override
-        public Template call() throws IOException {
-          return parser.parse(source);
-        }
-      });
+      return cache.get(key(source), () -> parser.parse(source));
     } catch (ExecutionException ex) {
       throw launderThrowable(source, ex.getCause());
     }

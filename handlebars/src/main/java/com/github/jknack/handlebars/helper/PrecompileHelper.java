@@ -27,7 +27,6 @@ import org.apache.commons.lang3.StringUtils;
 import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Helper;
 import com.github.jknack.handlebars.Options;
-import com.github.jknack.handlebars.Template;
 
 /**
  * Precompile a template to JavaScript using handlebars.js.
@@ -74,6 +73,12 @@ public final class PrecompileHelper implements Helper<String> {
         buffer.append("  return template;\n");
         buffer.append("});");
       }
+
+      @Override public void registerTemplate(final StringBuilder buffer, final String name,
+          final String function) {
+        String templateName = name.substring(0, name.lastIndexOf('.'));
+        super.registerTemplate(buffer, templateName, function);
+      }
     },
 
     /**
@@ -114,7 +119,7 @@ public final class PrecompileHelper implements Helper<String> {
     public void registerTemplate(final StringBuilder buffer, final String name,
         final String function) {
       buffer.append("\n  var template = Handlebars.template(").append(function).append(");\n");
-      String[] namespaces = {"templates", "partials" };
+      String[] namespaces = {"templates", "partials"};
       String separator = ";\n";
       for (String namespace : namespaces) {
         buffer.append("  var ").append(namespace).append(" = Handlebars.").append(namespace)
@@ -137,7 +142,7 @@ public final class PrecompileHelper implements Helper<String> {
       registerTemplate(buffer, name, function);
       tail(buffer);
       return buffer;
-    };
+    }
 
     /**
      * Find the a wrap strategy.
@@ -188,8 +193,7 @@ public final class PrecompileHelper implements Helper<String> {
     if (wrapper == JsWrapper.AMD) {
       name += handlebars.getLoader().getSuffix();
     }
-    Template template = handlebars.compile(path);
-    String precompiled = template.toJavaScript();
+    String precompiled = handlebars.precompile(path);
     return new Handlebars.SafeString(wrapper.wrap(name, precompiled));
   }
 

@@ -39,11 +39,11 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.LocaleUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.text.WordUtils;
 
 import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Helper;
 import com.github.jknack.handlebars.Options;
+import org.apache.commons.text.WordUtils;
 
 /**
  * Commons string function helpers.
@@ -58,7 +58,7 @@ public enum StringHelpers implements Helper<Object> {
    * For example:
    *
    * <pre>
-   * {{capFirst value}}
+   * {{capitalizeFirst value}}
    * </pre>
    *
    * If value is "handlebars.java", the output will be "Handlebars.java".
@@ -284,7 +284,7 @@ public enum StringHelpers implements Helper<Object> {
   },
 
   /**
-   * Converts a string into all lowercase.
+   * Converts a string into all uppercase.
    * For example:
    *
    * <pre>
@@ -459,8 +459,8 @@ public enum StringHelpers implements Helper<Object> {
   replace {
     @Override
     public CharSequence safeApply(final Object value, final Options options) {
-      String target = (String) options.param(0, null);
-      String replacement = (String) options.param(1, null);
+      String target = options.param(0, null);
+      String replacement = options.param(1, null);
       return value.toString().replace(target, replacement);
     }
   },

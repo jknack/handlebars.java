@@ -179,7 +179,6 @@ tests:
 
     expected: |
       <div class="entry">
-
         <h1>Unknown Author</h1>
       </div>
 

@@ -23,6 +23,7 @@ import static org.junit.Assert.assertNotNull;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 import org.junit.Test;
 
@@ -86,13 +87,13 @@ public class FileTemplateLoaderTest {
   public void nullSuffix() throws IOException {
     assertEquals("suffix should be optional",
         new FileTemplateLoader("src/test/resources/", null).sourceAt("noextension")
-            .content());
+            .content(StandardCharsets.UTF_8));
   }
 
   @Test
   public void emptySuffix() throws IOException {
     assertEquals("suffix should be optional",
         new FileTemplateLoader("src/test/resources/", "").sourceAt("noextension")
-            .content());
+            .content(StandardCharsets.UTF_8));
   }
 }

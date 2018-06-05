@@ -23,11 +23,16 @@ import static org.apache.commons.lang3.Validate.notEmpty;
 import static org.apache.commons.lang3.Validate.notNull;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Locale;
+import java.util.PropertyResourceBundle;
 import java.util.ResourceBundle;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -158,7 +163,7 @@ public enum I18nHelper implements Helper<String> {
       String baseName = options.hash("bundle", defaultBundle);
       ClassLoader classLoader = options.hash("classLoader", getClass().getClassLoader());
       I18nSource localSource = source == null
-          ? new DefI18nSource(baseName, locale, classLoader) : source;
+          ? new DefI18nSource(charset, baseName, locale, classLoader) : source;
 
       return localSource.message(key, locale, options.params);
     }
@@ -232,7 +237,7 @@ public enum I18nHelper implements Helper<String> {
       String baseName = options.hash("bundle", defaultBundle);
       ClassLoader classLoader = options.hash("classLoader", getClass().getClassLoader());
       I18nSource localSource = source == null
-          ? new DefI18nSource(baseName, locale, classLoader) : source;
+          ? new DefI18nSource(charset, baseName, locale, classLoader) : source;
       StringBuilder buffer = new StringBuilder();
       Boolean wrap = options.hash("wrap", true);
       if (wrap) {
@@ -292,6 +297,20 @@ public enum I18nHelper implements Helper<String> {
   /** The message source to use. */
   protected I18nSource source;
 
+  /** Charset. **/
+  protected Charset charset = StandardCharsets.UTF_8;
+
+  /**
+   * Set the charset to use.
+   *
+   * NotThreadSafe Make sure to call this method ONCE at start time.
+   *
+   * @param charset Charset. Required.
+   */
+  public void setCharset(final Charset charset) {
+    this.charset = notNull(charset, "Charset required.");
+  }
+
   /**
    * Set the message source.
    *
@@ -332,24 +351,66 @@ public enum I18nHelper implements Helper<String> {
 /** Default implementation of I18nSource. */
 class DefI18nSource implements I18nSource {
 
+  /**
+   * UTF8 resource bundle control.
+   *
+   * Source: Source: https://stackoverflow.com/questions/4659929
+   *
+   * @author edgar
+   *
+   */
+  public static class UTF8Control extends ResourceBundle.Control {
+    /** Charset. */
+    private final Charset charset;
+
+    /**
+     * Creates a new utf8 control.
+     *
+     * @param charset Charset.
+     */
+    public UTF8Control(final Charset charset) {
+      this.charset = charset;
+    }
+    @Override
+    public ResourceBundle newBundle(final String baseName, final Locale locale, final String format,
+        final ClassLoader loader, final boolean reload) throws IOException {
+      // The below is a copy of the default implementation.
+      String bundleName = toBundleName(baseName, locale);
+      String resourceName = toResourceName(bundleName, "properties");
+      InputStream stream = null;
+      try  {
+        stream = loader.getResourceAsStream(resourceName);
+        PropertyResourceBundle bundle = new PropertyResourceBundle(
+            new InputStreamReader(stream, charset));
+        return bundle;
+      } finally {
+        if (stream != null) {
+          stream.close();
+        }
+      }
+    }
+  }
+
   /** The resource bundle. */
   private ResourceBundle bundle;
 
   /**
    * Creates a new {@link DefI18nSource}.
    *
+   * @param charset Charset to use.
    * @param baseName The base name.
    * @param locale The locale.
    * @param classLoader The classloader.
    */
-  public DefI18nSource(final String baseName, final Locale locale, final ClassLoader classLoader) {
-    bundle = ResourceBundle.getBundle(baseName, locale, classLoader);
+  public DefI18nSource(final Charset charset, final String baseName, final Locale locale,
+      final ClassLoader classLoader) {
+    bundle = ResourceBundle.getBundle(baseName, locale, classLoader, new UTF8Control(charset));
   }
 
   @Override
   public String[] keys(final String basename, final Locale locale) {
     Enumeration<String> keys = bundle.getKeys();
-    List<String> result = new ArrayList<String>();
+    List<String> result = new ArrayList<>();
     while (keys.hasMoreElements()) {
       String key = keys.nextElement();
       result.add(key);

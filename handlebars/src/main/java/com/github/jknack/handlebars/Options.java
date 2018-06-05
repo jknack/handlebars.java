@@ -581,7 +581,7 @@ public class Options {
    *
    * @param <T> The runtime type.
    * @param index The parameter position.
-   * @return The paramater's value.
+   * @return The parameter's value.
    */
   @SuppressWarnings("unchecked")
   public <T> T param(final int index) {
@@ -606,7 +606,7 @@ public class Options {
    * @param index The parameter position.
    * @param defaultValue The default value to return if the parameter is not
    *        present or if null.
-   * @return The paramater's value.
+   * @return The parameter's value.
    */
   @SuppressWarnings("unchecked")
   public <T> T param(final int index, final T defaultValue) {
@@ -672,7 +672,7 @@ public class Options {
    *  Object myClass = options.hash.get("class");
    * </code>
    * <p>
-   * This mehtod works as a shorthand and type safe call:
+   * This method works as a shorthand and type safe call:
    * </p>
    * <code>
    *  String myClass = options.hash("class");

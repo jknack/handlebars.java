@@ -1,16 +1,14 @@
 package com.github.jknack.handlebars.io;
 
 import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.replay;
-import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.StringReader;
 import java.net.JarURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
+import java.nio.charset.StandardCharsets;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -19,25 +17,14 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({URLTemplateSource.class })
+@PrepareForTest({URLTemplateSource.class})
 public class URLTemplateSourceTest {
 
   @Test
   public void content() throws Exception {
-    String content = "...";
+    URLTemplateSource templateSource = new URLTemplateSource("template.hbs", getClass().getResource("/template.hbs"));
 
-    URLTemplateSource templateSource = PowerMock.createPartialMockForAllMethodsExcept(
-        URLTemplateSource.class, "content");
-
-    PowerMock.expectPrivate(templateSource, "reader").andReturn(new StringReader(content));
-
-    Object[] mocks = {templateSource };
-
-    replay(mocks);
-
-    assertEquals(content, templateSource.content());
-
-    verify(mocks);
+    assertEquals("template.hbs", templateSource.content(StandardCharsets.UTF_8));
   }
 
   @Test
@@ -47,7 +34,7 @@ public class URLTemplateSourceTest {
 
     String filename = "home.hbs";
 
-    Object[] mocks = {url };
+    Object[] mocks = {url};
 
     PowerMock.replay(mocks);
 
@@ -70,7 +57,7 @@ public class URLTemplateSourceTest {
 
     String filename = "home.hbs";
 
-    Object[] mocks = {url, uc, is };
+    Object[] mocks = {url, uc, is};
 
     PowerMock.replay(mocks);
 

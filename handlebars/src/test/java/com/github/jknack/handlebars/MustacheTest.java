@@ -14,7 +14,7 @@ public class MustacheTest {
   public void demo() throws IOException {
     Handlebars handlebars = new Handlebars();
     handlebars.setPrettyPrint(true);
-    Map<String, Object> hash = new HashMap<String, Object>();
+    Map<String, Object> hash = new HashMap<>();
     hash.put("name", "Chris");
     hash.put("value", 10000);
     hash.put("taxed_value", 10000 - 10000 * 0.4);

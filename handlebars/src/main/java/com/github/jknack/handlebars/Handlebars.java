@@ -17,6 +17,9 @@
  */
 package com.github.jknack.handlebars;
 
+import com.github.jknack.handlebars.helper.I18nHelper;
+import com.github.jknack.handlebars.internal.Files;
+import com.github.jknack.handlebars.internal.Throwing;
 import static org.apache.commons.lang3.Validate.isTrue;
 import static org.apache.commons.lang3.Validate.notEmpty;
 import static org.apache.commons.lang3.Validate.notNull;
@@ -29,6 +32,8 @@ import java.io.Reader;
 import java.lang.reflect.Array;
 import java.net.URI;
 import java.net.URL;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -48,6 +53,10 @@ import com.github.jknack.handlebars.io.StringTemplateSource;
 import com.github.jknack.handlebars.io.TemplateLoader;
 import com.github.jknack.handlebars.io.TemplateSource;
 
+import javax.script.Bindings;
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
+
 /**
  * <p>
  * Handlebars provides the power necessary to let you build semantic templates effectively with no
@@ -63,7 +72,7 @@ import com.github.jknack.handlebars.io.TemplateSource;
  * </pre>
  *
  * <h2>Loading templates</h2> Templates are loaded using the ```TemplateLoader``` class.
- * Handlebars.java provides three implementations of a ```TemplateLodaer```:
+ * Handlebars.java provides three implementations of a ```TemplateLoader```:
  * <ul>
  * <li>ClassPathTemplateLoader (default)</li>
  * <li>FileTemplateLoader</li>
@@ -313,13 +322,46 @@ public class Handlebars implements HelperRegistry {
   private String handlebarsJsFile = "/handlebars-v4.0.4.js";
 
   /** List of formatters. */
-  private List<Formatter> formatters = new ArrayList<Formatter>();
+  private List<Formatter> formatters = new ArrayList<>();
 
   /** Default formatter. */
   private Formatter.Chain formatter = Formatter.NOOP;
 
   /** True, if we want to extend lookup to parent scope. */
   private boolean parentScopeResolution = true;
+
+  /**
+   * If true partial blocks will be evaluated to allow side effects by defining inline
+   * blocks within the partials blocks.
+   * Attention: This feature slows down the performance severly if your templates use
+   * deeply nested partial blocks.
+   * Handlebars works *much* faster if this feature is set to false.
+   *
+   * Example of a feature that is usable when this is set to true:
+   * <pre>
+   *     {{#> myPartial}}{{#*inline 'myInline'}}Wow!!!{{/inline}}{{/myPartial}}
+   * </pre>
+   * With a myPartial.hbs template like this:
+   * <pre>
+   *     {{> myInline}}
+   * </pre>
+   * The text "Wow!!!" will actually be rendered.
+   *
+   * If this flag is set to false, you need to explicitly evaluate the partial block.
+   * The template myPartial.hbs will have to look like this:
+   * <pre>
+   *     {{> @partial-block}}{{> myInline}}
+   * </pre>
+   *
+   * Default is: true for compatibility reasons
+   */
+  private boolean preEvaluatePartialBlocks = true;
+
+  /** Standard charset. */
+  private Charset charset = StandardCharsets.UTF_8;
+
+  /** Engine. */
+  private ScriptEngine engine;
 
   /**
    * Creates a new {@link Handlebars} with no cache.
@@ -339,7 +381,41 @@ public class Handlebars implements HelperRegistry {
   }
 
   /**
+   * Precompile a template to JavaScript.
+   *
+   * @param path Template path.
+   * @return JavaScript.
+   */
+  public String precompile(final String path) {
+    return Throwing.get(() ->
+        precompileInline(loader.sourceAt(path).content(charset))
+    );
+  }
+
+  /**
+   * Precompile a template to JavaScript.
+   *
+   * @param template Template.
+   * @return JavaScript.
+   */
+  public String precompileInline(final String template) {
+    return Throwing.get(() -> {
+      ScriptEngine engine = engine();
+      Object handlebars = engine.getContext().getAttribute("Handlebars");
+      Bindings bindings = engine.createBindings();
+      bindings.put("Handlebars", handlebars);
+      bindings.put("template", template);
+      return (String) engine.eval("Handlebars.precompile(template);", bindings);
+    });
+  }
+
+  /**
    * Compile the resource located at the given uri.
+   * The implementation uses a cache for previously compiled Templates. By default,
+   * if the resource has been compiled previously, and no changes have occurred
+   * since in the resource, compilation will be skipped and the previously created
+   * Template will be returned. You can set an alternate cache implementation
+   * using {@link #with(TemplateCache cache) with}.
    *
    * @param location The resource's location. Required.
    * @return A compiled template.
@@ -351,6 +427,11 @@ public class Handlebars implements HelperRegistry {
 
   /**
    * Compile the resource located at the given uri.
+   * The implementation uses a cache for previously compiled Templates. By default,
+   * if the resource has been compiled previously, and no changes have occurred
+   * since in the resource, compilation will be skipped and the previously created
+   * Template will be returned. You can set an alternate cache implementation
+   * using {@link #with(TemplateCache cache) with}.
    *
    * @param location The resource's location. Required.
    * @param startDelimiter The start delimiter. Required.
@@ -365,6 +446,10 @@ public class Handlebars implements HelperRegistry {
 
   /**
    * Compile a handlebars template.
+   * The implementation uses a cache for previously compiled Templates. By default,
+   * if same input string has been compiled previously, compilation will be skipped
+   * and the previously created Template will be returned. You can set an alternate
+   * cache implementation using {@link #with(TemplateCache cache) with}.
    *
    * @param input The handlebars input. Required.
    * @return A compiled template.
@@ -376,6 +461,10 @@ public class Handlebars implements HelperRegistry {
 
   /**
    * Compile a handlebars template.
+   * The implementation uses a cache for previously compiled Templates. By default,
+   * if same input string has been compiled previously, compilation will be skipped
+   * and the previously created Template will be returned. You can set an alternate
+   * cache implementation using {@link #with(TemplateCache cache) with}.
    *
    * @param input The input text. Required.
    * @param startDelimiter The start delimiter. Required.
@@ -393,6 +482,11 @@ public class Handlebars implements HelperRegistry {
 
   /**
    * Compile a handlebars template.
+   * The implementation uses a cache for previously compiled Templates. By default,
+   * if the resource has been compiled previously, and no changes have occurred
+   * since in the resource, compilation will be skipped and the previously created
+   * Template will be returned. You can set an alternate cache implementation
+   * using {@link #with(TemplateCache cache) with}.
    *
    * @param source The template source. Required.
    * @return A handlebars template.
@@ -404,6 +498,11 @@ public class Handlebars implements HelperRegistry {
 
   /**
    * Compile a handlebars template.
+   * The implementation uses a cache for previously compiled Templates. By default,
+   * if the resource has been compiled previously, and no changes have occurred
+   * since in the resource, compilation will be skipped and the previously created
+   * Template will be returned. You can set an alternate cache implementation
+   * using {@link #with(TemplateCache cache) with}.
    *
    * @param source The template source. Required.
    * @param startDelimiter The start delimiter. Required.
@@ -700,7 +799,7 @@ public class Handlebars implements HelperRegistry {
    * @throws Exception If the JavaScript helpers can't be registered.
    */
   @Override
-  public Handlebars registerHelpers(final String filename, final String source) throws Exception {
+  public Handlebars registerHelpers(final String filename, final String source) throws IOException {
     registry.registerHelpers(filename, source);
     return this;
   }
@@ -1021,6 +1120,16 @@ public class Handlebars implements HelperRegistry {
   }
 
   /**
+   * Set a new {@link EscapingStrategy}.
+   *
+   * @param chain The escaping strategy. Required.
+   * @return This handlebars object.
+   */
+  public Handlebars with(final EscapingStrategy... chain) {
+    return with(newEscapeChain(chain));
+  }
+
+  /**
    * @return A formatter chain.
    */
   public Formatter.Chain getFormatter() {
@@ -1179,6 +1288,62 @@ public class Handlebars implements HelperRegistry {
   }
 
   /**
+   * If true, partial blocks will implicitly be evaluated before the partials will actually
+   * be executed. If false, you need to explicitly evaluate and render partial blocks with
+   * <pre>
+   *     {{> @partial-block}}
+   * </pre>
+   * Attention: If this is set to true, Handlebars works *much* slower!
+   *
+   * @return If true partial blocks will be evaluated before the partial will be rendered
+   *         to allow inline block side effects.
+   *         If false, you will have to evaluate and render partial blocks explitly (this
+   *         option is *much* faster).
+   */
+  public boolean preEvaluatePartialBlocks() {
+    return preEvaluatePartialBlocks;
+  }
+
+  /**
+   * If true, partial blocks will implicitly be evaluated before the partials will actually
+   * be executed. If false, you need to explicitly evaluate and render partial blocks with
+   * <pre>
+   *     {{> @partial-block}}
+   * </pre>
+   * Attention: If this is set to true, Handlebars works *much* slower!
+   *
+   * @param preEvaluatePartialBlocks If true partial blocks will be evaluated before the
+   *                                 partial will be rendered to allow inline block side
+   *                                 effects.
+   *                                 If false, you will have to evaluate and render partial
+   *                                 blocks explitly (this option is *much* faster).
+   */
+  public void setPreEvaluatePartialBlocks(final boolean preEvaluatePartialBlocks) {
+    this.preEvaluatePartialBlocks = preEvaluatePartialBlocks;
+  }
+
+  /**
+   * If true, partial blocks will implicitly be evaluated before the partials will actually
+   * be executed. If false, you need to explicitly evaluate and render partial blocks with
+   *
+   * <pre>
+   *     {{> @partial-block}}
+   * </pre>
+   * Attention: If this is set to true, Handlebars works *much* slower!
+   *
+   * @param preEvaluatePartialBlocks If true partial blocks will be evaluated before the
+   *                                 partial will be rendered to allow inline block side
+   *                                 effects.
+   *                                 If false, you will have to evaluate and render partial
+   *                                 blocks explitly (this option is *much* faster).
+   * @return The Handlebars object
+   */
+  public Handlebars preEvaluatePartialBlocks(final boolean preEvaluatePartialBlocks) {
+    setPreEvaluatePartialBlocks(preEvaluatePartialBlocks);
+    return this;
+  }
+
+  /**
    * Return a parser factory.
    *
    * @return A parser factory.
@@ -1287,4 +1452,51 @@ public class Handlebars implements HelperRegistry {
     return this;
   }
 
+  @Override
+  public Handlebars setCharset(final Charset charset) {
+    this.charset = notNull(charset, "Charset required.");
+    registry.setCharset(charset);
+    loader.setCharset(charset);
+    I18nHelper.i18n.setCharset(charset);
+    I18nHelper.i18nJs.setCharset(charset);
+    return this;
+  }
+
+  /**
+   * @return Charset.
+   */
+  public Charset getCharset() {
+    return charset;
+  }
+
+  /**
+   * Chain escape strategies.
+   *
+   * @param chain Escape to chain.
+   * @return Composite escape strategy.
+   */
+  private static EscapingStrategy newEscapeChain(final EscapingStrategy[] chain) {
+    return value -> {
+      CharSequence result = value;
+      for (EscapingStrategy escape : chain) {
+        result = escape.escape(result);
+      }
+      return result;
+    };
+  }
+
+  /**
+   * @return Nashorn engine.
+   */
+  private ScriptEngine engine() {
+    synchronized (this) {
+      if (this.engine == null) {
+
+        this.engine = new ScriptEngineManager().getEngineByName("nashorn");
+
+        Throwing.run(() -> engine.eval(Files.read(this.handlebarsJsFile, charset)));
+      }
+      return this.engine;
+    }
+  }
 }

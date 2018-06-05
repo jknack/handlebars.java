@@ -33,7 +33,7 @@ public class ConcurrentMapTemplateCacheTest {
 
   @Test
   public void get() throws IOException {
-    ConcurrentMap<TemplateSource, Pair<TemplateSource, Template>> cache = new ConcurrentHashMap<TemplateSource, Pair<TemplateSource, Template>>();
+    ConcurrentMap<TemplateSource, Pair<TemplateSource, Template>> cache = new ConcurrentHashMap<>();
 
     TemplateSource source = new URLTemplateSource("/template.hbs", getClass().getResource(
         "/template.hbs"));
@@ -56,7 +56,7 @@ public class ConcurrentMapTemplateCacheTest {
 
   @Test
   public void getAndReload() throws IOException, InterruptedException {
-    ConcurrentMap<TemplateSource, Pair<TemplateSource, Template>> cache = new ConcurrentHashMap<TemplateSource, Pair<TemplateSource, Template>>();
+    ConcurrentMap<TemplateSource, Pair<TemplateSource, Template>> cache = new ConcurrentHashMap<>();
 
     TemplateSource source = source("/template.hbs");
 

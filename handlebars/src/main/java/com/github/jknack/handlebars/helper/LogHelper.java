@@ -68,7 +68,7 @@ public class LogHelper implements Helper<Object> {
     if (tagType.inline()) {
       sb.append(context);
       for (int i = 0; i < options.params.length; i++) {
-        sb.append(" ").append(options.param(i));
+        sb.append(" ").append((Object) options.param(i));
       }
     } else {
       sb.append(options.fn());

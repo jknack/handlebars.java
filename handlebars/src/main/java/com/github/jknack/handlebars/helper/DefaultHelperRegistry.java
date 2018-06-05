@@ -15,32 +15,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/**
- * This copy of Woodstox XML processor is licensed under the
- * Apache (Software) License, version 2.0 ("the License").
- * See the License for details about distribution rights, and the
- * specific rights regarding derivate works.
- *
- * You may obtain a copy of the License at:
- *
- * http://www.apache.org/licenses/
- *
- * A copy is also included in the downloadable source code package
- * containing Woodstox, in file "ASL2.0", under the same directory
- * as this file.
- */
 package com.github.jknack.handlebars.helper;
 
+import com.github.jknack.handlebars.internal.Throwing;
 import static org.apache.commons.lang3.Validate.isTrue;
 import static org.apache.commons.lang3.Validate.notEmpty;
 import static org.apache.commons.lang3.Validate.notNull;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.net.URI;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -55,7 +45,9 @@ import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Helper;
 import com.github.jknack.handlebars.HelperRegistry;
 import com.github.jknack.handlebars.internal.Files;
-import com.github.jknack.handlebars.js.HandlebarsJs;
+
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
 
 /**
  * Default implementation of {@link HelperRegistry}.
@@ -69,22 +61,34 @@ public class DefaultHelperRegistry implements HelperRegistry {
   private final Logger logger = LoggerFactory.getLogger(HelperRegistry.class);
 
   /**
+   * The JavaScript helpers environment for Rhino.
+   */
+  private static final String HELPERS_ENV;
+
+  static {
+    String file = "/helpers.nashorn.js";
+    try {
+      HELPERS_ENV = Files.read(file, StandardCharsets.UTF_8);
+    } catch (IOException x) {
+      throw new IllegalStateException("File not found: " + file, x);
+    }
+  }
+
+  /**
    * The helper registry.
    */
-  private final Map<String, Helper<?>> helpers = new HashMap<String, Helper<?>>();
+  private final Map<String, Helper<?>> helpers = new HashMap<>();
 
   /** Decorators. */
   private final Map<String, Decorator> decorators = new HashMap<>();
 
-  /**
-   * A Handlebars.js implementation.
-   */
-  private HandlebarsJs handlebarsJs;
+  /** Charset. */
+  private Charset charset = StandardCharsets.UTF_8;
+
+  /** Engine. */
+  private ScriptEngine engine;
 
   {
-    Integer optimizationLevel = Integer.valueOf(Integer.parseInt(
-                System.getProperty("handlebars.rhino.optmizationLevel", "-1")));
-    this.handlebarsJs = HandlebarsJs.createRhino(this, optimizationLevel);
     // make sure default helpers are registered
     registerBuiltinsHelpers(this);
   }
@@ -132,13 +136,13 @@ public class DefaultHelperRegistry implements HelperRegistry {
     } catch (RuntimeException ex) {
       throw ex;
     } catch (Exception ex) {
-      throw new IllegalArgumentException("Can't register helpres", ex);
+      throw new IllegalArgumentException("Can't register helpers", ex);
     }
     registerDynamicHelper(helperSource, helperSource.getClass());
     return this;
   }
 
-  @SuppressWarnings({"rawtypes", "unchecked" })
+  @SuppressWarnings({"rawtypes", "unchecked"})
   @Override
   public HelperRegistry registerHelpers(final Class<?> helperSource) {
     notNull(helperSource, "The helper source is required.");
@@ -156,12 +160,12 @@ public class DefaultHelperRegistry implements HelperRegistry {
 
   @Override
   public HelperRegistry registerHelpers(final URI location) throws Exception {
-    return registerHelpers(location.getPath(), Files.read(location.toString()));
+    return registerHelpers(location.getPath(), Files.read(location.toString(), charset));
   }
 
   @Override
   public HelperRegistry registerHelpers(final File input) throws Exception {
-    return registerHelpers(input.getAbsolutePath(), Files.read(input));
+    return registerHelpers(input.getAbsolutePath(), Files.read(input, charset));
   }
 
   @Override
@@ -173,15 +177,16 @@ public class DefaultHelperRegistry implements HelperRegistry {
   @Override
   public HelperRegistry registerHelpers(final String filename, final InputStream source)
       throws Exception {
-    return registerHelpers(filename, Files.read(source));
+    return registerHelpers(filename, Files.read(source, charset));
   }
 
   @Override
   public HelperRegistry registerHelpers(final String filename, final String source)
-      throws Exception {
+      throws IOException {
     notNull(filename, "The filename is required.");
     notEmpty(source, "The source is required.");
-    handlebarsJs.registerHelpers(filename, source);
+    ScriptEngine engine = engine();
+    Throwing.run(() -> engine.eval(source));
     return this;
   }
 
@@ -200,13 +205,13 @@ public class DefaultHelperRegistry implements HelperRegistry {
    */
   private void registerDynamicHelper(final Object source, final Class<?> clazz) {
     if (clazz != Object.class) {
-      Set<String> overloaded = new HashSet<String>();
+      Set<String> overloaded = new HashSet<>();
       // Keep backing up the inheritance hierarchy.
       Method[] methods = clazz.getDeclaredMethods();
       for (Method method : methods) {
         boolean isPublic = Modifier.isPublic(method.getModifiers());
         String helperName = method.getName();
-        if (isPublic && CharSequence.class.isAssignableFrom(method.getReturnType())) {
+        if (isPublic) {
           boolean isStatic = Modifier.isStatic(method.getModifiers());
           if (source != null || isStatic) {
             isTrue(overloaded.add(helperName), "name conflict found: " + helperName);
@@ -258,17 +263,24 @@ public class DefaultHelperRegistry implements HelperRegistry {
     return this;
   }
 
-  /**
-   * Set the handlebars Js. This operation will override previously registered
-   * handlebars Js.
-   *
-   * @param handlebarsJs The handlebars Js. Required.
-   * @return This DefaultHelperRegistry object.
-   */
-  public DefaultHelperRegistry with(final HandlebarsJs handlebarsJs) {
-    notNull(handlebarsJs, "The handlebarsJs is required.");
-    this.handlebarsJs = handlebarsJs;
+  @Override public DefaultHelperRegistry setCharset(final Charset charset) {
+    this.charset = notNull(charset, "Charset required.");
     return this;
   }
 
+  /**
+   * @return Nashorn engine.
+   */
+  private ScriptEngine engine() {
+    synchronized (this) {
+      if (this.engine == null) {
+        this.engine = new ScriptEngineManager().getEngineByName("nashorn");
+
+        this.engine.put("Handlebars_java", this);
+
+        Throwing.run(() -> engine.eval(HELPERS_ENV));
+      }
+      return this.engine;
+    }
+  }
 }

@@ -164,14 +164,10 @@ public class HbsServer {
      * Helper wont work in the stand-alone version, so we add a default helper
      * that render the plain text.
      */
-    handlebars.registerHelper(HelperRegistry.HELPER_MISSING, new Helper<Object>() {
-      @Override
-      public Object apply(final Object context,
-          final com.github.jknack.handlebars.Options options)
-          throws IOException {
-        return new Handlebars.SafeString(options.fn.text());
-      }
-    });
+    handlebars.registerHelper(
+      HelperRegistry.HELPER_MISSING,
+      (context, options) -> new Handlebars.SafeString(options.fn.text())
+    );
     handlebars.registerHelper("json", Jackson2Helper.INSTANCE);
     handlebars.registerHelper("md", new MarkdownHelper());
     // String helpers
@@ -180,15 +176,12 @@ public class HbsServer {
     HumanizeHelper.register(handlebars);
 
     final Server server = new Server(args.port);
-    Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
-      @Override
-      public void run() {
-        logger.info("Hope you enjoy it! bye!");
-        try {
-          server.stop();
-        } catch (Exception ex) {
-          logger.info("Cann't stop the server", ex);
-        }
+    Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+      logger.info("Hope you enjoy it! bye!");
+      try {
+        server.stop();
+      } catch (Exception ex) {
+        logger.info("Can't stop the server", ex);
       }
     }));
 

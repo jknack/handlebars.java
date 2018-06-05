@@ -17,9 +17,6 @@
  */
 package com.github.jknack.handlebars.springmvc;
 
-import static org.apache.commons.lang3.Validate.notEmpty;
-import static org.apache.commons.lang3.Validate.notNull;
-
 import java.io.IOException;
 import java.util.Locale;
 import java.util.Map;
@@ -27,6 +24,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import static java.util.Objects.requireNonNull;
 import org.springframework.web.servlet.view.AbstractTemplateView;
 
 import com.github.jknack.handlebars.Context;
@@ -44,12 +42,12 @@ public class HandlebarsView extends AbstractTemplateView {
   /**
    * The compiled template.
    */
-  private Template template;
+  protected Template template;
 
   /**
    * The value's resolvers.
    */
-  private ValueResolver[] valueResolvers;
+  protected ValueResolver[] valueResolvers;
 
   /**
    * Merge model into the view. {@inheritDoc}
@@ -86,7 +84,7 @@ public class HandlebarsView extends AbstractTemplateView {
    * @param template The compiled template. Required.
    */
   void setTemplate(final Template template) {
-    this.template = notNull(template, "A handlebars template is required.");
+    this.template = requireNonNull(template, "A handlebars template is required.");
   }
 
   /**
@@ -95,7 +93,7 @@ public class HandlebarsView extends AbstractTemplateView {
    * @param valueResolvers The value resolvers. Required.
    */
   void setValueResolver(final ValueResolver... valueResolvers) {
-    this.valueResolvers = notEmpty(valueResolvers,
+    this.valueResolvers = requireNonNull(valueResolvers,
         "At least one value-resolver must be present.");
   }
 

@@ -7,6 +7,7 @@ import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 import org.junit.Test;
 
@@ -15,11 +16,11 @@ public class ForwardingTemplateSourceTest {
   @Test
   public void content() throws IOException {
     TemplateSource source = createMock(TemplateSource.class);
-    expect(source.content()).andReturn("abc");
+    expect(source.content(StandardCharsets.UTF_8)).andReturn("abc");
 
     replay(source);
 
-    assertEquals("abc", new ForwardingTemplateSource(source).content());
+    assertEquals("abc", new ForwardingTemplateSource(source).content(StandardCharsets.UTF_8));
 
     verify(source);
   }

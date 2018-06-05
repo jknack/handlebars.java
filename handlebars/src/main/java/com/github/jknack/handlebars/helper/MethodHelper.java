@@ -76,7 +76,7 @@ public class MethodHelper implements Helper<Object> {
           }
         }
       }
-      return (CharSequence) method.invoke(source, args);
+      return method.invoke(source, args);
     } catch (ArrayIndexOutOfBoundsException ex) {
       throw new IllegalArgumentException(
           "could not execute helper: " + toString(method) + ", with the given arguments: "

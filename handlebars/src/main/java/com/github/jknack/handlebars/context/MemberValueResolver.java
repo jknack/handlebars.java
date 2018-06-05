@@ -140,7 +140,7 @@ public abstract class MemberValueResolver<M extends Member> implements ValueReso
    * True if the member is static.
    *
    * @param member The member object.
-   * @return True if the member is statuc.
+   * @return True if the member is static.
    */
   protected boolean isStatic(final M member) {
     return Modifier.isStatic(member.getModifiers());
@@ -163,7 +163,7 @@ public abstract class MemberValueResolver<M extends Member> implements ValueReso
       return Collections.emptySet();
     }
     Collection<M> members = cache(context.getClass()).values();
-    Map<String, Object> propertySet = new LinkedHashMap<String, Object>();
+    Map<String, Object> propertySet = new LinkedHashMap<>();
     for (M member : members) {
       String name = memberName(member);
       propertySet.put(name, resolve(context, name));

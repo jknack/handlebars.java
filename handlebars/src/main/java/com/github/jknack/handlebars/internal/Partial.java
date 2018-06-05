@@ -24,6 +24,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.Arrays;
+import java.nio.charset.Charset;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -104,7 +105,7 @@ class Partial extends HelperResolver {
   @Override
   public void before(final Context context, final Writer writer) throws IOException {
     LinkedList<Map<String, Template>> partials = context.data(Context.INLINE_PARTIALS);
-    partials.addLast(new HashMap<String, Template>(partials.getLast()));
+    partials.addLast(new HashMap<>(partials.getLast()));
   }
 
   @Override
@@ -134,7 +135,7 @@ class Partial extends HelperResolver {
       }
 
       if (this.partial != null) {
-        if (!handlebars.lazyPartialBlockEvaluation()) {
+        if (handlebars.preEvaluatePartialBlocks()) {
           this.partial.apply(context);
         }
 
@@ -263,8 +264,8 @@ class Partial extends HelperResolver {
       }
 
       @Override
-      public String content() throws IOException {
-        return partialInput(source.content(), indent);
+      public String content(final Charset charset) throws IOException {
+        return partialInput(source.content(charset), indent);
       }
 
       @Override
@@ -314,6 +315,14 @@ class Partial extends HelperResolver {
 
     if (context != null) {
       buffer.append(' ').append(context);
+    }
+    String params = paramsToString(this.params);
+    if (params.length() > 0) {
+      buffer.append(" ").append(params);
+    }
+    String hash = hashToString();
+    if (hash.length() > 0) {
+      buffer.append(" ").append(hash);
     }
 
     buffer.append(endDelimiter);

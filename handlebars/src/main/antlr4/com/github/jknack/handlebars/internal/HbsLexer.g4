@@ -280,9 +280,9 @@ EQ
     '='
   ;
 
-INT
+NUMBER
   :
-    '-'? [0-9]+
+    '-'? [0-9]* '.'? [0-9]+
   ;
 
 BOOLEAN
@@ -293,7 +293,7 @@ BOOLEAN
 
 ELSE
   :
-   '~'? 'else' '~'?
+   'else'
   ;
 
 QID
@@ -348,7 +348,7 @@ ID_SUFFIX
 fragment
 ID_ESCAPE
   :
-    '[' ~[\]]+? ']'
+    '[' ('\\]' | ~[\]])+? ']'
   ;
 
 fragment

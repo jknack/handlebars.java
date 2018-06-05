@@ -55,13 +55,13 @@ public class ContextTest {
 
   @Test
   public void parentContext() {
-    Map<String, Object> model = new HashMap<String, Object>();
+    Map<String, Object> model = new HashMap<>();
     model.put("name", "Handlebars");
     Context parent = Context.newContext(model);
     assertNotNull(parent);
     assertEquals("Handlebars", parent.get("name"));
 
-    Map<String, Object> extended = new HashMap<String, Object>();
+    Map<String, Object> extended = new HashMap<>();
     extended.put("n", "Extended");
     Context child = Context.newContext(parent, extended);
     assertEquals("Extended", child.get("n"));
@@ -89,7 +89,7 @@ public class ContextTest {
 
   @Test
   public void singleMapLookup() {
-    Map<String, Object> model = new HashMap<String, Object>();
+    Map<String, Object> model = new HashMap<>();
     model.put("simple", "value");
     Context context = Context.newContext(model);
     assertNotNull(context);
@@ -98,8 +98,8 @@ public class ContextTest {
 
   @Test
   public void nestedMapLookup() {
-    Map<String, Object> model = new HashMap<String, Object>();
-    Map<String, Object> nested = new HashMap<String, Object>();
+    Map<String, Object> model = new HashMap<>();
+    Map<String, Object> nested = new HashMap<>();
     model.put("nested", nested);
     nested.put("simple", "value");
     Context context = Context.newContext(model);
@@ -181,7 +181,7 @@ public class ContextTest {
 
   @Test
   public void combineNested() {
-    Map<String, Object> expanded = new HashMap<String, Object>();
+    Map<String, Object> expanded = new HashMap<>();
     expanded.put("a", "a");
     expanded.put("b", true);
     Context context = Context
@@ -197,7 +197,7 @@ public class ContextTest {
 
   @Test
   public void expanded() {
-    Map<String, Object> expanded = new HashMap<String, Object>();
+    Map<String, Object> expanded = new HashMap<>();
     expanded.put("a", "a");
     expanded.put("b", true);
     Context context = Context

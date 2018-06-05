@@ -17,10 +17,10 @@
  */
 package com.github.jknack.handlebars.internal;
 
+import org.apache.commons.text.TextStringBuilder;
+
 import java.io.IOException;
 import java.io.Writer;
-
-import org.apache.commons.lang3.text.StrBuilder;
 
 /**
  * A string writer without locking.
@@ -29,11 +29,20 @@ import org.apache.commons.lang3.text.StrBuilder;
  * @since 0.1.0
  */
 class FastStringWriter extends Writer {
+
+  /**
+   * buffer size for StrBuilder.
+   */
+  private static final int BUFFER_SIZE;
+
+  static {
+    BUFFER_SIZE = Integer.parseInt(System.getProperty("hbs.buffer", "1600"));
+  }
+
   /**
    * The internal buffer.
    */
-  private StrBuilder buffer = new StrBuilder(Integer
-      .parseInt(System.getProperty("hbs.buffer", "1600")));
+  private TextStringBuilder buffer = new TextStringBuilder(BUFFER_SIZE);
 
   @Override
   public Writer append(final char c) throws IOException {

@@ -261,7 +261,7 @@ class Block extends HelperResolver {
   public Template inverse(final String inverseLabel, final Template inverse) {
     notNull(inverseLabel, "The inverseLabel can't be null.");
     isTrue(inverseLabel.equals("^") || inverseLabel.equals("else"),
-        "The inverseLabel must be one of '^' or 'else'.");
+        "The inverseLabel must be one of '^' or 'else'. Found: " + inverseLabel);
     this.inverseLabel = inverseLabel;
     this.inverse = notNull(inverse, "The inverse's template is required.");
     return this;
@@ -309,16 +309,17 @@ class Block extends HelperResolver {
 
   @Override
   public String text() {
-    return text(true);
+    return text(true, true);
   }
 
   /**
    * Build a text version of this block.
    *
    * @param complete True if the inner block should be added.
+   * @param close If we must close the block.
    * @return A string version of this block.
    */
-  private String text(final boolean complete) {
+  private String text(final boolean complete, final boolean close) {
     StringBuilder buffer = new StringBuilder();
     buffer.append(startDelimiter).append(type).append(name);
     String params = paramsToString(this.params);
@@ -335,15 +336,25 @@ class Block extends HelperResolver {
     buffer.append(endDelimiter);
     if (complete) {
       buffer.append(body == null ? "" : body.text());
-      buffer.append(inverse == Template.EMPTY ? "" : "{{" + inverseLabel + "}}" + inverse.text());
+      if (inverse != EMPTY) {
+        if (inverse instanceof Block) {
+          String elseif = ((Block) inverse).text(true, false);
+          buffer.append(elseif);
+        } else {
+          buffer.append(startDelimiter).append(inverseLabel).append(endDelimiter)
+              .append(inverse.text());
+        }
+      }
     } else {
       buffer.append("\n...\n");
     }
-    buffer.append(startDelimiter);
-    if (type.equals("{{")) {
-      buffer.append("{{");
+    if (close) {
+      buffer.append(startDelimiter);
+      if (type.equals("{{")) {
+        buffer.append("{{");
+      }
+      buffer.append('/').append(name).append(endDelimiter);
     }
-    buffer.append('/').append(name).append(endDelimiter);
     return buffer.toString();
   }
 
@@ -367,13 +378,13 @@ class Block extends HelperResolver {
 
   @Override
   public List<String> collect(final TagType... tagType) {
-    Set<String> tagNames = new LinkedHashSet<String>();
+    Set<String> tagNames = new LinkedHashSet<>();
     if (body != null) {
       tagNames.addAll(body.collect(tagType));
     }
     tagNames.addAll(inverse.collect(tagType));
     tagNames.addAll(super.collect(tagType));
-    return new ArrayList<String>(tagNames);
+    return new ArrayList<>(tagNames);
   }
 
   @Override
@@ -386,12 +397,12 @@ class Block extends HelperResolver {
 
   @Override
   public List<String> collectReferenceParameters() {
-    Set<String> paramNames = new LinkedHashSet<String>();
+    Set<String> paramNames = new LinkedHashSet<>();
     if (body != null) {
       paramNames.addAll(body.collectReferenceParameters());
     }
     paramNames.addAll(inverse.collectReferenceParameters());
     paramNames.addAll(super.collectReferenceParameters());
-    return new ArrayList<String>(paramNames);
+    return new ArrayList<>(paramNames);
   }
 }

@@ -81,7 +81,7 @@ public class TemplateTest extends AbstractTest {
     Handlebars hb = newHandlebars();
     Template template = hb.compileInline(input);
 
-    Set<String> variableNames = new HashSet<String>(template.collectReferenceParameters());
+    Set<String> variableNames = new HashSet<>(template.collectReferenceParameters());
 
     List<String> tagNames = template.collect(TagType.values());
     for (String tagName : tagNames) {
@@ -90,6 +90,6 @@ public class TemplateTest extends AbstractTest {
       }
     }
 
-    assertEquals(new HashSet<String>(expected), variableNames);
+    assertEquals(new HashSet<>(expected), variableNames);
   }
 }

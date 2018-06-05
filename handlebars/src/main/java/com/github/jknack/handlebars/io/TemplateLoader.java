@@ -18,6 +18,7 @@
 package com.github.jknack.handlebars.io;
 
 import java.io.IOException;
+import java.nio.charset.Charset;
 
 /**
  * <p>
@@ -91,4 +92,15 @@ public interface TemplateLoader {
    */
   void setSuffix(final String suffix);
 
+  /**
+   * Set the default charset.
+   *
+   * @param charset Charset.
+   */
+  void setCharset(Charset charset);
+
+  /**
+   * @return Charset.
+   */
+  Charset getCharset();
 }

@@ -221,7 +221,7 @@ public class FieldValueResolver extends MemberValueResolver<FieldWrapper> {
 
   @Override
   protected Set<FieldWrapper> members(final Class<?> clazz) {
-    Set<FieldWrapper> members = new LinkedHashSet<FieldWrapper>();
+    Set<FieldWrapper> members = new LinkedHashSet<>();
     if (clazz.isArray()) {
       members.add(ArrayLengthMember.LENGTH);
     } else {

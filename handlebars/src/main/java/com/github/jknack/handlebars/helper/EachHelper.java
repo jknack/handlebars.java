@@ -62,7 +62,8 @@ public class EachHelper implements Helper<Object> {
       while (loop.hasNext()) {
         Object it = loop.next();
         Context itCtx = Context.newContext(parent, it);
-        itCtx.combine("@index", index)
+        itCtx.combine("@key", index)
+            .combine("@index", index)
             .combine("@first", index == base ? "first" : "")
             .combine("@last", !loop.hasNext() ? "last" : "")
             .combine("@odd", even ? "" : "odd")
@@ -79,6 +80,7 @@ public class EachHelper implements Helper<Object> {
       }
       return buffer;
     } else if (context != null) {
+      int index = 0;
       Iterator loop = options.propertySet(context).iterator();
       Context parent = options.context;
       boolean first = true;
@@ -90,19 +92,22 @@ public class EachHelper implements Helper<Object> {
         Object value = entry.getValue();
         Context itCtx = Context.newBuilder(parent, value)
             .combine("@key", key)
+            .combine("@index", index)
             .combine("@first", first ? "first" : "")
             .combine("@last", !loop.hasNext() ? "last" : "")
             .build();
         buffer.append(options.apply(fn, itCtx, Arrays.asList(value, key)));
         first = false;
+        index++;
       }
       // empty?
       if (first) {
         buffer.append(options.inverse());
       }
       return buffer;
+    } else {
+      return options.inverse();
     }
-    return options.buffer();
   }
 
 }

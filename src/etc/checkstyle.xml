@@ -49,12 +49,12 @@
     <!-- Checks whether files end with a new line.                        -->
     <!-- See http://checkstyle.sf.net/config_misc.html#NewlineAtEndOfFile -->
     <module name="NewlineAtEndOfFile">
-      <property name="lineSeparator" value="lf"/>
+        <property name="lineSeparator" value="lf"/>
     </module>
 
     <!-- Checks that property files contain the same keys.         -->
-    <!-- See http://checkstyle.sf.net/config_misc.html#Translation -->
-    <module name="Translation"/>
+    <!-- See http://checkstyle.sf.net/config_misc.html#Translation
+    <module name="Translation"/>-->
 
     <module name="FileLength"/>
 
@@ -70,6 +70,11 @@
         <property name="format" value="\s+$"/>
         <property name="message" value="Line has trailing spaces."/>
     </module>
+
+    <!--
+    <module name="SuppressionFilter">
+        <property name="file" value="src/etc/suppressions.xml" />
+    </module> -->
 
     <module name="TreeWalker">
 
@@ -98,15 +103,15 @@
         <!-- Checks for Headers                                -->
         <!-- See http://checkstyle.sf.net/config_header.html   -->
         <!-- <module name="Header">                            -->
-            <!-- The follow property value demonstrates the ability     -->
-            <!-- to have access to ANT properties. In this case it uses -->
-            <!-- the ${basedir} property to allow Checkstyle to be run  -->
-            <!-- from any directory within a project. See property      -->
-            <!-- expansion,                                             -->
-            <!-- http://checkstyle.sf.net/config.html#properties        -->
-            <!-- <property                                              -->
-            <!--     name="headerFile"                                  -->
-            <!--     value="${basedir}/java.header"/>                   -->
+        <!-- The follow property value demonstrates the ability     -->
+        <!-- to have access to ANT properties. In this case it uses -->
+        <!-- the ${basedir} property to allow Checkstyle to be run  -->
+        <!-- from any directory within a project. See property      -->
+        <!-- expansion,                                             -->
+        <!-- http://checkstyle.sf.net/config.html#properties        -->
+        <!-- <property                                              -->
+        <!--     name="headerFile"                                  -->
+        <!--     value="${basedir}/java.header"/>                   -->
         <!-- </module> -->
 
 
@@ -116,19 +121,19 @@
         <module name="IllegalImport"/> <!-- defaults to sun.* packages -->
         <module name="RedundantImport"/>
         <module name="UnusedImports">
-          <property name="processJavadoc" value="true"/>
+            <property name="processJavadoc" value="true"/>
         </module>
 
 
         <!-- Checks for Size Violations.                    -->
         <!-- See http://checkstyle.sf.net/config_sizes.html -->
         <module name="LineLength">
-          <property name="ignorePattern" value="^(import).*$"/>
-          <property name="max" value="100"/>
+            <property name="max" value="100"/>
+            <property name="ignorePattern" value="^(import).*$"/>
         </module>
         <module name="MethodLength"/>
         <module name="ParameterNumber">
-          <property name="max" value="10"/>
+            <property name="max" value="20"/>
         </module>
 
 
@@ -163,13 +168,12 @@
         <!-- Checks for common coding problems               -->
         <!-- See http://checkstyle.sf.net/config_coding.html -->
         <!-- <module name="AvoidInlineConditionals"/> -->
-        <module name="DoubleCheckedLocking"/>    <!-- MY FAVOURITE -->
         <module name="EmptyStatement"/>
         <module name="EqualsHashCode"/>
         <!-- <module name="HiddenField"/> -->
         <module name="IllegalInstantiation"/>
         <module name="InnerAssignment"/>
-        <!-- <module name="MagicNumber"/> -->
+        <module name="MagicNumber"/>
         <module name="MissingSwitchDefault"/>
         <module name="RedundantThrows"/>
         <module name="SimplifyBooleanExpression"/>
@@ -182,9 +186,9 @@
         <module name="HideUtilityClassConstructor"/>
         <module name="InterfaceIsType"/>
         <module name="VisibilityModifier">
-          <property name="packageAllowed" value="true"/>
-          <property name="protectedAllowed" value="true"/>
-          <property name="publicMemberPattern" value="handlebars|content|fn|inverse|params|tagType|hash|context|line|column|evidence|reason|message|filename|helperName|blockParams"/>
+            <property name="packageAllowed" value="true"/>
+            <property name="protectedAllowed" value="true"/>
+            <property name="publicMemberPattern" value=".*"/>
         </module>
 
 
@@ -193,7 +197,7 @@
         <module name="ArrayTypeStyle"/>
         <module name="FinalParameters"/>
         <module name="TodoComment">
-          <property name="format" value="WARNING"/>
+            <property name="format" value="WARNING"/>
         </module>
         <module name="UpperEll"/>
 
