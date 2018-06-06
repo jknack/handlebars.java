@@ -230,6 +230,14 @@ class Variable extends HelperResolver {
     super.collect(result, tagType);
   }
 
+  @Override
+  protected void collectWithParams(final Collection<TagWithParams> result, final TagType tagType) {
+    if (this.type == tagType) {
+      result.add(new TagWithParams(name, collectAllParameters()));
+    }
+    super.collectWithParams(result, tagType);
+  }
+
   /**
    * Format and escape a var (if need it).
    *

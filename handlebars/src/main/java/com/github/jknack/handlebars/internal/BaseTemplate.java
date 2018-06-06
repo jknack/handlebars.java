@@ -352,11 +352,11 @@ abstract class BaseTemplate implements Template {
   @Override
   public List<TagWithParams> collectWithParams(final TagType... tagType) {
     isTrue(tagType.length > 0, "At least one tag type is required.");
-    List<TagWithParams> tagsWithParams = new ArrayList<TagWithParams>();
+    List<TagWithParams> tagsWithParams = new ArrayList<>();
     for (TagType tt : tagType) {
       collectWithParams(tagsWithParams, tt);
     }
-    return new ArrayList<TagWithParams>(tagsWithParams);
+    return new ArrayList<>(tagsWithParams);
   }
 
   /**

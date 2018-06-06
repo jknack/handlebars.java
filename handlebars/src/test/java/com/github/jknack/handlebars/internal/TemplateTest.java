@@ -76,19 +76,20 @@ public class TemplateTest extends AbstractTest {
 
   @Test
   public void collectWithParamsTest() throws IOException {
-    List<Param> params = new ArrayList<Param>();
-    params.add(new StrParam("foo"));
-    assertParams("{{i18n foo}}",
-        Arrays.asList((TagWithParams) new TagWithParams("i18n", params)));
+    List<TagWithParams> tagsWithParams = getTagsWithParams("{{i18n \"foo\"}}");
+    assertEquals(tagsWithParams.size(), 1);
+    TagWithParams tagWithParams = tagsWithParams.get(0);
+    assertEquals(tagWithParams.getTag(), "i18n");
+    assertEquals(tagWithParams.getParams().size(), 1);
+    Param param = tagWithParams.getParams().get(0);
+    StrParam strParam = (StrParam) param;
+    assertEquals(strParam.apply(null), "foo");
   }
 
-  private void assertParams(String input, List<TagWithParams> expected) throws IOException {
+  private List<TagWithParams> getTagsWithParams(String input) throws IOException {
     Handlebars hb = newHandlebars();
     Template template = hb.compileInline(input);
-
-    List<TagWithParams> variableNames = new ArrayList<>(template.collectWithParams(TagType.VAR, TagType.TRIPLE_VAR, TagType.SUB_EXPRESSION, TagType.SECTION));
-
-    assertEquals(expected, variableNames);
+    return new ArrayList<>(template.collectWithParams(TagType.VAR));
   }
 
   private void assertVariables(String input, List<String> expected) throws IOException {
