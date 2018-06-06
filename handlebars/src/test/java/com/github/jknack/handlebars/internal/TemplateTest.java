@@ -20,10 +20,7 @@ package com.github.jknack.handlebars.internal;
 import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import org.junit.Test;
 
@@ -77,11 +74,29 @@ public class TemplateTest extends AbstractTest {
         Arrays.asList("v1", "v2", "v3", "v4", "v5", "v6", "v7"));
   }
 
+  @Test
+  public void collectWithParamsTest() throws IOException {
+    List<Param> params = new ArrayList<Param>();
+    params.add(new StrParam("foo"));
+    assertParams("{{i18n foo}}",
+        Arrays.asList((TagWithParams) new TagWithParams("i18n", params)));
+  }
+
+  private void assertParams(String input, List<TagWithParams> expected) throws IOException {
+    Handlebars hb = newHandlebars();
+    Template template = hb.compileInline(input);
+
+    List<TagWithParams> variableNames = new ArrayList<>(template.collectWithParams(TagType.VAR, TagType.TRIPLE_VAR, TagType.SUB_EXPRESSION, TagType.SECTION));
+
+    assertEquals(expected, variableNames);
+  }
+
   private void assertVariables(String input, List<String> expected) throws IOException {
     Handlebars hb = newHandlebars();
     Template template = hb.compileInline(input);
 
     Set<String> variableNames = new HashSet<>(template.collectReferenceParameters());
+
 
     List<String> tagNames = template.collect(TagType.values());
     for (String tagName : tagNames) {

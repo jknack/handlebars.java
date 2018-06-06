@@ -45,6 +45,8 @@ import com.github.jknack.handlebars.helper.IfHelper;
 import com.github.jknack.handlebars.helper.UnlessHelper;
 import com.github.jknack.handlebars.helper.WithHelper;
 
+import javax.swing.text.html.HTML;
+
 /**
  * Blocks render blocks of text one or more times, depending on the value of
  * the key in the current context.
@@ -388,11 +390,30 @@ class Block extends HelperResolver {
   }
 
   @Override
+  public List<TagWithParams> collectWithParams(final TagType... tagType) {
+    List<TagWithParams> tagNames = new ArrayList<TagWithParams>();
+    if (body != null) {
+      tagNames.addAll(body.collectWithParams(tagType));
+    }
+    tagNames.addAll(inverse.collectWithParams(tagType));
+    tagNames.addAll(super.collectWithParams(tagType));
+    return new ArrayList<TagWithParams>(tagNames);
+  }
+
+  @Override
   protected void collect(final Collection<String> result, final TagType tagType) {
     if (tagType == this.tagType) {
       result.add(name);
     }
     super.collect(result, tagType);
+  }
+
+  @Override
+  protected void collectWithParams(final Collection<TagWithParams> result, final TagType tagType) {
+    if (tagType == this.tagType) {
+      result.add(new TagWithParams(name, collectAllParameters()));
+    }
+    super.collectWithParams(result, tagType);
   }
 
   @Override
@@ -403,6 +424,17 @@ class Block extends HelperResolver {
     }
     paramNames.addAll(inverse.collectReferenceParameters());
     paramNames.addAll(super.collectReferenceParameters());
+    return new ArrayList<>(paramNames);
+  }
+
+  @Override
+  public List<Param> collectAllParameters() {
+    Set<Param> paramNames = new LinkedHashSet<>();
+    if (body != null) {
+      paramNames.addAll(body.collectAllParameters());
+    }
+    paramNames.addAll(inverse.collectAllParameters());
+    paramNames.addAll(super.collectAllParameters());
     return new ArrayList<>(paramNames);
   }
 }

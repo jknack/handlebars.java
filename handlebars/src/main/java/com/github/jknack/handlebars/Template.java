@@ -17,6 +17,9 @@
  */
 package com.github.jknack.handlebars;
 
+import com.github.jknack.handlebars.internal.Param;
+import com.github.jknack.handlebars.internal.TagWithParams;
+
 import java.io.IOException;
 import java.io.Writer;
 import java.util.Collections;
@@ -99,6 +102,16 @@ public interface Template {
 
     @Override
     public List<String> collect(final TagType... tagType) {
+      return Collections.emptyList();
+    }
+
+    @Override
+    public List<Param> collectAllParameters() {
+        return Collections.emptyList();
+    }
+
+    @Override
+    public List<TagWithParams> collectWithParams(final TagType... tagType) {
       return Collections.emptyList();
     }
 
@@ -205,6 +218,33 @@ public interface Template {
   List<String> collect(TagType... tagType);
 
   /**
+   * Collect all the tag names under the given tagType.
+   * <p>
+   * Usage:
+   * </p>
+   *
+   * <pre>
+   * {{hello}}
+   * {{var 1}}
+   * {{{tripleVar}}}
+   * </pre>
+   * <p>
+   * <code>collect(TagType.VAR)</code> returns <code>[hello, var]</code>
+   * </p>
+   * <p>
+   * <code>collect(TagType.TRIPLE_VAR)</code> returns <code>[tripleVar]</code>
+   * </p>
+   * <p>
+   * <code>collect(TagType.VAR, TagType.TRIPLE_VAR)</code> returns
+   * <code>[hello, var, tripleVar]</code>
+   * </p>
+   *
+   * @param tagType The tag type. Required.
+   * @return A list with tag names.
+   */
+
+  List<TagWithParams> collectWithParams(TagType... tagType);
+  /**
    * Collects all the parameters which are also variables.
    * <p>
    * Usage:
@@ -221,6 +261,25 @@ public interface Template {
    * @return A list with reference parameter names.
    */
   List<String> collectReferenceParameters();
+
+
+  /**
+   * Collects all the parameters which are also variables.
+   * <p>
+   * Usage:
+   * </p>
+   *
+   * <pre>
+   * {{#if v1}}{{/if}}
+   * {{#each v2 "test"}}{{/each}}
+   * </pre>
+   * <p>
+   * <code>collectReferenceParameters()</code> returns <code>[v1, v2]</code>
+   * </p>
+   *
+   * @return A list with reference parameter names.
+   */
+  List<Param> collectAllParameters();
 
   /**
    * @return The template file's name.
