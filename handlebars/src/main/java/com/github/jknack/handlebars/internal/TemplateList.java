@@ -134,10 +134,10 @@ class TemplateList extends BaseTemplate implements Iterable<Template> {
   }
 
   @Override
-  public List<TagWithParams> collectWithParams(final TagType... tagType) {
+  public List<TagWithParams> collectWithParameters(final TagType... tagType) {
     List<TagWithParams> tagNames = new ArrayList<>();
     for (Template node : nodes) {
-      tagNames.addAll(node.collectWithParams(tagType));
+      tagNames.addAll(node.collectWithParameters(tagType));
     }
     return new ArrayList<>(tagNames);
   }

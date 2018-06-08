@@ -45,8 +45,6 @@ import com.github.jknack.handlebars.helper.IfHelper;
 import com.github.jknack.handlebars.helper.UnlessHelper;
 import com.github.jknack.handlebars.helper.WithHelper;
 
-import javax.swing.text.html.HTML;
-
 /**
  * Blocks render blocks of text one or more times, depending on the value of
  * the key in the current context.
@@ -390,13 +388,13 @@ class Block extends HelperResolver {
   }
 
   @Override
-  public List<TagWithParams> collectWithParams(final TagType... tagType) {
+  public List<TagWithParams> collectWithParameters(final TagType... tagType) {
     List<TagWithParams> tagNames = new ArrayList<TagWithParams>();
     if (body != null) {
-      tagNames.addAll(body.collectWithParams(tagType));
+      tagNames.addAll(body.collectWithParameters(tagType));
     }
-    tagNames.addAll(inverse.collectWithParams(tagType));
-    tagNames.addAll(super.collectWithParams(tagType));
+    tagNames.addAll(inverse.collectWithParameters(tagType));
+    tagNames.addAll(super.collectWithParameters(tagType));
     return new ArrayList<TagWithParams>(tagNames);
   }
 
@@ -409,11 +407,11 @@ class Block extends HelperResolver {
   }
 
   @Override
-  protected void collectWithParams(final Collection<TagWithParams> result, final TagType tagType) {
+  protected void collectWithParameters(final Collection<TagWithParams> result, final TagType tagType) {
     if (tagType == this.tagType) {
       result.add(new TagWithParams(name, collectAllParameters()));
     }
-    super.collectWithParams(result, tagType);
+    super.collectWithParameters(result, tagType);
   }
 
   @Override

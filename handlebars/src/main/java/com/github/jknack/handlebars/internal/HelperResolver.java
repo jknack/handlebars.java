@@ -264,10 +264,10 @@ abstract class HelperResolver extends BaseTemplate {
   }
 
   @Override
-  protected void collectWithParams(final Collection<TagWithParams> result, final TagType tagType) {
+  protected void collectWithParameters(final Collection<TagWithParams> result, final TagType tagType) {
     for (Object param : this.params) {
       if (param instanceof VarParam) {
-        ((VarParam) param).fn.collectWithParams(result, tagType);
+        ((VarParam) param).fn.collectWithParameters(result, tagType);
       }
     }
   }
@@ -297,8 +297,6 @@ abstract class HelperResolver extends BaseTemplate {
         result.add(param);
       }
     }
-    /*for (Object hashValue : hash.values()) {
-    }*/
     result.addAll(hash.values());
   }
 

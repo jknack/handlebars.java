@@ -106,12 +106,7 @@ public interface Template {
     }
 
     @Override
-    public List<Param> collectAllParameters() {
-        return Collections.emptyList();
-    }
-
-    @Override
-    public List<TagWithParams> collectWithParams(final TagType... tagType) {
+    public List<TagWithParams> collectWithParameters(final TagType... tagType) {
       return Collections.emptyList();
     }
 
@@ -119,6 +114,9 @@ public interface Template {
     public List<String> collectReferenceParameters() {
       return Collections.emptyList();
     }
+
+    @Override
+    public List<Param> collectAllParameters() { return Collections.emptyList(); }
   };
 
   /**
@@ -218,7 +216,7 @@ public interface Template {
   List<String> collect(TagType... tagType);
 
   /**
-   * Collect all the tag names under the given tagType.
+   * Collect all the tag names under the given tagType and their parameters.
    * <p>
    * Usage:
    * </p>
@@ -229,21 +227,21 @@ public interface Template {
    * {{{tripleVar}}}
    * </pre>
    * <p>
-   * <code>collect(TagType.VAR)</code> returns <code>[hello, var]</code>
+   * <code>collectWithParameters(TagType.VAR)</code> returns <code>[(hello, []), (var, [1])]</code>
    * </p>
    * <p>
-   * <code>collect(TagType.TRIPLE_VAR)</code> returns <code>[tripleVar]</code>
+   * <code>collect(TagType.TRIPLE_VAR)</code> returns <code>[(tripleVar, [])]</code>
    * </p>
    * <p>
    * <code>collect(TagType.VAR, TagType.TRIPLE_VAR)</code> returns
-   * <code>[hello, var, tripleVar]</code>
+   * <code>[(hello, []), (var, [1]), (tripleVar, [])]</code>
    * </p>
    *
    * @param tagType The tag type. Required.
-   * @return A list with tag names.
+   * @return A list of TagWithParams.
    */
 
-  List<TagWithParams> collectWithParams(TagType... tagType);
+  List<TagWithParams> collectWithParameters(TagType... tagType);
   /**
    * Collects all the parameters which are also variables.
    * <p>
@@ -264,7 +262,7 @@ public interface Template {
 
 
   /**
-   * Collects all the parameters which are also variables.
+   * Collects all the parameters.
    * <p>
    * Usage:
    * </p>
@@ -274,10 +272,10 @@ public interface Template {
    * {{#each v2 "test"}}{{/each}}
    * </pre>
    * <p>
-   * <code>collectReferenceParameters()</code> returns <code>[v1, v2]</code>
+   * <code>collectAllParameters()</code> returns <code>[v1, v2]</code>
    * </p>
    *
-   * @return A list with reference parameter names.
+   * @return A list of Param.
    */
   List<Param> collectAllParameters();
 

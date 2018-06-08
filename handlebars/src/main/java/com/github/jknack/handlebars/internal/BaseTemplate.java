@@ -350,11 +350,11 @@ abstract class BaseTemplate implements Template {
   }
 
   @Override
-  public List<TagWithParams> collectWithParams(final TagType... tagType) {
+  public List<TagWithParams> collectWithParameters(final TagType... tagType) {
     isTrue(tagType.length > 0, "At least one tag type is required.");
     List<TagWithParams> tagsWithParams = new ArrayList<>();
     for (TagType tt : tagType) {
-      collectWithParams(tagsWithParams, tt);
+      collectWithParameters(tagsWithParams, tt);
     }
     return new ArrayList<>(tagsWithParams);
   }
@@ -370,13 +370,10 @@ abstract class BaseTemplate implements Template {
   }
 
   /**
-   * Child classes might want to check if they apply to the tagtype and append them self to the
-   * result list.
-   *
-   * @param result The result list.
+   * @param result The result list of TagWithParams.
    * @param tagType The matching tagtype.
    */
-  protected void collectWithParams(final Collection<TagWithParams> result, final TagType tagType) {
+  protected void collectWithParameters(final Collection<TagWithParams> result, final TagType tagType) {
   }
 
   @Override
@@ -400,7 +397,7 @@ abstract class BaseTemplate implements Template {
   }
 
   /**
-   * @param result The result list to add new parameters to.
+   * @param result The result list of Params to add new Params to.
    */
   protected void collectAllParameters(final Collection<Param> result) {
   }
