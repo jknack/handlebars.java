@@ -7,7 +7,7 @@ public class TagWithParams {
     private String tag;
     private List<Param> params;
     private TagType tagType;
-    
+
     TagWithParams(String tag, List<Param> params, TagType tagType) {
         this.tag = tag;
         this.params = params;

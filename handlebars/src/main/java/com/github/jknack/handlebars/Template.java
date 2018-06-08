@@ -227,21 +227,21 @@ public interface Template {
    * {{{tripleVar}}}
    * </pre>
    * <p>
-   * <code>collectWithParameters(TagType.VAR)</code> returns <code>[(hello, []), (var, [1])]</code>
+   * <code>collectWithParameters(TagType.VAR)</code> returns <code>List(TagWithParams(hello, [], TagType.VAR), TagWithParams(var, [1], TagType.VAR))</code>
    * </p>
    * <p>
-   * <code>collect(TagType.TRIPLE_VAR)</code> returns <code>[(tripleVar, [])]</code>
+   * <code>collect(TagType.TRIPLE_VAR)</code> returns <code>List(TagWithParams(tripleVar, [], TagType.TRIPLE_VAR))</code>
    * </p>
    * <p>
    * <code>collect(TagType.VAR, TagType.TRIPLE_VAR)</code> returns
-   * <code>[(hello, []), (var, [1]), (tripleVar, [])]</code>
+   * <code>List(TagWithParams(hello, [], TagType.VAR), TagWithParams(var, [1], TagType.VAR), TagWithParams(tripleVar, [], TagType.TRIPLE_VAR))</code>
    * </p>
    *
    * @param tagType The tag type. Required.
    * @return A list of TagWithParams.
    */
-
   List<TagWithParams> collectWithParameters(TagType... tagType);
+
   /**
    * Collects all the parameters which are also variables.
    * <p>
@@ -259,7 +259,6 @@ public interface Template {
    * @return A list with reference parameter names.
    */
   List<String> collectReferenceParameters();
-
 
   /**
    * Collects all the parameters.
