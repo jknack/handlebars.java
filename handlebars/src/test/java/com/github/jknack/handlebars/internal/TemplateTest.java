@@ -89,7 +89,7 @@ public class TemplateTest extends AbstractTest {
   private List<TagWithParams> getTagsWithParams(String input) throws IOException {
     Handlebars hb = newHandlebars();
     Template template = hb.compileInline(input);
-    return new ArrayList<>(template.collectWithParams(TagType.VAR));
+    return new ArrayList<>(template.collectWithParameters(TagType.VAR));
   }
 
   private void assertVariables(String input, List<String> expected) throws IOException {
