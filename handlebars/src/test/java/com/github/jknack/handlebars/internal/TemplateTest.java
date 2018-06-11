@@ -80,6 +80,7 @@ public class TemplateTest extends AbstractTest {
     List<TagWithParams> tagsWithParams = getTagsWithParameters("{{i18n \"foo\"}}");
     assertEquals(tagsWithParams.size(), 1);
     TagWithParams tagWithParams = tagsWithParams.get(0);
+    assertEquals(tagWithParams.getTagType(), TagType.VAR);
     assertEquals(tagWithParams.getTag(), "i18n");
     assertEquals(tagWithParams.getParams().size(), 1);
     Param param = tagWithParams.getParams().get(0);
@@ -92,6 +93,7 @@ public class TemplateTest extends AbstractTest {
     List<TagWithParams> tagsWithParams = getTagsWithParameters("{{#each items as |item|}}{{i18n item}}{{/each}}");
     assertEquals(tagsWithParams.size(), 1);
     TagWithParams tagWithParams = tagsWithParams.get(0);
+    assertEquals(tagWithParams.getTagType(), TagType.VAR);
     assertEquals(tagWithParams.getTag(), "i18n");
     assertEquals(tagWithParams.getParams().size(), 1);
     Param param = tagWithParams.getParams().get(0);
@@ -105,6 +107,7 @@ public class TemplateTest extends AbstractTest {
     assertEquals(tagsWithParams.size(), 2);
 
     TagWithParams embeddedTagWithParams = tagsWithParams.get(0);
+    assertEquals(embeddedTagWithParams.getTagType(), TagType.VAR);
     assertEquals(embeddedTagWithParams.getTag(), "embedded");
     assertEquals(embeddedTagWithParams.getParams().size(), 3);
 
@@ -121,6 +124,7 @@ public class TemplateTest extends AbstractTest {
     assertEquals(refParam3.toString(), "baz");
 
     TagWithParams i18nTagWithParams = tagsWithParams.get(1);
+    assertEquals(i18nTagWithParams.getTagType(), TagType.VAR);
     assertEquals(i18nTagWithParams.getTag(), "i18n");
     assertEquals(i18nTagWithParams.getParams().size(), 1);
     Param param = i18nTagWithParams.getParams().get(0);
