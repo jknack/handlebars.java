@@ -18,6 +18,7 @@
 package com.github.jknack.handlebars.internal;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.util.*;
@@ -76,7 +77,7 @@ public class TemplateTest extends AbstractTest {
 
   @Test
   public void collectWithParamsTest() throws IOException {
-    List<TagWithParams> tagsWithParams = getTagsWithParams("{{i18n \"foo\"}}");
+    List<TagWithParams> tagsWithParams = getTagsWithParameters("{{i18n \"foo\"}}");
     assertEquals(tagsWithParams.size(), 1);
     TagWithParams tagWithParams = tagsWithParams.get(0);
     assertEquals(tagWithParams.getTag(), "i18n");
@@ -86,7 +87,57 @@ public class TemplateTest extends AbstractTest {
     assertEquals(strParam.apply(null), "foo");
   }
 
-  private List<TagWithParams> getTagsWithParams(String input) throws IOException {
+  @Test
+  public void collectWithParamsForEachTest() throws IOException {
+    List<TagWithParams> tagsWithParams = getTagsWithParameters("{{#each items as |item|}}{{i18n item}}{{/each}}");
+    assertEquals(tagsWithParams.size(), 1);
+    TagWithParams tagWithParams = tagsWithParams.get(0);
+    assertEquals(tagWithParams.getTag(), "i18n");
+    assertEquals(tagWithParams.getParams().size(), 1);
+    Param param = tagWithParams.getParams().get(0);
+    RefParam refParam = (RefParam) param;
+    assertEquals(refParam.toString(), "item");
+  }
+
+  @Test
+  public void collectWithParamsMultipleParamsTest() throws IOException {
+    List<TagWithParams> tagsWithParams = getTagsWithParameters("{{embedded foo bar baz}}{{i18n \"value1\"}}");
+    assertEquals(tagsWithParams.size(), 2);
+
+    TagWithParams embeddedTagWithParams = tagsWithParams.get(0);
+    assertEquals(embeddedTagWithParams.getTag(), "embedded");
+    assertEquals(embeddedTagWithParams.getParams().size(), 3);
+
+    Param param1 = embeddedTagWithParams.getParams().get(0);
+    RefParam refParam1 = (RefParam) param1;
+    assertEquals(refParam1.toString(), "foo");
+
+    Param param2 = embeddedTagWithParams.getParams().get(1);
+    RefParam refParam2 = (RefParam) param2;
+    assertEquals(refParam2.toString(), "bar");
+
+    Param param3 = embeddedTagWithParams.getParams().get(2);
+    RefParam refParam3 = (RefParam) param3;
+    assertEquals(refParam3.toString(), "baz");
+
+    TagWithParams i18nTagWithParams = tagsWithParams.get(1);
+    assertEquals(i18nTagWithParams.getTag(), "i18n");
+    assertEquals(i18nTagWithParams.getParams().size(), 1);
+    Param param = i18nTagWithParams.getParams().get(0);
+    StrParam strParam = (StrParam) param;
+    assertEquals(strParam.apply(null), "value1");
+  }
+
+  @Test
+  public void collectWithParamsNoParamsTest() throws IOException {
+    List<TagWithParams> tagsWithParams = getTagsWithParameters("{{test}}");
+    assertEquals(tagsWithParams.size(), 1);
+    TagWithParams tagWithParams = tagsWithParams.get(0);
+    assertEquals(tagWithParams.getTag(), "test");
+    assertTrue(tagWithParams.getParams().isEmpty());
+  }
+
+  private List<TagWithParams> getTagsWithParameters(String input) throws IOException {
     Handlebars hb = newHandlebars();
     Template template = hb.compileInline(input);
     return new ArrayList<>(template.collectWithParameters(TagType.VAR));
@@ -97,7 +148,6 @@ public class TemplateTest extends AbstractTest {
     Template template = hb.compileInline(input);
 
     Set<String> variableNames = new HashSet<>(template.collectReferenceParameters());
-
 
     List<String> tagNames = template.collect(TagType.values());
     for (String tagName : tagNames) {
