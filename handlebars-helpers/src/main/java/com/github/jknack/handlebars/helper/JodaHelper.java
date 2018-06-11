@@ -29,7 +29,7 @@ import com.github.jknack.handlebars.Options;
 /**
  * Handlebars Helper for JodaTime ReadableInstance objects.
  *
- * @author @mrhanlon https://github.com/mrhanlon
+ * @author mrhanlon
  */
 public enum JodaHelper implements Helper<ReadableInstant> {
 

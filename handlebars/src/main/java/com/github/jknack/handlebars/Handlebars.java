@@ -790,7 +790,7 @@ public class Handlebars implements HelperRegistry {
    * @param filename The file name (just for debugging purpose). Required.
    * @param source The JavaScript source. Required.
    * @return This handlebars object.
-   * @throws Exception If the JavaScript helpers can't be registered.
+   * @throws IOException If the JavaScript helpers can't be registered.
    */
   @Override
   public Handlebars registerHelpers(final String filename, final String source) throws IOException {
@@ -1251,9 +1251,9 @@ public class Handlebars implements HelperRegistry {
   /**
    * If true, partial blocks will implicitly be evaluated before the partials will actually
    * be executed. If false, you need to explicitly evaluate and render partial blocks with
-   * <pre>
+   * <pre>{@code
    *     {{> @partial-block}}
-   * </pre>
+   * }</pre>
    * Attention: If this is set to true, Handlebars works *much* slower! while rendering
    * partial blocks. Default is: true for compatibility reasons.
    *
@@ -1269,9 +1269,9 @@ public class Handlebars implements HelperRegistry {
   /**
    * If true, partial blocks will implicitly be evaluated before the partials will actually
    * be executed. If false, you need to explicitly evaluate and render partial blocks with
-   * <pre>
+   * <pre>{@code
    *     {{> @partial-block}}
-   * </pre>
+   * }</pre>
    * Attention: If this is set to true, Handlebars works *much* slower! while rendering
    * partial blocks. Default is: true for compatibility reasons.
    *
@@ -1289,9 +1289,9 @@ public class Handlebars implements HelperRegistry {
    * If true, partial blocks will implicitly be evaluated before the partials will actually
    * be executed. If false, you need to explicitly evaluate and render partial blocks with
    *
-   * <pre>
+   * <pre>{@code
    *     {{> @partial-block}}
-   * </pre>
+   * }</pre>
    * Attention: If this is set to true, Handlebars works *much* slower! while rendering
    * partial blocks. Default is: true for compatibility reasons.
    *

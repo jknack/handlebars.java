@@ -235,7 +235,7 @@ public enum HumanizeHelper implements Helper<Object> {
    * <p>
    * Constructs a message with pluralization logic from the given template.
    * </p>
-   * <h5>Examples:</h5>
+   * Examples:
    *
    * <pre>
    * MessageFormat msg =
@@ -274,7 +274,7 @@ public enum HumanizeHelper implements Helper<Object> {
    * {{pluralize "pattern" arg0, arg1, ..., argn [locale="default"]}}
    * </pre>
    *
-   * @see Humanize#pluralize(String, Locale)
+   * @see Humanize#pluralizeFormat(String, Locale)
    */
   pluralize {
     @Override
@@ -289,6 +289,7 @@ public enum HumanizeHelper implements Helper<Object> {
    * <p>
    * Transforms a text into a representation suitable to be used in an URL.
    * </p>
+   * <pre>{@code
    * <table border="0" cellspacing="0" cellpadding="3" width="100%">
    * <tr>
    * <th class="colFirst">Input</th>
@@ -303,6 +304,7 @@ public enum HumanizeHelper implements Helper<Object> {
    * <td>"lo-siento-no-hablo-espanol"</td>
    * </tr>
    * </table>
+   * }</pre>
    *
    * <pre>
    * {{slugify string}}

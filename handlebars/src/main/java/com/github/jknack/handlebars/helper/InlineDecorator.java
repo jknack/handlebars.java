@@ -30,7 +30,7 @@ import com.github.jknack.handlebars.Template;
  * Inline partials via {@link Decorator} API.
  *
  * <pre>
- * {{#*inline \"myPartial\"}}success{{/inline}}{{> myPartial}}
+ * {{#*inline \"myPartial\"}}success{{/inline}}{{&gt; myPartial}}
  * </pre>
  *
  * @author edgar

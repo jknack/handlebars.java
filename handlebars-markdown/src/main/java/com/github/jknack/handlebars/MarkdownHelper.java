@@ -30,7 +30,7 @@ import org.pegdown.PegDownProcessor;
 public class MarkdownHelper implements Helper<Object> {
 
   /**
-   * A singleton version of {@link Jackson2Helper}.
+   * A singleton version of {@link MarkdownHelper}.
    */
   public static final Helper<Object> INSTANCE = new MarkdownHelper();
 

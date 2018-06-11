@@ -36,8 +36,9 @@ public enum NumberHelper implements Helper<Object> {
    * You can use the isEven helper to return a value only if the first argument
    * is even. Otherwise return null.
    *
+   * <pre>{@code
    * <li class="{{isEven value "leftBox"}}">
-   *
+   * }</pre>
    * If value is 2, the output will be "leftBox".
    *
    */
@@ -52,8 +53,9 @@ public enum NumberHelper implements Helper<Object> {
    * You can use the isOdd helper to return a value only if the first argument
    * is odd. Otherwise return null.
    *
+   * <pre>{@code
    * <li class="{{isOdd value "rightBox"}}">
-   *
+   * }</pre>
    * If value is 3, the output will be "rightBox".
    *
    */
@@ -68,8 +70,9 @@ public enum NumberHelper implements Helper<Object> {
    * You can use the stripes helper to return different value if the passed
    * argument is odd or even.
    *
+   * <pre>{@code
    * <tr class="{{stripes value "row-even" "row-odd"}}">
-   *
+   * }</pre>
    * If value is 2, the output will be "row-even".
    *
    */
