@@ -1254,7 +1254,8 @@ public class Handlebars implements HelperRegistry {
    * <pre>
    *     {{> @partial-block}}
    * </pre>
-   * Attention: If this is set to true, Handlebars works *much* slower!
+   * Attention: If this is set to true, Handlebars works *much* slower! while rendering
+   * partial blocks. Default is: true for compatibility reasons.
    *
    * @return If true partial blocks will be evaluated before the partial will be rendered
    *         to allow inline block side effects.
@@ -1271,7 +1272,8 @@ public class Handlebars implements HelperRegistry {
    * <pre>
    *     {{> @partial-block}}
    * </pre>
-   * Attention: If this is set to true, Handlebars works *much* slower!
+   * Attention: If this is set to true, Handlebars works *much* slower! while rendering
+   * partial blocks. Default is: true for compatibility reasons.
    *
    * @param preEvaluatePartialBlocks If true partial blocks will be evaluated before the
    *                                 partial will be rendered to allow inline block side
@@ -1290,7 +1292,8 @@ public class Handlebars implements HelperRegistry {
    * <pre>
    *     {{> @partial-block}}
    * </pre>
-   * Attention: If this is set to true, Handlebars works *much* slower!
+   * Attention: If this is set to true, Handlebars works *much* slower! while rendering
+   * partial blocks. Default is: true for compatibility reasons.
    *
    * @param preEvaluatePartialBlocks If true partial blocks will be evaluated before the
    *                                 partial will be rendered to allow inline block side
