@@ -23,6 +23,7 @@ import static org.apache.commons.lang3.Validate.notNull;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.Writer;
+import java.util.Arrays;
 import java.nio.charset.Charset;
 import java.util.Collections;
 import java.util.HashMap;
@@ -123,6 +124,16 @@ class Partial extends HelperResolver {
       Map<String, Template> inlineTemplates = partials.getLast();
       Template callee = context.data(Context.CALLEE);
 
+      final boolean pathIsPartialBlock = "@partial-block".equals(path);
+      final Template lastPartialBlock = inlineTemplates.get("@partial-block");
+      final boolean parentIsNotLastPartialBlock = !isCalleeOf(callee, lastPartialBlock);
+
+      if (pathIsPartialBlock && parentIsNotLastPartialBlock) {
+        throw new IllegalArgumentException(
+                callee + " does not provide a @partial-block for " + this
+        );
+      }
+
       if (this.partial != null) {
         if (handlebars.preEvaluatePartialBlocks()) {
           this.partial.apply(context);
@@ -195,6 +206,23 @@ class Partial extends HelperResolver {
           column, reason, text(), message);
       throw new HandlebarsException(error);
     }
+  }
+
+  /**
+   * @param callee parent template of the currently traversed template
+   * @param partialBlock partial block candidate
+   * @return returns if callee and partialBlock are the same
+   */
+  private boolean isCalleeOf(final Template callee, final Template partialBlock) {
+    if (callee == null || partialBlock == null) {
+      return false;
+    }
+
+    if (!callee.filename().equalsIgnoreCase(partialBlock.filename())) {
+      return false;
+    }
+
+    return Arrays.equals(callee.position(), partialBlock.position());
   }
 
   /**

@@ -66,7 +66,7 @@ public class PartialBlockForwardingTemplate extends BaseTemplate {
         this.block = block;
         this.parentPartialBlock = parentPartialBlock;
         this.callee = callee;
-        this.filename(block.filename());
+        this.filename(parent.filename());
         this.position(parent.position()[0], parent.position()[1]);
     }
 
