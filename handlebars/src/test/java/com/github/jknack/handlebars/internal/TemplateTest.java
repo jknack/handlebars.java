@@ -90,15 +90,30 @@ public class TemplateTest extends AbstractTest {
 
   @Test
   public void collectWithParamsForEachTest() throws IOException {
-    List<TagWithParams> tagsWithParams = getTagsWithParameters("{{#each items as |item|}}{{i18n item}}{{/each}}");
-    assertEquals(tagsWithParams.size(), 1);
-    TagWithParams tagWithParams = tagsWithParams.get(0);
-    assertEquals(tagWithParams.getTagType(), TagType.VAR);
-    assertEquals(tagWithParams.getTag(), "i18n");
-    assertEquals(tagWithParams.getParams().size(), 1);
-    Param param = tagWithParams.getParams().get(0);
-    RefParam refParam = (RefParam) param;
-    assertEquals(refParam.toString(), "item");
+    List<TagWithParams> tagsWithParams = getTagsWithParameters("{{#each shoppingCartItems as |item|}}{{i18n item}}{{/each}}");
+    assertEquals(tagsWithParams.size(), 2);
+
+    TagWithParams i18nTagWithParams = tagsWithParams.get(0);
+    System.out.println("i18nTagWithParams.getParams() is "+ i18nTagWithParams.getParams());
+    assertEquals(i18nTagWithParams.getTagType(), TagType.VAR);
+    assertEquals(i18nTagWithParams.getTag(), "i18n");
+    assertEquals(i18nTagWithParams.getParams().size(), 1);
+    Param i18nParam = i18nTagWithParams.getParams().get(0);
+    RefParam i18nRefParam = (RefParam) i18nParam;
+    assertEquals(i18nRefParam.toString(), "item");
+
+    TagWithParams eachTagWithParams = tagsWithParams.get(1);
+    assertEquals(eachTagWithParams.getTagType(), TagType.SECTION);
+    assertEquals(eachTagWithParams.getTag(), "each");
+    assertEquals(eachTagWithParams.getParams().size(), 2);
+    System.out.println("eachTagWithParams.getParams() is "+ eachTagWithParams.getParams());
+    Param param1 = eachTagWithParams.getParams().get(0);
+    RefParam refParam1 = (RefParam) param1;
+    assertEquals(refParam1.toString(), "item");
+    Param param2 = eachTagWithParams.getParams().get(1);
+    RefParam refParam2 = (RefParam) param2;
+    assertEquals(refParam2.toString(), "shoppingCartItems");
+
   }
 
   @Test
@@ -144,7 +159,7 @@ public class TemplateTest extends AbstractTest {
   private List<TagWithParams> getTagsWithParameters(String input) throws IOException {
     Handlebars hb = newHandlebars();
     Template template = hb.compileInline(input);
-    return new ArrayList<>(template.collectWithParameters(TagType.VAR));
+    return new ArrayList<>(template.collectWithParameters(TagType.values()));
   }
 
   private void assertVariables(String input, List<String> expected) throws IOException {

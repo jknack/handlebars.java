@@ -21,4 +21,9 @@ public class TagWithParams {
         return params;
     }
     public TagType getTagType() { return tagType; }
+
+    @Override
+    public String toString() {
+        return "TagWithParams(" + this.tag + ", " + this.params.toString() + ", " + this.tagType + ")";
+    }
 }
