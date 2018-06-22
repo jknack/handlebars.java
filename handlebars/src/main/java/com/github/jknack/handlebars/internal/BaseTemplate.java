@@ -373,7 +373,8 @@ abstract class BaseTemplate implements Template {
    * @param result The result list of TagWithParams.
    * @param tagType The matching tagtype.
    */
-  protected void collectWithParameters(final Collection<TagWithParams> result, final TagType tagType) {
+  protected void collectWithParameters(final Collection<TagWithParams> result,
+                                       final TagType tagType) {
   }
 
   @Override

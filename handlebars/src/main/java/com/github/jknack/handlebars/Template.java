@@ -116,7 +116,10 @@ public interface Template {
     }
 
     @Override
-    public List<Param> collectAllParameters() { return Collections.emptyList(); }
+    public List<Param> collectAllParameters() {
+      return Collections.emptyList();
+    }
+
   };
 
   /**
@@ -227,14 +230,17 @@ public interface Template {
    * {{{tripleVar}}}
    * </pre>
    * <p>
-   * <code>collectWithParameters(TagType.VAR)</code> returns <code>[TagWithParams(hello, [], TagType.VAR), TagWithParams(var, [1], TagType.VAR)]</code>
+   * <code>collectWithParameters(TagType.VAR)</code> returns
+   * <code>[TagWithParams(hello, [], TagType.VAR), TagWithParams(var, [1], TagType.VAR)]</code>
    * </p>
    * <p>
-   * <code>collect(TagType.TRIPLE_VAR)</code> returns <code>[TagWithParams(tripleVar, [], TagType.TRIPLE_VAR)]</code>
+   * <code>collect(TagType.TRIPLE_VAR)</code> returns
+   * <code>[TagWithParams(tripleVar, [], TagType.TRIPLE_VAR)]</code>
    * </p>
    * <p>
    * <code>collect(TagType.VAR, TagType.TRIPLE_VAR)</code> returns
-   * <code>[TagWithParams(hello, [], TagType.VAR), TagWithParams(var, [1], TagType.VAR), TagWithParams(tripleVar, [], TagType.TRIPLE_VAR)]</code>
+   * <code>[TagWithParams(hello, [], TagType.VAR), TagWithParams(var, [1], TagType.VAR),
+   * TagWithParams(tripleVar, [], TagType.TRIPLE_VAR)]</code>
    * </p>
    *
    * @param tagType The tag type. Required.

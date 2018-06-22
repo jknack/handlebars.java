@@ -264,7 +264,8 @@ abstract class HelperResolver extends BaseTemplate {
   }
 
   @Override
-  protected void collectWithParameters(final Collection<TagWithParams> result, final TagType tagType) {
+  protected void collectWithParameters(final Collection<TagWithParams> result,
+                                       final TagType tagType) {
     for (Object param : this.params) {
       if (param instanceof VarParam) {
         ((VarParam) param).fn.collectWithParameters(result, tagType);
