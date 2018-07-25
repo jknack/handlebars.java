@@ -17,6 +17,7 @@
  */
 package com.github.jknack.handlebars.springmvc;
 
+import static com.github.jknack.handlebars.springmvc.SpringUtils.createI18nSource;
 import static java.util.Objects.requireNonNull;
 
 import java.io.File;
@@ -26,10 +27,7 @@ import java.io.Reader;
 import java.net.URI;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.ResourceBundle;
@@ -262,33 +260,6 @@ public class HandlebarsViewResolver extends AbstractTemplateViewResolver
     handlebars.setDeletePartialAfterMerge(deletePartialAfterMerge);
 
     handlebars.setCharset(charset);
-  }
-
-  /**
-   * Creates a new i18n source.
-   *
-   * @param context The application context.
-   * @return A new i18n source.
-   */
-  private static I18nSource createI18nSource(final ApplicationContext context) {
-    return new I18nSource() {
-      @Override
-      public String message(final String key, final Locale locale, final Object... args) {
-        return context.getMessage(key, args, locale);
-      }
-
-      @Override
-      public String[] keys(final String basename, final Locale locale) {
-        ResourceBundle bundle = ResourceBundle.getBundle(basename, locale);
-        Enumeration<String> keys = bundle.getKeys();
-        List<String> result = new ArrayList<String>();
-        while (keys.hasMoreElements()) {
-          String key = keys.nextElement();
-          result.add(key);
-        }
-        return result.toArray(new String[result.size()]);
-      }
-    };
   }
 
   /**
