@@ -37,7 +37,7 @@ public class FormatterTest extends AbstractTest {
   public void testFormatterWithoutMatch() throws IOException {
     Template t = compile("string is {{this}}");
 
-    assertEquals("string is testvalue", t.apply("testValue"));
+    assertEquals("string is testvalue", t.apply("testvalue"));
   }
 
   @Test
