@@ -68,7 +68,7 @@ public class FormatterChain implements Formatter.Chain {
       return Formatter.NOOP;
     }
   }
-  
+
   @Override
   public Object format(final Object value) {
     Object output;
