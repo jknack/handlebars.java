@@ -14,7 +14,6 @@ public class FormatterTest extends AbstractTest {
   @Override
   protected void configure(final Handlebars handlebars) {
     handlebars.with(new Formatter() {
-
       @Override
       public Object format(final Object value, final Chain chain) {
         if (value instanceof Date) {
@@ -22,7 +21,6 @@ public class FormatterTest extends AbstractTest {
         }
         return chain.format(value);
       }
-
     });
   }
 
@@ -47,4 +45,5 @@ public class FormatterTest extends AbstractTest {
     assertEquals("time is " + now, t.apply(new Date(now)));
     assertEquals("time is " + now, t.apply(new Date(now)));
   }
+
 }
