@@ -62,7 +62,7 @@ public class FormatterChain implements Formatter.Chain {
    * @return The formatter at the next index.
    */
   private Formatter.Chain next() {
-    if (index < chain.size()) {
+    if (index + 1 < chain.size()) {
       return new FormatterChain(chain, index + 1);
     } else {
       return Formatter.NOOP;
