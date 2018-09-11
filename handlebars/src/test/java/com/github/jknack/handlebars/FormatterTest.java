@@ -47,5 +47,4 @@ public class FormatterTest extends AbstractTest {
     assertEquals("time is " + now, t.apply(new Date(now)));
     assertEquals("time is " + now, t.apply(new Date(now)));
   }
-
 }
