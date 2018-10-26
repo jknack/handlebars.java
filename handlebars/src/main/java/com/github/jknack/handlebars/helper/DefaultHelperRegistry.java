@@ -89,9 +89,9 @@ public class DefaultHelperRegistry implements HelperRegistry {
 
   /** Engine. */
   private ScriptEngine engine;
-  
-  /** ES6's let/const declaration Pattern */
-  private Pattern ES6_VAR_PATTERN = Pattern.compile("(?:^|[\\s(;])(let|const)\\s+");
+
+  /** ES6's let/const declaration Pattern. */
+  private Pattern es6VarPattern = Pattern.compile("(?:^|[\\s(;])(let|const)\\s+");
 
   {
     // make sure default helpers are registered
@@ -199,23 +199,24 @@ public class DefaultHelperRegistry implements HelperRegistry {
   public Set<Entry<String, Helper<?>>> helpers() {
     return this.helpers.entrySet();
   }
-  
+
   /**
    * Since nashorn doesn't yet supports the ES6's "const" or "let" literals.
    *  This method adapts the given helper source written in ES6 to work
    *  with nashorn (by converting let/const to var).
-   *  
+   *
    * @param source the helper source.
+   * @return the adapted helper source.
    **/
-  private String adaptES6Literals(String source) {
-	  Matcher m = ES6_VAR_PATTERN.matcher(source);
-	  StringBuffer sb = new StringBuffer();
-	  while (m.find()) {
-		  StringBuffer buf = new StringBuffer(m.group());
-		  buf.replace(m.start(1)-m.start(), m.end(1)-m.start(), "var"); 
-		  m.appendReplacement(sb, buf.toString());
-	  }
-	  return m.appendTail(sb).toString(); 
+  private String adaptES6Literals(final String source) {
+    Matcher m = es6VarPattern.matcher(source);
+    StringBuffer sb = new StringBuffer();
+    while (m.find()) {
+        StringBuffer buf = new StringBuffer(m.group());
+        buf.replace(m.start(1) - m.start(), m.end(1) - m.start(), "var");
+        m.appendReplacement(sb, buf.toString());
+    }
+    return m.appendTail(sb).toString();
   }
 
   /**
