@@ -79,8 +79,9 @@ public class CompositeTemplateLoaderTest {
 
   @Test
   public void resolveSourceAtFs() throws IOException {
-    assertEquals(new File("src/test/resources/inheritance", "home.hbs").getPath(),
-        loader.resolve("home"));
+    assertTrue(new File("src/test/resources/inheritance", "home.hbs").getPath()
+    		.compareTo(new File(loader.resolve("home")).getPath()) == 0
+        );
   }
 
   @Test(expected = UnsupportedOperationException.class)
