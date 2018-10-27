@@ -4,8 +4,6 @@ import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.v4Test;
 import org.junit.Test;
 
-import java.io.IOException;
-
 public class Issue539 extends v4Test {
 
   @Override protected void configure(Handlebars handlebars)  {

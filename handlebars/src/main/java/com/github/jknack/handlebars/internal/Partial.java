@@ -195,7 +195,11 @@ class Partial extends HelperResolver {
 
       }
       context.data(Context.CALLEE, this);
-      Context ctx = Context.newPartialContext(context, this.scontext, hash(context));
+      Map<String, Object> hash = hash(context);
+      // HACK: hide/override local attribute with parent version (if any)
+      hash.put("size", context.get("size"));
+      hash.put("empty", context.get("empty"));
+      Context ctx = Context.newPartialContext(context, this.scontext, hash);
       template.apply(ctx, writer);
       context.data(Context.CALLEE, callee);
     } catch (IOException ex) {
