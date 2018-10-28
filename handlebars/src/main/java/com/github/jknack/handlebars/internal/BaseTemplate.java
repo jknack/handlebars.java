@@ -214,7 +214,7 @@ abstract class BaseTemplate implements Template {
 
   @Override
   public int[] position() {
-    return new int[]{line, column };
+    return new int[]{line, column};
   }
 
   /**
@@ -255,7 +255,7 @@ abstract class BaseTemplate implements Template {
    * @return A new {@link TypeSafeTemplate}.
    */
   private static Object newTypeSafeTemplate(final Class<?> rootType, final Template template) {
-    return Proxy.newProxyInstance(rootType.getClassLoader(), new Class[]{rootType },
+    return Proxy.newProxyInstance(rootType.getClassLoader(), new Class[]{rootType},
         new InvocationHandler() {
 
           private final Map<String, Object> attributes = new HashMap<>();
@@ -263,24 +263,24 @@ abstract class BaseTemplate implements Template {
 
           private boolean isDefault(final Method method) {
             return ((method.getModifiers()
-                    & (Modifier.ABSTRACT | Modifier.PUBLIC | Modifier.STATIC)) == Modifier.PUBLIC)
-                    && method.getDeclaringClass().isInterface();
+                & (Modifier.ABSTRACT | Modifier.PUBLIC | Modifier.STATIC)) == Modifier.PUBLIC)
+                && method.getDeclaringClass().isInterface();
           }
 
           private Object invokeDefaultMethod(final Method method, final Class<?> lookupClass,
-                                             final Object proxy, final Object ... args)
-                  throws Throwable {
+              final Object proxy, final Object... args)
+              throws Throwable {
             // Jumping through these hoops is needed because calling unreflectSpecial requires that
             // the lookup instance have private access to the special caller. None of the static
             // factory methods for Lookup will give us an instance with the access modes we need,
             // so we work around it by calling the private constructor via reflection.
             Constructor<MethodHandles.Lookup> constructor = MethodHandles.Lookup.class
-                    .getDeclaredConstructor(Class.class, int.class);
+                .getDeclaredConstructor(Class.class, int.class);
             constructor.setAccessible(true);
             return constructor.newInstance(lookupClass, -1 /* trusted */)
-                    .unreflectSpecial(method, lookupClass)
-                    .bindTo(proxy)
-                    .invokeWithArguments(args);
+                .unreflectSpecial(method, lookupClass)
+                .bindTo(proxy)
+                .invokeWithArguments(args);
           }
 
           @Override
@@ -304,8 +304,8 @@ abstract class BaseTemplate implements Template {
             }
 
             if (args.length == 1
-                    && methodName.equals("equals")
-                    && method.getParameterTypes()[0] == Object.class) {
+                && methodName.equals("equals")
+                && method.getParameterTypes()[0] == Object.class) {
               return args[0] == proxy;
             }
 
@@ -374,11 +374,11 @@ abstract class BaseTemplate implements Template {
 
   @Override
   public String toJavaScript() {
-      if (javaScript == null) {
-        javaScript = handlebars.precompileInline(text());
-      }
-      return javaScript;
+    if (javaScript == null) {
+      javaScript = handlebars.precompileInline(text());
     }
+    return javaScript;
+  }
 
   /**
    * @return True if this template has decorators.

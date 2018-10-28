@@ -10,8 +10,8 @@ public class Issue643 extends v4Test {
     shouldCompileTo("template: {{empty}} "
             + "{{> partial}}",
         $("partials", $("partial", "partial: {{empty}}"),
-            "data", $("empty", false)),
-        "template: true partial: true");
+            "hash", $("empty", false)),
+        "template: false partial: false");
   }
 
 }
