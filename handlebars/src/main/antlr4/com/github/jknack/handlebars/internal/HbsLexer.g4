@@ -333,7 +333,7 @@ ID
 fragment
 ID_START
   :
-   [a-zA-ZА-Яа-я_$@:\u0001-\u001E\u00C0-\u00FF]
+   [a-zA-ZА-Яа-я_$@:\u0001-\u0009\u000b-\u001E\u00C0-\u00FF]
   ;
 
 fragment
