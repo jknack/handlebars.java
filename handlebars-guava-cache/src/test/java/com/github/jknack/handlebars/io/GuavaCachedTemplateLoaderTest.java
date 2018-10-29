@@ -24,7 +24,7 @@ public class GuavaCachedTemplateLoaderTest {
 
     final int TOTAL = 1000;
 
-    Stopwatch sw = new Stopwatch().start();
+    Stopwatch sw = Stopwatch.createStarted();
     for (int i = 0; i < TOTAL; i++) {
       loader.sourceAt("template");
     }

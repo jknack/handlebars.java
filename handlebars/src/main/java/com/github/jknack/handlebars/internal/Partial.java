@@ -219,8 +219,6 @@ class Partial extends HelperResolver {
             throw fnf;
           }
         }
-      } else {
-        partials.removeLast();
       }
       context.data(Context.CALLEE, this);
       Map<String, Object> hash = hash(context);

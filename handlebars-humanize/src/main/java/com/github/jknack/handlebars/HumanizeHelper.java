@@ -24,6 +24,7 @@ import java.util.Date;
 import java.util.Locale;
 
 import com.github.jknack.handlebars.internal.Locales;
+
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -377,25 +378,6 @@ public enum HumanizeHelper implements Helper<Object> {
     public Object apply(final Object value, final Options options)
         throws IOException {
       return Humanize.titleize((String) value);
-    }
-  },
-
-  /**
-   * <p>
-   * Strips diacritic marks.
-   * </p>
-   *
-   * <pre>
-   * {{transliterate string}}
-   * </pre>
-   *
-   * @see Humanize#transliterate(String)
-   */
-  transliterate {
-    @Override
-    public Object apply(final Object value, final Options options)
-        throws IOException {
-      return Humanize.transliterate((String) value);
     }
   },
 
