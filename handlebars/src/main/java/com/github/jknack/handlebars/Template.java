@@ -17,9 +17,6 @@
  */
 package com.github.jknack.handlebars;
 
-import com.github.jknack.handlebars.internal.Param;
-import com.github.jknack.handlebars.internal.TagWithParams;
-
 import java.io.IOException;
 import java.io.Writer;
 import java.util.Collections;
@@ -106,7 +103,7 @@ public interface Template {
     }
 
     @Override
-    public List<TagWithParams> collectWithParameters(final TagType... tagType) {
+    public List<Tag> collectWithParameters(final TagType... tagType) {
       return Collections.emptyList();
     }
 
@@ -231,22 +228,22 @@ public interface Template {
    * </pre>
    * <p>
    * <code>collectWithParameters(TagType.VAR)</code> returns
-   * <code>[TagWithParams(hello, [], TagType.VAR), TagWithParams(var, [1], TagType.VAR)]</code>
+   * <code>[Tag(hello, [], TagType.VAR), Tag(var, [1], TagType.VAR)]</code>
    * </p>
    * <p>
    * <code>collect(TagType.TRIPLE_VAR)</code> returns
-   * <code>[TagWithParams(tripleVar, [], TagType.TRIPLE_VAR)]</code>
+   * <code>[Tag(tripleVar, [], TagType.TRIPLE_VAR)]</code>
    * </p>
    * <p>
    * <code>collect(TagType.VAR, TagType.TRIPLE_VAR)</code> returns
-   * <code>[TagWithParams(hello, [], TagType.VAR), TagWithParams(var, [1], TagType.VAR),
-   * TagWithParams(tripleVar, [], TagType.TRIPLE_VAR)]</code>
+   * <code>[Tag(hello, [], TagType.VAR), Tag(var, [1], TagType.VAR),
+   * Tag(tripleVar, [], TagType.TRIPLE_VAR)]</code>
    * </p>
    *
    * @param tagType The tag type. Required.
-   * @return A list of TagWithParams.
+   * @return A list of Tag.
    */
-  List<TagWithParams> collectWithParameters(TagType... tagType);
+  List<Tag> collectWithParameters(TagType... tagType);
 
   /**
    * Collects all the parameters which are also variables.

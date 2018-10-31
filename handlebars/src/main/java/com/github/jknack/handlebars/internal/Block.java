@@ -36,8 +36,10 @@ import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Helper;
 import com.github.jknack.handlebars.Lambda;
 import com.github.jknack.handlebars.Options;
+import com.github.jknack.handlebars.Param;
 import com.github.jknack.handlebars.PathCompiler;
 import com.github.jknack.handlebars.PathExpression;
+import com.github.jknack.handlebars.Tag;
 import com.github.jknack.handlebars.TagType;
 import com.github.jknack.handlebars.Template;
 import com.github.jknack.handlebars.helper.EachHelper;
@@ -388,14 +390,14 @@ class Block extends HelperResolver {
   }
 
   @Override
-  public List<TagWithParams> collectWithParameters(final TagType... tagType) {
-    List<TagWithParams> tagNames = new ArrayList<TagWithParams>();
+  public List<Tag> collectWithParameters(final TagType... tagType) {
+    List<Tag> tagNames = new ArrayList<Tag>();
     if (body != null) {
       tagNames.addAll(body.collectWithParameters(tagType));
     }
     tagNames.addAll(inverse.collectWithParameters(tagType));
     tagNames.addAll(super.collectWithParameters(tagType));
-    return new ArrayList<TagWithParams>(tagNames);
+    return new ArrayList<Tag>(tagNames);
   }
 
   @Override
@@ -407,10 +409,10 @@ class Block extends HelperResolver {
   }
 
   @Override
-  protected void collectWithParameters(final Collection<TagWithParams> result,
+  protected void collectWithParameters(final Collection<Tag> result,
                                        final TagType tagType) {
     if (tagType == this.tagType) {
-      result.add(new TagWithParams(name, collectAllParameters(), tagType));
+      result.add(new Tag(name, collectAllParameters(), tagType));
     }
     super.collectWithParameters(result, tagType);
   }

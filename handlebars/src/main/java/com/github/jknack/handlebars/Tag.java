@@ -15,8 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.jknack.handlebars.internal;
-import com.github.jknack.handlebars.TagType;
+package com.github.jknack.handlebars;
 
 import java.util.List;
 
@@ -24,7 +23,7 @@ import java.util.List;
  * A Handlebars tag with its associated parameters and tag type.
  *
  */
-public class TagWithParams {
+public class Tag {
 
     /**
      * The tag itself.
@@ -42,13 +41,13 @@ public class TagWithParams {
     private TagType tagType;
 
     /**
-     * Creates a new {@link TagWithParam}.
+     * Creates a new {@link Tag}.
      *
      * @param tag The tag itself.
      * @param params The associated parameters for the tag.
      * @param tagType The tag type for the tag.
      */
-    TagWithParams(final String tag, final List<Param> params, final TagType tagType) {
+    public Tag(final String tag, final List<Param> params, final TagType tagType) {
         this.tag = tag;
         this.params = params;
         this.tagType = tagType;
@@ -80,7 +79,7 @@ public class TagWithParams {
 
     @Override
     public String toString() {
-        return "TagWithParams(" + this.tag + ", "
+        return "Tag(" + this.tag + ", "
                 + this.params.toString() + ", " + this.tagType + ")";
     }
 

@@ -44,6 +44,8 @@ import com.github.jknack.handlebars.Context;
 import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.HandlebarsError;
 import com.github.jknack.handlebars.HandlebarsException;
+import com.github.jknack.handlebars.Param;
+import com.github.jknack.handlebars.Tag;
 import com.github.jknack.handlebars.TagType;
 import com.github.jknack.handlebars.Template;
 import com.github.jknack.handlebars.TypeSafeTemplate;
@@ -350,9 +352,9 @@ abstract class BaseTemplate implements Template {
   }
 
   @Override
-  public List<TagWithParams> collectWithParameters(final TagType... tagType) {
+  public List<Tag> collectWithParameters(final TagType... tagType) {
     isTrue(tagType.length > 0, "At least one tag type is required.");
-    List<TagWithParams> tagsWithParams = new ArrayList<>();
+    List<Tag> tagsWithParams = new ArrayList<>();
     for (TagType tt : tagType) {
       collectWithParameters(tagsWithParams, tt);
     }
@@ -370,10 +372,10 @@ abstract class BaseTemplate implements Template {
   }
 
   /**
-   * @param result The result list of TagWithParams.
+   * @param result The result list of Tag.
    * @param tagType The matching tagtype.
    */
-  protected void collectWithParameters(final Collection<TagWithParams> result,
+  protected void collectWithParameters(final Collection<Tag> result,
                                        final TagType tagType) {
   }
 

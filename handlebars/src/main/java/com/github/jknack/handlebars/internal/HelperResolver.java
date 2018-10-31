@@ -32,6 +32,8 @@ import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.HandlebarsException;
 import com.github.jknack.handlebars.Helper;
 import com.github.jknack.handlebars.HelperRegistry;
+import com.github.jknack.handlebars.Param;
+import com.github.jknack.handlebars.Tag;
 import com.github.jknack.handlebars.TagType;
 import com.github.jknack.handlebars.Template;
 
@@ -264,7 +266,7 @@ abstract class HelperResolver extends BaseTemplate {
   }
 
   @Override
-  protected void collectWithParameters(final Collection<TagWithParams> result,
+  protected void collectWithParameters(final Collection<Tag> result,
                                        final TagType tagType) {
     for (Object param : this.params) {
       if (param instanceof VarParam) {

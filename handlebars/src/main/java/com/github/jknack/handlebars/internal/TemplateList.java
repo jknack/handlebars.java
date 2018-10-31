@@ -27,6 +27,8 @@ import java.util.Set;
 
 import com.github.jknack.handlebars.Context;
 import com.github.jknack.handlebars.Handlebars;
+import com.github.jknack.handlebars.Param;
+import com.github.jknack.handlebars.Tag;
 import com.github.jknack.handlebars.TagType;
 import com.github.jknack.handlebars.Template;
 
@@ -134,8 +136,8 @@ class TemplateList extends BaseTemplate implements Iterable<Template> {
   }
 
   @Override
-  public List<TagWithParams> collectWithParameters(final TagType... tagType) {
-    List<TagWithParams> tagNames = new ArrayList<>();
+  public List<Tag> collectWithParameters(final TagType... tagType) {
+    List<Tag> tagNames = new ArrayList<>();
     for (Template node : nodes) {
       tagNames.addAll(node.collectWithParameters(tagType));
     }

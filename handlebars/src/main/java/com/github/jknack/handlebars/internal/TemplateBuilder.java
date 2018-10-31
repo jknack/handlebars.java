@@ -40,6 +40,7 @@ import com.github.jknack.handlebars.HandlebarsError;
 import com.github.jknack.handlebars.HandlebarsException;
 import com.github.jknack.handlebars.Helper;
 import com.github.jknack.handlebars.HelperRegistry;
+import com.github.jknack.handlebars.Param;
 import com.github.jknack.handlebars.PathCompiler;
 import com.github.jknack.handlebars.TagType;
 import com.github.jknack.handlebars.Template;
@@ -369,8 +370,8 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
    * @return A new {@link Variable}.
    */
   private Variable newVar(final Token name, final TagType varType, final List<Param> params,
-      final Map<String, Param> hash, final String startDelimiter, final String endDelimiter,
-      final boolean decorator) {
+                          final Map<String, Param> hash, final String startDelimiter, final String endDelimiter,
+                          final boolean decorator) {
     String varName = name.getText();
     boolean isHelper = ((params.size() > 0 || hash.size() > 0)
         || varType == TagType.SUB_EXPRESSION);
