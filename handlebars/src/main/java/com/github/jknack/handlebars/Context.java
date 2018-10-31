@@ -29,7 +29,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.stream.Stream;
 
+import com.github.jknack.handlebars.context.MapValueResolver;
 import com.github.jknack.handlebars.internal.path.ThisPath;
 import com.github.jknack.handlebars.io.TemplateSource;
 
@@ -290,7 +292,15 @@ public class Context {
      */
     public Builder resolver(final ValueResolver... resolvers) {
       notEmpty(resolvers, "At least one value-resolver must be present.");
-      context.setResolver(new CompositeValueResolver(resolvers));
+      boolean mapResolver = Stream.of(resolvers).anyMatch(MapValueResolver.class::isInstance);
+      if (!mapResolver) {
+        ValueResolver[] safeResolvers = new ValueResolver[resolvers.length + 1];
+        System.arraycopy(resolvers, 0, safeResolvers, 0, resolvers.length);
+        safeResolvers[safeResolvers.length - 1] = MapValueResolver.INSTANCE;
+        context.setResolver(new CompositeValueResolver(safeResolvers));
+      } else {
+        context.setResolver(new CompositeValueResolver(resolvers));
+      }
       return this;
     }
 

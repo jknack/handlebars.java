@@ -14,6 +14,12 @@ public class HbsParserTest {
   public void hello() {
     parse("Hello {{who}}\n!");
   }
+  
+  @Test
+  public void subExpr() {
+	  // below expression has unicode char with value: \u0001
+	  parse("{{datawithCtrlChar}}");
+  }
 
   @Test
   public void rawblock() {

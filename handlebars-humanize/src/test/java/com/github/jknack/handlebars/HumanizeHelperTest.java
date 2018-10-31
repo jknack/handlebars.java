@@ -20,7 +20,7 @@ public class HumanizeHelperTest {
     assertEquals("2 bytes",
         handlebars.compileInline("{{binaryPrefix this}}").apply(2));
 
-    assertEquals("1.5 kB",
+    assertEquals("1.5 KB",
         handlebars.compileInline("{{binaryPrefix this}}").apply(1536));
 
     assertEquals("5 MB",
@@ -209,13 +209,6 @@ public class HumanizeHelperTest {
     assertEquals("Handlebars.java Rocks!",
         handlebars.compileInline("{{titleize this}}")
             .apply("Handlebars.java rocks!"));
-  }
-
-  @Test
-  public void transliterate() throws IOException {
-    assertEquals("Hablo espanol",
-        handlebars.compileInline("{{transliterate this}}")
-            .apply("Hablo español"));
   }
 
   @Test

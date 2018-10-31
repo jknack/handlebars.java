@@ -7,13 +7,14 @@ import java.util.Date;
 
 import static org.junit.Assert.assertEquals;
 
-public class FormatterTest extends AbstractTest {
+public class MultipleFormatterTest extends AbstractTest {
 
   static final long now = System.currentTimeMillis();
 
   @Override
   protected void configure(final Handlebars handlebars) {
     handlebars.with(new Formatter() {
+
       @Override
       public Object format(final Object value, final Chain chain) {
         if (value instanceof Date) {
@@ -21,29 +22,31 @@ public class FormatterTest extends AbstractTest {
         }
         return chain.format(value);
       }
+
+    }).with(new Formatter() {
+      @Override
+      public Object format(final Object value, final Chain chain) {
+
+        if (value instanceof Integer) {
+          return Integer.toHexString((Integer) value);
+        }
+        return chain.format(value);
+      }
+
     });
   }
 
   @Test
-  public void useFormatterTwice() throws IOException {
-    Template t = compile("time is {{this}}/{{this}}");
-
-    assertEquals("time is " + now + "/" + now, t.apply(new Date(now)));
-  }
-
-  @Test
-  public void testFormatterWithoutMatch() throws IOException {
-    Template t = compile("string is {{this}}");
-
-    assertEquals("string is testvalue", t.apply("testvalue"));
-  }
-
-  @Test
-  public void useTemplateTwice() throws IOException {
+  public void testDateFormatter() throws IOException {
     Template t = compile("time is {{this}}");
 
     assertEquals("time is " + now, t.apply(new Date(now)));
-    assertEquals("time is " + now, t.apply(new Date(now)));
   }
 
+  @Test
+  public void testIntegerFormatter() throws IOException {
+    Template t = compile("Hex-Value is {{this}}");
+
+    assertEquals("Hex-Value is 10", t.apply(16));
+  }
 }

@@ -45,7 +45,7 @@ import com.github.jknack.handlebars.Template;
  * key, nothing will be rendered.
  * All variables are HTML escaped by default. If you want to return unescaped
  * HTML, use the triple mustache: {{{name}}}.
- * You can also use & to unescape a variable: {{& name}}. This may be useful
+ * You can also use &amp; to unescape a variable: {{&amp; name}}. This may be useful
  * when changing delimiters.
  *
  * @author edgar.espina

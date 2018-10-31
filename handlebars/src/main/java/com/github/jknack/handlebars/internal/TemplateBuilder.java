@@ -595,6 +595,7 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
 
     String startDelim = ctx.start.getText();
     Template partial = new Partial(handlebars, info.path, info.context, info.hash)
+        .setDecorate(true)
         .setPartial(fn)
         .startDelimiter(startDelim.substring(0, startDelim.length() - 1))
         .endDelimiter(ctx.stop.getText())

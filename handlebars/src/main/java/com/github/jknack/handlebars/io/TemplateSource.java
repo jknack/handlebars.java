@@ -22,8 +22,8 @@ import java.nio.charset.Charset;
 
 /**
  * The template source. Implementation of {@link TemplateSource} must implement
- * {@link #equals(Object)} and {@link #hashCode()} methods. This two methods are the core of the
- * cache system.
+ * <code>equals(Object)</code> and <code>hashCode()</code> methods. This two methods are the core
+ * of the cache system.
  *
  * @author edgar.espina
  * @since 0.11.0

@@ -4,7 +4,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.github.jknack</groupId>
   <artifactId>handlebars.java</artifactId>
-  <version>4.1.0-SNAPSHOT</version>
+  <version>4.1.3-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <name>Handlebars.java</name>
@@ -65,20 +65,20 @@
       <dependency>
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-lang3</artifactId>
-        <version>3.7</version>
+        <version>3.8.1</version>
       </dependency>
 
       <dependency>
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-text</artifactId>
-        <version>1.3</version>
+        <version>1.6</version>
       </dependency>
 
       <!-- Guava -->
       <dependency>
         <groupId>com.google.guava</groupId>
         <artifactId>guava</artifactId>
-        <version>14.0.1</version>
+        <version>18.0</version>
       </dependency>
 
       <dependency>
@@ -98,7 +98,7 @@
       <dependency>
         <groupId>org.slf4j</groupId>
         <artifactId>slf4j-api</artifactId>
-        <version>1.6.4</version>
+        <version>1.7.25</version>
       </dependency>
 
       <!-- Servlet API -->
@@ -107,13 +107,6 @@
         <artifactId>servlet-api</artifactId>
         <version>2.5</version>
         <scope>provided</scope>
-      </dependency>
-
-      <!-- Jackson 1.x -->
-      <dependency>
-        <groupId>org.codehaus.jackson</groupId>
-        <artifactId>jackson-mapper-asl</artifactId>
-        <version>${jackson-version}</version>
       </dependency>
 
       <!-- Jackson 2.x -->
@@ -127,21 +120,27 @@
       <dependency>
         <groupId>org.pegdown</groupId>
         <artifactId>pegdown</artifactId>
-        <version>1.2.1</version>
+        <version>1.6.0</version>
       </dependency>
 
       <!-- Humanize -->
       <dependency>
         <groupId>com.github.mfornos</groupId>
         <artifactId>humanize-slim</artifactId>
-        <version>1.1.1</version>
+        <version>${humanize.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.github.mfornos</groupId>
+        <artifactId>humanize-icu</artifactId>
+        <version>${humanize.version}</version>
       </dependency>
 
       <!-- Test dependencies -->
       <dependency>
         <groupId>ch.qos.logback</groupId>
         <artifactId>logback-classic</artifactId>
-        <version>1.0.3</version>
+        <version>1.2.3</version>
         <scope>test</scope>
       </dependency>
 
@@ -332,7 +331,7 @@
     </profile>
 
     <profile>
-      <id>sonatype-oss-release</id>
+      <id>sonatype</id>
       <build>
         <plugins>
           <!-- This is a workaround to get submodules working with the maven release plugin -->
@@ -422,8 +421,8 @@
   <properties>
     <!-- Encoding UTF-8 -->
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <jackson2-version>2.1.4</jackson2-version>
-    <jackson-version>1.9.12</jackson-version>
+    <jackson2-version>2.9.7</jackson2-version>
+    <humanize.version>1.2.2</humanize.version>
     <jacoco.version>0.8.1</jacoco.version>
     <maven.build.timestamp.format>yyyy-MM-dd HH:mm:ssa</maven.build.timestamp.format>
     <timestamp>${maven.build.timestamp}</timestamp>

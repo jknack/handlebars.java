@@ -1038,9 +1038,6 @@ Hello {{#child}}{{this.value}}{{/child}}
 ## Dependencies
 
 ```text
-+- org.apache.commons:commons-lang3:jar:3.1
-+- org.antlr:antlr4-runtime:jar:4.5.1-1
-+- org.mozilla:rhino:jar:1.7R4
 +- org.slf4j:slf4j-api:jar:1.6.4
 ```
 

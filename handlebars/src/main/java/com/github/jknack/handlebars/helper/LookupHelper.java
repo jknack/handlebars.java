@@ -29,7 +29,7 @@ import com.github.jknack.handlebars.Options;
  * It was introduced with dynamic partials:
  *
  * <pre>
- * {{> (lookup '.' 'myVariable') }}
+ * {{&gt; (lookup '.' 'myVariable') }}
  * </pre>
  *
  * @author edgar

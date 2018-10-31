@@ -20,6 +20,9 @@ package com.github.jknack.handlebars;
 import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 import org.junit.Test;
 
@@ -53,13 +56,13 @@ public class MarkdownHelperTest {
     handlebars.registerHelper("markdown", new MarkdownHelper());
     Template template = handlebars.compileInline("{{markdown .}}");
 
-    String expected = "<h1>Header 1</h1>\n";
-    expected += "<ul>\n";
-    expected += "  <li>Item 1</li>\n";
-    expected += "  <li>Item 2</li>\n";
-    expected += "  <li>Item 3</li>\n";
-    expected += "</ul><h2>Header 2</h2>";
-    System.out.println(template.apply(text));
+    String expected = "<h1>Header 1</h1>\n"
+        + "<ul>\n"
+        + "  <li>Item 1</li>\n"
+        + "  <li>Item 2</li>\n"
+        + "  <li>Item 3</li>\n"
+        + "</ul>\n"
+        + "<h2>Header 2</h2>";
     assertEquals(expected, template.apply(text));
   }
 

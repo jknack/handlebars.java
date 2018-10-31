@@ -329,6 +329,13 @@ public class HandlebarsViewResolver extends AbstractTemplateViewResolver
   }
 
   /**
+   * @return The array of resolvers.
+   */
+  protected ValueResolver[] getValueResolvers() {
+    return this.valueResolvers;
+  }
+
+  /**
    * Set the value resolvers.
    *
    * @param valueResolvers The value resolvers. Required.
