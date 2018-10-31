@@ -212,7 +212,10 @@ public interface Template {
    *
    * @param tagType The tag type. Required.
    * @return A list with tag names.
+   *
+   * @deprecated Use {@link #collectWithParameters(TagType...)} instead.
    */
+  @Deprecated
   List<String> collect(TagType... tagType);
 
   /**
