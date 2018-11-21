@@ -4,6 +4,8 @@
 [![codecov](https://codecov.io/gh/jknack/handlebars.java/branch/master/graph/badge.svg)](https://codecov.io/gh/jknack/handlebars.java)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.jknack/handlebars/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.jknack/handlebars)
 [![javadoc](https://javadoc.io/badge/com.github.jknack/handlebars.svg)](https://javadoc.io/doc/com.github.jknack/handlebars)
+[![Code Quality: Java](https://img.shields.io/lgtm/grade/java/g/jknack/handlebars.java.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/jknack/handlebars.java/context:java)
+[![Total Alerts](https://img.shields.io/lgtm/alerts/g/jknack/handlebars.java.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/jknack/handlebars.java/alerts)
 
 Handlebars.java
 ===============
