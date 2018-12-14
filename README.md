@@ -150,7 +150,7 @@ Example:
 or if you prefer YAML **myTemplates/home.yml**:
 
 ```yml
-list:
+items:
   - name: Handlebars.java rocks!
 ```
 
