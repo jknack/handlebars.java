@@ -254,7 +254,7 @@ public enum ConditionalHelpers implements Helper<Object> {
    *     yes
    *   {{else}}
    *     no
-   *   {{/lt}}
+   *   {{/and}}
    * </pre>
    *
    * Multiple arguments are supported too:
@@ -263,7 +263,7 @@ public enum ConditionalHelpers implements Helper<Object> {
    *     yes
    *   {{else}}
    *     no
-   *   {{/lt}}
+   *   {{/and}}
    * </pre>
    *
    * Render 'true' or 'false':
@@ -307,7 +307,7 @@ public enum ConditionalHelpers implements Helper<Object> {
    *     yes
    *   {{else}}
    *     no
-   *   {{/lt}}
+   *   {{/or}}
    * </pre>
    *
    * Multiple arguments are supported too:
@@ -316,7 +316,7 @@ public enum ConditionalHelpers implements Helper<Object> {
    *     yes
    *   {{else}}
    *     no
-   *   {{/lt}}
+   *   {{/or}}
    * </pre>
    *
    * Render 'true' or 'false':
@@ -361,7 +361,7 @@ public enum ConditionalHelpers implements Helper<Object> {
    *     yes
    *   {{else}}
    *     no
-   *   {{/lt}}
+   *   {{/not}}
    * </pre>
    *
    * Render 'true' or 'false':
