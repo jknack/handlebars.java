@@ -10,14 +10,14 @@ public class Issue473 extends AbstractTest {
 
   @Test
   public void testWith() throws IOException {
-    Hash context = $("needsPano", new Boolean(true), "group", $("title", "test"));
+    Hash context = $("needsPano", Boolean.TRUE, "group", $("title", "test"));
 
     shouldCompileTo("{{#with group}}{{needsPano}}{{/with}}", context, "true");
   }
 
   @Test
   public void testBlock() throws IOException {
-    Hash context = $("needsPano", new Boolean(true), "group", $("title", "test"));
+    Hash context = $("needsPano", Boolean.TRUE, "group", $("title", "test"));
 
     shouldCompileTo("{{#group}}{{needsPano}}{{/group}}", context, "true");
   }

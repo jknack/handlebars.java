@@ -1,7 +1,6 @@
 package com.github.jknack.handlebars.issues;
 
 import com.github.jknack.handlebars.v4Test;
-import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
 public class Issue527 extends v4Test {

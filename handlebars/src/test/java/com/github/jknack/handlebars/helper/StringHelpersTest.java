@@ -27,7 +27,6 @@ import static org.junit.Assert.assertEquals;
 import java.io.IOException;
 import java.util.*;
 
-import org.apache.commons.lang3.SystemUtils;
 import org.junit.Test;
 
 import com.github.jknack.handlebars.AbstractTest;
@@ -439,8 +438,8 @@ public class StringHelpersTest extends AbstractTest {
 
     assertEquals("wordWrap", wordWrap.name());
 
-    assertEquals("Joel" + SystemUtils.LINE_SEPARATOR + "is a"
-        + SystemUtils.LINE_SEPARATOR + "slug",
+    assertEquals("Joel" + System.lineSeparator() + "is a"
+        + System.lineSeparator() + "slug",
         wordWrap.apply("Joel is a slug", options));
 
     verify(options);

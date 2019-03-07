@@ -4,12 +4,9 @@ import com.github.jknack.handlebars.js.JavaScriptHelperTest;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
-import javax.script.Bindings;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
-import javax.script.ScriptException;
 import javax.script.SimpleBindings;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.nio.file.Paths;
 import java.util.HashMap;
