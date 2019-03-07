@@ -15,6 +15,7 @@ import java.net.URL;
 import javax.servlet.ServletContext;
 
 import org.easymock.Capture;
+import org.easymock.EasyMock;
 import org.easymock.IAnswer;
 import org.junit.Test;
 
@@ -132,7 +133,7 @@ public class ServletContextTemplateLoaderTest {
 
   private void expectGetResource(final ServletContext servletContext, final String prefix)
       throws IOException {
-    final Capture<String> path = new Capture<>();
+    final Capture<String> path = EasyMock.newCapture();
     expect(servletContext.getResource(capture(path))).andAnswer(
         new IAnswer<URL>() {
           @Override

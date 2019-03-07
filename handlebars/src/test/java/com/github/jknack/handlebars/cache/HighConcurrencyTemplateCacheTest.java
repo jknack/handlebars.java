@@ -18,6 +18,7 @@ import java.util.concurrent.Future;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.easymock.Capture;
+import org.easymock.EasyMock;
 import org.junit.Test;
 
 import com.github.jknack.handlebars.HandlebarsException;
@@ -192,8 +193,8 @@ public class HighConcurrencyTemplateCacheTest {
     expect(future.get()).andThrow(new CancellationException());
     expect(future.get()).andReturn(ImmutablePair.<TemplateSource, Template> of(source, template));
 
-    Capture<TemplateSource> keyGet = new Capture<>();
-    Capture<TemplateSource> keyRemove = new Capture<>();
+    Capture<TemplateSource> keyGet = EasyMock.newCapture();
+    Capture<TemplateSource> keyRemove = EasyMock.newCapture();
 
     ConcurrentMap<TemplateSource, Future<Pair<TemplateSource, Template>>> cache = createMock(
         ConcurrentMap.class);
@@ -223,8 +224,8 @@ public class HighConcurrencyTemplateCacheTest {
     Future<Pair<TemplateSource, Template>> future = createMock(Future.class);
     expect(future.get()).andThrow(new ExecutionException(new IllegalArgumentException()));
 
-    Capture<TemplateSource> keyGet = new Capture<>();
-    Capture<TemplateSource> keyRemove = new Capture<>();
+    Capture<TemplateSource> keyGet = EasyMock.newCapture();
+    Capture<TemplateSource> keyRemove = EasyMock.newCapture();
 
     ConcurrentMap<TemplateSource, Future<Pair<TemplateSource, Template>>> cache = createMock(
         ConcurrentMap.class);
@@ -255,7 +256,7 @@ public class HighConcurrencyTemplateCacheTest {
     Future<Pair<TemplateSource, Template>> future = createMock(Future.class);
     expect(future.get()).andThrow(new ExecutionException(new Error()));
 
-    Capture<TemplateSource> keyGet = new Capture<>();
+    Capture<TemplateSource> keyGet = EasyMock.newCapture();
 
     ConcurrentMap<TemplateSource, Future<Pair<TemplateSource, Template>>> cache = createMock(
         ConcurrentMap.class);
@@ -285,8 +286,8 @@ public class HighConcurrencyTemplateCacheTest {
     Future<Pair<TemplateSource, Template>> future = createMock(Future.class);
     expect(future.get()).andThrow(new ExecutionException(new Exception()));
 
-    Capture<TemplateSource> keyGet = new Capture<>();
-    Capture<TemplateSource> keyRemove = new Capture<>();
+    Capture<TemplateSource> keyGet = EasyMock.newCapture();
+    Capture<TemplateSource> keyRemove = EasyMock.newCapture();
 
     ConcurrentMap<TemplateSource, Future<Pair<TemplateSource, Template>>> cache = createMock(
         ConcurrentMap.class);

@@ -1,5 +1,6 @@
 package com.github.jknack.handlebars;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
@@ -157,7 +158,7 @@ public class DecoratorTest extends v4Test {
         $("hash", $("foo", "fail"), "decorators", $("decorator", new Decorator() {
           @Override
           public void apply(final Template fn, final Options options) throws IOException {
-            assertEquals(null, options.param(0));
+            assertArrayEquals((Object[])null, options.param(0));
             count.incrementAndGet();
           }
         })),
@@ -173,7 +174,7 @@ public class DecoratorTest extends v4Test {
         $("hash", $("foo", "fail"), "decorators", $("decorator", new Decorator() {
           @Override
           public void apply(final Template fn, final Options options) throws IOException {
-            assertEquals(null, options.param(0));
+            assertArrayEquals((Object[])null, options.param(0));
             count.incrementAndGet();
           }
         })),
@@ -189,7 +190,7 @@ public class DecoratorTest extends v4Test {
         $("hash", $("foo", "fail"), "decorators", $("decorator", new Decorator() {
           @Override
           public void apply(final Template fn, final Options options) throws IOException {
-            assertEquals(null, options.param(0));
+            assertArrayEquals((Object[])null, options.param(0));
             count.incrementAndGet();
           }
         })),

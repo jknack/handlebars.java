@@ -3,7 +3,6 @@ package com.github.jknack.handlebars.issues;
 import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.helper.ConditionalHelpers;
 import com.github.jknack.handlebars.v4Test;
-import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
 public class Issue627 extends v4Test {

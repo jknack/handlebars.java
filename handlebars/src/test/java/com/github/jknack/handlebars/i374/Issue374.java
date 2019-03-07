@@ -31,8 +31,8 @@ public class Issue374 extends AbstractTest {
   public void test_helper__IF_EQ__with_Integer() throws IOException
   {
     HashMap map = new HashMap();
-    map.put("num1", new Integer(5)); // netbeans says: unnecessary boxing to integer
-    map.put("num2", new Integer(5));
+    map.put("num1", Integer.valueOf(5)); // netbeans says: unnecessary boxing to integer
+    map.put("num2", Integer.valueOf(5));
     assertEquals("True", inlineTemplate().apply(map));
   }
 
@@ -42,7 +42,7 @@ public class Issue374 extends AbstractTest {
   {
     HashMap map = new HashMap();
     map.put("num1", 5);
-    map.put("num2", new Integer(5));
+    map.put("num2", Integer.valueOf(5));
     assertEquals("True", inlineTemplate().apply(map));
   }
 
@@ -61,8 +61,8 @@ public class Issue374 extends AbstractTest {
   public void test_helper__IF_EQ__with_getValue_Integer() throws IOException
   {
     HashMap map = new HashMap();
-    map.put("val1", new Value(new Integer(5)));
-    map.put("val2", new Value(new Integer(5)));
+    map.put("val1", new Value(Integer.valueOf(5)));
+    map.put("val2", new Value(Integer.valueOf(5)));
     assertEquals("True", inlineTemplate_getValue().apply(map));
   }
 
@@ -130,22 +130,22 @@ public class Issue374 extends AbstractTest {
         dbl = (Double) obj;
       }
       if (obj instanceof Integer) {
-        dbl = new Double((Integer) obj);
+        dbl = Double.valueOf((Integer) obj);
       }
       if (obj instanceof Long) {
-        dbl = new Double((Long) obj);
+        dbl = Double.valueOf((Long) obj);
       }
       if (obj instanceof BigDecimal) {
         dbl = ((BigDecimal) obj).doubleValue();
       }
       if (obj instanceof Float) {
-        dbl = new Double((Float) obj);
+        dbl = Double.valueOf((Float) obj);
       }
       if (obj instanceof String)
       {
         String str = (String) obj;
         if (str.matches("[0-9]*\\.?[0-9]+")) {
-          dbl = new Double(str);
+          dbl = Double.valueOf(str);
         }
       }
       System.out.println("Object: " + obj);

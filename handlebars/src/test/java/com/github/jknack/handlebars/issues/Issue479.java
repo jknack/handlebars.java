@@ -1,7 +1,5 @@
 package com.github.jknack.handlebars.issues;
 
-import java.io.IOException;
-
 import org.junit.Test;
 
 import com.github.jknack.handlebars.v4Test;
