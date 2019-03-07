@@ -207,7 +207,7 @@ public enum ConditionalHelpers implements Helper<Object> {
   },
 
   /**
-   * Less than operator (arguments must be {@link Comparable} elements. Usage:
+   * Less or equal operator (arguments must be {@link Comparable} elements. Usage:
    *
    * Render 'yes' or 'no':
    * <pre>
