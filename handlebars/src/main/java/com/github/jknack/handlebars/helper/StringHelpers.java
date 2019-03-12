@@ -537,7 +537,7 @@ public enum StringHelpers implements Helper<Object> {
       Date date = (Date) value;
       final DateFormat dateFormat;
       Object pattern = options.param(0, options.hash("format", "medium"));
-      String localeStr = options.param(1, Locale.getDefault().toString());
+      String localeStr = options.param(1, options.hash("locale", Locale.getDefault().toString()));
       Locale locale = LocaleUtils.toLocale(localeStr);
       Integer style = styles.get(pattern);
       if (style == null) {
