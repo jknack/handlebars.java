@@ -1,9 +1,12 @@
 package com.github.jknack.handlebars.internal;
 
+import static org.junit.Assert.assertEquals;
+
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.ParseTree;
+import org.junit.Assert;
 import org.junit.Test;
 
 public class HbsParserTest {
@@ -116,6 +119,21 @@ public class HbsParserTest {
     parse("{{=<% %>=}}<%hello%><%={{ }}=%>{{reset}}");
     parse("{{= | | =}}<|#lambda|-|/lambda|>");
     parse("{{=+-+ +-+=}}+-+test+-+");
+  }
+
+  @Test
+  public void whiteSpaceHandledEqually() {
+    String withSpace = "{{helper param1=\"1\" param2=2}}";
+    ParseTree tree = parse(withSpace);
+
+    String withNewlines = "{{helper\nparam1=\"1\"\nparam2=2}}";
+    assertEquals("Newlines should be treated the same as spaces", tree.getText(), parse(withNewlines).getText());
+
+    String withDosNewlines = "{{helper\r\nparam1=\"1\"\r\nparam2=2}}";
+    assertEquals("DOS-style newlines should be treated the same as spaces", tree.getText(), parse(withDosNewlines).getText());
+
+    String alignedWithTabs = "{{helper\n\tparam1=\"1\"\n\tparam2=2}}";
+    assertEquals("Tab-aligned variables should be treated the same as spaces", tree.getText(), parse(alignedWithTabs).getText());
   }
 
   private ParseTree parse(final String input) {
