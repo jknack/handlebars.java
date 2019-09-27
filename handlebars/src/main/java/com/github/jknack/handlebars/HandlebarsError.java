@@ -17,6 +17,8 @@
  */
 package com.github.jknack.handlebars;
 
+import java.io.Serializable;
+
 import static org.apache.commons.lang3.Validate.isTrue;
 import static org.apache.commons.lang3.Validate.notEmpty;
 
@@ -26,7 +28,12 @@ import static org.apache.commons.lang3.Validate.notEmpty;
  * @author edgar.espina
  * @since 0.5.0
  */
-public class HandlebarsError {
+public class HandlebarsError implements Serializable {
+
+  /**
+   * The serial UUID.
+   */
+  private static final long serialVersionUID = -8453345164714701546L;
 
   /**
    * The error's line number.
