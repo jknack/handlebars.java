@@ -46,9 +46,7 @@ body
 
 statement
   :
-    spaces
-  | newline
-  | text
+    text
   | block
   | var
   | tvar
@@ -70,14 +68,6 @@ escape
 text
   :
     TEXT
-  ;
-
-spaces
-  : SPACE
-  ;
-
-newline
-  : NL
   ;
 
 block

@@ -77,11 +77,6 @@ abstract class BaseTemplate implements Template {
   protected String filename;
 
   /**
-   * A Handlebars.js lock.
-   */
-  private final Object jsLock = new Object();
-
-  /**
    * A pre-compiled JavaScript function.
    */
   private String javaScript;

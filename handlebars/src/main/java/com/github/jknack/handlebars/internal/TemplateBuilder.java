@@ -31,6 +31,7 @@ import org.antlr.v4.runtime.CommonToken;
 import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 
 import com.github.jknack.handlebars.Context;
@@ -57,14 +58,12 @@ import com.github.jknack.handlebars.internal.HbsParser.ElseStmtContext;
 import com.github.jknack.handlebars.internal.HbsParser.EscapeContext;
 import com.github.jknack.handlebars.internal.HbsParser.HashContext;
 import com.github.jknack.handlebars.internal.HbsParser.LiteralPathContext;
-import com.github.jknack.handlebars.internal.HbsParser.NewlineContext;
 import com.github.jknack.handlebars.internal.HbsParser.ParamContext;
 import com.github.jknack.handlebars.internal.HbsParser.PartialBlockContext;
 import com.github.jknack.handlebars.internal.HbsParser.PartialContext;
 import com.github.jknack.handlebars.internal.HbsParser.RawBlockContext;
 import com.github.jknack.handlebars.internal.HbsParser.RefParamContext;
 import com.github.jknack.handlebars.internal.HbsParser.SexprContext;
-import com.github.jknack.handlebars.internal.HbsParser.SpacesContext;
 import com.github.jknack.handlebars.internal.HbsParser.StatementContext;
 import com.github.jknack.handlebars.internal.HbsParser.StaticPathContext;
 import com.github.jknack.handlebars.internal.HbsParser.StringParamContext;
@@ -122,9 +121,9 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
   private Boolean hasTag;
 
   /**
-   * Keep track of the current line.
+   * Keep track of the current text.
    */
-  protected StringBuilder line = new StringBuilder();
+  protected String currentText = null;
 
   /**
    * Keep track of block helpers.
@@ -332,7 +331,6 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
   public Object visitEscape(final EscapeContext ctx) {
     Token token = ctx.ESC_VAR().getSymbol();
     String text = token.getText().substring(1);
-    line.append(text);
     return new Text(handlebars, text, "\\")
         .filename(source.filename())
         .position(token.getLine(), token.getCharPositionInLine());
@@ -506,7 +504,8 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
     return new RefParam(PathCompiler.compile(ctx.getText(), handlebars.parentScopeResolution()));
   }
 
-  @Override public Object visitNumberParam(final HbsParser.NumberParamContext ctx) {
+  @Override
+  public Object visitNumberParam(final HbsParser.NumberParamContext ctx) {
     try {
       return new DefParam(Integer.parseInt(ctx.getText()));
     } catch (NumberFormatException x) {
@@ -525,6 +524,20 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
   }
 
   /**
+   * Get the last line of a string.
+   *
+   * @param str The string.
+   * @return The last line.
+   */
+  private String getLastLine(final String str) {
+    int i = StringUtils.lastIndexOfAny(str, "\r", "\n");
+    if (i < 0) {
+      return str;
+    }
+    return str.substring(i + 1);
+  }
+
+  /**
    * Creates a {@link Template} that detects recursively calls.
    *
    * @param source The template source.
@@ -538,7 +551,6 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
         LinkedList<TemplateSource> invocationStack = context.data(Context.INVOCATION_STACK);
         invocationStack.addLast(source);
       }
-
       @Override
       protected void afterApply(final Context context) {
         LinkedList<TemplateSource> invocationStack = context.data(Context.INVOCATION_STACK);
@@ -546,7 +558,6 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
           invocationStack.removeLast();
         }
       }
-
     };
   }
 
@@ -554,8 +565,9 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
   public Template visitPartial(final PartialContext ctx) {
     hasTag(true);
 
-    String indent = line.toString();
+    String indent;
     if (hasTag()) {
+      indent = getLastLine(this.currentText);
       if (isEmpty(indent) || !isEmpty(indent.trim())) {
         indent = null;
       }
@@ -580,7 +592,7 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
   public Object visitPartialBlock(final PartialBlockContext ctx) {
     hasTag(true);
 
-    String indent = line.toString();
+    String indent = this.currentText;
     if (hasTag()) {
       if (isEmpty(indent) || !isEmpty(indent.trim())) {
         indent = null;
@@ -708,37 +720,23 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
 
   @Override
   public Template visitText(final TextContext ctx) {
-    String text = ctx.getText();
-    line.append(text);
+    Token token = ctx.TEXT().getSymbol();
+    String text = token.getText();
+    this.currentText = text;
+
+    if (token.getChannel() == Token.HIDDEN_CHANNEL) {
+      return null;
+    }
+
+    if (token.getChannel() == MustacheSpec.REMOVE_LAST_LINE_CHANNEL) {
+      String last = MustacheStringUtils.removeLastWhitespaceLine(text);
+      text = last;
+      this.hasTag = null;
+    }
+
     return new Text(handlebars, text)
         .filename(source.filename())
         .position(ctx.start.getLine(), ctx.start.getCharPositionInLine());
-  }
-
-  @Override
-  public Template visitSpaces(final SpacesContext ctx) {
-    Token space = ctx.SPACE().getSymbol();
-    String text = space.getText();
-    line.append(text);
-    if (space.getChannel() == Token.HIDDEN_CHANNEL) {
-      return null;
-    }
-    return new Text(handlebars, text)
-        .filename(source.filename())
-        .position(ctx.start.getLine(), ctx.start.getCharPositionInLine());
-  }
-
-  @Override
-  public BaseTemplate visitNewline(final NewlineContext ctx) {
-    Token newline = ctx.NL().getSymbol();
-    line.setLength(0);
-    hasTag = null;
-    if (newline.getChannel() == Token.HIDDEN_CHANNEL) {
-      return null;
-    }
-    return new Text(handlebars, newline.getText())
-        .filename(source.filename())
-        .position(newline.getLine(), newline.getCharPositionInLine());
   }
 
   /**
@@ -771,8 +769,7 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
     this.handlebars = null;
     this.source = null;
     this.hasTag = null;
-    this.line.delete(0, line.length());
-    this.line = null;
+    this.currentText = null;
   }
 
   /**
