@@ -22,14 +22,13 @@ import java.util.List;
 
 import org.antlr.v4.runtime.CommonToken;
 import org.antlr.v4.runtime.Token;
+import org.apache.commons.lang3.StringUtils;
 
 import com.github.jknack.handlebars.internal.HbsParser.AmpvarContext;
 import com.github.jknack.handlebars.internal.HbsParser.BlockContext;
 import com.github.jknack.handlebars.internal.HbsParser.CommentContext;
 import com.github.jknack.handlebars.internal.HbsParser.DelimitersContext;
-import com.github.jknack.handlebars.internal.HbsParser.NewlineContext;
 import com.github.jknack.handlebars.internal.HbsParser.PartialContext;
-import com.github.jknack.handlebars.internal.HbsParser.SpacesContext;
 import com.github.jknack.handlebars.internal.HbsParser.TemplateContext;
 import com.github.jknack.handlebars.internal.HbsParser.TextContext;
 import com.github.jknack.handlebars.internal.HbsParser.TvarContext;
@@ -45,65 +44,51 @@ import com.github.jknack.handlebars.internal.HbsParser.VarContext;
 public class MustacheSpec extends HbsParserBaseListener {
 
   /**
-   * Track if the current line has real text (not spaces).
+   * Tracks if the current line should be treated as stand-alone.
    */
-  private boolean nonSpace = false;
+  private Boolean standAlone;
 
   /**
-   * Track if the current line has mustache instruction.
+   * Tracks text tokens for future whitespace removal.
    */
-  private Boolean hasTag;
+  private List<CommonToken> textTokens = new ArrayList<>();
 
   /**
-   * Track the current line.
+   * Channel for tokens that need their last line removed.
    */
-  protected StringBuilder line = new StringBuilder();
-
-  /**
-   * Track the spaces/lines that need to be excluded.
-   */
-  private List<CommonToken> spaces = new ArrayList<>();
-
-  @Override
-  public void enterSpaces(final SpacesContext ctx) {
-    CommonToken space = (CommonToken) ctx.SPACE().getSymbol();
-    line.append(space.getText());
-    spaces.add(space);
-  }
-
-  @Override
-  public void enterNewline(final NewlineContext ctx) {
-    CommonToken newline = (CommonToken) ctx.NL().getSymbol();
-    spaces.add(newline);
-    stripSpaces();
-  }
+  public static final int REMOVE_LAST_LINE_CHANNEL = Token.MIN_USER_CHANNEL_VALUE;
 
   @Override
   public void exitTemplate(final TemplateContext ctx) {
-    stripSpaces();
-  }
-
-  /**
-   * Move tokens to the hidden channel if necessary.
-   */
-  private void stripSpaces() {
-    boolean hasTag = this.hasTag == null ? false : this.hasTag.booleanValue();
-    if (hasTag && !nonSpace) {
-      for (CommonToken space : spaces) {
-        space.setChannel(Token.HIDDEN_CHANNEL);
-      }
-    } else {
-      spaces.clear();
-    }
-
-    this.hasTag = null;
-    nonSpace = false;
-    line.setLength(0);
+    removeWhitespace();
+    this.textTokens.clear();
+    this.standAlone = null;
   }
 
   @Override
   public void enterText(final TextContext ctx) {
-    nonSpace = true;
+    CommonToken currentToken = (CommonToken) ctx.getStart();
+    String currentText = currentToken.getText();
+    Integer secondLineIndex = MustacheStringUtils.indexOfSecondLine(currentText);
+    if (secondLineIndex == null) {
+      // Non-whitespace was found. Clear list and start again with the current token
+      this.textTokens.clear();
+      this.standAlone = null;
+    } else if (secondLineIndex >= 0) {
+      // Try to remove whitespace from the previously saved text tokens
+      boolean canRemoveWhitespace = removeWhitespace();
+      if (canRemoveWhitespace) {
+        // Remove the first line of this text as well
+        String newText = StringUtils.substring(currentText, secondLineIndex);
+        currentToken.setText(newText);
+      }
+
+      // Clear list and start again with the current token
+      this.textTokens.clear();
+      this.standAlone = null;
+    }
+
+    this.textTokens.add(currentToken);
   }
 
   @Override
@@ -136,7 +121,8 @@ public class MustacheSpec extends HbsParserBaseListener {
     hasTag(true);
   }
 
-  @Override public void enterElseBlock(final HbsParser.ElseBlockContext ctx) {
+  @Override
+  public void enterElseBlock(final HbsParser.ElseBlockContext ctx) {
     hasTag(true);
   }
 
@@ -166,8 +152,63 @@ public class MustacheSpec extends HbsParserBaseListener {
    * @param hasTag True, to indicate there is a mustache instruction.
    */
   private void hasTag(final boolean hasTag) {
-    if (this.hasTag != Boolean.FALSE) {
-      this.hasTag = hasTag;
+    if (this.standAlone != Boolean.FALSE) {
+      this.standAlone = hasTag;
     }
+  }
+
+  /**
+   * Remove whitespace from previously saved text tokens.
+   *
+   * @return True if whitespace could be removed. False otherwise.
+   */
+  private boolean removeWhitespace() {
+    boolean canRemoveWhitespace = this.standAlone == null ? false : this.standAlone.booleanValue();
+    if (!canRemoveWhitespace) {
+      return false;
+    }
+
+    if (textTokens.isEmpty()) {
+      return true;
+    }
+
+    // Try to remove whitespace from the last line
+    CommonToken lastToken = textTokens.get(textTokens.size() - 1);
+    String lastText = lastToken.getText();
+    int newlineIndex = StringUtils.lastIndexOfAny(lastText, "\r", "\n");
+    if (newlineIndex >= 0) {
+      String lastLine = lastText.substring(newlineIndex + 1);
+      if (!StringUtils.isWhitespace(lastLine)) {
+        // Cannot remove anything since line contains non-whitespace
+        return false;
+      }
+
+      // Mark the last line for removal
+      lastToken.setChannel(REMOVE_LAST_LINE_CHANNEL);
+    } else {
+      // Check for non-whitespace
+      int maxIndex = textTokens.size() - 1;
+      for (int i = maxIndex; i >= 0; i--) {
+        CommonToken loopToken = textTokens.get(i);
+        String loopText = loopToken.getText();
+        if (!StringUtils.isWhitespace(loopText)) {
+          // Cannot remove anything since line contains non-whitespace
+          return false;
+        }
+        if (i == 0) {
+          // Mark tokens already checked for removal
+          int j = 0;
+          while (j <= maxIndex) {
+            CommonToken whiteSpaceToken = textTokens.get(j);
+            whiteSpaceToken.setChannel(Token.HIDDEN_CHANNEL);
+            j++;
+          }
+
+          break;
+        }
+      }
+    }
+
+    return true;
   }
 }

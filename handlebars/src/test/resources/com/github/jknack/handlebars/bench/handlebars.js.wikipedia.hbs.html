@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html class="client-nojs" lang="de" dir="ltr">
+<head>
+<meta charset="UTF-8"/>
+<title>Handlebars.js – Wikipedia</title>
+<script>document.documentElement.className="client-js";RLCONF={"wgCanonicalNamespace":"","wgCanonicalSpecialPageName":!1,"wgNamespaceNumber":0,"wgPageName":"Handlebars.js","wgTitle":"Handlebars.js","wgCurRevisionId":165165190,"wgRevisionId":165165190,"wgArticleId":8520484,"wgIsArticle":!0,"wgIsRedirect":!1,"wgAction":"view","wgUserName":null,"wgUserGroups":["*"],"wgCategories":["Templatesprache","Freie Software"],"wgBreakFrames":!1,"wgPageContentLanguage":"de","wgPageContentModel":"wikitext","wgSeparatorTransformTable":[",\t.",".\t,"],"wgDigitTransformTable":["",""],"wgDefaultDateFormat":"dmy","wgMonthNames":["","Januar","Februar","März","April","Mai","Juni","Juli","August","September","Oktober","November","Dezember"],"wgMonthNamesShort":["","Jan.","Feb.","Mär.","Apr.","Mai","Jun.","Jul.","Aug.","Sep.","Okt.","Nov.","Dez."],"wgRelevantPageName":"Handlebars.js","wgRelevantArticleId":8520484,"wgRequestId":"XZbi9gpAAEAAAI2o6i4AAAAC","wgCSPNonce":!1,"wgIsProbablyEditable":!0,
+"wgRelevantPageIsProbablyEditable":!0,"wgRestrictionEdit":[],"wgRestrictionMove":[],"wgFlaggedRevsParams":{"tags":{"accuracy":{"levels":1,"quality":2,"pristine":4}}},"wgStableRevisionId":165165190,"wgMediaViewerOnClick":!0,"wgMediaViewerEnabledByDefault":!0,"wgPopupsReferencePreviews":!1,"wgPopupsConflictsWithNavPopupGadget":!1,"wgVisualEditor":{"pageLanguageCode":"de","pageLanguageDir":"ltr","pageVariantFallbacks":"de"},"wgMFDisplayWikibaseDescriptions":{"search":!0,"nearby":!0,"watchlist":!0,"tagline":!0},"wgWMESchemaEditAttemptStepOversample":!1,"wgPoweredByHHVM":!1,"wgULSCurrentAutonym":"Deutsch","wgNoticeProject":"wikipedia","wgWikibaseItemId":"Q5647472","wgCentralAuthMobileDomain":!1,"wgEditSubmitButtonLabelPublish":!0};RLSTATE={"ext.globalCssJs.user.styles":"ready","site.styles":"ready","noscript":"ready","user.styles":"ready","ext.globalCssJs.user":"ready","user":"ready","user.options":"loading","user.tokens":"loading","ext.flaggedRevs.icons":
+"ready","oojs-ui-core.styles":"ready","oojs-ui.styles.indicators":"ready","mediawiki.widgets.styles":"ready","oojs-ui-core.icons":"ready","ext.cite.styles":"ready","ext.pygments":"ready","mediawiki.legacy.shared":"ready","mediawiki.legacy.commonPrint":"ready","mediawiki.toc.styles":"ready","wikibase.client.init":"ready","ext.flaggedRevs.basic":"ready","ext.visualEditor.desktopArticleTarget.noscript":"ready","ext.uls.interlanguage":"ready","ext.wikimediaBadges":"ready","ext.3d.styles":"ready","mediawiki.skinning.interface":"ready","skins.vector.styles":"ready"};RLPAGEMODULES=["ext.cite.ux-enhancements","site","mediawiki.page.startup","mediawiki.page.ready","mediawiki.toc","mediawiki.searchSuggest","ext.flaggedRevs.advanced","ext.gadget.editMenus","ext.gadget.WikiMiniAtlas","ext.gadget.OpenStreetMap","ext.gadget.CommonsDirekt","ext.centralauth.centralautologin","ext.popups","ext.visualEditor.desktopArticleTarget.init","ext.visualEditor.targetLoader","ext.eventLogging",
+"ext.wikimediaEvents","ext.navigationTiming","ext.uls.compactlinks","ext.uls.interface","ext.cx.eventlogging.campaigns","ext.quicksurveys.init","ext.centralNotice.geoIP","ext.centralNotice.startUp","skins.vector.js"];</script>
+<script>(RLQ=window.RLQ||[]).push(function(){mw.loader.implement("user.options@1wzrr",function($,jQuery,require,module){/*@nomin*/mw.user.options.set({"variant":"de"});
+});mw.loader.implement("user.tokens@tffin",function($,jQuery,require,module){/*@nomin*/mw.user.tokens.set({"editToken":"+\\","patrolToken":"+\\","watchToken":"+\\","csrfToken":"+\\"});
+});});</script>
+<link rel="stylesheet" href="/w/load.php?lang=de&amp;modules=ext.3d.styles%7Cext.cite.styles%7Cext.flaggedRevs.basic%2Cicons%7Cext.pygments%2CwikimediaBadges%7Cext.uls.interlanguage%7Cext.visualEditor.desktopArticleTarget.noscript%7Cmediawiki.legacy.commonPrint%2Cshared%7Cmediawiki.skinning.interface%7Cmediawiki.toc.styles%7Cmediawiki.widgets.styles%7Coojs-ui-core.icons%2Cstyles%7Coojs-ui.styles.indicators%7Cskins.vector.styles%7Cwikibase.client.init&amp;only=styles&amp;skin=vector"/>
+<script async="" src="/w/load.php?lang=de&amp;modules=startup&amp;only=scripts&amp;raw=1&amp;skin=vector"></script>
+<meta name="ResourceLoaderDynamicStyles" content=""/>
+<link rel="stylesheet" href="/w/load.php?lang=de&amp;modules=site.styles&amp;only=styles&amp;skin=vector"/>
+<meta name="generator" content="MediaWiki 1.34.0-wmf.25"/>
+<meta name="referrer" content="origin"/>
+<meta name="referrer" content="origin-when-crossorigin"/>
+<meta name="referrer" content="origin-when-cross-origin"/>
+<link rel="alternate" href="android-app://org.wikipedia/http/de.m.wikipedia.org/wiki/Handlebars.js"/>
+<link rel="alternate" type="application/x-wiki" title="Seite bearbeiten" href="/w/index.php?title=Handlebars.js&amp;action=edit"/>
+<link rel="edit" title="Seite bearbeiten" href="/w/index.php?title=Handlebars.js&amp;action=edit"/>
+<link rel="apple-touch-icon" href="/static/apple-touch/wikipedia.png"/>
+<link rel="shortcut icon" href="/static/favicon/wikipedia.ico"/>
+<link rel="search" type="application/opensearchdescription+xml" href="/w/opensearch_desc.php" title="Wikipedia (de)"/>
+<link rel="EditURI" type="application/rsd+xml" href="//de.wikipedia.org/w/api.php?action=rsd"/>
+<link rel="license" href="//creativecommons.org/licenses/by-sa/3.0/"/>
+<link rel="canonical" href="https://de.wikipedia.org/wiki/Handlebars.js"/>
+<link rel="dns-prefetch" href="//login.wikimedia.org"/>
+<link rel="dns-prefetch" href="//meta.wikimedia.org" />
+<!--[if lt IE 9]><script src="/w/resources/lib/html5shiv/html5shiv.js"></script><![endif]-->
+</head>
+<body class="mediawiki ltr sitedir-ltr capitalize-all-nouns mw-hide-empty-elt ns-0 ns-subject mw-editable page-Handlebars_js rootpage-Handlebars_js skin-vector action-view">
+<div id="mw-page-base" class="noprint"></div>
+<div id="mw-head-base" class="noprint"></div>
+<div id="content" class="mw-body" role="main">
+	<a id="top"></a>
+	<div id="siteNotice" class="mw-body-content"><!-- CentralNotice --></div>
+	<div class="mw-indicators mw-body-content">
+</div>
+
+	<h1 id="firstHeading" class="firstHeading" lang="de">Handlebars.js</h1>
+	
+	<div id="bodyContent" class="mw-body-content">
+		<div id="siteSub" class="noprint">aus Wikipedia, der freien Enzyklop&auml;die</div>
+		<div id="contentSub"></div>
+		
+		
+		
+		<div id="jump-to-nav"></div>
+		<a class="mw-jump-link" href="#mw-head">Zur Navigation springen</a>
+		<a class="mw-jump-link" href="#p-search">Zur Suche springen</a>
+		<div id="mw-content-text" lang="de" dir="ltr" class="mw-content-ltr"><div class="mw-parser-output"><table class="float-right infobox toccolours toptextcells" style="border-spacing:5px; font-size:90%; text-align:left; width:21em;">
+
+<tbody><tr>
+<th colspan="2" class="hintergrundfarbe6" style="font-size:105%; text-align:center;">Handlebars.js
+</th></tr>
+<tr>
+<th colspan="2" class="hintergrundfarbe5" style="font-size:105%; text-align:center;">Basisdaten
+<p class="mw-empty-elt">
+</p>
+</th></tr>
+<tr>
+<td><b><a href="/wiki/Maintainer" title="Maintainer">Maintainer</a></b>
+</td>
+<td><a href="/w/index.php?title=Yehuda_Katz&amp;action=edit&amp;redlink=1" class="new" title="Yehuda Katz (Seite nicht vorhanden)">Yehuda Katz</a>
+</td></tr>
+<tr>
+<td><b>Aktuelle&#160;<a href="/wiki/Version_(Software)" title="Version (Software)">Version</a></b>
+</td>
+<td><span class="wikidata-content">4.4.2<sup id="cite_ref-_fa55e8f3251b0a1c_1-0" class="reference"><a href="#cite_note-_fa55e8f3251b0a1c-1">&#91;1&#93;</a></sup></span> <br /> (<span class="wikidata-content">2. Oktober 2019</span>)
+</td></tr>
+<tr>
+<td><b><a href="/wiki/Programmiersprache" title="Programmiersprache">Programmiersprache</a></b>
+</td>
+<td><a href="/wiki/JavaScript" title="JavaScript">JavaScript</a>
+</td></tr>
+<tr>
+<td><b>Lizenz</b>
+</td>
+<td><a href="/wiki/MIT-Lizenz" title="MIT-Lizenz">MIT-Lizenz</a>
+</td></tr>
+<tr>
+<td class="hintergrundfarbe5" colspan="2" style="text-align:center;"><a rel="nofollow" class="external text" href="http://handlebarsjs.com/">handlebarsjs.com</a>
+</td></tr></tbody></table>
+<p><b>Handlebars.js</b> ist eine logiklose <a href="/wiki/Template-Engine" title="Template-Engine">Template-Engine</a> für <a href="/wiki/JavaScript" title="JavaScript">JavaScript</a> von Yehuda Katz.<sup id="cite_ref-2" class="reference"><a href="#cite_note-2">&#91;2&#93;</a></sup> 
+Es ist eine Erweiterung der Template-Engine <a href="/w/index.php?title=Mustache&amp;action=edit&amp;redlink=1" class="new" title="Mustache (Seite nicht vorhanden)">Mustache</a>.
+Der Quellcode ist lizenziert unter der  <a href="/wiki/MIT-Lizenz" title="MIT-Lizenz">MIT-Lizenz</a> und ist gehostet auf <a href="/wiki/GitHub" title="GitHub">GitHub</a>.
+</p>
+<div id="toc" class="toc"><input type="checkbox" role="button" id="toctogglecheckbox" class="toctogglecheckbox" style="display:none" /><div class="toctitle" lang="de" dir="ltr"><h2>Inhaltsverzeichnis</h2><span class="toctogglespan"><label class="toctogglelabel" for="toctogglecheckbox"></label></span></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Funktionsweise"><span class="tocnumber">1</span> <span class="toctext">Funktionsweise</span></a></li>
+<li class="toclevel-1 tocsection-2"><a href="#Verwendung"><span class="tocnumber">2</span> <span class="toctext">Verwendung</span></a></li>
+<li class="toclevel-1 tocsection-3"><a href="#Weblinks"><span class="tocnumber">3</span> <span class="toctext">Weblinks</span></a></li>
+<li class="toclevel-1 tocsection-4"><a href="#Einzelnachweise"><span class="tocnumber">4</span> <span class="toctext">Einzelnachweise</span></a></li>
+</ul>
+</div>
+
+<h2><span class="mw-headline" id="Funktionsweise">Funktionsweise</span><span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="/w/index.php?title=Handlebars.js&amp;veaction=edit&amp;section=1" class="mw-editsection-visualeditor" title="Abschnitt bearbeiten: Funktionsweise">Bearbeiten</a><span class="mw-editsection-divider"> | </span><a href="/w/index.php?title=Handlebars.js&amp;action=edit&amp;section=1" title="Abschnitt bearbeiten: Funktionsweise">Quelltext bearbeiten</a><span class="mw-editsection-bracket">]</span></span></h2>
+<p>Das folgende Beispiel zeigt, zu was ein Handlebars-Template mit den folgenden <a href="/wiki/JavaScript_Object_Notation" title="JavaScript Object Notation">JSON</a>-Daten kompiliert wird.
+In dem Template wird ein each-Helper verwendet, welcher eine <a href="/wiki/Schleife_(Programmierung)" title="Schleife (Programmierung)">Schleife</a> simuliert.
+</p><p><b>Handlebars-Template</b>
+</p>
+<div class="mw-highlight mw-content-ltr" dir="ltr"><pre><span></span><span class="p">&lt;</span><span class="nt">ul</span><span class="p">&gt;</span>
+{{#each users}}
+    <span class="p">&lt;</span><span class="nt">li</span><span class="p">&gt;</span>{{firstname}} {{lastname}}<span class="p">&lt;/</span><span class="nt">li</span><span class="p">&gt;</span>
+{{/each}}
+<span class="p">&lt;/</span><span class="nt">ul</span><span class="p">&gt;</span>
+</pre></div>
+<p><b>Daten in JSON</b>
+</p>
+<div class="mw-highlight mw-content-ltr" dir="ltr"><pre><span></span><span class="p">{</span>
+    <span class="s2">&quot;users&quot;</span><span class="o">:</span> <span class="p">[</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;firstname&quot;</span><span class="o">:</span> <span class="s2">&quot;Peter&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;lastname&quot;</span><span class="o">:</span> <span class="s2">&quot;Maier&quot;</span>
+        <span class="p">},</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;firstname&quot;</span><span class="o">:</span> <span class="s2">&quot;Karl&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;lastname&quot;</span><span class="o">:</span> <span class="s2">&quot;Bauer&quot;</span>
+        <span class="p">}</span>
+    <span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+<p><b>Ergebnis der Kompilierung</b>
+</p>
+<div class="mw-highlight mw-content-ltr" dir="ltr"><pre><span></span><span class="p">&lt;</span><span class="nt">ul</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">li</span><span class="p">&gt;</span>Peter Maier<span class="p">&lt;/</span><span class="nt">li</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">li</span><span class="p">&gt;</span>Karl Bauer<span class="p">&lt;/</span><span class="nt">li</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">ul</span><span class="p">&gt;</span>
+</pre></div>
+<h2><span class="mw-headline" id="Verwendung">Verwendung</span><span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="/w/index.php?title=Handlebars.js&amp;veaction=edit&amp;section=2" class="mw-editsection-visualeditor" title="Abschnitt bearbeiten: Verwendung">Bearbeiten</a><span class="mw-editsection-divider"> | </span><a href="/w/index.php?title=Handlebars.js&amp;action=edit&amp;section=2" title="Abschnitt bearbeiten: Verwendung">Quelltext bearbeiten</a><span class="mw-editsection-bracket">]</span></span></h2>
+<p>Handlebars findet zum Beispiel Verwendung in dem <a href="/wiki/JavaScript" title="JavaScript">JavaScript</a>-<a href="/wiki/Webframework" title="Webframework">Webframework</a> <a href="/wiki/Ember.js" title="Ember.js">Ember.js</a> und dem <a href="/wiki/Content-Management-System" title="Content-Management-System">CMS</a> <a href="/wiki/Ghost_(Blogging-Plattform)" title="Ghost (Blogging-Plattform)">Ghost</a>.
+</p>
+<h2><span class="mw-headline" id="Weblinks">Weblinks</span><span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="/w/index.php?title=Handlebars.js&amp;veaction=edit&amp;section=3" class="mw-editsection-visualeditor" title="Abschnitt bearbeiten: Weblinks">Bearbeiten</a><span class="mw-editsection-divider"> | </span><a href="/w/index.php?title=Handlebars.js&amp;action=edit&amp;section=3" title="Abschnitt bearbeiten: Weblinks">Quelltext bearbeiten</a><span class="mw-editsection-bracket">]</span></span></h2>
+<ul><li><a rel="nofollow" class="external text" href="http://handlebarsjs.com">Offizielle Website</a></li>
+<li><a rel="nofollow" class="external text" href="https://github.com/wycats/handlebars.js">Quellcode auf GitHub</a></li>
+<li><a rel="nofollow" class="external text" href="http://tryhandlebarsjs.com">Website um Handlebars-Templates zu testen</a></li>
+<li><a rel="nofollow" class="external text" href="https://mustache.github.io">Mustache auf github</a></li></ul>
+<h2><span class="mw-headline" id="Einzelnachweise">Einzelnachweise</span><span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="/w/index.php?title=Handlebars.js&amp;veaction=edit&amp;section=4" class="mw-editsection-visualeditor" title="Abschnitt bearbeiten: Einzelnachweise">Bearbeiten</a><span class="mw-editsection-divider"> | </span><a href="/w/index.php?title=Handlebars.js&amp;action=edit&amp;section=4" title="Abschnitt bearbeiten: Einzelnachweise">Quelltext bearbeiten</a><span class="mw-editsection-bracket">]</span></span></h2>
+<ol class="references">
+<li id="cite_note-_fa55e8f3251b0a1c-1"><span class="mw-cite-backlink"><a href="#cite_ref-_fa55e8f3251b0a1c_1-0">↑</a></span> <span class="reference-text"><a rel="nofollow" class="external text" href="https://github.com/wycats/handlebars.js/releases/tag/v4.4.2"><cite style="font-style:italic"><span lang="en">Release 4.4.2</span></cite>.</a> 2.&#160;Oktober 2019 (abgerufen am 3.&#160;Oktober 2019).</span>
+</li>
+<li id="cite_note-2"><span class="mw-cite-backlink"><a href="#cite_ref-2">↑</a></span> <span class="reference-text"><span class="cite">Sebastian Bergmann:&#32;<a rel="nofollow" class="external text" href="https://entwickler.de/webandphp/interview-yehuda-katz-125811.html"><i>Interview: Yehuda Katz.</i></a>&#32;In:&#32;<i><a rel="nofollow" class="external text" href="https://entwickler.de">entwickler.de</a>.</i>&#32;5.&#160;August 2013&#44;<span class="Abrufdatum">&#32;abgerufen am 4.&#160;Mai 2017</span>.</span><span style="display: none;" class="Z3988" title="ctx_ver=Z39.88-2004&amp;rft_val_fmt=info%3Aofi%2Ffmt%3Akev%3Amtx%3Adc&amp;rfr_id=info%3Asid%2Fde.wikipedia.org%3AHandlebars.js&amp;rft.title=Interview%3A+Yehuda+Katz&amp;rft.description=Interview%3A+Yehuda+Katz&amp;rft.identifier=https%3A%2F%2Fentwickler.de%2Fwebandphp%2Finterview-yehuda-katz-125811.html&amp;rft.creator=Sebastian+Bergmann&amp;rft.date=2013-08-05">&#160;</span></span>
+</li>
+</ol>
+<!-- 
+NewPP limit report
+Parsed by mw1248
+Cached time: 20191003064005
+Cache expiry: 2592000
+Dynamic content: false
+Complications: []
+CPU time usage: 0.248 seconds
+Real time usage: 0.423 seconds
+Preprocessor visited node count: 468/1000000
+Preprocessor generated node count: 0/1500000
+Post‐expand include size: 4031/2097152 bytes
+Template argument size: 897/2097152 bytes
+Highest expansion depth: 10/40
+Expensive parser function count: 0/500
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 3809/5000000 bytes
+Number of Wikibase entities loaded: 1/400
+Lua time usage: 0.177/10.000 seconds
+Lua memory usage: 3.65 MB/50 MB
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%  400.610      1 -total
+ 83.69%  335.285      1 Vorlage:Infobox_Software
+ 15.20%   60.903      1 Vorlage:Internetquelle
+  2.89%   11.588      1 Vorlage:Str_len
+-->
+
+<!-- Saved in parser cache with key dewiki:stable-pcache:idhash:8520484-0!canonical and timestamp 20191003064005 and revision id 165165190
+ -->
+</div><noscript><img src="//de.wikipedia.org/wiki/Special:CentralAutoLogin/start?type=1x1" alt="" title="" width="1" height="1" style="border: none; position: absolute;" /></noscript></div>
+		
+		<div class="printfooter">Abgerufen von „<a dir="ltr" href="https://de.wikipedia.org/w/index.php?title=Handlebars.js&amp;oldid=165165190">https://de.wikipedia.org/w/index.php?title=Handlebars.js&amp;oldid=165165190</a>“</div>
+		
+		<div id="catlinks" class="catlinks" data-mw="interface"><div id="mw-normal-catlinks" class="mw-normal-catlinks"><a href="/wiki/Wikipedia:Kategorien" title="Wikipedia:Kategorien">Kategorien</a>: <ul><li><a href="/wiki/Kategorie:Templatesprache" title="Kategorie:Templatesprache">Templatesprache</a></li><li><a href="/wiki/Kategorie:Freie_Software" title="Kategorie:Freie Software">Freie Software</a></li></ul></div></div>
+		<div class="visualClear"></div>
+		
+	</div>
+</div>
+<div id='mw-data-after-content'>
+	<div class="read-more-container"></div>
+</div>
+
+
+		<div id="mw-navigation">
+			<h2>Navigationsmenü</h2>
+			<div id="mw-head">
+									<div id="p-personal" role="navigation" aria-labelledby="p-personal-label">
+						<h3 id="p-personal-label">Meine Werkzeuge</h3>
+						<ul>
+							<li id="pt-anonuserpage">Nicht angemeldet</li><li id="pt-anontalk"><a href="/wiki/Spezial:Meine_Diskussionsseite" title="Diskussion über Änderungen von dieser IP-Adresse [n]" accesskey="n">Diskussionsseite</a></li><li id="pt-anoncontribs"><a href="/wiki/Spezial:Meine_Beitr%C3%A4ge" title="Eine Liste der Bearbeitungen, die von dieser IP-Adresse gemacht wurden [y]" accesskey="y">Beiträge</a></li><li id="pt-createaccount"><a href="/w/index.php?title=Spezial:Benutzerkonto_anlegen&amp;returnto=Handlebars.js" title="Wir ermutigen dich dazu, ein Benutzerkonto zu erstellen und dich anzumelden. Es ist jedoch nicht zwingend erforderlich.">Benutzerkonto erstellen</a></li><li id="pt-login"><a href="/w/index.php?title=Spezial:Anmelden&amp;returnto=Handlebars.js" title="Anmelden ist zwar keine Pflicht, wird aber gerne gesehen. [o]" accesskey="o">Anmelden</a></li>						</ul>
+					</div>
+									<div id="left-navigation">
+										<div id="p-namespaces" role="navigation" class="vectorTabs" aria-labelledby="p-namespaces-label">
+						<h3 id="p-namespaces-label">Namensräume</h3>
+						<ul>
+							<li id="ca-nstab-main" class="selected"><span><a href="/wiki/Handlebars.js" title="Seiteninhalt anzeigen [c]" accesskey="c">Artikel</a></span></li><li id="ca-talk" class="new"><span><a href="/w/index.php?title=Diskussion:Handlebars.js&amp;action=edit&amp;redlink=1" rel="discussion" title="Diskussion zum Seiteninhalt (Seite nicht vorhanden) [t]" accesskey="t">Diskussion</a></span></li>						</ul>
+					</div>
+										<div id="p-variants" role="navigation" class="vectorMenu emptyPortlet" aria-labelledby="p-variants-label">
+												<input type="checkbox" class="vectorMenuCheckbox" aria-labelledby="p-variants-label" />
+						<h3 id="p-variants-label">
+							<span>Varianten</span>
+						</h3>
+						<ul class="menu">
+													</ul>
+					</div>
+									</div>
+				<div id="right-navigation">
+										<div id="p-views" role="navigation" class="vectorTabs" aria-labelledby="p-views-label">
+						<h3 id="p-views-label">Ansichten</h3>
+						<ul>
+							<li id="ca-view" class="collapsible selected"><span><a href="/wiki/Handlebars.js">Lesen</a></span></li><li id="ca-ve-edit" class="collapsible"><span><a href="/w/index.php?title=Handlebars.js&amp;veaction=edit" title="Diese Seite mit dem VisualEditor bearbeiten [v]" accesskey="v">Bearbeiten</a></span></li><li id="ca-edit" class="collapsible"><span><a href="/w/index.php?title=Handlebars.js&amp;action=edit" title="Diese Seite bearbeiten [e]" accesskey="e">Quelltext bearbeiten</a></span></li><li id="ca-history" class="collapsible"><span><a href="/w/index.php?title=Handlebars.js&amp;action=history" title="Frühere Versionen dieser Seite [h]" accesskey="h">Versionsgeschichte</a></span></li>						</ul>
+					</div>
+										<div id="p-cactions" role="navigation" class="vectorMenu emptyPortlet" aria-labelledby="p-cactions-label">
+						<input type="checkbox" class="vectorMenuCheckbox" aria-labelledby="p-cactions-label" />
+						<h3 id="p-cactions-label"><span>Mehr</span></h3>
+						<ul class="menu">
+													</ul>
+					</div>
+										<div id="p-search" role="search">
+						<h3>
+							<label for="searchInput">Suche</label>
+						</h3>
+						<form action="/w/index.php" id="searchform">
+							<div id="simpleSearch">
+								<input type="search" name="search" placeholder="Wikipedia durchsuchen" title="Durchsuche die Wikipedia [f]" accesskey="f" id="searchInput"/><input type="hidden" value="Spezial:Suche" name="title"/><input type="submit" name="fulltext" value="Suchen" title="Suche nach Seiten, die diesen Text enthalten" id="mw-searchButton" class="searchButton mw-fallbackSearchButton"/><input type="submit" name="go" value="Artikel" title="Gehe direkt zu der Seite mit genau diesem Namen, falls sie vorhanden ist." id="searchButton" class="searchButton"/>							</div>
+						</form>
+					</div>
+									</div>
+			</div>
+			<div id="mw-panel">
+				<div id="p-logo" role="banner"><a class="mw-wiki-logo" href="/wiki/Wikipedia:Hauptseite" title="Hauptseite"></a></div>
+						<div class="portal" role="navigation" id="p-navigation" aria-labelledby="p-navigation-label">
+			<h3 id="p-navigation-label">Navigation</h3>
+			<div class="body">
+								<ul>
+					<li id="n-mainpage-description"><a href="/wiki/Wikipedia:Hauptseite" title="Hauptseite besuchen [z]" accesskey="z">Hauptseite</a></li><li id="n-topics"><a href="/wiki/Portal:Wikipedia_nach_Themen">Themenportale</a></li><li id="n-randompage"><a href="/wiki/Spezial:Zuf%C3%A4llige_Seite" title="Zufällige Seite aufrufen [x]" accesskey="x">Zufälliger Artikel</a></li>				</ul>
+							</div>
+		</div>
+			<div class="portal" role="navigation" id="p-Mitmachen" aria-labelledby="p-Mitmachen-label">
+			<h3 id="p-Mitmachen-label">Mitmachen</h3>
+			<div class="body">
+								<ul>
+					<li id="n-Artikel-verbessern"><a href="/wiki/Wikipedia:Beteiligen">Artikel verbessern</a></li><li id="n-Neuerartikel"><a href="/wiki/Hilfe:Neuen_Artikel_anlegen">Neuen Artikel anlegen</a></li><li id="n-portal"><a href="/wiki/Wikipedia:Autorenportal" title="Info-Zentrum über Beteiligungsmöglichkeiten">Autorenportal</a></li><li id="n-help"><a href="/wiki/Hilfe:%C3%9Cbersicht" title="Hilfeseite anzeigen">Hilfe</a></li><li id="n-recentchanges"><a href="/wiki/Spezial:Letzte_%C3%84nderungen" title="Liste der letzten Änderungen in Wikipedia [r]" accesskey="r">Letzte Änderungen</a></li><li id="n-contact"><a href="/wiki/Wikipedia:Kontakt">Kontakt</a></li><li id="n-sitesupport"><a href="//donate.wikimedia.org/wiki/Special:FundraiserRedirector?utm_source=donate&amp;utm_medium=sidebar&amp;utm_campaign=C13_de.wikipedia.org&amp;uselang=de" title="Unterstütze uns">Spenden</a></li>				</ul>
+							</div>
+		</div>
+			<div class="portal" role="navigation" id="p-tb" aria-labelledby="p-tb-label">
+			<h3 id="p-tb-label">Werkzeuge</h3>
+			<div class="body">
+								<ul>
+					<li id="t-whatlinkshere"><a href="/wiki/Spezial:Linkliste/Handlebars.js" title="Liste aller Seiten, die hierher verlinken [j]" accesskey="j">Links auf diese Seite</a></li><li id="t-recentchangeslinked"><a href="/wiki/Spezial:%C3%84nderungen_an_verlinkten_Seiten/Handlebars.js" rel="nofollow" title="Letzte Änderungen an Seiten, die von hier verlinkt sind [k]" accesskey="k">Änderungen an verlinkten Seiten</a></li><li id="t-specialpages"><a href="/wiki/Spezial:Spezialseiten" title="Liste aller Spezialseiten [q]" accesskey="q">Spezialseiten</a></li><li id="t-permalink"><a href="/w/index.php?title=Handlebars.js&amp;oldid=165165190" title="Dauerhafter Link zu dieser Seitenversion">Permanenter Link</a></li><li id="t-info"><a href="/w/index.php?title=Handlebars.js&amp;action=info" title="Weitere Informationen über diese Seite">Seiten­informationen</a></li><li id="t-wikibase"><a href="https://www.wikidata.org/wiki/Special:EntityPage/Q5647472" title="Link zum verbundenen Objekt im Datenrepositorium [g]" accesskey="g">Wikidata-Datenobjekt</a></li><li id="t-cite"><a href="/w/index.php?title=Spezial:Zitierhilfe&amp;page=Handlebars.js&amp;id=165165190" title="Hinweise, wie diese Seite zitiert werden kann">Artikel zitieren</a></li>				</ul>
+							</div>
+		</div>
+			<div class="portal" role="navigation" id="p-coll-print_export" aria-labelledby="p-coll-print_export-label">
+			<h3 id="p-coll-print_export-label">Drucken/­exportieren</h3>
+			<div class="body">
+								<ul>
+					<li id="coll-create_a_book"><a href="/w/index.php?title=Spezial:Buch&amp;bookcmd=book_creator&amp;referer=Handlebars.js">Buch erstellen</a></li><li id="coll-download-as-rl"><a href="/w/index.php?title=Spezial:ElectronPdf&amp;page=Handlebars.js&amp;action=show-download-screen">Als PDF herunterladen</a></li><li id="t-print"><a href="/w/index.php?title=Handlebars.js&amp;printable=yes" title="Druckansicht dieser Seite [p]" accesskey="p">Druckversion</a></li>				</ul>
+							</div>
+		</div>
+			<div class="portal" role="navigation" id="p-lang" aria-labelledby="p-lang-label">
+			<h3 id="p-lang-label">In anderen Sprachen</h3>
+			<div class="body">
+								<ul>
+					<li class="interlanguage-link interwiki-fa"><a href="https://fa.wikipedia.org/wiki/%D9%87%D9%86%D8%AF%D9%84%E2%80%8C%D8%A8%D8%A7%D8%B1%D8%B2" title="هندل‌بارز – Persisch" lang="fa" hreflang="fa" class="interlanguage-link-target">فارسی</a></li><li class="interlanguage-link interwiki-fr"><a href="https://fr.wikipedia.org/wiki/Handlebars_(moteur_de_template)" title="Handlebars (moteur de template) – Französisch" lang="fr" hreflang="fr" class="interlanguage-link-target">Français</a></li><li class="interlanguage-link interwiki-zh"><a href="https://zh.wikipedia.org/wiki/Handlebars_(%E6%A8%A1%E6%9D%BF%E7%B3%BB%E7%BB%9F)" title="Handlebars (模板系统) – Chinesisch" lang="zh" hreflang="zh" class="interlanguage-link-target">中文</a></li>				</ul>
+				<div class="after-portlet after-portlet-lang"><span class="wb-langlinks-edit wb-langlinks-link"><a href="https://www.wikidata.org/wiki/Special:EntityPage/Q5647472#sitelinks-wikipedia" title="Links auf Artikel in anderen Sprachen bearbeiten" class="wbc-editpage">Links bearbeiten</a></span></div>			</div>
+		</div>
+				</div>
+		</div>
+				<div id="footer" role="contentinfo">
+						<ul id="footer-info">
+								<li id="footer-info-lastmod"> Diese Seite wurde zuletzt am 4. Mai 2017 um 00:49 Uhr bearbeitet.</li>
+								<li id="footer-info-copyright"><div id="footer-info-copyright-stats" class="noprint"><a class="external" href="https://tools.wmflabs.org/pageviews?pages=Handlebars.js&amp;project=de.wikipedia.org" rel="nofollow">Abrufstatistik</a> · <a class="external" href=" https://xtools.wmflabs.org/articleinfo-authorship/de.wikipedia.org/Handlebars.js?uselang=de" rel="nofollow">Autoren</a> </div><div id="footer-info-copyright-separator"><br /></div><div id="footer-info-copyright-info">
+Der Text ist unter der Lizenz <a class="internal" href="https://de.wikipedia.org/wiki/Wikipedia:Lizenzbestimmungen_Commons_Attribution-ShareAlike_3.0_Unported">„Creative Commons Attribution/Share Alike“</a> verfügbar; Informationen zu den Urhebern und zum Lizenzstatus eingebundener Mediendateien (etwa Bilder oder Videos) können im Regelfall durch Anklicken dieser abgerufen werden. Möglicherweise unterliegen die Inhalte jeweils zusätzlichen Bedingungen. Durch die Nutzung dieser Website erklären Sie sich mit den <a class="internal" href="https://foundation.wikimedia.org/wiki/Terms_of_Use/de">Nutzungsbedingungen</a> und der <a class="internal" href="https://meta.wikimedia.org/wiki/Privacy_policy/de">Datenschutzrichtlinie</a> einverstanden.<br />
+Wikipedia® ist eine eingetragene Marke der Wikimedia Foundation Inc.</div></li>
+							</ul>
+						<ul id="footer-places">
+								<li id="footer-places-privacy"><a href="https://meta.wikimedia.org/wiki/Privacy_policy/de" class="extiw" title="m:Privacy policy/de">Datenschutz</a></li>
+								<li id="footer-places-about"><a href="/wiki/Wikipedia:%C3%9Cber_Wikipedia" title="Wikipedia:Über Wikipedia">Über Wikipedia</a></li>
+								<li id="footer-places-disclaimer"><a href="/wiki/Wikipedia:Impressum" title="Wikipedia:Impressum">Impressum</a></li>
+								<li id="footer-places-developers"><a href="https://www.mediawiki.org/wiki/Special:MyLanguage/How_to_contribute">Entwickler</a></li>
+								<li id="footer-places-cookiestatement"><a href="https://foundation.wikimedia.org/wiki/Cookie_statement">Stellungnahme zu Cookies</a></li>
+								<li id="footer-places-mobileview"><a href="//de.m.wikipedia.org/w/index.php?title=Handlebars.js&amp;mobileaction=toggle_view_mobile" class="noprint stopMobileRedirectToggle">Mobile Ansicht</a></li>
+							</ul>
+										<ul id="footer-icons" class="noprint">
+										<li id="footer-copyrightico">
+						<a href="https://wikimediafoundation.org/"><img src="/static/images/wikimedia-button.png" srcset="/static/images/wikimedia-button-1.5x.png 1.5x, /static/images/wikimedia-button-2x.png 2x" width="88" height="31" alt="Wikimedia Foundation"/></a>					</li>
+										<li id="footer-poweredbyico">
+						<a href="https://www.mediawiki.org/"><img src="/static/images/poweredby_mediawiki_88x31.png" alt="Powered by MediaWiki" srcset="/static/images/poweredby_mediawiki_132x47.png 1.5x, /static/images/poweredby_mediawiki_176x62.png 2x" width="88" height="31"/></a>					</li>
+									</ul>
+						<div style="clear: both;"></div>
+		</div>
+		
+
+<script>(RLQ=window.RLQ||[]).push(function(){mw.config.set({"wgPageParseReport":{"limitreport":{"cputime":"0.248","walltime":"0.423","ppvisitednodes":{"value":468,"limit":1000000},"ppgeneratednodes":{"value":0,"limit":1500000},"postexpandincludesize":{"value":4031,"limit":2097152},"templateargumentsize":{"value":897,"limit":2097152},"expansiondepth":{"value":10,"limit":40},"expensivefunctioncount":{"value":0,"limit":500},"unstrip-depth":{"value":0,"limit":20},"unstrip-size":{"value":3809,"limit":5000000},"entityaccesscount":{"value":1,"limit":400},"timingprofile":["100.00%  400.610      1 -total"," 83.69%  335.285      1 Vorlage:Infobox_Software"," 15.20%   60.903      1 Vorlage:Internetquelle","  2.89%   11.588      1 Vorlage:Str_len"]},"scribunto":{"limitreport-timeusage":{"value":"0.177","limit":"10.000"},"limitreport-memusage":{"value":3827363,"limit":52428800}},"cachereport":{"origin":"mw1248","timestamp":"20191003064005","ttl":2592000,"transientcontent":false}}});});</script>
+<script type="application/ld+json">{"@context":"https:\/\/schema.org","@type":"Article","name":"Handlebars.js","url":"https:\/\/de.wikipedia.org\/wiki\/Handlebars.js","sameAs":"http:\/\/www.wikidata.org\/entity\/Q5647472","mainEntity":"http:\/\/www.wikidata.org\/entity\/Q5647472","author":{"@type":"Organization","name":"Autoren der Wikimedia-Projekte"},"publisher":{"@type":"Organization","name":"Wikimedia Foundation, Inc.","logo":{"@type":"ImageObject","url":"https:\/\/www.wikimedia.org\/static\/images\/wmf-hor-googpub.png"}},"datePublished":"2014-12-25T02:57:44Z","headline":"Template-Engine"}</script>
+<script>(RLQ=window.RLQ||[]).push(function(){mw.config.set({"wgBackendResponseTime":110,"wgHostname":"mw1269"});});</script>
+</body>
+</html>

@@ -17,11 +17,10 @@
  */
 package com.github.jknack.handlebars.internal;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.antlr.v4.runtime.CommonToken;
+import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.Token;
+import org.apache.commons.lang3.StringUtils;
 
 import com.github.jknack.handlebars.internal.HbsParser.AmpvarContext;
 import com.github.jknack.handlebars.internal.HbsParser.BlockContext;
@@ -29,11 +28,7 @@ import com.github.jknack.handlebars.internal.HbsParser.CommentContext;
 import com.github.jknack.handlebars.internal.HbsParser.DelimitersContext;
 import com.github.jknack.handlebars.internal.HbsParser.ElseStmtChainContext;
 import com.github.jknack.handlebars.internal.HbsParser.ElseStmtContext;
-import com.github.jknack.handlebars.internal.HbsParser.NewlineContext;
 import com.github.jknack.handlebars.internal.HbsParser.PartialContext;
-import com.github.jknack.handlebars.internal.HbsParser.SpacesContext;
-import com.github.jknack.handlebars.internal.HbsParser.TemplateContext;
-import com.github.jknack.handlebars.internal.HbsParser.TextContext;
 import com.github.jknack.handlebars.internal.HbsParser.TvarContext;
 import com.github.jknack.handlebars.internal.HbsParser.UnlessContext;
 import com.github.jknack.handlebars.internal.HbsParser.VarContext;
@@ -48,73 +43,43 @@ import com.github.jknack.handlebars.internal.HbsParser.VarContext;
 public class WhiteSpaceControl extends HbsParserBaseListener {
 
   /**
-   * Track the spaces/lines that need to be excluded.
+   * The token stream.
    */
-  private List<CommonToken> spaces = new ArrayList<>();
+  private CommonTokenStream tokens;
 
-  /** Greater than zero, if a trim-right operation is required. */
-  private int pending = 0;
-
-  @Override
-  public void enterSpaces(final SpacesContext ctx) {
-    CommonToken space = (CommonToken) ctx.SPACE().getSymbol();
-    spaces.add(space);
-  }
-
-  @Override
-  public void enterNewline(final NewlineContext ctx) {
-    CommonToken newline = (CommonToken) ctx.NL().getSymbol();
-    spaces.add(newline);
-  }
-
-  @Override
-  public void exitTemplate(final TemplateContext ctx) {
-    trimRight();
-  }
-
-  /** Trim-left operation. */
-  private void trimLeft() {
-    hideSpaces();
-  }
-
-  /** Move space tokens to the hidden channel. */
-  private void hideSpaces() {
-    for (CommonToken space : spaces) {
-      space.setChannel(Token.HIDDEN_CHANNEL);
-    }
-  }
-
-  /** Trim-right, if ONLY if pending > 0. */
-  private void trimRight() {
-    if (pending > 0) {
-      hideSpaces();
-      pending -= 1;
-    }
-  }
-
-  @Override
-  public void enterText(final TextContext ctx) {
-    trim(ctx.start, ctx.stop);
+  /**
+   * Constructor.
+   *
+   * @param tokens The token stream.
+   */
+  public WhiteSpaceControl(final CommonTokenStream tokens) {
+    this.tokens = tokens;
   }
 
   @Override
   public void enterBlock(final BlockContext ctx) {
-    trim(ctx.start, ctx.END(0).getSymbol());
+    trim(ctx.start, ctx.END(0)
+        .getSymbol());
   }
 
   @Override
   public void enterElseStmt(final ElseStmtContext ctx) {
-    trim(ctx.start, ctx.END().getSymbol());
+    trim(ctx.start, ctx.END()
+        .getSymbol());
   }
 
   @Override
   public void enterElseStmtChain(final ElseStmtChainContext ctx) {
-    trim(ctx.start, ctx.END().getSymbol());
+    trim(ctx.start, ctx.END()
+        .getSymbol());
   }
 
   @Override
   public void exitBlock(final BlockContext ctx) {
-    trim(ctx.END_BLOCK().getSymbol(), ctx.END(1).getSymbol());
+    trim(ctx.END_BLOCK()
+        .getSymbol(),
+        ctx.END(1)
+            .getSymbol());
   }
 
   @Override
@@ -134,7 +99,9 @@ public class WhiteSpaceControl extends HbsParserBaseListener {
 
   @Override
   public void enterUnless(final UnlessContext ctx) {
-    trim(ctx.start, ctx.END().get(0).getSymbol());
+    trim(ctx.start, ctx.END()
+        .get(0)
+        .getSymbol());
   }
 
   @Override
@@ -153,26 +120,33 @@ public class WhiteSpaceControl extends HbsParserBaseListener {
   }
 
   /**
-   * Trim on left/right is required.
+   * Trim on left/right where required.
    *
    * @param startToken The start token.
    * @param endToken The end token.
    */
   private void trim(final Token startToken, final Token endToken) {
-    trimRight();
-
     String start = text(startToken);
     if (start.indexOf("~") > 0) {
-      trimLeft();
+      int i = startToken.getTokenIndex();
+      if (i > 0) {
+        CommonToken leftToken = (CommonToken) tokens.get(i - 1);
+        if (leftToken != null && leftToken.getType() == HbsLexer.TEXT) {
+          String trimmed = StringUtils.stripEnd(leftToken.getText(), null);
+          leftToken.setText(trimmed);
+        }
+      }
     }
 
     String end = text(endToken);
     if (end.indexOf("~") >= 0) {
-      pending += 1;
+      int i = endToken.getTokenIndex();
+      CommonToken rightToken = (CommonToken) tokens.get(i + 1);
+      if (rightToken != null && rightToken.getType() == HbsLexer.TEXT) {
+        String trimmed = StringUtils.stripStart(rightToken.getText(), null);
+        rightToken.setText(trimmed);
+      }
     }
-
-    // clear tokens
-    spaces.clear();
   }
 
   /**

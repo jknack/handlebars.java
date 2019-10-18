@@ -90,10 +90,10 @@ public class HbsParserFactory implements ParserFactory {
           logger.debug("Applying Mustache spec");
           new ParseTreeWalker().walk(new MustacheSpec(), tree);
         }
-
+        
         if (lexer.whiteSpaceControl) {
           logger.debug("Applying white spaces control");
-          new ParseTreeWalker().walk(new WhiteSpaceControl(), tree);
+          new ParseTreeWalker().walk(new WhiteSpaceControl((CommonTokenStream)parser.getTokenStream()), tree);
         }
 
         /**
