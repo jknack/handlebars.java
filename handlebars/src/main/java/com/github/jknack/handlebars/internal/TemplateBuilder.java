@@ -382,7 +382,7 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
         }
       }
     }
-    String[] parts = varName.split("\\./");
+    String[] parts = StringUtils.splitByWholeSeparator(varName, "./");
     // TODO: try to catch this with ANTLR...
     // foo.0 isn't allowed, it must be foo.0.
     if (parts.length > 0 && NumberUtils.isCreatable(parts[parts.length - 1])
