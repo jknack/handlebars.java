@@ -197,7 +197,7 @@ Please note you don't have to specify the extension file.
  * **conditional helpers**
 
 ### with, each, if, unless:
- See the [built-in helper documentation](http://handlebarsjs.com/block_helpers.html).
+ See the [built-in helper documentation](https://handlebarsjs.com/guide/block-helpers.html).
 
 ### block and partial
  Block and partial helpers work together to provide you [Template Inheritance](http://jknack.github.io/handlebars.java/reuse.html).
