@@ -998,8 +998,8 @@ public class Handlebars implements HelperRegistry {
     setEndDelimiter(endDelimiter);
     return this;
   }
-  
-   /**
+
+  /**
    * The End Delimiter.
    *
    * @return The End Delimiter.
@@ -1027,8 +1027,8 @@ public class Handlebars implements HelperRegistry {
     setStartDelimiter(startDelimiter);
     return this;
   }
-  
-   /**
+
+  /**
    * The Start Delimiter.
    *
    * @return The Start Delimiter.
