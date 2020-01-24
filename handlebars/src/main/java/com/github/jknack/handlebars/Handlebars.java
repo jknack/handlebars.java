@@ -998,6 +998,15 @@ public class Handlebars implements HelperRegistry {
     setEndDelimiter(endDelimiter);
     return this;
   }
+  
+   /**
+   * The End Delimiter.
+   *
+   * @return The End Delimiter.
+   */
+  public String getEndDelimiter() {
+    return this.endDelimiter;
+  }
 
   /**
    * Set the start delimiter.
@@ -1017,6 +1026,15 @@ public class Handlebars implements HelperRegistry {
   public Handlebars startDelimiter(final String startDelimiter) {
     setStartDelimiter(startDelimiter);
     return this;
+  }
+  
+   /**
+   * The Start Delimiter.
+   *
+   * @return The Start Delimiter.
+   */
+  public String getStartDelimiter() {
+    return this.startDelimiter;
   }
 
   /**
