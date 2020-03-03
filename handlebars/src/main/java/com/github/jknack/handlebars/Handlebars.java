@@ -1456,7 +1456,7 @@ public class Handlebars implements HelperRegistry {
     synchronized (this) {
       if (this.engine == null) {
 
-        this.engine = new ScriptEngineManager().getEngineByName("nashorn");
+        this.engine = new ScriptEngineManager(null).getEngineByName("nashorn");
 
         Throwing.run(() -> engine.eval(Files.read(this.handlebarsJsFile, charset)));
       }
