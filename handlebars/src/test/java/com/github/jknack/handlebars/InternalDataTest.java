@@ -8,6 +8,9 @@ import java.io.IOException;
 
 import org.junit.Test;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+
 public class InternalDataTest extends AbstractTest {
 
   @Override
@@ -34,6 +37,7 @@ public class InternalDataTest extends AbstractTest {
   @Test
   public void dataAvailableForRendering() throws IOException {
     shouldCompileTo("{{foo}}", "", "foo");
+    assertEquals("foo", ((Context)configureContext("")).get("foo"));
   }
 
   @Test
@@ -47,6 +51,7 @@ public class InternalDataTest extends AbstractTest {
     shouldCompileTo("{{internalData.bar}}", "", "");
     shouldCompileTo("{{this.internalData}}", "", "");
     shouldCompileTo("{{this.internalData.bar}}", "", "");
+    assertNull(((Context)configureContext("")).get("bar"));
   }
 
   @Test
