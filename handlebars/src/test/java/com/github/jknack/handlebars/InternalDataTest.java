@@ -55,7 +55,7 @@ public class InternalDataTest extends AbstractTest {
   }
 
   @Test
-  public void percentFormat() throws IOException {
+  public void helperAbleToAccessInternalData() throws IOException {
     shouldCompileTo("{{printFooAndBar}}", "", "foo bar");
   }
 }
