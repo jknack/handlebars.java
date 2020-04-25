@@ -27,12 +27,13 @@ public class PrecompilePluginTest {
     plugin.setSuffix(".html");
     plugin.setOutput("target/helpers-i18njs.js");
     plugin.setProject(newProject());
-    plugin.setHandlebarsJsFile("/handlebars-v4.0.4.js");
+    plugin.setHandlebarsJsFile("/handlebars-v4.7.3.js");
 
     plugin.execute();
 
-    assertEquals(FileUtils.fileRead("src/test/resources/helpers-i18njs.expected"),
-        FileUtils.fileRead("target/helpers-i18njs.js"));
+    assertEquals(FileUtils.fileRead("target/helpers-i18njs.js"),
+        FileUtils.fileRead("src/test/resources/helpers-i18njs.expected").trim(),
+        FileUtils.fileRead("target/helpers-i18njs.js").trim());
   }
 
   @Test
@@ -44,12 +45,13 @@ public class PrecompilePluginTest {
     plugin.addTemplate("a");
     plugin.addTemplate("c");
     plugin.setProject(newProject());
-    plugin.setHandlebarsJsFile("/handlebars-v4.0.4.js");
+    plugin.setHandlebarsJsFile("/handlebars-v4.7.3.js");
 
     plugin.execute();
 
-    assertEquals(FileUtils.fileRead("src/test/resources/specific-files.expected"),
-        FileUtils.fileRead("target/specific-files.js"));
+    assertEquals(FileUtils.fileRead("target/specific-files.js"),
+        FileUtils.fileRead("src/test/resources/specific-files.expected").trim(),
+        FileUtils.fileRead("target/specific-files.js").trim());
   }
 
   @Test
@@ -59,7 +61,7 @@ public class PrecompilePluginTest {
     plugin.setSuffix(".html");
     plugin.setOutput("target/newdir/helpers.js");
     plugin.setProject(newProject());
-    plugin.setHandlebarsJsFile("/handlebars-v4.0.4.js");
+    plugin.setHandlebarsJsFile("/handlebars-v4.7.3.js");
 
     plugin.execute();
   }
@@ -71,7 +73,7 @@ public class PrecompilePluginTest {
     plugin.setSuffix(".html");
     plugin.setOutput("target/missing-helpers.js");
     plugin.setProject(newProject());
-    plugin.setHandlebarsJsFile("/handlebars-v4.0.4.js");
+    plugin.setHandlebarsJsFile("/handlebars-v4.7.3.js");
 
     plugin.execute();
   }
@@ -83,7 +85,7 @@ public class PrecompilePluginTest {
     plugin.setSuffix(".html");
     plugin.setOutput("target/no-helpers.js");
     plugin.setProject(newProject());
-    plugin.setHandlebarsJsFile("/handlebars-v4.0.4.js");
+    plugin.setHandlebarsJsFile("/handlebars-v4.7.3.js");
 
     plugin.execute();
 
@@ -125,7 +127,7 @@ public class PrecompilePluginTest {
     plugin.setSuffix(".html");
     plugin.setOutput("target/no-helpers.js");
     plugin.setProject(project);
-    plugin.setHandlebarsJsFile("/handlebars-v4.0.4.js");
+    plugin.setHandlebarsJsFile("/handlebars-v4.7.3.js");
 
     plugin.execute();
   }
@@ -137,7 +139,7 @@ public class PrecompilePluginTest {
     withoutRT.setSuffix(".html");
     withoutRT.setOutput("target/without-rt-helpers.js");
     withoutRT.setProject(newProject());
-    withoutRT.setHandlebarsJsFile("/handlebars-v4.0.4.js");
+    withoutRT.setHandlebarsJsFile("/handlebars-v4.7.3.js");
 
     withoutRT.execute();
 
@@ -147,7 +149,7 @@ public class PrecompilePluginTest {
     withRT.setOutput("target/with-rt-helpers.js");
     withRT.setRuntime("src/test/resources/handlebars.runtime.js");
     withRT.setProject(newProject());
-    withRT.setHandlebarsJsFile("/handlebars-v4.0.4.js");
+    withRT.setHandlebarsJsFile("/handlebars-v4.7.3.js");
 
     withRT.execute();
 
@@ -163,7 +165,7 @@ public class PrecompilePluginTest {
     withoutRT.setSuffix(".html");
     withoutRT.setOutput("target/helpers-normal.js");
     withoutRT.setProject(newProject());
-    withoutRT.setHandlebarsJsFile("/handlebars-v4.0.4.js");
+    withoutRT.setHandlebarsJsFile("/handlebars-v4.7.3.js");
 
     withoutRT.execute();
 
@@ -173,7 +175,7 @@ public class PrecompilePluginTest {
     withRT.setOutput("target/helpers.min.js");
     withRT.setMinimize(true);
     withRT.setProject(newProject());
-    withRT.setHandlebarsJsFile("/handlebars-v4.0.4.js");
+    withRT.setHandlebarsJsFile("/handlebars-v4.7.3.js");
     withRT.execute();
 
     assertTrue("Normal file must be larger than minimized",
@@ -188,12 +190,13 @@ public class PrecompilePluginTest {
     plugin.setSuffix(".html");
     plugin.setOutput("target/helpers.js");
     plugin.setProject(newProject());
-    plugin.setHandlebarsJsFile("/handlebars-v4.0.4.js");
+    plugin.setHandlebarsJsFile("/handlebars-v4.7.3.js");
 
     plugin.execute();
 
-    assertEquals(FileUtils.fileRead("src/test/resources/helpers.expected"),
-        FileUtils.fileRead("target/helpers.js"));
+    assertEquals(FileUtils.fileRead("target/helpers.js"),
+        FileUtils.fileRead("src/test/resources/helpers.expected").trim(),
+        FileUtils.fileRead("target/helpers.js").trim());
   }
 
   private MavenProject newProject(final String... classpath)

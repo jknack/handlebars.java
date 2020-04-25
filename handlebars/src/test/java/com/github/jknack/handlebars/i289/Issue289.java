@@ -32,9 +32,16 @@ public class Issue289 extends AbstractTest {
 
   @Test
   public void subexpressionToJS() throws IOException {
-    String js = "{\"compiler\":[7,\">= 4.0.0\"],\"main\":function(container,depth0,helpers,partials,data) {\n" +
-        "    return container.escapeExpression((helpers.lowercase || (depth0 && depth0.lowercase) || helpers.helperMissing).call(depth0 != null ? depth0 : {},(helpers.concat || (depth0 && depth0.concat) || helpers.helperMissing).call(depth0 != null ? depth0 : {},\"string1\",\"string2\",{\"name\":\"concat\",\"hash\":{},\"data\":data}),{\"name\":\"lowercase\",\"hash\":{},\"data\":data}));\n" +
-        "},\"useData\":true}";
+    String js = "{\"compiler\":[8,\">= 4.3.0\"],\"main\":function(container,depth0,helpers,partials,data) {\n"
+        + "    var lookupProperty = container.lookupProperty || function(parent, propertyName) {\n"
+        + "        if (Object.prototype.hasOwnProperty.call(parent, propertyName)) {\n"
+        + "          return parent[propertyName];\n"
+        + "        }\n"
+        + "        return undefined\n"
+        + "    };\n"
+        + "\n"
+        + "  return container.escapeExpression((lookupProperty(helpers,\"lowercase\")||(depth0 && lookupProperty(depth0,\"lowercase\"))||container.hooks.helperMissing).call(depth0 != null ? depth0 : (container.nullContext || {}),(lookupProperty(helpers,\"concat\")||(depth0 && lookupProperty(depth0,\"concat\"))||container.hooks.helperMissing).call(depth0 != null ? depth0 : (container.nullContext || {}),\"string1\",\"string2\",{\"name\":\"concat\",\"hash\":{},\"data\":data,\"loc\":{\"start\":{\"line\":1,\"column\":12},\"end\":{\"line\":1,\"column\":40}}}),{\"name\":\"lowercase\",\"hash\":{},\"data\":data,\"loc\":{\"start\":{\"line\":1,\"column\":0},\"end\":{\"line\":1,\"column\":42}}}));\n"
+        + "},\"useData\":true}";
 
     assertEquals(js,
         compile("{{lowercase (concat \"string1\" \"string2\")}}", helpers).toJavaScript());

@@ -24,12 +24,12 @@ public class Issue234 {
     plugin.addTemplate("c");
     plugin.setAmd(true);
     plugin.setProject(newProject());
-    plugin.setHandlebarsJsFile("/handlebars-v4.0.4.js");
+    plugin.setHandlebarsJsFile("/handlebars-v4.7.3.js");
 
     plugin.execute();
 
-    assertEquals(FileUtils.fileRead("src/test/resources/issue234.expected.js"),
-        FileUtils.fileRead("target/issue234.js"));
+    assertEquals(FileUtils.fileRead("target/issue234.js"), FileUtils.fileRead("src/test/resources/issue234.expected").trim(),
+        FileUtils.fileRead("target/issue234.js").trim());
   }
 
   private MavenProject newProject(final String... classpath)

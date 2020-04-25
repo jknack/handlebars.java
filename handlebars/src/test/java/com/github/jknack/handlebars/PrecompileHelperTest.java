@@ -41,9 +41,13 @@ public class PrecompileHelperTest {
     InputStream in =
         getClass().getResourceAsStream("/" + wrapper + ".precompiled.js");
 
-    assertEquals(IOUtils.toString(in).replace("\r\n", "\n"), js.replace("\r\n", "\n"));
+    assertEquals(wrapper, spaceSafe(IOUtils.toString(in)), spaceSafe(js));
 
     in.close();
+  }
+
+  private String spaceSafe(String value) {
+    return value.replaceAll("\\s+", " ").trim();
   }
 
   @Test
@@ -55,7 +59,7 @@ public class PrecompileHelperTest {
     InputStream in =
         getClass().getResourceAsStream("/partial.precompiled.js");
 
-    assertEquals(IOUtils.toString(in).replace("\r\n", "\n"), js.replace("\r\n", "\n"));
+    assertEquals(spaceSafe(IOUtils.toString(in)), spaceSafe(js));
 
     in.close();
   }

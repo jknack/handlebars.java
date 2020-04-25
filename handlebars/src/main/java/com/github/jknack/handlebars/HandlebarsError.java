@@ -31,11 +31,6 @@ import static org.apache.commons.lang3.Validate.notEmpty;
 public class HandlebarsError implements Serializable {
 
   /**
-   * The serial UUID.
-   */
-  private static final long serialVersionUID = -8453345164714701546L;
-
-  /**
    * The error's line number.
    */
   public final int line;
