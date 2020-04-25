@@ -33,6 +33,5 @@ public interface ParserFactory {
    * @param endDelimiter The end delimiter.
    * @return A new {@link Parser}.
    */
-  Parser create(final Handlebars handlebars, final String startDelimiter,
-      final String endDelimiter);
+  Parser create(Handlebars handlebars, String startDelimiter, String endDelimiter);
 }

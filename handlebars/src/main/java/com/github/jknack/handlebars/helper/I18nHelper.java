@@ -368,7 +368,7 @@ class DefI18nSource implements I18nSource {
      *
      * @param charset Charset.
      */
-    public UTF8Control(final Charset charset) {
+    UTF8Control(final Charset charset) {
       this.charset = charset;
     }
     @Override
@@ -402,7 +402,7 @@ class DefI18nSource implements I18nSource {
    * @param locale The locale.
    * @param classLoader The classloader.
    */
-  public DefI18nSource(final Charset charset, final String baseName, final Locale locale,
+  DefI18nSource(final Charset charset, final String baseName, final Locale locale,
       final ClassLoader classLoader) {
     bundle = ResourceBundle.getBundle(baseName, locale, classLoader, new UTF8Control(charset));
   }

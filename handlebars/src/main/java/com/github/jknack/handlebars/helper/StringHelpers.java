@@ -17,9 +17,12 @@
  */
 package com.github.jknack.handlebars.helper;
 
-import static org.apache.commons.lang3.Validate.isTrue;
-import static org.apache.commons.lang3.Validate.notNull;
-import static org.apache.commons.lang3.Validate.validIndex;
+import com.github.jknack.handlebars.Handlebars;
+import com.github.jknack.handlebars.Helper;
+import com.github.jknack.handlebars.Options;
+import org.apache.commons.lang3.LocaleUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.text.WordUtils;
 
 import java.io.IOException;
 import java.math.RoundingMode;
@@ -37,13 +40,9 @@ import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.lang3.LocaleUtils;
-import org.apache.commons.lang3.StringUtils;
-
-import com.github.jknack.handlebars.Handlebars;
-import com.github.jknack.handlebars.Helper;
-import com.github.jknack.handlebars.Options;
-import org.apache.commons.text.WordUtils;
+import static org.apache.commons.lang3.Validate.isTrue;
+import static org.apache.commons.lang3.Validate.notNull;
+import static org.apache.commons.lang3.Validate.validIndex;
 
 /**
  * Commons string function helpers.
@@ -521,8 +520,7 @@ public enum StringHelpers implements Helper<Object> {
      * The default date styles.
      */
     @SuppressWarnings("serial")
-    private Map<String, Integer> styles = new HashMap<String, Integer>()
-    {
+    private Map<String, Integer> styles = new HashMap<String, Integer>() {
       {
         put("full", DateFormat.FULL);
         put("long", DateFormat.LONG);
@@ -718,7 +716,7 @@ public enum StringHelpers implements Helper<Object> {
    * @param options The options object.
    * @return A string result.
    */
-  protected abstract CharSequence safeApply(final Object context, final Options options);
+  protected abstract CharSequence safeApply(Object context, Options options);
 
   /**
    * Register the helper in a handlebars instance.

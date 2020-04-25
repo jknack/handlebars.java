@@ -188,7 +188,7 @@ public class Context {
      *
      * @param resolvers The value resolvers.
      */
-    public CompositeValueResolver(final ValueResolver... resolvers) {
+    CompositeValueResolver(final ValueResolver... resolvers) {
       this.resolvers = resolvers;
     }
 
@@ -350,7 +350,7 @@ public class Context {
      *
      * @param path Expression path.
      */
-    public PathExpressionChain(final List<PathExpression> path) {
+    PathExpressionChain(final List<PathExpression> path) {
       this.path = path;
     }
 

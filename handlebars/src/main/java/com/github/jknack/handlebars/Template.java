@@ -167,7 +167,7 @@ public interface Template {
    * @param <S> The template type.
    * @return A new {@link TypeSafeTemplate}.
    */
-  <T, S extends TypeSafeTemplate<T>> S as(final Class<S> type);
+  <T, S extends TypeSafeTemplate<T>> S as(Class<S> type);
 
   /**
    * Creates a new {@link TypeSafeTemplate}.

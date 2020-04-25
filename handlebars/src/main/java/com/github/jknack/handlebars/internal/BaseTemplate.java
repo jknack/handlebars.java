@@ -86,7 +86,7 @@ abstract class BaseTemplate implements Template {
    *
    * @param handlebars A handlebars instance.
    */
-  public BaseTemplate(final Handlebars handlebars) {
+  BaseTemplate(final Handlebars handlebars) {
     this.handlebars = notNull(handlebars, "The handlebars can't be null.");
   }
 
@@ -184,7 +184,7 @@ abstract class BaseTemplate implements Template {
    * @param writer The writer.
    * @throws IOException If a resource cannot be loaded.
    */
-  protected abstract void merge(final Context context, Writer writer) throws IOException;
+  protected abstract void merge(Context context, Writer writer) throws IOException;
 
   @Override
   public String toString() {

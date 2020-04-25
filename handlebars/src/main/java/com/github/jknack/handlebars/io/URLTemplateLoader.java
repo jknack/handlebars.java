@@ -79,6 +79,6 @@ public abstract class URLTemplateLoader extends AbstractTemplateLoader {
    * @return A new template resource.
    * @throws IOException If the url can't be resolved.
    */
-  protected abstract URL getResource(final String location) throws IOException;
+  protected abstract URL getResource(String location) throws IOException;
 
 }

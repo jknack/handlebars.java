@@ -106,9 +106,8 @@ class Variable extends HelperResolver {
    * @param params The variable's parameters. Required.
    * @param hash The variable's hash. Required.
    */
-  public Variable(final Handlebars handlebars, final String name,
-      final TagType type, final List<Param> params,
-      final Map<String, Param> hash) {
+  Variable(final Handlebars handlebars, final String name,
+      final TagType type, final List<Param> params, final Map<String, Param> hash) {
     super(handlebars);
     this.name = name.trim();
     this.path = PathCompiler.compile(name, handlebars.parentScopeResolution());
@@ -122,19 +121,6 @@ class Variable extends HelperResolver {
     this.formatter = handlebars.getFormatter();
     this.noArg = params.size() == 0 && hash.size() == 0;
     postInit();
-  }
-
-  /**
-   * Creates a new {@link Variable}.
-   *
-   * @param handlebars The handlebars instance.
-   * @param name The variable's name. Required.
-   * @param type The variable's type. Required.
-   */
-  @SuppressWarnings("unchecked")
-  public Variable(final Handlebars handlebars, final String name, final TagType type) {
-    this(handlebars, name, type, Collections.EMPTY_LIST,
-        Collections.EMPTY_MAP);
   }
 
   /**

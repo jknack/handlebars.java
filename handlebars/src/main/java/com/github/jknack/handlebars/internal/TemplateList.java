@@ -17,6 +17,11 @@
  */
 package com.github.jknack.handlebars.internal;
 
+import com.github.jknack.handlebars.Context;
+import com.github.jknack.handlebars.Handlebars;
+import com.github.jknack.handlebars.TagType;
+import com.github.jknack.handlebars.Template;
+
 import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
@@ -24,11 +29,6 @@ import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
-
-import com.github.jknack.handlebars.Context;
-import com.github.jknack.handlebars.Handlebars;
-import com.github.jknack.handlebars.TagType;
-import com.github.jknack.handlebars.Template;
 
 /**
  * A list of templates.
@@ -54,7 +54,7 @@ class TemplateList extends BaseTemplate implements Iterable<Template> {
    *
    * @param handlebars A handlebars instance. Required.
    */
-  public TemplateList(final Handlebars handlebars) {
+  TemplateList(final Handlebars handlebars) {
     super(handlebars);
   }
 

@@ -101,8 +101,7 @@ public enum NumberHelper implements Helper<Object> {
    *        The options object.
    * @return A string result.
    */
-  protected abstract CharSequence safeApply(final Number value,
-      final Options options);
+  protected abstract CharSequence safeApply(Number value, Options options);
 
   /**
    * Apply the helper to the context.

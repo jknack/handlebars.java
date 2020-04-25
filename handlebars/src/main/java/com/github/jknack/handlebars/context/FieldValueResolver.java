@@ -106,7 +106,7 @@ public class FieldValueResolver extends MemberValueResolver<FieldWrapper> {
     /**
      * @param field The field object.
      */
-    public FieldMember(final Field field) {
+    FieldMember(final Field field) {
       this.field = field;
     }
 

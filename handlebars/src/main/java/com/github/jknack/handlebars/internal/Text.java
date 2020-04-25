@@ -46,7 +46,7 @@ class Text extends BaseTemplate {
    * @param text The text content. Required.
    * @param escapeChar The escape char or empty.
    */
-  public Text(final Handlebars handlebars, final String text, final String escapeChar) {
+  Text(final Handlebars handlebars, final String text, final String escapeChar) {
     super(handlebars);
     int length = text.length();
     this.text = new char[length];
@@ -60,7 +60,7 @@ class Text extends BaseTemplate {
    * @param handlebars A handlebars instance. Required.
    * @param text The text content. Required.
    */
-  public Text(final Handlebars handlebars, final String text) {
+  Text(final Handlebars handlebars, final String text) {
     this(handlebars, text, "");
   }
 

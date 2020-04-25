@@ -103,7 +103,7 @@ class Partial extends HelperResolver {
    * @param context The template context.
    * @param hash Template params
    */
-  public Partial(final Handlebars handlebars, final Template path, final String context,
+  Partial(final Handlebars handlebars, final Template path, final String context,
       final Map<String, Param> hash) {
     super(handlebars);
     this.path = notNull(path, "The path is required.");

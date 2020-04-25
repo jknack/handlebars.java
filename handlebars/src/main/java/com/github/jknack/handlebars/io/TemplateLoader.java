@@ -56,7 +56,7 @@ public interface TemplateLoader {
    * @return A new template source.
    * @throws IOException If the template's source can't be resolved.
    */
-  TemplateSource sourceAt(final String location) throws IOException;
+  TemplateSource sourceAt(String location) throws IOException;
 
   /**
    * Resolve a relative location to an absolute location.
@@ -64,7 +64,7 @@ public interface TemplateLoader {
    * @param location The candidate location.
    * @return Resolve the uri to an absolute location.
    */
-  String resolve(final String location);
+  String resolve(String location);
 
   /**
    * @return The prefix that gets prepended to view names when building a URI.
@@ -82,15 +82,14 @@ public interface TemplateLoader {
    * @param prefix The prefix that gets prepended to view names when building a
    *        URI.
    */
-  void setPrefix(final String prefix);
+  void setPrefix(String prefix);
 
   /**
    * Set the suffix that gets appended to view names when building a URI.
    *
-   * @param suffix The suffix that gets appended to view names when building a
-   *        URI.
+   * @param suffix The suffix that gets appended to view names when building a URI.
    */
-  void setSuffix(final String suffix);
+  void setSuffix(String suffix);
 
   /**
    * Set the default charset.

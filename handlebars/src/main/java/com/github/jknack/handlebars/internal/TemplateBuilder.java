@@ -17,23 +17,6 @@
  */
 package com.github.jknack.handlebars.internal;
 
-import static org.apache.commons.lang3.StringUtils.isEmpty;
-import static org.apache.commons.lang3.Validate.notNull;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-
-import org.antlr.v4.runtime.CommonToken;
-import org.antlr.v4.runtime.Token;
-import org.antlr.v4.runtime.tree.ParseTree;
-import org.antlr.v4.runtime.tree.TerminalNode;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.math.NumberUtils;
-
 import com.github.jknack.handlebars.Context;
 import com.github.jknack.handlebars.Decorator;
 import com.github.jknack.handlebars.Handlebars;
@@ -74,6 +57,22 @@ import com.github.jknack.handlebars.internal.HbsParser.TvarContext;
 import com.github.jknack.handlebars.internal.HbsParser.UnlessContext;
 import com.github.jknack.handlebars.internal.HbsParser.VarContext;
 import com.github.jknack.handlebars.io.TemplateSource;
+import org.antlr.v4.runtime.CommonToken;
+import org.antlr.v4.runtime.Token;
+import org.antlr.v4.runtime.tree.ParseTree;
+import org.antlr.v4.runtime.tree.TerminalNode;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
+import static org.apache.commons.lang3.StringUtils.isEmpty;
+import static org.apache.commons.lang3.Validate.notNull;
 
 /**
  * Traverse the parse tree and build templates.
@@ -144,7 +143,7 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
    * @param handlebars A handlebars object. required.
    * @param source The template source. required.
    */
-  public TemplateBuilder(final Handlebars handlebars, final TemplateSource source) {
+  TemplateBuilder(final Handlebars handlebars, final TemplateSource source) {
     this.handlebars = notNull(handlebars, "The handlebars can't be null.");
     this.source = notNull(source, "The template source is required.");
   }
@@ -551,6 +550,7 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
         LinkedList<TemplateSource> invocationStack = context.data(Context.INVOCATION_STACK);
         invocationStack.addLast(source);
       }
+
       @Override
       protected void afterApply(final Context context) {
         LinkedList<TemplateSource> invocationStack = context.data(Context.INVOCATION_STACK);
@@ -776,21 +776,10 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
    * Report a semantic error.
    *
    * @param offendingToken The offending token.
-   * @param message An error message.
-   */
-  protected void reportError(final CommonToken offendingToken, final String message) {
-    reportError(offendingToken, offendingToken.getLine(), offendingToken.getCharPositionInLine(),
-        message);
-  }
-
-  /**
-   * Report a semantic error.
-   *
-   * @param offendingToken The offending token.
    * @param line The offending line.
    * @param column The offending column.
    * @param message An error message.
    */
-  protected abstract void reportError(final CommonToken offendingToken, final int line,
-      final int column, final String message);
+  protected abstract void reportError(CommonToken offendingToken, int line,
+      int column, String message);
 }
