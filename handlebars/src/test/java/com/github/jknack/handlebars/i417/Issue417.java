@@ -25,7 +25,7 @@ public class Issue417 extends AbstractTest {
             + "  return \"Hi \"\n"
             + "    + container.escapeExpression(((helper = (helper = lookupProperty(helpers,\"var\") || (depth0 != null ? lookupProperty(depth0,\"var\") : depth0)) != null ? helper : container.hooks.helperMissing),(typeof helper === \"function\" ? helper.call(depth0 != null ? depth0 : (container.nullContext || {}),{\"name\":\"var\",\"hash\":{},\"data\":data,\"loc\":{\"start\":{\"line\":1,\"column\":3},\"end\":{\"line\":1,\"column\":10}}}) : helper)))\n"
             + "    + \"!\";\n"
-            + "},\"useData\":true}", new Handlebars().handlebarsJsFile("/handlebars-v4.7.3.js")
+            + "},\"useData\":true}", new Handlebars().handlebarsJsFile("/handlebars-v4.7.6.js")
             .compileInline("Hi {{var}}!").toJavaScript());
   }
 
