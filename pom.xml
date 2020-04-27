@@ -84,15 +84,22 @@
       <dependency>
         <groupId>org.springframework</groupId>
         <artifactId>spring-webmvc</artifactId>
-        <version>3.1.1.RELEASE</version>
+        <version>${spring.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-webflux</artifactId>
+        <version>${spring.version}</version>
       </dependency>
 
       <dependency>
         <groupId>org.springframework</groupId>
         <artifactId>spring-test</artifactId>
-        <version>3.1.1.RELEASE</version>
+        <version>${spring.version}</version>
         <scope>test</scope>
       </dependency>
+
 
       <!-- Logging System -->
       <dependency>
@@ -148,7 +155,7 @@
         <groupId>junit</groupId>
         <artifactId>junit</artifactId>
         <scope>test</scope>
-        <version>4.11</version>
+        <version>4.12</version>
       </dependency>
 
       <dependency>
@@ -424,6 +431,7 @@
     <jackson2-version>2.9.10.4</jackson2-version>
     <humanize.version>1.2.2</humanize.version>
     <jacoco.version>0.8.1</jacoco.version>
+    <spring.version>5.0.7.RELEASE</spring.version>
     <maven.build.timestamp.format>yyyy-MM-dd HH:mm:ssa</maven.build.timestamp.format>
     <timestamp>${maven.build.timestamp}</timestamp>
   </properties>
