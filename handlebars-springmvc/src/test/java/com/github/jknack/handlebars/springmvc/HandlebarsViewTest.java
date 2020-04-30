@@ -32,6 +32,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.easymock.Capture;
+import org.easymock.EasyMock;
 import org.junit.Test;
 
 import com.github.jknack.handlebars.Context;
@@ -54,7 +55,7 @@ public class HandlebarsViewTest {
     PrintWriter writer = createMock(PrintWriter.class);
 
     Template template = createMock(Template.class);
-    Capture<Context> context = new Capture<Context>();
+    Capture<Context> context = EasyMock.newCapture();
     template.apply(capture(context), isA(PrintWriter.class));
 
     HttpServletRequest request = createMock(HttpServletRequest.class);

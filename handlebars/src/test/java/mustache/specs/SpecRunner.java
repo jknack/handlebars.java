@@ -122,6 +122,7 @@ public class SpecRunner extends Parameterized {
       }
       Method method = getDeclaredMethod(object.getClass(), methodName,
           classes);
+      method.setAccessible(true);
       object = method.invoke(object, arguments);
     }
     return (T) object;
