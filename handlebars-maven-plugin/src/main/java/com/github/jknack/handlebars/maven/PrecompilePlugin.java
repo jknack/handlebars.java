@@ -361,12 +361,12 @@ public class PrecompilePlugin extends HandlebarsPlugin {
     compiler.initOptions(options);
 
     Result result = compiler.compile(Collections.<SourceFile> emptyList(),
-        Arrays.asList(SourceFile.fromFile(output)), options);
+        Arrays.asList(SourceFile.fromFile(output.getAbsolutePath())), options);
     if (result.success) {
       FileUtils.fileWrite(output, compiler.toSource());
     } else {
-      JSError[] errors = result.errors;
-      throw new MojoFailureException(errors[0].toString());
+      List<JSError> errors = result.errors;
+      throw new MojoFailureException(errors.get(0).toString());
     }
   }
 
