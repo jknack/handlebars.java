@@ -90,7 +90,7 @@
       <dependency>
         <groupId>org.springframework</groupId>
         <artifactId>spring-test</artifactId>
-        <version>3.1.1.RELEASE</version>
+        <version>4.3.30.RELEASE</version>
         <scope>test</scope>
       </dependency>
 
