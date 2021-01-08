@@ -21,8 +21,10 @@ lexer grammar HbsLexer;
     int lineOffset = 0;
     boolean inNewline = false;
     boolean resetLine = false;
+    boolean hasNewLine = false;
     while(!isEOF(tokenOffset) && !(ahead("\\" + token, tokenOffset) || ahead(token, tokenOffset))) {
       if (resetLine) {
+        hasNewLine = true;
         colOffset = 0;
         lineOffset+=1;
         resetLine = false;
@@ -44,7 +46,7 @@ lexer grammar HbsLexer;
     }
     // Since we found the text, increase the CharStream's index.
     _input.seek(_input.index() + tokenOffset - 1);
-    getInterpreter().setCharPositionInLine(_tokenStartCharPositionInLine + colOffset - 1);
+    getInterpreter().setCharPositionInLine(hasNewLine ? (colOffset - 1) : (_tokenStartCharPositionInLine + colOffset - 1));
     getInterpreter().setLine(_tokenStartLine + lineOffset);
     return true;
   }
