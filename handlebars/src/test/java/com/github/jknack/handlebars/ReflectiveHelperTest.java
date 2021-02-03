@@ -8,6 +8,7 @@ import static org.junit.Assert.fail;
 
 import java.io.IOException;
 
+import com.github.jknack.handlebars.helper.HelperFunction;
 import org.junit.Test;
 
 import com.github.jknack.handlebars.Handlebars.SafeString;
@@ -51,6 +52,11 @@ public class ReflectiveHelperTest extends AbstractTest {
   public void testHelperWithParamsAndOptions() throws IOException {
     shouldCompileTo("{{helperWithParamsAndOptions \"string\" true 4}}", $,
         "helperWithParamsAndOptions:string:true:4");
+  }
+
+  @Test
+  public void testAnnotatedHelper() throws IOException {
+    shouldCompileTo("{{this-is-annotated}}", null, "i am an annotated helper function");
   }
 
   @Test
@@ -153,6 +159,11 @@ public class ReflectiveHelperTest extends AbstractTest {
       final Options options) {
     assertNotNull(options);
     return new SafeString(String.format("helperWithParamsAndOptions:%s:%s:%s", context, p0, p1));
+  }
+
+  @HelperFunction("this-is-annotated")
+  public CharSequence annotatedHelper() {
+    return "i am an annotated helper function";
   }
 
   public CharSequence blog(final Blog blog, final Options options) {
