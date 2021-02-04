@@ -34,7 +34,7 @@ class Text extends BaseTemplate {
   /**
    * The plain text. Required.
    */
-  private char[] text;
+  private StringBuilder text;
 
   /** The escape's char or empty. */
   private String escapeChar;
@@ -48,9 +48,7 @@ class Text extends BaseTemplate {
    */
   Text(final Handlebars handlebars, final String text, final String escapeChar) {
     super(handlebars);
-    int length = text.length();
-    this.text = new char[length];
-    text.getChars(0, length, this.text, 0);
+    this.text = new StringBuilder(text);
     this.escapeChar = escapeChar;
   }
 
@@ -66,19 +64,19 @@ class Text extends BaseTemplate {
 
   @Override
   public String text() {
-    return escapeChar + new String(text);
+    return escapeChar + text.toString();
   }
 
   /**
    * @return Same as {@link #text()} without the escape char.
    */
   public char[] textWithoutEscapeChar() {
-    return text;
+    return text.toString().toCharArray();
   }
 
   @Override
   protected void merge(final Context scope, final Writer writer) throws IOException {
-    writer.write(text);
+    writer.write(text.toString());
   }
 
   /**
@@ -88,11 +86,7 @@ class Text extends BaseTemplate {
    * @return This object.
    */
   public Text append(final char[] text) {
-    int length = this.text.length + text.length;
-    char[] ntext = new char[length];
-    System.arraycopy(this.text, 0, ntext, 0, this.text.length);
-    System.arraycopy(text, 0, ntext, this.text.length, text.length);
-    this.text = ntext;
+    this.text.append(text);
     return this;
   }
 
