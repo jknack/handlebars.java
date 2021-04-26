@@ -26,7 +26,7 @@ Handlebars.java is a Java port of [handlebars](http://handlebarsjs.com/).
 
 Handlebars provides the power necessary to let you build semantic templates effectively with no frustration.
 
-[Mustache](http://mustache.github.com/mustache.5.html) templates are compatible with Handlebars, so you can take a [Mustache](http://mustache.github.com) template, import it into Handlebars, and start taking advantage of the extra Handlebars features.
+[Mustache](http://mustache.github.io/mustache.5.html) templates are compatible with Handlebars, so you can take a [Mustache](http://mustache.github.com) template, import it into Handlebars, and start taking advantage of the extra Handlebars features.
 
 # Getting Started
  In general, the syntax of **Handlebars** templates is a superset of [Mustache](http://mustache.github.com) templates. For basic syntax, check out the [Mustache manpage](http://mustache.github.com).
