@@ -84,4 +84,29 @@ public class StringLiteralParametersTest extends AbstractTest {
         "block helpers with multiple params");
   }
 
+  @Test
+  public void usingNewlinesInDoubleStringIsAllowed() throws IOException {
+    String string = "Message: {{{hello \"before\" \"multi\nline\" \"after\"}}}";
+    Hash helpers = $("hello", new Helper<String>() {
+      @Override
+      public Object apply(final String param, final Options options) throws IOException {
+        return "Hello " + param + " " + options.param(0) + " " + options.param(1);
+      }
+    });
+    shouldCompileTo(string, $, helpers, "Message: Hello before multi\nline after",
+            "template with an escaped String literal");
+  }
+
+  @Test
+  public void usingNewlinesInSingleStringIsAllowed() throws IOException {
+    String string = "Message: {{{hello 'before' 'multi\nline' 'after' }}}";
+    Hash helpers = $("hello", new Helper<String>() {
+      @Override
+      public Object apply(final String param, final Options options) throws IOException {
+        return "Hello " + param + " " + options.param(0) + " " + options.param(1);
+      }
+    });
+    shouldCompileTo(string, $, helpers, "Message: Hello before multi\nline after",
+            "template with an escaped String literal");
+  }
 }
