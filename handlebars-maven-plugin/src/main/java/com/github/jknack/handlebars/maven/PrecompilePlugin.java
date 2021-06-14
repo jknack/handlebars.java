@@ -113,7 +113,7 @@ public class PrecompilePlugin extends HandlebarsPlugin {
   /**
    * The handlebars js file.
    */
-  @Parameter(defaultValue = "/handlebars-v4.7.6.js")
+  @Parameter(defaultValue = "/handlebars-v4.7.7.js")
   private String handlebarsJsFile;
 
   /**
