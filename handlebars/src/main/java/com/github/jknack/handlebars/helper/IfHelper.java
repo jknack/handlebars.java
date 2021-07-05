@@ -47,7 +47,15 @@ public class IfHelper implements Helper<Object> {
   public Object apply(final Object context, final Options options)
       throws IOException {
     Buffer buffer = options.buffer();
-    if (options.isFalsy(context)) {
+
+    boolean isFalsy = options.isFalsy(context);
+    boolean includeZero = options.hash("includeZero", false);
+
+    if (context instanceof Number && includeZero) {
+      isFalsy = false;
+    }
+
+    if (isFalsy) {
       buffer.append(options.inverse());
     } else {
       buffer.append(options.fn());
