@@ -17,16 +17,23 @@
  */
 package com.github.jknack.handlebars;
 
+import com.github.jknack.handlebars.helper.StringHelpers;
+import org.junit.Test;
+
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
+import java.time.temporal.TemporalAccessor;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
-
-import org.junit.Test;
-
-import com.github.jknack.handlebars.helper.StringHelpers;
 
 public class DateFormatTest extends AbstractTest {
 
@@ -105,5 +112,57 @@ public class DateFormatTest extends AbstractTest {
     calendar.set(Calendar.MONTH, month - 1);
     calendar.set(Calendar.YEAR, year);
     return calendar.getTime();
+  }
+
+  public void verifyDateTimeFormats(Object date) throws IOException {
+    shouldCompileTo("{{dateFormat this \"medium\" locale=\"de\"}}", date, "12.08.2021");
+    shouldCompileTo("{{dateFormat this \"medium\" \"en_EN\"}}", date, "Aug 12, 2021");
+    shouldCompileTo("{{dateFormat this \"dd\"}}", date, "12");
+    shouldCompileTo("{{dateFormat this \"'week' w '@' mm:ss\" \"de_DE\"}}", date, "week 32 @ 38:55");
+
+    TemporalAccessor temporalAccessor;
+    if (date instanceof Date) {
+      temporalAccessor = ((Date) date).toInstant();
+    } else {
+      temporalAccessor = (TemporalAccessor) date;
+    }
+
+    // "12.08.2021 16:38:55" with jdk 8, but "12.08.2021, 16:38:55" with jdk 11
+    String expected1 = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM, FormatStyle.MEDIUM)
+        .withLocale(Locale.GERMAN).withZone(ZoneId.of("Europe/Berlin")).format(temporalAccessor);
+    shouldCompileTo("{{dateFormat this time=\"medium\" locale=\"de\" tz=\"Europe/Berlin\"}}", date, expected1);
+
+    // "12. August 2021 06:38" with jdk 8, but "12. August 2021, 06:38" with jdk 11
+    String expected2 = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.LONG, FormatStyle.SHORT)
+        .withLocale(Locale.GERMAN).withZone(ZoneId.of("GMT-8")).format(temporalAccessor);
+    shouldCompileTo("{{dateFormat this \"long\" locale=\"de\" time=\"short\" tz=\"GMT-8:00\"}}", date, expected2);
+
+    String expected3 = DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM)
+        .withLocale(Locale.getDefault()).withZone(ZoneId.systemDefault()).format(temporalAccessor);
+    shouldCompileTo("{{dateFormat this}}", date, expected3);
+
+    String expected4 = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM, FormatStyle.MEDIUM)
+        .withLocale(Locale.getDefault()).withZone(ZoneId.systemDefault()).format(temporalAccessor);
+    shouldCompileTo("{{dateFormat this time=\"medium\"}}", date, expected4);
+  }
+
+  @Test
+  public void formatDate() throws IOException {
+    verifyDateTimeFormats(new Date(1628779135*1000L));
+  }
+
+  @Test
+  public void formatInstant() throws IOException {
+    verifyDateTimeFormats(Instant.ofEpochSecond(1628779135));
+  }
+
+  @Test
+  public void formatOffsetDateTime() throws IOException {
+    verifyDateTimeFormats(OffsetDateTime.ofInstant(Instant.ofEpochSecond(1628779135), ZoneOffset.UTC));
+  }
+
+  @Test
+  public void formatLocalDateTime() throws IOException {
+    verifyDateTimeFormats(LocalDateTime.ofInstant(Instant.ofEpochSecond(1628779135), ZoneOffset.UTC));
   }
 }
