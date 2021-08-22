@@ -1,11 +1,10 @@
 package com.github.jknack.handlebars;
 
-import static org.easymock.EasyMock.createMock;
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.replay;
-import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -57,17 +56,13 @@ public class JsonNodeValueResolverTest {
     String name = "binary";
     byte[] result = new byte[]{1 };
 
-    JsonNode node = createMock(JsonNode.class);
+    JsonNode node = mock(JsonNode.class);
     BinaryNode value = BinaryNode.valueOf(result);
-    expect(node.get(name)).andReturn(value);
-
-    Object[] mocks = {node };
-
-    replay(mocks);
+    when(node.get(name)).thenReturn(value);
 
     assertEquals(result, JsonNodeValueResolver.INSTANCE.resolve(node, name));
 
-    verify(mocks);
+    verify(node).get(name);
   }
 
   @Test
@@ -75,17 +70,13 @@ public class JsonNodeValueResolverTest {
     String name = "null";
     Object result = ValueResolver.UNRESOLVED;
 
-    JsonNode node = createMock(JsonNode.class);
+    JsonNode node = mock(JsonNode.class);
     NullNode value = NullNode.instance;
-    expect(node.get(name)).andReturn(value);
-
-    Object[] mocks = {node };
-
-    replay(mocks);
+    when(node.get(name)).thenReturn(value);
 
     assertEquals(result, JsonNodeValueResolver.INSTANCE.resolve(node, name));
 
-    verify(mocks);
+    verify(node).get(name);
   }
 
   @Test
@@ -93,17 +84,13 @@ public class JsonNodeValueResolverTest {
     String name = "bigInt";
     BigInteger result = BigInteger.ONE;
 
-    JsonNode node = createMock(JsonNode.class);
+    JsonNode node = mock(JsonNode.class);
     JsonNode value = BigIntegerNode.valueOf(result);
-    expect(node.get(name)).andReturn(value);
-
-    Object[] mocks = {node };
-
-    replay(mocks);
+    when(node.get(name)).thenReturn(value);
 
     assertEquals(result, JsonNodeValueResolver.INSTANCE.resolve(node, name));
 
-    verify(mocks);
+    verify(node).get(name);
   }
 
   @Test
@@ -111,17 +98,13 @@ public class JsonNodeValueResolverTest {
     String name = "decimal";
     BigDecimal result = BigDecimal.TEN;
 
-    JsonNode node = createMock(JsonNode.class);
+    JsonNode node = mock(JsonNode.class);
     JsonNode value = DecimalNode.valueOf(result);
-    expect(node.get(name)).andReturn(value);
-
-    Object[] mocks = {node };
-
-    replay(mocks);
+    when(node.get(name)).thenReturn(value);
 
     assertEquals(result, JsonNodeValueResolver.INSTANCE.resolve(node, name));
 
-    verify(mocks);
+    verify(node).get(name);
   }
 
   @Test
@@ -129,17 +112,13 @@ public class JsonNodeValueResolverTest {
     String name = "long";
     Long result = 678L;
 
-    JsonNode node = createMock(JsonNode.class);
+    JsonNode node = mock(JsonNode.class);
     JsonNode value = LongNode.valueOf(result);
-    expect(node.get(name)).andReturn(value);
-
-    Object[] mocks = {node };
-
-    replay(mocks);
+    when(node.get(name)).thenReturn(value);
 
     assertEquals(result, JsonNodeValueResolver.INSTANCE.resolve(node, name));
 
-    verify(mocks);
+    verify(node).get(name);
   }
 
   @Test
@@ -147,17 +126,13 @@ public class JsonNodeValueResolverTest {
     String name = "pojo";
     Object result = new Object();
 
-    JsonNode node = createMock(JsonNode.class);
+    JsonNode node = mock(JsonNode.class);
     JsonNode value = new POJONode(result);
-    expect(node.get(name)).andReturn(value);
-
-    Object[] mocks = {node };
-
-    replay(mocks);
+    when(node.get(name)).thenReturn(value);
 
     assertEquals(result, JsonNodeValueResolver.INSTANCE.resolve(node, name));
 
-    verify(mocks);
+    verify(node).get(name);
   }
 
   @Test

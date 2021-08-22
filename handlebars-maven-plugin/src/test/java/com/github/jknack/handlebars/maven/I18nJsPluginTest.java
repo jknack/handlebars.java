@@ -1,9 +1,8 @@
 package com.github.jknack.handlebars.maven;
 
-import static org.easymock.EasyMock.createMock;
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.replay;
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.io.File;
 import java.io.IOException;
@@ -96,9 +95,8 @@ public class I18nJsPluginTest {
 
   private MavenProject newProject(final String... classpath)
       throws DependencyResolutionRequiredException {
-    MavenProject project = createMock(MavenProject.class);
-    expect(project.getRuntimeClasspathElements()).andReturn(Lists.newArrayList(classpath));
-    replay(project);
+    MavenProject project = mock(MavenProject.class);
+    when(project.getRuntimeClasspathElements()).thenReturn(Lists.newArrayList(classpath));
     return project;
   }
 

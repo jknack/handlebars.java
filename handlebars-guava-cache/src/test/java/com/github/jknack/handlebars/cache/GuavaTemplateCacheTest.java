@@ -1,12 +1,12 @@
 package com.github.jknack.handlebars.cache;
 
-import static org.easymock.EasyMock.createMock;
-import static org.easymock.EasyMock.eq;
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.isA;
-import static org.easymock.EasyMock.replay;
-import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.same;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import java.util.concurrent.Callable;
@@ -33,12 +33,10 @@ public class GuavaTemplateCacheTest {
     TemplateSource source = new URLTemplateSource("/template.hbs", getClass().getResource(
         "/template.hbs"));
 
-    Template template = createMock(Template.class);
+    Template template = mock(Template.class);
 
-    Parser parser = createMock(Parser.class);
-    expect(parser.parse(source)).andReturn(template);
-
-    replay(parser, template);
+    Parser parser = mock(Parser.class);
+    when(parser.parse(source)).thenReturn(template);
 
     // 1st call, parse must be call it
     assertEquals(template, new GuavaTemplateCache(cache).get(source, parser));
@@ -46,7 +44,7 @@ public class GuavaTemplateCacheTest {
     // 2nd call, should return from cache
     assertEquals(template, new GuavaTemplateCache(cache).get(source, parser));
 
-    verify(parser, template);
+    verify(parser).parse(source);
   }
 
   @Test
@@ -56,12 +54,12 @@ public class GuavaTemplateCacheTest {
 
     TemplateSource source = source("/template.hbs");
 
-    Template template = createMock(Template.class);
+    Template template = mock(Template.class);
 
-    Template reloadTemplate = createMock(Template.class);
+    Template reloadTemplate = mock(Template.class);
 
-    Parser parser = createMock(Parser.class);
-    expect(parser.parse(source)).andReturn(template);
+    Parser parser = mock(Parser.class);
+    when(parser.parse(same(source))).thenReturn(template);
 
     TemplateSource reloadSource = new ForwardingTemplateSource(source) {
       @Override
@@ -69,9 +67,7 @@ public class GuavaTemplateCacheTest {
         return System.currentTimeMillis() * 7;
       }
     };
-    expect(parser.parse(reloadSource)).andReturn(reloadTemplate);
-
-    replay(parser, template, reloadTemplate);
+    when(parser.parse(same(reloadSource))).thenReturn(reloadTemplate);
 
     // 1st call, parse must be call it
     assertEquals(template, new GuavaTemplateCache(cache).setReload(true).get(source, parser));
@@ -83,89 +79,76 @@ public class GuavaTemplateCacheTest {
     assertEquals(reloadTemplate,
         new GuavaTemplateCache(cache).setReload(true).get(reloadSource, parser));
 
-    verify(parser, template, reloadTemplate);
+    verify(parser).parse(same(source));
+    verify(parser).parse(same(reloadSource));
   }
 
   @Test
   public void evict() throws IOException {
-    TemplateSource source = createMock(TemplateSource.class);
+    TemplateSource source = mock(TemplateSource.class);
 
     @SuppressWarnings("unchecked")
-    Cache<TemplateSource, Template> cache = createMock(Cache.class);
+    Cache<TemplateSource, Template> cache = mock(Cache.class);
     cache.invalidate(source);
 
-    replay(cache, source);
-
     new GuavaTemplateCache(cache).evict(source);
-
-    verify(cache, source);
   }
 
   @Test
   public void clear() throws IOException {
     @SuppressWarnings("unchecked")
-    Cache<TemplateSource, Template> cache = createMock(Cache.class);
+    Cache<TemplateSource, Template> cache = mock(Cache.class);
     cache.invalidateAll();
 
-    replay(cache);
-
     new GuavaTemplateCache(cache).clear();
-
-    verify(cache);
   }
 
   @SuppressWarnings("unchecked")
   @Test(expected = IllegalStateException.class)
   public void executionExceptionWithRuntimeException() throws IOException, ExecutionException {
-    TemplateSource source = createMock(TemplateSource.class);
+    TemplateSource source = mock(TemplateSource.class);
 
-    Parser parser = createMock(Parser.class);
+    Parser parser = mock(Parser.class);
 
-    Cache<TemplateSource, Template> cache = createMock(Cache.class);
-    expect(cache.get(eq(source), isA(Callable.class))).andThrow(
+    Cache<TemplateSource, Template> cache = mock(Cache.class);
+    when(cache.get(eq(source), any(Callable.class))).thenThrow(
         new ExecutionException(new IllegalStateException()));
-
-    replay(cache, source, parser);
 
     new GuavaTemplateCache(cache).get(source, parser);
 
-    verify(cache, source, parser);
+    verify(cache).get(eq(source), any(Callable.class));
   }
 
   @SuppressWarnings("unchecked")
   @Test(expected = Error.class)
   public void executionExceptionWithError() throws IOException, ExecutionException {
-    TemplateSource source = createMock(TemplateSource.class);
+    TemplateSource source = mock(TemplateSource.class);
 
-    Parser parser = createMock(Parser.class);
+    Parser parser = mock(Parser.class);
 
-    Cache<TemplateSource, Template> cache = createMock(Cache.class);
-    expect(cache.get(eq(source), isA(Callable.class))).andThrow(
+    Cache<TemplateSource, Template> cache = mock(Cache.class);
+    when(cache.get(eq(source), any(Callable.class))).thenThrow(
         new ExecutionException(new Error()));
-
-    replay(cache, source, parser);
 
     new GuavaTemplateCache(cache).get(source, parser);
 
-    verify(cache, source, parser);
+    verify(cache).get(eq(source), any(Callable.class));
   }
 
   @SuppressWarnings("unchecked")
   @Test(expected = HandlebarsException.class)
   public void executionExceptionWithCheckedException() throws IOException, ExecutionException {
-    TemplateSource source = createMock(TemplateSource.class);
+    TemplateSource source = mock(TemplateSource.class);
 
-    Parser parser = createMock(Parser.class);
+    Parser parser = mock(Parser.class);
 
-    Cache<TemplateSource, Template> cache = createMock(Cache.class);
-    expect(cache.get(eq(source), isA(Callable.class))).andThrow(
+    Cache<TemplateSource, Template> cache = mock(Cache.class);
+    when(cache.get(eq(source), any(Callable.class))).thenThrow(
         new ExecutionException(new IOException()));
-
-    replay(cache, source, parser);
 
     new GuavaTemplateCache(cache).get(source, parser);
 
-    verify(cache, source, parser);
+    verify(cache).get(eq(source), any(Callable.class));
   }
 
   private TemplateSource source(final String filename) throws IOException {

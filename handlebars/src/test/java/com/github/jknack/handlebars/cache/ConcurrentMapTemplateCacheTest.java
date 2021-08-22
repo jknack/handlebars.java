@@ -1,10 +1,10 @@
 package com.github.jknack.handlebars.cache;
 
-import static org.easymock.EasyMock.createMock;
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.replay;
-import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertEquals;
+import static org.mockito.ArgumentMatchers.same;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import java.util.concurrent.ConcurrentHashMap;
@@ -38,12 +38,10 @@ public class ConcurrentMapTemplateCacheTest {
     TemplateSource source = new URLTemplateSource("/template.hbs", getClass().getResource(
         "/template.hbs"));
 
-    Template template = createMock(Template.class);
+    Template template = mock(Template.class);
 
-    Parser parser = createMock(Parser.class);
-    expect(parser.parse(source)).andReturn(template);
-
-    replay(parser, template);
+    Parser parser = mock(Parser.class);
+    when(parser.parse(source)).thenReturn(template);
 
     // 1st call, parse must be call it
     assertEquals(template, new ConcurrentMapTemplateCache(cache).get(source, parser));
@@ -51,7 +49,7 @@ public class ConcurrentMapTemplateCacheTest {
     // 2nd call, should return from cache
     assertEquals(template, new ConcurrentMapTemplateCache(cache).get(source, parser));
 
-    verify(parser, template);
+    verify(parser).parse(source);
   }
 
   @Test
@@ -60,12 +58,12 @@ public class ConcurrentMapTemplateCacheTest {
 
     TemplateSource source = source("/template.hbs");
 
-    Template template = createMock(Template.class);
+    Template template = mock(Template.class);
 
-    Template reloadTemplate = createMock(Template.class);
+    Template reloadTemplate = mock(Template.class);
 
-    Parser parser = createMock(Parser.class);
-    expect(parser.parse(source)).andReturn(template);
+    Parser parser = mock(Parser.class);
+    when(parser.parse(same(source))).thenReturn(template);
 
     TemplateSource reloadSource = new ForwardingTemplateSource(source) {
       @Override
@@ -73,9 +71,7 @@ public class ConcurrentMapTemplateCacheTest {
         return System.currentTimeMillis() * 7;
       }
     };
-    expect(parser.parse(reloadSource)).andReturn(reloadTemplate);
-
-    replay(parser, template, reloadTemplate);
+    when(parser.parse(same(reloadSource))).thenReturn(reloadTemplate);
 
     // 1st call, parse must be call it
     assertEquals(template,
@@ -89,37 +85,32 @@ public class ConcurrentMapTemplateCacheTest {
     assertEquals(reloadTemplate, new ConcurrentMapTemplateCache(cache).setReload(true)
         .get(reloadSource, parser));
 
-    verify(parser, template, reloadTemplate);
+    verify(parser).parse(same(source));
+    verify(parser).parse(same(reloadSource));
   }
 
   @Test
   public void evict() throws IOException {
-    TemplateSource source = createMock(TemplateSource.class);
+    TemplateSource source = mock(TemplateSource.class);
 
     @SuppressWarnings("unchecked")
-    ConcurrentMap<TemplateSource, Pair<TemplateSource, Template>> cache = createMock(
+    ConcurrentMap<TemplateSource, Pair<TemplateSource, Template>> cache = mock(
         ConcurrentMap.class);
-    expect(cache.remove(source)).andReturn(null);
-
-    replay(cache, source);
+    when(cache.remove(source)).thenReturn(null);
 
     new ConcurrentMapTemplateCache(cache).evict(source);
 
-    verify(cache, source);
+    verify(cache).remove(source);
   }
 
   @Test
   public void clear() throws IOException {
     @SuppressWarnings("unchecked")
-    ConcurrentMap<TemplateSource, Pair<TemplateSource, Template>> cache = createMock(
+    ConcurrentMap<TemplateSource, Pair<TemplateSource, Template>> cache = mock(
         ConcurrentMap.class);
     cache.clear();
 
-    replay(cache);
-
     new ConcurrentMapTemplateCache(cache).clear();
-
-    verify(cache);
   }
 
   private TemplateSource source(final String filename) throws IOException {

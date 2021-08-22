@@ -1,7 +1,7 @@
 package com.github.jknack.handlebars;
 
-import static org.easymock.EasyMock.createMock;
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
 
 import org.junit.Test;
 
@@ -25,7 +25,7 @@ public class HandlebarsExceptionTest {
   @Test
   public void withErrorCause() {
     Exception cause = new NullPointerException();
-    HandlebarsError error = createMock(HandlebarsError.class);
+    HandlebarsError error = mock(HandlebarsError.class);
     HandlebarsException ex = new HandlebarsException(error, cause);
     assertEquals(cause, ex.getCause());
     assertEquals(error, ex.getError());
@@ -33,7 +33,7 @@ public class HandlebarsExceptionTest {
 
   @Test
   public void withError() {
-    HandlebarsError error = createMock(HandlebarsError.class);
+    HandlebarsError error = mock(HandlebarsError.class);
     HandlebarsException ex = new HandlebarsException(error);
     assertEquals(error, ex.getError());
   }

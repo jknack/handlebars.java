@@ -1,10 +1,9 @@
 package com.github.jknack.handlebars.maven;
 
-import static org.easymock.EasyMock.createMock;
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.replay;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.io.File;
 
@@ -116,11 +115,9 @@ public class PrecompilePluginTest {
 
   @Test(expected = MojoFailureException.class)
   public void mustFailOnUnExpectedException() throws Exception {
-    MavenProject project = createMock(MavenProject.class);
-    Artifact artifact = createMock(Artifact.class);
-    expect(project.getRuntimeClasspathElements()).andThrow(
-        new DependencyResolutionRequiredException(artifact));
-    replay(project, artifact);
+    MavenProject project = mock(MavenProject.class);
+    when(project.getRuntimeClasspathElements()).thenThrow(
+        new DependencyResolutionRequiredException(null));
 
     PrecompilePlugin plugin = new PrecompilePlugin();
     plugin.setPrefix("src/test/resources/no templates");
@@ -201,9 +198,8 @@ public class PrecompilePluginTest {
 
   private MavenProject newProject(final String... classpath)
       throws DependencyResolutionRequiredException {
-    MavenProject project = createMock(MavenProject.class);
-    expect(project.getRuntimeClasspathElements()).andReturn(Lists.newArrayList(classpath));
-    replay(project);
+    MavenProject project = mock(MavenProject.class);
+    when(project.getRuntimeClasspathElements()).thenReturn(Lists.newArrayList(classpath));
     return project;
   }
 }
