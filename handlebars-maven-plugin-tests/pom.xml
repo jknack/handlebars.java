@@ -10,7 +10,6 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.github.jknack</groupId>
   <artifactId>handlebars-maven-plugin-tests</artifactId>
-  <packaging>war</packaging>
 
   <name>Handlebars.js maven plugin tests</name>
   <description>Tests suite for handlebars-maven-plugin</description>
