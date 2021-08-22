@@ -19,7 +19,7 @@ public class TypeSafeTemplateDefaultMethodTest {
     }
   }
 
-  interface UserTemplate extends TypeSafeTemplate<User> {
+  public interface UserTemplate extends TypeSafeTemplate<User> {
     default String renderUpperCase(User user) throws IOException {
       return apply(user).toUpperCase();
     }

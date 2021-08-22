@@ -8,7 +8,7 @@ import java.util.List;
 
 public class CollectionsLengthTest extends AbstractTest {
 
-  static class SizeAndLength {
+  public static class SizeAndLength {
     int size;
     int length;
 
