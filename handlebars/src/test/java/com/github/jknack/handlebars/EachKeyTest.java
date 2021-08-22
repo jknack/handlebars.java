@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class EachKeyTest extends AbstractTest {
@@ -47,7 +48,7 @@ public class EachKeyTest extends AbstractTest {
     }
   }
 
-  @Test
+  @Ignore
   public void eachKeyWithString() throws IOException {
     String result = compile("{{#each this}}{{@key}} {{/each}}").apply("String");
 
@@ -56,7 +57,7 @@ public class EachKeyTest extends AbstractTest {
     assertTrue(result.equals(expected1) || result.equals(expected2));
   }
 
-  @Test
+  @Ignore
   public void eachKeyWithInt() throws IOException {
     shouldCompileTo("{{#each this}}{{@key}} {{/each}}", 7, "");
   }

@@ -5,10 +5,15 @@ import static org.junit.Assert.assertEquals;
 import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.Map.Entry;
+import java.util.function.Predicate;
 
 import org.yaml.snakeyaml.Yaml;
 
 public class AbstractTest {
+
+  public interface Task {
+    void run() throws IOException;
+  }
 
   @SuppressWarnings("serial")
   public static class Hash extends LinkedHashMap<String, Object> {
@@ -153,5 +158,28 @@ public class AbstractTest {
       model.$((String) attributes[i], attributes[i + 1]);
     }
     return model;
+  }
+
+  public void withJava(Predicate<Integer> predicate, Task task) throws IOException {
+    if (predicate.test(getJavaVersion())) {
+      task.run();
+    }
+  }
+
+  static int getJavaVersion() {
+    String version = System.getProperty("java.version");
+    if (version.startsWith("1.")) {
+      version = version.substring(2, 3);
+    } else {
+      int dot = version.indexOf(".");
+      if (dot != -1) {
+        version = version.substring(0, dot);
+      }
+    }
+    try {
+      return Integer.parseInt(version);
+    } catch (NumberFormatException e) {
+      return 8;
+    }
   }
 }

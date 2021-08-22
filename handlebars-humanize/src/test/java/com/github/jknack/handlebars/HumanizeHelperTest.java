@@ -8,7 +8,7 @@ import java.util.Date;
 
 import org.junit.Test;
 
-public class HumanizeHelperTest {
+public class HumanizeHelperTest extends AbstractTest {
   private static final Handlebars handlebars = new Handlebars();
 
   static {
@@ -59,17 +59,28 @@ public class HumanizeHelperTest {
    */
   @Test
   public void formatCurrency_es_AR() throws IOException {
-    assertEquals("$34",
+    withJava(v -> v <= 8, () -> assertEquals("$34",
         handlebars.compileInline("{{formatCurrency this locale=\"es_AR\"}}")
-            .apply(34));
+            .apply(34)));
+    withJava(v -> v >= 9, () -> assertEquals("$\u00A034",
+        handlebars.compileInline("{{formatCurrency this locale=\"es_AR\"}}")
+            .apply(34)));
 
-    assertEquals("$1.000",
+    withJava(v -> v == 8, () -> assertEquals("$1.000",
         handlebars.compileInline("{{formatCurrency this locale=\"es_AR\"}}")
-            .apply(1000));
+            .apply(1000)));
 
-    assertEquals("$12,50",
+    withJava(v -> v >= 9, () -> assertEquals("$\u00A01.000",
         handlebars.compileInline("{{formatCurrency this locale=\"es_AR\"}}")
-            .apply(12.5));
+            .apply(1000)));
+
+    withJava(v -> v == 8, () -> assertEquals("$12,50",
+        handlebars.compileInline("{{formatCurrency this locale=\"es_AR\"}}")
+            .apply(12.5)));
+
+    withJava(v -> v >= 9, () -> assertEquals("$\u00A012,50",
+        handlebars.compileInline("{{formatCurrency this locale=\"es_AR\"}}")
+            .apply(12.5)));
   }
 
   /**

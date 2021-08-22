@@ -48,7 +48,8 @@ public class JodaHelperTest extends AbstractTest {
   @Test
   public void testPattern() throws IOException {
     DateTime dateTime = new DateTime().withDate(1995, 7, 4).withTime(14, 32, 12, 0);
-    shouldCompileTo("{{jodaPatternHelper this \"y-MMM-d H:m:s\"}}", dateTime, "1995-Jul-4 14:32:12");
+    shouldCompileTo("{{jodaPatternHelper this \"y-MMM-d H:m:s\"}}", dateTime,
+        "1995-Jul-4 14:32:12");
   }
 
   @Test
@@ -66,7 +67,10 @@ public class JodaHelperTest extends AbstractTest {
   @Test
   public void testStyle() throws IOException {
     DateTime dateTime = new DateTime().withDate(1995, 7, 4).withTime(14, 32, 12, 0);
-    shouldCompileTo("{{jodaStyleHelper this \"SS\"}}", dateTime, "7/4/95 2:32 PM");
+    withJava(version -> version <= 8,
+        () -> shouldCompileTo("{{jodaStyleHelper this \"SS\"}}", dateTime, "7/4/95 2:32 PM"));
+    withJava(version -> version >= 9,
+        () -> shouldCompileTo("{{jodaStyleHelper this \"SS\"}}", dateTime, "7/4/95, 2:32 PM"));
   }
 
   @Test
@@ -82,7 +86,8 @@ public class JodaHelperTest extends AbstractTest {
 
   @Test
   public void testISO() throws IOException {
-    DateTime dateTime = new DateTime().withDate(1995, 7, 4).withTime(14, 32, 12, 0).withZoneRetainFields(DateTimeZone.UTC);
+    DateTime dateTime = new DateTime().withDate(1995, 7, 4).withTime(14, 32, 12, 0)
+        .withZoneRetainFields(DateTimeZone.UTC);
     shouldCompileTo("{{jodaISOHelper this}}", dateTime, "1995-07-04T14:32:12Z");
   }
 }

@@ -1,4 +1,4 @@
-name: Build Matrix
+name: Build
 
 on: [push]
 
@@ -8,7 +8,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        java_version: [1.8]
+        java_version: [1.8, 11]
         os: [ubuntu-latest, windows-latest, macOS-latest]
 
     steps:
