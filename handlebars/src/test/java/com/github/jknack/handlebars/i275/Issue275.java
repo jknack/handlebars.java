@@ -41,12 +41,12 @@ public class Issue275 {
       }
     });
     Template template = handlebars.compile("temporal-partials");
-    assertEquals("Items:\n" +
-        "\n" +
-        "Item: Custom\n" +
-        "...\n" +
-        "Item: 2\n" +
-        "...\n", template.apply(Arrays.asList(new Item("1"), new Item("2"))));
+    assertEquals(String.format("Items:%n" +
+        "%n" +
+        "Item: Custom%n" +
+        "...%n" +
+        "Item: 2%n" +
+        "...%n"), template.apply(Arrays.asList(new Item("1"), new Item("2"))));
   }
 
   @Test
@@ -63,11 +63,12 @@ public class Issue275 {
       }
     });
     Template template = handlebars.compile("temporal-partials");
-    assertEquals("Items:\n" +
-        "\n" +
-        "Item: Custom\n" +
-        "...\n" +
-        "Item: Custom\n" +
-        "...\n", template.apply(Arrays.asList(new Item("1"), new Item("2"))));
+
+    assertEquals(String.format("Items:%n" +
+        "%n" +
+        "Item: Custom%n" +
+        "...%n" +
+        "Item: Custom%n" +
+        "...%n"), template.apply(Arrays.asList(new Item("1"), new Item("2"))));
   }
 }

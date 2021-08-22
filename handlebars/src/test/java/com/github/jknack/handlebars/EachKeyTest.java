@@ -48,20 +48,6 @@ public class EachKeyTest extends AbstractTest {
   }
 
   @Test
-  public void eachKeyWithString() throws IOException {
-    String result = compile("{{#each this}}{{@key}} {{/each}}").apply("String");
-
-    String expected1 = "empty bytes ";
-    String expected2 = "bytes empty ";
-    assertTrue(result.equals(expected1) || result.equals(expected2));
-  }
-
-  @Test
-  public void eachKeyWithInt() throws IOException {
-    shouldCompileTo("{{#each this}}{{@key}} {{/each}}", 7, "");
-  }
-
-  @Test
   public void eachKeyWithJavaBean() throws IOException {
     Blog blog = new Blog("Handlebars.java", "...");
     String result = compile("{{#each this}}{{@key}}: {{this}} {{/each}}").apply(blog);

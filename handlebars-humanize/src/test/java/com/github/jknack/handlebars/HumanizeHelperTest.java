@@ -59,15 +59,15 @@ public class HumanizeHelperTest {
    */
   @Test
   public void formatCurrency_es_AR() throws IOException {
-    assertEquals("$34",
+    assertEquals("$ 34",
         handlebars.compileInline("{{formatCurrency this locale=\"es_AR\"}}")
             .apply(34));
 
-    assertEquals("$1.000",
+    assertEquals("$ 1.000",
         handlebars.compileInline("{{formatCurrency this locale=\"es_AR\"}}")
             .apply(1000));
 
-    assertEquals("$12,50",
+    assertEquals("$ 12,50",
         handlebars.compileInline("{{formatCurrency this locale=\"es_AR\"}}")
             .apply(12.5));
   }

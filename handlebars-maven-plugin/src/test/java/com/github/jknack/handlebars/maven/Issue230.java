@@ -29,7 +29,7 @@ public class Issue230 {
         "  I18n.translations['en_US'] = {\n" +
         "    \"pagination_top_of_page\": \"Inicio de la página\"\n" +
         "  };\n" +
-        "})();\n", FileUtils.fileRead("target/i230.js"));
+        "})();\n", FileUtils.fileRead("target/i230.js", "UTF-8"));
   }
 
   private MavenProject newProject(final String... classpath)

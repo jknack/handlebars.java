@@ -230,7 +230,9 @@ public class PrecompilePlugin extends HandlebarsPlugin {
                 .setHash(hash)
                 .build();
 
-        writer.append("// Source: ").append(file.getPath()).append("\n");
+        //As it's just a comment (and Windows could handle forward slashes as well), we output
+        //the path as Unix style
+        writer.append("// Source: ").append(file.getPath().replaceAll("\\\\", "/")).append("\n");
         writer.append(PrecompileHelper.INSTANCE.apply(templateName, opts).toString())
             .append("\n\n");
       }

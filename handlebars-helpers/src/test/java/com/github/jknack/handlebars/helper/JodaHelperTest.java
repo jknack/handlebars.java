@@ -66,7 +66,7 @@ public class JodaHelperTest extends AbstractTest {
   @Test
   public void testStyle() throws IOException {
     DateTime dateTime = new DateTime().withDate(1995, 7, 4).withTime(14, 32, 12, 0);
-    shouldCompileTo("{{jodaStyleHelper this \"SS\"}}", dateTime, "7/4/95 2:32 PM");
+    shouldCompileTo("{{jodaStyleHelper this \"SS\"}}", dateTime, "7/4/95, 2:32 PM");
   }
 
   @Test

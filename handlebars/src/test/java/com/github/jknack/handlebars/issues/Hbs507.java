@@ -61,19 +61,19 @@ public class Hbs507 extends v4Test {
         $("aggregateId", "ID:y0", "aggregateType", "brett", "businessKey", "favre"));
 
     Template template = handlebars.compile("a");
-    assertEquals("This is a test for: \"ID:x0\"\n" +
-        "\n" +
-        "\"metadata.aggregateId\" : \"ID:x0\" \n" +
-        "\"metadata.businessKey\" : \"favre\"\n" +
-        "\n" +
-        "End test", template.apply(h1));
+    assertEquals(String.format("This is a test for: \"ID:x0\"%n" +
+        "%n" +
+        "\"metadata.aggregateId\" : \"ID:x0\" %n" +
+        "\"metadata.businessKey\" : \"favre\"%n" +
+        "%n" +
+        "End test"), template.apply(h1));
 
-    assertEquals("This is a test for: \"ID:y0\"\n" +
-        "\n" +
-        "\"metadata.aggregateId\" : \"ID:y0\" \n" +
-        "\"metadata.businessKey\" : \"favre\"\n" +
-        "\n" +
-        "End test", template.apply(h2));
+    assertEquals(String.format("This is a test for: \"ID:y0\"%n" +
+        "%n" +
+        "\"metadata.aggregateId\" : \"ID:y0\" %n" +
+        "\"metadata.businessKey\" : \"favre\"%n" +
+        "%n" +
+        "End test"), template.apply(h2));
   }
 
 }

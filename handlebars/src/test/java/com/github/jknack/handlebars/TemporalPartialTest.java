@@ -34,12 +34,12 @@ public class TemporalPartialTest {
       }
     });
     Template template = handlebars.compile("temporal-partials");
-    assertEquals("Items:\n" +
-        "\n" +
-        "Item: Custom\n" +
-        "...\n" +
-        "Item: 2\n" +
-        "...\n", template.apply(Arrays.asList(new Item("1"), new Item("2"))));
+    assertEquals(String.format("Items:%n" +
+        "%n" +
+        "Item: Custom%n" +
+        "...%n" +
+        "Item: 2%n" +
+        "...%n"), template.apply(Arrays.asList(new Item("1"), new Item("2"))));
   }
 
   @Test
@@ -47,17 +47,17 @@ public class TemporalPartialTest {
     Handlebars handlebars = new Handlebars();
     handlebars.setPrettyPrint(true);
     Template template = handlebars.compile("derived");
-    assertEquals("\n" +
-        "<html>\n" +
-        "<head>\n" +
-        "  <title>\n" +
-        "     Home \n" +
-        "  </title>\n" +
-        "</head>\n" +
-        "<body>\n" +
-        "  <h1> Home </h1>\n" +
-        "  HOME\n" +
-        "</body>\n" +
-        "</html>", template.apply(null));
+    assertEquals(String.format("%n" +
+        "<html>%n" +
+        "<head>%n" +
+        "  <title>%n" +
+        "     Home %n" +
+        "  </title>%n" +
+        "</head>%n" +
+        "<body>%n" +
+        "  <h1> Home </h1>%n" +
+        "  HOME%n" +
+        "</body>%n" +
+        "</html>"), template.apply(null));
   }
 }

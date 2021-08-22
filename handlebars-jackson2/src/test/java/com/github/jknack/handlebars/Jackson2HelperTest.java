@@ -55,11 +55,11 @@ public class Jackson2HelperTest {
 
     CharSequence result = template.apply(new Blog("First Post", "..."));
 
-    assertEquals("{\n" +
-        "  \"title\" : \"First Post\",\n" +
-        "  \"body\" : \"...\",\n" +
-        "  \"comments\" : [ ]\n" +
-        "}",
+    assertEquals(String.format("{%n" +
+        "  \"title\" : \"First Post\",%n" +
+        "  \"body\" : \"...\",%n" +
+        "  \"comments\" : [ ]%n" +
+        "}"),
         result);
   }
 
