@@ -17,21 +17,19 @@
  */
 package com.github.jknack.handlebars.context;
 
-import static org.apache.commons.lang3.Validate.notNull;
+import com.github.jknack.handlebars.ValueResolver;
 
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Member;
 import java.lang.reflect.Modifier;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 
-import com.github.jknack.handlebars.ValueResolver;
+import static org.apache.commons.lang3.Validate.notNull;
 
 /**
  * A specialization of {@link ValueResolver} that is built on top of reflections
@@ -42,50 +40,31 @@ import com.github.jknack.handlebars.ValueResolver;
  * @since 0.1.1
  */
 public abstract class MemberValueResolver<M extends Member> implements ValueResolver {
-
-  /**
-   * A concurrent and thread-safe cache for {@link Member}.
-   */
-  private final Map<Class<?>, Map<String, M>> cache = new ConcurrentHashMap<>();
-
   @Override
   public final Object resolve(final Object context, final String name) {
-    Class<?> key = context.getClass();
-    Map<String, M> mcache = cache(key);
-    M member = mcache.get(name);
-    if (member == null) {
+    if (context == null) {
       return UNRESOLVED;
-    } else {
+    }
+    Set<M> members = members(context.getClass());
+    for (M member : members) {
+      if (!memberName(member).equals(name)) {
+        continue;
+      }
+      if (member instanceof AccessibleObject) {
+        String moduleName = member.getDeclaringClass().getModule().getName();
+        if (moduleName == null
+                || (!moduleName.startsWith("java") && !moduleName.startsWith("jdk"))) {
+          ((AccessibleObject) member).setAccessible(true);
+        }
+      }
       return invokeMember(member, context);
     }
+    return UNRESOLVED;
   }
 
   @Override
   public Object resolve(final Object context) {
     return UNRESOLVED;
-  }
-
-  /**
-   * Get or build a class member cache.
-   *
-   * @param clazz Owner/key.
-   * @return A class cache.
-   */
-  private Map<String, M> cache(final Class<?> clazz) {
-    Map<String, M> mcache = this.cache.get(clazz);
-    if (mcache == null) {
-      mcache = new HashMap<>();
-      Set<M> members = members(clazz);
-      for (M m : members) {
-        // Mark as accessible.
-        if (m instanceof AccessibleObject) {
-          ((AccessibleObject) m).setAccessible(true);
-        }
-        mcache.put(memberName(m), m);
-      }
-      this.cache.put(clazz, mcache);
-    }
-    return mcache;
   }
 
   /**
@@ -162,7 +141,7 @@ public abstract class MemberValueResolver<M extends Member> implements ValueReso
     } else if (context instanceof Collection) {
       return Collections.emptySet();
     }
-    Collection<M> members = cache(context.getClass()).values();
+    Collection<M> members = members(context.getClass());
     Map<String, Object> propertySet = new LinkedHashMap<>();
     for (M member : members) {
       String name = memberName(member);
