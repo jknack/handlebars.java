@@ -149,7 +149,7 @@ public class Context {
       super(model);
       this.extendedContext = new Context(hash);
       this.extendedContext.resolver = parent.resolver;
-      this.extendedContext.extendedContext = new Context(Collections.emptyMap());
+      this.extendedContext.extendedContext = new Context(new HashMap<String, Object>());
       this.parent = parent;
       this.data = parent.data;
       this.resolver = parent.resolver;
