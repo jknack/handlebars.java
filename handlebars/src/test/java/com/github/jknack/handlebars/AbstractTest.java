@@ -33,7 +33,7 @@ public class AbstractTest {
       final String expected, final String message) throws IOException {
     Object deserializedContext = context;
     if (deserializedContext != null) {
-      deserializedContext = new Yaml().load(context);
+      deserializedContext = parseYaml(context);
     }
     shouldCompileTo(template, deserializedContext, expected, message);
   }
@@ -50,12 +50,16 @@ public class AbstractTest {
 
   public void shouldCompileTo(final String template, final String context,
       final Hash helpers, final String expected) throws IOException {
-    shouldCompileTo(template, new Yaml().load(context), helpers, expected, "");
+    shouldCompileTo(template, parseYaml(context), helpers, expected, "");
+  }
+
+  private Object parseYaml(String context) {
+    return new Yaml().load(context);
   }
 
   public void shouldCompileTo(final String template, final String context,
       final Hash helpers, final String expected, final String message) throws IOException {
-    shouldCompileTo(template, new Yaml().load(context), helpers, expected, message);
+    shouldCompileTo(template, parseYaml(context), helpers, expected, message);
   }
 
   public void shouldCompileTo(final String template, final Object context,

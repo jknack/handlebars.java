@@ -503,7 +503,8 @@ public enum StringHelpers implements Helper<Object> {
    * </p>
    *
    * <pre>
-   *    {{dateFormat date ["format"] [format="format"][locale="locale"][tz=timeZone|timeZoneId][time="format"]}}
+   *    {{dateFormat date ["format"] [format="format"][locale="locale"][tz=timeZone|timeZoneId]
+   *        [time="format"]}}
    * </pre>
    *
    * Format parameters is one of:
@@ -527,7 +528,8 @@ public enum StringHelpers implements Helper<Object> {
    *     It defaults to the system time zone.
    *   </li>
    *   <li>
-   *     The "time" parameter specifies the format of the time part, it can be "full", "long", "medium" or "short".
+   *     The "time" parameter specifies the format of the time part, it can be "full", "long",
+   *     "medium" or "short".
    *     If you do not specify it only the date part will appear in the output string.
    *   </li>
    * </ul>
