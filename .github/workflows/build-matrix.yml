@@ -22,12 +22,12 @@ jobs:
         with:
           java-version: ${{ matrix.java_version }}
       - name: Install
-        run: mvn clean install -DskipTests
+        run: mvn clean install -DskipTests --batch-mode --no-transfer-progress
         env:
           BUILD_PORT: 0
           BUILD_SECURE_PORT: 0
       - name: Build
-        run: mvn clean package
+        run: mvn clean package --batch-mode --no-transfer-progress
         env:
           BUILD_PORT: 0
           BUILD_SECURE_PORT: 0
