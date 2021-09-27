@@ -423,7 +423,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <jackson2-version>2.12.5</jackson2-version>
     <humanize.version>1.2.2</humanize.version>
-    <jacoco.version>0.8.5</jacoco.version>
+    <jacoco.version>0.8.7</jacoco.version>
     <maven.build.timestamp.format>yyyy-MM-dd HH:mm:ssa</maven.build.timestamp.format>
     <timestamp>${maven.build.timestamp}</timestamp>
   </properties>
