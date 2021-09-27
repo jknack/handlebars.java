@@ -13,7 +13,8 @@
  */
 package com.github.jknack.handlebars;
 
-import static org.junit.Assert.assertEquals;
+import static com.github.jknack.handlebars.IgnoreWindowsLineMatcher.equalsToStringIgnoringWindowsNewLine;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -40,10 +41,8 @@ public class Jackson2HelperTest {
 
     Template template = handlebars.compileInline("{{@json this}}");
 
-    CharSequence result = template.apply(new Blog("First Post", "..."));
-
-    assertEquals("{\"title\":\"First Post\",\"body\":\"...\",\"comments\":[]}",
-        result);
+    assertThat(template.apply(new Blog("First Post", "...")), equalsToStringIgnoringWindowsNewLine(
+        "{\"title\":\"First Post\",\"body\":\"...\",\"comments\":[]}"));
   }
 
   @Test
@@ -53,14 +52,12 @@ public class Jackson2HelperTest {
 
     Template template = handlebars.compileInline("{{@json this pretty=true}}");
 
-    CharSequence result = template.apply(new Blog("First Post", "..."));
-
-    assertEquals("{\n" +
-        "  \"title\" : \"First Post\",\n" +
-        "  \"body\" : \"...\",\n" +
-        "  \"comments\" : [ ]\n" +
-        "}",
-        result);
+    assertThat(template.apply(new Blog("First Post", "...")),
+        equalsToStringIgnoringWindowsNewLine("{\n" +
+            "  \"title\" : \"First Post\",\n" +
+            "  \"body\" : \"...\",\n" +
+            "  \"comments\" : [ ]\n" +
+            "}"));
   }
 
   @Test
@@ -71,12 +68,12 @@ public class Jackson2HelperTest {
 
     Template template =
         handlebars
-            .compileInline("{{@json this view=\"com.github.jknack.handlebars.Blog$Views$Public\"}}");
+            .compileInline(
+                "{{@json this view=\"com.github.jknack.handlebars.Blog$Views$Public\"}}");
 
-    CharSequence result = template.apply(new Blog("First Post", "..."));
-
-    assertEquals("{\"title\":\"First Post\",\"body\":\"...\",\"comments\":[]}",
-        result);
+    assertThat(template.apply(new Blog("First Post", "...")),
+        equalsToStringIgnoringWindowsNewLine(
+            "{\"title\":\"First Post\",\"body\":\"...\",\"comments\":[]}"));
   }
 
   @Test
@@ -90,11 +87,11 @@ public class Jackson2HelperTest {
 
     Template template =
         handlebars
-            .compileInline("{{@json this view=\"com.github.jknack.handlebars.Blog$Views$Public\"}}");
+            .compileInline(
+                "{{@json this view=\"com.github.jknack.handlebars.Blog$Views$Public\"}}");
 
-    CharSequence result = template.apply(new Blog("First Post", "..."));
-
-    assertEquals("{\"title\":\"First Post\"}", result);
+    assertThat(template.apply(new Blog("First Post", "...")),
+        equalsToStringIgnoringWindowsNewLine("{\"title\":\"First Post\"}"));
   }
 
   @Test
@@ -111,9 +108,8 @@ public class Jackson2HelperTest {
         handlebars
             .compileInline("{{@json this view=\"myView\"}}");
 
-    CharSequence result = template.apply(new Blog("First Post", "..."));
-
-    assertEquals("{\"title\":\"First Post\"}", result);
+    assertThat(template.apply(new Blog("First Post", "...")),
+        equalsToStringIgnoringWindowsNewLine("{\"title\":\"First Post\"}"));
   }
 
   @Test(expected = HandlebarsException.class)
@@ -129,9 +125,8 @@ public class Jackson2HelperTest {
         handlebars
             .compileInline("{{@json this view=\"missing.ViewClass\"}}");
 
-    CharSequence result = template.apply(new Blog("First Post", "..."));
-
-    assertEquals("{\"title\":\"First Post\"}", result);
+    assertThat(template.apply(new Blog("First Post", "...")),
+        equalsToStringIgnoringWindowsNewLine("{\"title\":\"First Post\"}"));
   }
 
   @Test
@@ -142,11 +137,12 @@ public class Jackson2HelperTest {
     Map<String, String> model = new HashMap<String, String>();
     model.put("script", "<script text=\"text/javascript\"></script>");
 
-    assertEquals("{\"script\":\"<script text=\\\"text/javascript\\\"></script>\"}", handlebars
-        .compileInline("{{@json this}}").apply(model));
+    assertThat(handlebars
+        .compileInline("{{@json this}}").apply(model), equalsToStringIgnoringWindowsNewLine(
+        "{\"script\":\"<script text=\\\"text/javascript\\\"></script>\"}"));
 
-    assertEquals(
-        "{\"script\":\"\\u003Cscript text=\\\"text/javascript\\\"\\u003E\\u003C/script\\u003E\"}",
-        handlebars.compileInline("{{@json this escapeHTML=true}}").apply(model));
+    assertThat(handlebars.compileInline("{{@json this escapeHTML=true}}").apply(model),
+        equalsToStringIgnoringWindowsNewLine(
+            "{\"script\":\"\\u003Cscript text=\\\"text/javascript\\\"\\u003E\\u003C/script\\u003E\"}"));
   }
 }

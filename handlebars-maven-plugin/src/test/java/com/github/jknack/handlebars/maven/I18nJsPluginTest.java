@@ -47,8 +47,7 @@ public class I18nJsPluginTest {
 
     plugin.execute();
 
-    assertEquals(FileUtils.fileRead("src/test/resources/deep.expected.js"),
-        FileUtils.fileRead("target/deep.js"));
+    equalsToIgnoreBlanks("src/test/resources/deep.expected.js", "target/deep.js");
   }
 
   @Test
@@ -106,7 +105,21 @@ public class I18nJsPluginTest {
    * Matches on tokens and avoid errors between Java 6.x and Java 7.x.
    */
   private Set<String> tokens(final String filename) throws IOException {
-    String content = FileUtils.fileRead(filename);
+    String content = FileUtils.fileRead(filename)
+        .replace("\r", "")
+        .replace("\t", " ");
     return Sets.newLinkedHashSet(Splitter.on(Pattern.compile("\\s|,")).split(content));
+  }
+
+  private void equalsToIgnoreBlanks(String expected, String found) throws IOException {
+    assertEquals(replaceWhiteCharsWithSpace(FileUtils.fileRead(expected)),
+        replaceWhiteCharsWithSpace(FileUtils.fileRead(found)));
+  }
+
+  private String replaceWhiteCharsWithSpace(String content) {
+    return content
+        .replace("\r", "")
+        .replace("\t", " ")
+        .trim();
   }
 }

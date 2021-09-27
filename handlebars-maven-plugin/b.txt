@@ -1,4 +1,5 @@
-(function () {
+... () {
+// Source: src[\testesources\partials\level1\level1.html
 
   var template = Handlebars.template({"compiler":[8,">= 4.3.0"],"main":function(container,depth0,helpers,partials,data) {
     var helper, lookupProperty = container.lookupProperty || function(parent, propertyName) {
@@ -18,6 +19,7 @@
   partials['level1/level1'] = template;
 
 
+// Source: src\testesources\partials\partial\base.html
 
   var template = Handlebars.template({"compiler":[8,">= 4.3.0"],"main":function(container,depth0,helpers,partials,data) {
     var stack1, lookupProperty = container.lookupProperty || function(parent, propertyName) {
@@ -36,6 +38,7 @@
   partials['partial/base'] = template;
 
 
+// Source: src\testesources\partials\partial\partial.html
 
   var template = Handlebars.template({"compiler":[8,">= 4.3.0"],"main":function(container,depth0,helpers,partials,data) {
     return "I'm the child partial";
@@ -46,17 +49,6 @@
   partials['partial/partial'] = template;
 
 
+// Source: src\testesources\partials]oot.html
 
-  var template = Handlebars.template({"compiler":[8,">= 4.3.0"],"main":function(container,depth0,helpers,partials,data) {
-    return "Hello "
-    + container.escapeExpression(container.lambda(depth0, depth0))
-    + "!";
-},"useData":true});
-  var templates = Handlebars.templates = Handlebars.templates || {};
-  templates['root'] = template;
-  var partials = Handlebars.partials = Handlebars.partials || {};
-  partials['root'] = template;
-
-
-
-})();
+  var temp...

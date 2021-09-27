@@ -1,5 +1,4 @@
 (function () {
-// Source: src/test/resources/templates/a.hbs
 
   var template = Handlebars.template({"compiler":[8,">= 4.3.0"],"main":function(container,depth0,helpers,partials,data) {
     return "I'm template a.\nHello "
@@ -12,7 +11,6 @@
   partials['a'] = template;
 
 
-// Source: src/test/resources/templates/c.hbs
 
   var template = Handlebars.template({"compiler":[8,">= 4.3.0"],"main":function(container,depth0,helpers,partials,data) {
     return "I'm template c.\nHello "

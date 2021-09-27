@@ -5,6 +5,8 @@ import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 import static org.junit.Assert.assertEquals;
 
+import java.io.IOException;
+
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.util.FileUtils;
@@ -27,9 +29,9 @@ public class Issue230 {
         "  /* English (United States) */\n" +
         "  I18n.translations = I18n.translations || {};\n" +
         "  I18n.translations['en_US'] = {\n" +
-        "    \"pagination_top_of_page\": \"Inicio de la página\"\n" +
+        "    \"pagination_top_of_page\": \"Inicio de la pagina\"\n" +
         "  };\n" +
-        "})();\n", FileUtils.fileRead("target/i230.js"));
+        "})();", replaceWhiteCharsWithSpace(FileUtils.fileRead("target/i230.js")));
   }
 
   private MavenProject newProject(final String... classpath)
@@ -38,5 +40,12 @@ public class Issue230 {
     expect(project.getRuntimeClasspathElements()).andReturn(Lists.newArrayList(classpath));
     replay(project);
     return project;
+  }
+
+  private String replaceWhiteCharsWithSpace(String content) {
+    return content
+        .replace("\r", "")
+        .replace("\t", " ")
+        .trim();
   }
 }

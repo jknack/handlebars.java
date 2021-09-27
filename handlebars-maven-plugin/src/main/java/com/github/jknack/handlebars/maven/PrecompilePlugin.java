@@ -230,7 +230,6 @@ public class PrecompilePlugin extends HandlebarsPlugin {
                 .setHash(hash)
                 .build();
 
-        writer.append("// Source: ").append(file.getPath()).append("\n");
         writer.append(PrecompileHelper.INSTANCE.apply(templateName, opts).toString())
             .append("\n\n");
       }

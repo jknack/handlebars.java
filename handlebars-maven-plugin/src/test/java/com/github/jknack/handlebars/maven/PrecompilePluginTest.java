@@ -7,6 +7,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
+import java.io.IOException;
 
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
@@ -31,9 +32,20 @@ public class PrecompilePluginTest {
 
     plugin.execute();
 
-    assertEquals(FileUtils.fileRead("target/helpers-i18njs.js"),
-        FileUtils.fileRead("src/test/resources/helpers-i18njs.expected").trim(),
-        FileUtils.fileRead("target/helpers-i18njs.js").trim());
+    equalsToIgnoreBlanks("src/test/resources/helpers-i18njs.expected", "target/helpers-i18njs.js");
+  }
+
+  private void equalsToIgnoreBlanks(String expected, String found) throws IOException {
+    assertEquals(replaceWhiteCharsWithSpace(FileUtils.fileRead(expected)),
+        replaceWhiteCharsWithSpace(FileUtils.fileRead(found)));
+  }
+
+  private String replaceWhiteCharsWithSpace(String content) {
+    return content
+        .replace("\\r\\n", "\\n")
+        .replace("\r", "")
+        .replace("\t", " ")
+        .trim();
   }
 
   @Test
@@ -49,9 +61,7 @@ public class PrecompilePluginTest {
 
     plugin.execute();
 
-    assertEquals(FileUtils.fileRead("target/specific-files.js"),
-        FileUtils.fileRead("src/test/resources/specific-files.expected").trim(),
-        FileUtils.fileRead("target/specific-files.js").trim());
+    equalsToIgnoreBlanks("src/test/resources/specific-files.expected", "target/specific-files.js");
   }
 
   @Test
@@ -155,7 +165,7 @@ public class PrecompilePluginTest {
 
     assertTrue("File with runtime must be larger",
         FileUtils.fileRead("target/without-rt-helpers.js").length() <
-        FileUtils.fileRead("target/with-rt-helpers.js").length());
+            FileUtils.fileRead("target/with-rt-helpers.js").length());
   }
 
   @Test
@@ -180,7 +190,7 @@ public class PrecompilePluginTest {
 
     assertTrue("Normal file must be larger than minimized",
         FileUtils.fileRead("target/helpers-normal.js").length() >
-        FileUtils.fileRead("target/helpers.min.js").length());
+            FileUtils.fileRead("target/helpers.min.js").length());
   }
 
   @Test
@@ -194,9 +204,7 @@ public class PrecompilePluginTest {
 
     plugin.execute();
 
-    assertEquals(FileUtils.fileRead("target/helpers.js"),
-        FileUtils.fileRead("src/test/resources/helpers.expected").trim(),
-        FileUtils.fileRead("target/helpers.js").trim());
+    equalsToIgnoreBlanks("src/test/resources/helpers.expected", "target/helpers.js");
   }
 
   private MavenProject newProject(final String... classpath)

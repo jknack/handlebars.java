@@ -1,5 +1,4 @@
 (function () {
-// Source: src/test/resources/i18nJs/i18njs.html
 
   var template = Handlebars.template({"compiler":[8,">= 4.3.0"],"main":function(container,depth0,helpers,partials,data) {
     var helper, lookupProperty = container.lookupProperty || function(parent, propertyName) {

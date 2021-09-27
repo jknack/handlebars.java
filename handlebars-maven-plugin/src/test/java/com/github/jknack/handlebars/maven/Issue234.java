@@ -5,6 +5,8 @@ import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 import static org.junit.Assert.assertEquals;
 
+import java.io.IOException;
+
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.util.FileUtils;
@@ -28,8 +30,19 @@ public class Issue234 {
 
     plugin.execute();
 
-    assertEquals(FileUtils.fileRead("target/issue234.js"), FileUtils.fileRead("src/test/resources/issue234.expected").trim(),
-        FileUtils.fileRead("target/issue234.js").trim());
+    equalsToIgnoreBlanks("src/test/resources/issue234.expected", "target/issue234.js");
+  }
+
+  private void equalsToIgnoreBlanks(String expected, String found) throws IOException {
+    assertEquals(replaceWhiteCharsWithSpace(FileUtils.fileRead(expected)),
+        replaceWhiteCharsWithSpace(FileUtils.fileRead(found)));
+  }
+
+  private String replaceWhiteCharsWithSpace(String content) {
+    return content.trim()
+        .replace("\\r\\n", "\\n")
+        .replace("\r", "")
+        .replace("\t", " ");
   }
 
   private MavenProject newProject(final String... classpath)

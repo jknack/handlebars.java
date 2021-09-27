@@ -1,6 +1,7 @@
 package com.github.jknack.handlebars;
 
-import static org.junit.Assert.assertEquals;
+import static com.github.jknack.handlebars.IgnoreWindowsLineMatcher.equalsToStringIgnoringWindowsNewLine;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -34,12 +35,13 @@ public class TemporalPartialTest {
       }
     });
     Template template = handlebars.compile("temporal-partials");
-    assertEquals("Items:\n" +
-        "\n" +
-        "Item: Custom\n" +
-        "...\n" +
-        "Item: 2\n" +
-        "...\n", template.apply(Arrays.asList(new Item("1"), new Item("2"))));
+    assertThat(template.apply(Arrays.asList(new Item("1"), new Item("2"))),
+        equalsToStringIgnoringWindowsNewLine("Items:\n" +
+            "\n" +
+            "Item: Custom\n" +
+            "...\n" +
+            "Item: 2\n" +
+            "...\n"));
   }
 
   @Test
@@ -47,17 +49,18 @@ public class TemporalPartialTest {
     Handlebars handlebars = new Handlebars();
     handlebars.setPrettyPrint(true);
     Template template = handlebars.compile("derived");
-    assertEquals("\n" +
-        "<html>\n" +
-        "<head>\n" +
-        "  <title>\n" +
-        "     Home \n" +
-        "  </title>\n" +
-        "</head>\n" +
-        "<body>\n" +
-        "  <h1> Home </h1>\n" +
-        "  HOME\n" +
-        "</body>\n" +
-        "</html>", template.apply(null));
+    assertThat(template.apply(null),
+        equalsToStringIgnoringWindowsNewLine("\n" +
+            "<html>\n" +
+            "<head>\n" +
+            "  <title>\n" +
+            "     Home \n" +
+            "  </title>\n" +
+            "</head>\n" +
+            "<body>\n" +
+            "  <h1> Home </h1>\n" +
+            "  HOME\n" +
+            "</body>\n" +
+            "</html>"));
   }
 }
