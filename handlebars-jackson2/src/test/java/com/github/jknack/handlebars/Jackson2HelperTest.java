@@ -40,7 +40,7 @@ public class Jackson2HelperTest {
 
     Template template = handlebars.compileInline("{{@json this}}");
 
-    CharSequence result = template.apply(new Blog("First Post", "..."));
+    CharSequence result = template.apply(new Blog("First Post", "...")).trim();
 
     assertEquals("{\"title\":\"First Post\",\"body\":\"...\",\"comments\":[]}",
         result);
@@ -53,7 +53,7 @@ public class Jackson2HelperTest {
 
     Template template = handlebars.compileInline("{{@json this pretty=true}}");
 
-    CharSequence result = template.apply(new Blog("First Post", "..."));
+    CharSequence result = template.apply(new Blog("First Post", "...")).trim();
 
     assertEquals("{\n" +
         "  \"title\" : \"First Post\",\n" +
@@ -73,7 +73,7 @@ public class Jackson2HelperTest {
         handlebars
             .compileInline("{{@json this view=\"com.github.jknack.handlebars.Blog$Views$Public\"}}");
 
-    CharSequence result = template.apply(new Blog("First Post", "..."));
+    CharSequence result = template.apply(new Blog("First Post", "...")).trim();
 
     assertEquals("{\"title\":\"First Post\",\"body\":\"...\",\"comments\":[]}",
         result);
@@ -92,7 +92,7 @@ public class Jackson2HelperTest {
         handlebars
             .compileInline("{{@json this view=\"com.github.jknack.handlebars.Blog$Views$Public\"}}");
 
-    CharSequence result = template.apply(new Blog("First Post", "..."));
+    CharSequence result = template.apply(new Blog("First Post", "...")).trim();
 
     assertEquals("{\"title\":\"First Post\"}", result);
   }
@@ -111,7 +111,7 @@ public class Jackson2HelperTest {
         handlebars
             .compileInline("{{@json this view=\"myView\"}}");
 
-    CharSequence result = template.apply(new Blog("First Post", "..."));
+    CharSequence result = template.apply(new Blog("First Post", "...")).trim();
 
     assertEquals("{\"title\":\"First Post\"}", result);
   }
@@ -129,7 +129,7 @@ public class Jackson2HelperTest {
         handlebars
             .compileInline("{{@json this view=\"missing.ViewClass\"}}");
 
-    CharSequence result = template.apply(new Blog("First Post", "..."));
+    CharSequence result = template.apply(new Blog("First Post", "...")).trim();
 
     assertEquals("{\"title\":\"First Post\"}", result);
   }
@@ -143,10 +143,10 @@ public class Jackson2HelperTest {
     model.put("script", "<script text=\"text/javascript\"></script>");
 
     assertEquals("{\"script\":\"<script text=\\\"text/javascript\\\"></script>\"}", handlebars
-        .compileInline("{{@json this}}").apply(model));
+        .compileInline("{{@json this}}").apply(model).trim());
 
     assertEquals(
         "{\"script\":\"\\u003Cscript text=\\\"text/javascript\\\"\\u003E\\u003C/script\\u003E\"}",
-        handlebars.compileInline("{{@json this escapeHTML=true}}").apply(model));
+        handlebars.compileInline("{{@json this escapeHTML=true}}").apply(model).trim());
   }
 }

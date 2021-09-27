@@ -1,6 +1,6 @@
 package com.github.jknack.handlebars.i275;
 
-import static org.junit.Assert.assertEquals;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -9,6 +9,7 @@ import org.junit.Test;
 
 import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Helper;
+import com.github.jknack.handlebars.IgnoreWindowsLineMatcher;
 import com.github.jknack.handlebars.Options;
 import com.github.jknack.handlebars.Template;
 import com.github.jknack.handlebars.io.ClassPathTemplateLoader;
@@ -41,12 +42,13 @@ public class Issue275 {
       }
     });
     Template template = handlebars.compile("temporal-partials");
-    assertEquals("Items:\n" +
-        "\n" +
-        "Item: Custom\n" +
-        "...\n" +
-        "Item: 2\n" +
-        "...\n", template.apply(Arrays.asList(new Item("1"), new Item("2"))));
+    assertThat(template.apply(Arrays.asList(new Item("1"), new Item("2"))),
+        IgnoreWindowsLineMatcher.equalsToStringIgnoringWindowsNewLine("Items:\n" +
+            "\n" +
+            "Item: Custom\n" +
+            "...\n" +
+            "Item: 2\n" +
+            "...\n"));
   }
 
   @Test
@@ -63,11 +65,12 @@ public class Issue275 {
       }
     });
     Template template = handlebars.compile("temporal-partials");
-    assertEquals("Items:\n" +
-        "\n" +
-        "Item: Custom\n" +
-        "...\n" +
-        "Item: Custom\n" +
-        "...\n", template.apply(Arrays.asList(new Item("1"), new Item("2"))));
+    assertThat(template.apply(Arrays.asList(new Item("1"), new Item("2"))),
+        IgnoreWindowsLineMatcher.equalsToStringIgnoringWindowsNewLine("Items:\n" +
+            "\n" +
+            "Item: Custom\n" +
+            "...\n" +
+            "Item: Custom\n" +
+            "...\n"));
   }
 }
