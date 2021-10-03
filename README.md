@@ -1,7 +1,4 @@
 [![Become a Patreon](https://img.shields.io/badge/patreon-donate-orange.svg)](https://patreon.com/edgarespina)
-[![Build Status](https://travis-ci.org/jknack/handlebars.java.svg?branch=master)](https://travis-ci.org/jknack/handlebars.java)
-[![coveralls.io](https://img.shields.io/coveralls/jknack/handlebars.java.svg)](https://coveralls.io/r/jknack/handlebars.java?branch=master)
-[![codecov](https://codecov.io/gh/jknack/handlebars.java/branch/master/graph/badge.svg)](https://codecov.io/gh/jknack/handlebars.java)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.jknack/handlebars/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.jknack/handlebars)
 [![javadoc](https://javadoc.io/badge/com.github.jknack/handlebars.svg)](https://javadoc.io/doc/com.github.jknack/handlebars)
 
@@ -22,16 +19,16 @@ Output:
 Hello Handlebars.java!
 ```
 
-Handlebars.java is a Java port of [handlebars](http://handlebarsjs.com/).
+Handlebars.java is a Java port of [handlebars](https://handlebarsjs.com/).
 
 Handlebars provides the power necessary to let you build semantic templates effectively with no frustration.
 
-[Mustache](http://mustache.github.io/mustache.5.html) templates are compatible with Handlebars, so you can take a [Mustache](http://mustache.github.com) template, import it into Handlebars, and start taking advantage of the extra Handlebars features.
+[Mustache](https://mustache.github.io/mustache.5.html) templates are compatible with Handlebars, so you can take a [Mustache](https://mustache.github.io) template, import it into Handlebars, and start taking advantage of the extra Handlebars features.
 
 # Getting Started
- In general, the syntax of **Handlebars** templates is a superset of [Mustache](http://mustache.github.com) templates. For basic syntax, check out the [Mustache manpage](http://mustache.github.com).
+ In general, the syntax of **Handlebars** templates is a superset of [Mustache](https://mustache.github.io) templates. For basic syntax, check out the [Mustache manpage](https://mustache.github.io).
  
- The [Handlebars.java blog](http://jknack.github.io/handlebars.java) is a good place for getting started too. Javadoc is available at [javadoc.io](https://javadoc.io/doc/com.github.jknack/handlebars).
+ The [Handlebars.java blog](https://jknack.github.io/handlebars.java) is a good place for getting started too. Javadoc is available at [javadoc.io](https://javadoc.io/doc/com.github.jknack/handlebars).
 
 ## Maven
 #### Stable version: [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.jknack/handlebars/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.jknack/handlebars)
