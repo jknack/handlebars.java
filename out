@@ -1,0 +1,334 @@
+[INFO] Scanning for projects...
+[INFO] Inspecting build with total of 11 modules...
+[INFO] Installing Nexus Staging features:
+[INFO]   ... total of 11 executions of maven-deploy-plugin replaced with nexus-staging-maven-plugin
+[WARNING] The project com.github.jknack:handlebars.java:pom:4.3.0-SNAPSHOT uses prerequisites which is only intended for maven-plugin projects but not for non maven-plugin projects. For such purposes you should use the maven-enforcer-plugin. See https://maven.apache.org/enforcer/enforcer-rules/requireMavenVersion.html
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Build Order:
+[INFO] 
+[INFO] Handlebars.java                                                    [pom]
+[INFO] Handlebars                                                         [jar]
+[INFO] Handlebars Helpers                                                 [jar]
+[INFO] Handlebars Spring MVC                                              [jar]
+[INFO] A Jackson 2.x helper                                               [jar]
+[INFO] A Markdown Helper                                                  [jar]
+[INFO] Humanize helpers                                                   [jar]
+[INFO] A standalone Handlebars Server                                     [jar]
+[INFO] Handlebars Guava Cache                                             [jar]
+[INFO] Handlebars.js maven plugin                                [maven-plugin]
+[INFO] Handlebars.js maven plugin tests                                   [war]
+[INFO] 
+[INFO] -----------------< com.github.jknack:handlebars.java >------------------
+[INFO] Building Handlebars.java 4.3.0-SNAPSHOT                           [1/11]
+[INFO] --------------------------------[ pom ]---------------------------------
+[INFO] 
+[INFO] --- maven-dependency-plugin:2.8:tree (default-cli) @ handlebars.java ---
+[INFO] com.github.jknack:handlebars.java:pom:4.3.0-SNAPSHOT
+[INFO] 
+[INFO] --------------------< com.github.jknack:handlebars >--------------------
+[INFO] Building Handlebars 4.3.0-SNAPSHOT                                [2/11]
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- maven-dependency-plugin:2.8:tree (default-cli) @ handlebars ---
+[INFO] com.github.jknack:handlebars:jar:4.3.0-SNAPSHOT
+[INFO] +- org.apache.commons:commons-lang3:jar:3.12.0:compile
+[INFO] +- org.apache.commons:commons-text:jar:1.8:compile
+[INFO] +- org.antlr:antlr4-runtime:jar:4.9.2:compile
+[INFO] +- org.slf4j:slf4j-api:jar:1.7.30:compile
+[INFO] +- javax.servlet:servlet-api:jar:2.5:provided
+[INFO] +- ch.qos.logback:logback-classic:jar:1.2.3:test
+[INFO] |  \- ch.qos.logback:logback-core:jar:1.2.3:test
+[INFO] +- org.jacoco:org.jacoco.agent:jar:runtime:0.8.5:test
+[INFO] +- junit:junit:jar:4.13.2:test
+[INFO] |  \- org.hamcrest:hamcrest-core:jar:1.3:test
+[INFO] +- org.yaml:snakeyaml:jar:1.29:test
+[INFO] +- org.easymock:easymock:jar:4.3:test
+[INFO] |  \- org.objenesis:objenesis:jar:3.2:test
+[INFO] +- commons-io:commons-io:jar:2.8.0:test
+[INFO] +- org.powermock:powermock-api-easymock:jar:2.0.9:test
+[INFO] |  +- org.powermock:powermock-api-support:jar:2.0.9:test
+[INFO] |  |  +- org.powermock:powermock-reflect:jar:2.0.9:test
+[INFO] |  |  |  +- net.bytebuddy:byte-buddy:jar:1.10.14:test
+[INFO] |  |  |  \- net.bytebuddy:byte-buddy-agent:jar:1.10.14:test
+[INFO] |  |  \- org.powermock:powermock-core:jar:2.0.9:test
+[INFO] |  |     \- org.javassist:javassist:jar:3.27.0-GA:test
+[INFO] |  \- cglib:cglib-nodep:jar:3.2.9:test
+[INFO] \- org.powermock:powermock-module-junit4:jar:2.0.7:test
+[INFO]    \- org.powermock:powermock-module-junit4-common:jar:2.0.7:test
+[INFO] 
+[INFO] ----------------< com.github.jknack:handlebars-helpers >----------------
+[INFO] Building Handlebars Helpers 4.3.0-SNAPSHOT                        [3/11]
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- maven-dependency-plugin:2.8:tree (default-cli) @ handlebars-helpers ---
+[INFO] com.github.jknack:handlebars-helpers:jar:4.3.0-SNAPSHOT
+[INFO] +- com.github.jknack:handlebars:jar:4.3.0-SNAPSHOT:compile
+[INFO] |  \- org.slf4j:slf4j-api:jar:1.7.30:compile
+[INFO] +- org.apache.commons:commons-lang3:jar:3.12.0:compile
+[INFO] +- joda-time:joda-time:jar:2.10.11:compile
+[INFO] +- javax.servlet:servlet-api:jar:2.5:provided
+[INFO] +- com.github.jknack:handlebars:jar:tests:4.3.0-SNAPSHOT:test
+[INFO] +- ch.qos.logback:logback-classic:jar:1.2.3:test
+[INFO] |  \- ch.qos.logback:logback-core:jar:1.2.3:test
+[INFO] +- junit:junit:jar:4.13.2:test
+[INFO] |  \- org.hamcrest:hamcrest-core:jar:1.3:test
+[INFO] +- org.easymock:easymock:jar:4.3:test
+[INFO] |  \- org.objenesis:objenesis:jar:3.2:test
+[INFO] \- org.yaml:snakeyaml:jar:1.29:test
+[INFO] 
+[INFO] ---------------< com.github.jknack:handlebars-springmvc >---------------
+[INFO] Building Handlebars Spring MVC 4.3.0-SNAPSHOT                     [4/11]
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- maven-dependency-plugin:2.8:tree (default-cli) @ handlebars-springmvc ---
+[INFO] com.github.jknack:handlebars-springmvc:jar:4.3.0-SNAPSHOT
+[INFO] +- com.github.jknack:handlebars:jar:4.3.0-SNAPSHOT:compile
+[INFO] |  \- org.slf4j:slf4j-api:jar:1.7.30:compile
+[INFO] +- org.springframework:spring-webmvc:jar:3.1.1.RELEASE:compile
+[INFO] |  +- org.springframework:spring-asm:jar:3.1.1.RELEASE:compile
+[INFO] |  +- org.springframework:spring-beans:jar:3.1.1.RELEASE:compile
+[INFO] |  +- org.springframework:spring-context:jar:3.1.1.RELEASE:compile
+[INFO] |  |  \- org.springframework:spring-aop:jar:3.1.1.RELEASE:compile
+[INFO] |  +- org.springframework:spring-context-support:jar:3.1.1.RELEASE:compile
+[INFO] |  +- org.springframework:spring-core:jar:3.1.1.RELEASE:compile
+[INFO] |  |  \- commons-logging:commons-logging:jar:1.1.1:compile
+[INFO] |  +- org.springframework:spring-expression:jar:3.1.1.RELEASE:compile
+[INFO] |  \- org.springframework:spring-web:jar:3.1.1.RELEASE:compile
+[INFO] |     \- aopalliance:aopalliance:jar:1.0:compile
+[INFO] +- javax.servlet:servlet-api:jar:2.5:provided
+[INFO] +- ch.qos.logback:logback-classic:jar:1.2.3:test
+[INFO] |  \- ch.qos.logback:logback-core:jar:1.2.3:test
+[INFO] +- org.springframework:spring-test:jar:3.1.1.RELEASE:test
+[INFO] +- junit:junit:jar:4.13.2:test
+[INFO] |  \- org.hamcrest:hamcrest-core:jar:1.3:test
+[INFO] +- org.easymock:easymock:jar:4.3:test
+[INFO] |  \- org.objenesis:objenesis:jar:3.2:test
+[INFO] +- org.powermock:powermock-api-easymock:jar:2.0.9:test
+[INFO] |  +- org.powermock:powermock-api-support:jar:2.0.9:test
+[INFO] |  |  +- org.powermock:powermock-reflect:jar:2.0.9:test
+[INFO] |  |  |  +- net.bytebuddy:byte-buddy:jar:1.10.14:test
+[INFO] |  |  |  \- net.bytebuddy:byte-buddy-agent:jar:1.10.14:test
+[INFO] |  |  \- org.powermock:powermock-core:jar:2.0.9:test
+[INFO] |  |     \- org.javassist:javassist:jar:3.27.0-GA:test
+[INFO] |  \- cglib:cglib-nodep:jar:3.2.9:test
+[INFO] \- org.powermock:powermock-module-junit4:jar:2.0.7:test
+[INFO]    \- org.powermock:powermock-module-junit4-common:jar:2.0.7:test
+[INFO] 
+[INFO] ---------------< com.github.jknack:handlebars-jackson2 >----------------
+[INFO] Building A Jackson 2.x helper 4.3.0-SNAPSHOT                      [5/11]
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- maven-dependency-plugin:2.8:tree (default-cli) @ handlebars-jackson2 ---
+[INFO] com.github.jknack:handlebars-jackson2:jar:4.3.0-SNAPSHOT
+[INFO] +- com.github.jknack:handlebars:jar:4.3.0-SNAPSHOT:compile
+[INFO] |  \- org.slf4j:slf4j-api:jar:1.7.30:compile
+[INFO] +- com.fasterxml.jackson.core:jackson-databind:jar:2.12.5:compile
+[INFO] |  +- com.fasterxml.jackson.core:jackson-annotations:jar:2.12.5:compile
+[INFO] |  \- com.fasterxml.jackson.core:jackson-core:jar:2.12.5:compile
+[INFO] +- javax.servlet:servlet-api:jar:2.5:provided
+[INFO] +- com.github.jknack:handlebars:jar:tests:4.3.0-SNAPSHOT:test
+[INFO] +- ch.qos.logback:logback-classic:jar:1.2.3:test
+[INFO] |  \- ch.qos.logback:logback-core:jar:1.2.3:test
+[INFO] +- junit:junit:jar:4.13.2:test
+[INFO] |  \- org.hamcrest:hamcrest-core:jar:1.3:test
+[INFO] \- org.easymock:easymock:jar:4.3:test
+[INFO]    \- org.objenesis:objenesis:jar:3.2:test
+[INFO] 
+[INFO] ---------------< com.github.jknack:handlebars-markdown >----------------
+[INFO] Building A Markdown Helper 4.3.0-SNAPSHOT                         [6/11]
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- maven-dependency-plugin:2.8:tree (default-cli) @ handlebars-markdown ---
+[INFO] com.github.jknack:handlebars-markdown:jar:4.3.0-SNAPSHOT
+[INFO] +- com.github.jknack:handlebars:jar:4.3.0-SNAPSHOT:compile
+[INFO] |  \- org.slf4j:slf4j-api:jar:1.7.30:compile
+[INFO] +- org.pegdown:pegdown:jar:1.6.0:compile
+[INFO] |  \- org.parboiled:parboiled-java:jar:1.1.7:compile
+[INFO] |     +- org.parboiled:parboiled-core:jar:1.1.7:compile
+[INFO] |     +- org.ow2.asm:asm:jar:5.0.3:compile
+[INFO] |     +- org.ow2.asm:asm-tree:jar:5.0.3:compile
+[INFO] |     +- org.ow2.asm:asm-analysis:jar:5.0.3:compile
+[INFO] |     \- org.ow2.asm:asm-util:jar:5.0.3:compile
+[INFO] +- javax.servlet:servlet-api:jar:2.5:provided
+[INFO] +- ch.qos.logback:logback-classic:jar:1.2.3:test
+[INFO] |  \- ch.qos.logback:logback-core:jar:1.2.3:test
+[INFO] \- junit:junit:jar:4.13.2:test
+[INFO]    \- org.hamcrest:hamcrest-core:jar:1.3:test
+[INFO] 
+[INFO] ---------------< com.github.jknack:handlebars-humanize >----------------
+[INFO] Building Humanize helpers 4.3.0-SNAPSHOT                          [7/11]
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- maven-dependency-plugin:2.8:tree (default-cli) @ handlebars-humanize ---
+[INFO] com.github.jknack:handlebars-humanize:jar:4.3.0-SNAPSHOT
+[INFO] +- com.github.jknack:handlebars:jar:4.3.0-SNAPSHOT:compile
+[INFO] |  \- org.slf4j:slf4j-api:jar:1.7.30:compile
+[INFO] +- com.github.mfornos:humanize-slim:jar:1.2.2:compile
+[INFO] |  +- com.google.guava:guava:jar:18.0:compile
+[INFO] |  +- org.ocpsoft.prettytime:prettytime:jar:3.2.5.Final:compile
+[INFO] |  +- me.xuender:unidecode:jar:0.0.7:compile
+[INFO] |  \- com.google.code.findbugs:jsr305:jar:1.3.9:compile
+[INFO] +- javax.servlet:servlet-api:jar:2.5:provided
+[INFO] +- ch.qos.logback:logback-classic:jar:1.2.3:test
+[INFO] |  \- ch.qos.logback:logback-core:jar:1.2.3:test
+[INFO] \- junit:junit:jar:4.13.2:test
+[INFO]    \- org.hamcrest:hamcrest-core:jar:1.3:test
+[INFO] 
+[INFO] -----------------< com.github.jknack:handlebars-proto >-----------------
+[INFO] Building A standalone Handlebars Server 4.3.0-SNAPSHOT            [8/11]
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- maven-dependency-plugin:2.8:tree (default-cli) @ handlebars-proto ---
+[INFO] com.github.jknack:handlebars-proto:jar:4.3.0-SNAPSHOT
+[INFO] +- org.eclipse.jetty.orbit:javax.servlet:jar:3.0.0.v201112011016:compile
+[INFO] +- com.github.jknack:handlebars:jar:4.3.0-SNAPSHOT:compile
+[INFO] |  \- org.slf4j:slf4j-api:jar:1.7.30:compile
+[INFO] +- com.github.jknack:handlebars-jackson2:jar:4.3.0-SNAPSHOT:compile
+[INFO] +- com.github.jknack:handlebars-markdown:jar:4.3.0-SNAPSHOT:compile
+[INFO] |  \- org.pegdown:pegdown:jar:1.6.0:compile
+[INFO] |     \- org.parboiled:parboiled-java:jar:1.1.7:compile
+[INFO] |        +- org.parboiled:parboiled-core:jar:1.1.7:compile
+[INFO] |        +- org.ow2.asm:asm:jar:5.0.3:compile
+[INFO] |        +- org.ow2.asm:asm-tree:jar:5.0.3:compile
+[INFO] |        +- org.ow2.asm:asm-analysis:jar:5.0.3:compile
+[INFO] |        \- org.ow2.asm:asm-util:jar:5.0.3:compile
+[INFO] +- com.github.jknack:handlebars-humanize:jar:4.3.0-SNAPSHOT:compile
+[INFO] |  \- com.github.mfornos:humanize-slim:jar:1.2.2:compile
+[INFO] |     +- com.google.guava:guava:jar:18.0:compile
+[INFO] |     +- org.ocpsoft.prettytime:prettytime:jar:3.2.5.Final:compile
+[INFO] |     +- me.xuender:unidecode:jar:0.0.7:compile
+[INFO] |     \- com.google.code.findbugs:jsr305:jar:1.3.9:compile
+[INFO] +- commons-io:commons-io:jar:2.8.0:compile
+[INFO] +- org.apache.commons:commons-lang3:jar:3.12.0:compile
+[INFO] +- com.fasterxml.jackson.core:jackson-databind:jar:2.12.5:compile
+[INFO] |  +- com.fasterxml.jackson.core:jackson-annotations:jar:2.12.5:compile
+[INFO] |  \- com.fasterxml.jackson.core:jackson-core:jar:2.12.5:compile
+[INFO] +- org.yaml:snakeyaml:jar:1.29:compile
+[INFO] +- org.eclipse.jetty:jetty-server:jar:9.4.43.v20210629:compile
+[INFO] |  +- javax.servlet:javax.servlet-api:jar:3.1.0:compile
+[INFO] |  +- org.eclipse.jetty:jetty-http:jar:9.4.43.v20210629:compile
+[INFO] |  |  \- org.eclipse.jetty:jetty-util:jar:9.4.43.v20210629:compile
+[INFO] |  \- org.eclipse.jetty:jetty-io:jar:9.4.43.v20210629:compile
+[INFO] +- org.eclipse.jetty:jetty-webapp:jar:9.4.43.v20210629:compile
+[INFO] |  \- org.eclipse.jetty:jetty-xml:jar:9.4.43.v20210629:compile
+[INFO] +- org.eclipse.jetty:jetty-servlet:jar:9.4.43.v20210629:compile
+[INFO] |  +- org.eclipse.jetty:jetty-security:jar:9.4.43.v20210629:compile
+[INFO] |  \- org.eclipse.jetty:jetty-util-ajax:jar:9.4.43.v20210629:compile
+[INFO] +- ch.qos.logback:logback-classic:jar:1.2.3:compile
+[INFO] |  \- ch.qos.logback:logback-core:jar:1.2.3:compile
+[INFO] +- args4j:args4j:jar:2.33:compile
+[INFO] \- junit:junit:jar:4.13.2:test
+[INFO]    \- org.hamcrest:hamcrest-core:jar:1.3:test
+[INFO] 
+[INFO] --------------< com.github.jknack:handlebars-guava-cache >--------------
+[INFO] Building Handlebars Guava Cache 4.3.0-SNAPSHOT                    [9/11]
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- maven-dependency-plugin:2.8:tree (default-cli) @ handlebars-guava-cache ---
+[INFO] com.github.jknack:handlebars-guava-cache:jar:4.3.0-SNAPSHOT
+[INFO] +- com.github.jknack:handlebars:jar:4.3.0-SNAPSHOT:compile
+[INFO] |  \- org.slf4j:slf4j-api:jar:1.7.30:compile
+[INFO] +- com.google.guava:guava:jar:30.0-jre:compile
+[INFO] |  +- com.google.guava:failureaccess:jar:1.0.1:compile
+[INFO] |  +- com.google.guava:listenablefuture:jar:9999.0-empty-to-avoid-conflict-with-guava:compile
+[INFO] |  +- com.google.code.findbugs:jsr305:jar:3.0.2:compile
+[INFO] |  +- org.checkerframework:checker-qual:jar:3.5.0:compile
+[INFO] |  +- com.google.errorprone:error_prone_annotations:jar:2.3.4:compile
+[INFO] |  \- com.google.j2objc:j2objc-annotations:jar:1.3:compile
+[INFO] +- javax.servlet:servlet-api:jar:2.5:provided
+[INFO] +- com.github.jknack:handlebars:jar:tests:4.3.0-SNAPSHOT:test
+[INFO] +- ch.qos.logback:logback-classic:jar:1.2.3:test
+[INFO] |  \- ch.qos.logback:logback-core:jar:1.2.3:test
+[INFO] +- junit:junit:jar:4.13.2:test
+[INFO] |  \- org.hamcrest:hamcrest-core:jar:1.3:test
+[INFO] \- org.easymock:easymock:jar:4.3:test
+[INFO]    \- org.objenesis:objenesis:jar:3.2:test
+[INFO] 
+[INFO] -------------< com.github.jknack:handlebars-maven-plugin >--------------
+[INFO] Building Handlebars.js maven plugin 4.3.0-SNAPSHOT               [10/11]
+[INFO] ----------------------------[ maven-plugin ]----------------------------
+[INFO] 
+[INFO] --- maven-dependency-plugin:2.8:tree (default-cli) @ handlebars-maven-plugin ---
+[INFO] com.github.jknack:handlebars-maven-plugin:maven-plugin:4.3.0-SNAPSHOT
+[INFO] +- com.github.jknack:handlebars:jar:4.3.0-SNAPSHOT:compile
+[INFO] |  \- org.slf4j:slf4j-api:jar:1.7.30:compile
+[INFO] +- ch.qos.logback:logback-classic:jar:1.2.3:compile
+[INFO] |  \- ch.qos.logback:logback-core:jar:1.2.3:compile
+[INFO] +- javax.servlet:servlet-api:jar:2.5:provided
+[INFO] +- org.apache.maven:maven-plugin-api:jar:3.6.3:compile
+[INFO] |  +- org.apache.maven:maven-model:jar:3.6.3:compile
+[INFO] |  +- org.apache.maven:maven-artifact:jar:3.6.3:compile
+[INFO] |  +- org.eclipse.sisu:org.eclipse.sisu.plexus:jar:0.3.4:compile
+[INFO] |  |  \- javax.enterprise:cdi-api:jar:1.0:compile
+[INFO] |  |     \- javax.annotation:jsr250-api:jar:1.0:compile
+[INFO] |  \- org.codehaus.plexus:plexus-classworlds:jar:2.6.0:compile
+[INFO] +- org.apache.maven:maven-project:jar:2.2.1:compile
+[INFO] |  +- org.apache.maven:maven-settings:jar:2.2.1:compile
+[INFO] |  +- org.apache.maven:maven-profile:jar:2.2.1:compile
+[INFO] |  +- org.apache.maven:maven-artifact-manager:jar:2.2.1:compile
+[INFO] |  |  +- org.apache.maven.wagon:wagon-provider-api:jar:1.0-beta-6:compile
+[INFO] |  |  \- backport-util-concurrent:backport-util-concurrent:jar:3.1:compile
+[INFO] |  +- org.apache.maven:maven-plugin-registry:jar:2.2.1:compile
+[INFO] |  +- org.codehaus.plexus:plexus-interpolation:jar:1.11:compile
+[INFO] |  \- org.codehaus.plexus:plexus-container-default:jar:1.0-alpha-9-stable-1:compile
+[INFO] |     \- classworlds:classworlds:jar:1.1-alpha-2:compile
+[INFO] +- org.apache.maven:maven-core:jar:3.8.2:compile
+[INFO] |  +- org.apache.maven:maven-settings-builder:jar:3.8.2:compile
+[INFO] |  |  \- org.sonatype.plexus:plexus-sec-dispatcher:jar:1.4:compile
+[INFO] |  +- org.apache.maven:maven-builder-support:jar:3.8.2:compile
+[INFO] |  +- org.apache.maven:maven-repository-metadata:jar:3.8.2:compile
+[INFO] |  +- org.apache.maven:maven-model-builder:jar:3.8.2:compile
+[INFO] |  +- org.apache.maven:maven-resolver-provider:jar:3.8.2:compile
+[INFO] |  +- org.apache.maven.resolver:maven-resolver-impl:jar:1.6.3:compile
+[INFO] |  +- org.apache.maven.resolver:maven-resolver-api:jar:1.6.3:compile
+[INFO] |  +- org.apache.maven.resolver:maven-resolver-spi:jar:1.6.3:compile
+[INFO] |  +- org.apache.maven.resolver:maven-resolver-util:jar:1.6.3:compile
+[INFO] |  +- org.apache.maven.shared:maven-shared-utils:jar:3.3.4:compile
+[INFO] |  |  \- commons-io:commons-io:jar:2.6:compile
+[INFO] |  +- org.eclipse.sisu:org.eclipse.sisu.inject:jar:0.3.4:compile
+[INFO] |  +- com.google.inject:guice:jar:no_aop:4.2.2:compile
+[INFO] |  |  +- aopalliance:aopalliance:jar:1.0:compile
+[INFO] |  |  \- com.google.guava:guava:jar:25.1-android:compile
+[INFO] |  |     +- com.google.code.findbugs:jsr305:jar:3.0.2:compile
+[INFO] |  |     +- org.checkerframework:checker-compat-qual:jar:2.0.0:compile
+[INFO] |  |     +- com.google.errorprone:error_prone_annotations:jar:2.1.3:compile
+[INFO] |  |     +- com.google.j2objc:j2objc-annotations:jar:1.1:compile
+[INFO] |  |     \- org.codehaus.mojo:animal-sniffer-annotations:jar:1.14:compile
+[INFO] |  +- javax.inject:javax.inject:jar:1:compile
+[INFO] |  +- org.codehaus.plexus:plexus-component-annotations:jar:2.1.0:compile
+[INFO] |  \- org.apache.commons:commons-lang3:jar:3.12.0:compile
+[INFO] +- org.apache.maven.plugin-tools:maven-plugin-annotations:jar:3.6.1:provided
+[INFO] +- org.codehaus.plexus:plexus-utils:jar:3.3.0:compile
+[INFO] +- com.google.javascript:closure-compiler:jar:v20210601:compile
+[INFO] +- junit:junit:jar:4.13.2:test
+[INFO] |  \- org.hamcrest:hamcrest-core:jar:1.3:test
+[INFO] +- org.easymock:easymock:jar:4.3:test
+[INFO] |  \- org.objenesis:objenesis:jar:3.2:test
+[INFO] \- com.github.jknack:handlebars:jar:tests:4.3.0-SNAPSHOT:test
+[INFO] 
+[INFO] ----------< com.github.jknack:handlebars-maven-plugin-tests >-----------
+[INFO] Building Handlebars.js maven plugin tests 4.3.0-SNAPSHOT         [11/11]
+[INFO] --------------------------------[ war ]---------------------------------
+[INFO] 
+[INFO] --- maven-dependency-plugin:2.8:tree (default-cli) @ handlebars-maven-plugin-tests ---
+[INFO] com.github.jknack:handlebars-maven-plugin-tests:war:4.3.0-SNAPSHOT
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Summary for Handlebars.java 4.3.0-SNAPSHOT:
+[INFO] 
+[INFO] Handlebars.java .................................... SUCCESS [  0.516 s]
+[INFO] Handlebars ......................................... SUCCESS [  0.119 s]
+[INFO] Handlebars Helpers ................................. SUCCESS [  0.027 s]
+[INFO] Handlebars Spring MVC .............................. SUCCESS [  0.042 s]
+[INFO] A Jackson 2.x helper ............................... SUCCESS [  0.024 s]
+[INFO] A Markdown Helper .................................. SUCCESS [  0.023 s]
+[INFO] Humanize helpers ................................... SUCCESS [  0.023 s]
+[INFO] A standalone Handlebars Server ..................... SUCCESS [  0.075 s]
+[INFO] Handlebars Guava Cache ............................. SUCCESS [  0.023 s]
+[INFO] Handlebars.js maven plugin ......................... SUCCESS [  0.136 s]
+[INFO] Handlebars.js maven plugin tests ................... SUCCESS [  0.009 s]
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  1.706 s
+[INFO] Finished at: 2021-10-03T20:16:33-03:00
+[INFO] ------------------------------------------------------------------------
