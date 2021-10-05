@@ -161,25 +161,8 @@ public class AbstractTest {
   }
 
   public void withJava(Predicate<Integer> predicate, Task task) throws IOException {
-    if (predicate.test(getJavaVersion())) {
+    if (predicate.test(Handlebars.Utils.javaVersion)) {
       task.run();
-    }
-  }
-
-  static int getJavaVersion() {
-    String version = System.getProperty("java.version");
-    if (version.startsWith("1.")) {
-      version = version.substring(2, 3);
-    } else {
-      int dot = version.indexOf(".");
-      if (dot != -1) {
-        version = version.substring(0, dot);
-      }
-    }
-    try {
-      return Integer.parseInt(version);
-    } catch (NumberFormatException e) {
-      return 8;
     }
   }
 }

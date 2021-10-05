@@ -7,8 +7,10 @@ import static org.junit.Assume.assumeTrue;
 import java.lang.reflect.Method;
 import java.util.Collections;
 
-import org.junit.Ignore;
 import org.junit.Test;
+
+import com.github.jknack.handlebars.Handlebars;
+import com.github.jknack.handlebars.ValueResolver;
 
 public class SetAccessibleValueResolverTest {
 
@@ -16,10 +18,32 @@ public class SetAccessibleValueResolverTest {
    * The following tests require JDK 9 or greater.
    * To keep the tests from failing we use junit assume.
    */
+  @Test
+  public void shouldPrintWarningAndNotThrowExceptionSetAccesibleOnOnJava9Or17() throws Exception {
+    assumeTrue(Handlebars.Utils.javaVersion > 8 && Handlebars.Utils.javaVersion <= 14);
+    MethodValueResolver mv = new MethodValueResolver() {
 
-  @Ignore
-  public void testSetAccessibleOnJDK9OrGreater() throws Exception {
-    assumeTrue(getJavaVersion() >= 9);
+      @Override
+      protected boolean isUseSetAccessible(Method m) {
+        return true;
+      }
+    };
+    Object result = mv.resolve(Collections.emptyMap(), "doesNotMatter");
+    assertEquals(ValueResolver.UNRESOLVED, result);
+  }
+
+  @Test
+  public void shouldNotPrintWarningAndNotThrowExceptionSetAccesibleOnOnJava9Or17()
+      throws Exception {
+    assumeTrue(Handlebars.Utils.javaVersion > 8 && Handlebars.Utils.javaVersion <= 17);
+    MethodValueResolver mv = new MethodValueResolver();
+    Object result = mv.resolve(Collections.emptyMap(), "isEmpty");
+    assertEquals(Boolean.TRUE, result);
+  }
+
+  @Test
+  public void shouldThrowExceptionOnJava17orHigher() throws Exception {
+    assumeTrue(Handlebars.Utils.javaVersion >= 17);
     MethodValueResolver mv = new MethodValueResolver() {
 
       @Override
@@ -31,28 +55,6 @@ public class SetAccessibleValueResolverTest {
       mv.resolve(Collections.emptyMap(), "doesNotMatter");
       fail("Expect InaccessibleObjectException");
     } catch (/* InaccessibleObjectException */ Exception e) {
-    }
-
-    mv = new MethodValueResolver();
-    mv.resolve(Collections.emptyMap(), "doesNotMatter");
-    Object result = mv.resolve(Collections.emptyMap(), "isEmpty");
-    assertEquals(Boolean.TRUE, result);
-  }
-
-  static int getJavaVersion() {
-    String version = System.getProperty("java.version");
-    if (version.startsWith("1.")) {
-      version = version.substring(2, 3);
-    } else {
-      int dot = version.indexOf(".");
-      if (dot != -1) {
-        version = version.substring(0, dot);
-      }
-    }
-    try {
-      return Integer.parseInt(version);
-    } catch (NumberFormatException e) {
-      return 8;
     }
   }
 

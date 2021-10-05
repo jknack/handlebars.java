@@ -39,6 +39,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.slf4j.Logger;
 
@@ -176,6 +177,8 @@ public class Handlebars implements HelperRegistry {
    */
   public static class Utils {
 
+    public static final int javaVersion = javaVersion();
+
     /**
      * Evaluate the given object and return true is the object is considered
      * empty. Nulls, empty list or array and false values are considered empty.
@@ -232,6 +235,23 @@ public class Handlebars implements HelperRegistry {
      */
     public static CharSequence escapeExpression(final CharSequence input) {
       return EscapingStrategy.DEF.escape(input);
+    }
+
+    private static int javaVersion() {
+      String version = System.getProperty("java.version");
+      if (version.startsWith("1.")) {
+        version = version.substring(2, 3);
+      } else {
+        int dot = version.indexOf(".");
+        if (dot != -1) {
+          version = version.substring(0, dot);
+        }
+      }
+      try {
+        return Integer.parseInt(version);
+      } catch (NumberFormatException e) {
+        return 8;
+      }
     }
   }
 

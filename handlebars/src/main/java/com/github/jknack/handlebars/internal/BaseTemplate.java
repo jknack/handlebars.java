@@ -25,6 +25,7 @@ import static org.apache.commons.lang3.Validate.notNull;
 import java.io.IOException;
 import java.io.Writer;
 import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodType;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -264,17 +265,26 @@ abstract class BaseTemplate implements Template {
 
           private Object invokeDefaultMethod(final Method method, final Class<?> lookupClass,
               final Object proxy, final Object... args) throws Throwable {
-            // Jumping through these hoops is needed because calling unreflectSpecial requires that
-            // the lookup instance have private access to the special caller. None of the static
-            // factory methods for Lookup will give us an instance with the access modes we need,
-            // so we work around it by calling the private constructor via reflection.
-            Constructor<MethodHandles.Lookup> constructor = MethodHandles.Lookup.class
-                .getDeclaredConstructor(Class.class, int.class);
-            constructor.setAccessible(true);
-            return constructor.newInstance(lookupClass, -1 /* trusted */)
-                .unreflectSpecial(method, lookupClass)
-                .bindTo(proxy)
-                .invokeWithArguments(args);
+            if (Handlebars.Utils.javaVersion >= 15) {
+              MethodType methodType = MethodType.methodType(method.getReturnType(),
+                  method.getParameterTypes());
+              return MethodHandles.lookup()
+                  .findSpecial(lookupClass, method.getName(), methodType, lookupClass)
+                  .bindTo(proxy)
+                  .invokeWithArguments(args);
+            } else {
+              // Jumping through these hoops is needed because calling unreflectSpecial requires that
+              // the lookup instance have private access to the special caller. None of the static
+              // factory methods for Lookup will give us an instance with the access modes we need,
+              // so we work around it by calling the private constructor via reflection.
+              Constructor<MethodHandles.Lookup> constructor = MethodHandles.Lookup.class
+                  .getDeclaredConstructor(Class.class, int.class);
+              constructor.setAccessible(true);
+              return constructor.newInstance(lookupClass, -1 /* trusted */)
+                  .unreflectSpecial(method, lookupClass)
+                  .bindTo(proxy)
+                  .invokeWithArguments(args);
+            }
           }
 
           @Override
