@@ -210,7 +210,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-checkstyle-plugin</artifactId>
-        <version>3.1.1</version>
+        <version>3.1.2</version>
         <configuration>
           <consoleOutput>true</consoleOutput>
           <configLocation>src/etc/checkstyle.xml</configLocation>
@@ -394,7 +394,7 @@
   <properties>
     <!-- Encoding UTF-8 -->
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <jackson2-version>2.12.5</jackson2-version>
+    <jackson2-version>2.13.0</jackson2-version>
     <humanize.version>1.2.2</humanize.version>
     <jacoco.version>0.8.5</jacoco.version>
     <maven.build.timestamp.format>yyyy-MM-dd HH:mm:ssa</maven.build.timestamp.format>
