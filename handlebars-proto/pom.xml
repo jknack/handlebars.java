@@ -124,11 +124,11 @@
       <version>${project.version}</version>
     </dependency>
 
-    <dependency>
-      <groupId>com.github.jknack</groupId>
-      <artifactId>handlebars-markdown</artifactId>
-      <version>${project.version}</version>
-    </dependency>
+<!--    <dependency>-->
+<!--      <groupId>com.github.jknack</groupId>-->
+<!--      <artifactId>handlebars-markdown</artifactId>-->
+<!--      <version>${project.version}</version>-->
+<!--    </dependency>-->
 
     <dependency>
       <groupId>com.github.jknack</groupId>
