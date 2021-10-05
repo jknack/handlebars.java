@@ -17,9 +17,6 @@
  */
 package com.github.jknack.handlebars;
 
-import com.github.jknack.handlebars.helper.I18nHelper;
-import com.github.jknack.handlebars.internal.Files;
-import com.github.jknack.handlebars.internal.Throwing;
 import static org.apache.commons.lang3.Validate.isTrue;
 import static org.apache.commons.lang3.Validate.notEmpty;
 import static org.apache.commons.lang3.Validate.notNull;
@@ -39,24 +36,26 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicInteger;
+
+import javax.script.Bindings;
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
 
 import org.slf4j.Logger;
 
 import com.github.jknack.handlebars.cache.NullTemplateCache;
 import com.github.jknack.handlebars.cache.TemplateCache;
 import com.github.jknack.handlebars.helper.DefaultHelperRegistry;
+import com.github.jknack.handlebars.helper.I18nHelper;
+import com.github.jknack.handlebars.internal.Files;
 import com.github.jknack.handlebars.internal.FormatterChain;
 import com.github.jknack.handlebars.internal.HbsParserFactory;
+import com.github.jknack.handlebars.internal.Throwing;
 import com.github.jknack.handlebars.io.ClassPathTemplateLoader;
 import com.github.jknack.handlebars.io.CompositeTemplateLoader;
 import com.github.jknack.handlebars.io.StringTemplateSource;
 import com.github.jknack.handlebars.io.TemplateLoader;
 import com.github.jknack.handlebars.io.TemplateSource;
-
-import javax.script.Bindings;
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
 
 /**
  * <p>
@@ -177,7 +176,11 @@ public class Handlebars implements HelperRegistry {
    */
   public static class Utils {
 
+    /** Current Java version: 8, 11, 15, etc. */
     public static final int javaVersion = javaVersion();
+
+    /** Prefix for Java version: 1.8 (mostly). */
+    private static final String VERSION_PREFIX = "1.";
 
     /**
      * Evaluate the given object and return true is the object is considered
@@ -237,21 +240,9 @@ public class Handlebars implements HelperRegistry {
       return EscapingStrategy.DEF.escape(input);
     }
 
-    private static int javaVersion() {
-      String version = System.getProperty("java.version");
-      if (version.startsWith("1.")) {
-        version = version.substring(2, 3);
-      } else {
-        int dot = version.indexOf(".");
-        if (dot != -1) {
-          version = version.substring(0, dot);
-        }
-      }
-      try {
-        return Integer.parseInt(version);
-      } catch (NumberFormatException e) {
-        return 8;
-      }
+    static int javaVersion() {
+      String version = System.getProperty("java.specification.version").trim();
+      return Integer.parseInt(version.replace(VERSION_PREFIX, ""));
     }
   }
 
