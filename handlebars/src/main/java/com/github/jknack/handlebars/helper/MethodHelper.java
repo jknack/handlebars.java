@@ -72,7 +72,7 @@ public class MethodHelper implements Helper<Object> {
           if (paramTypes[i] == Options.class) {
             args[i] = options;
           } else {
-            args[i] = options.param(i - 1);
+            args[i] = options.param(i - 1, null);
           }
         }
       }
