@@ -30,6 +30,8 @@ Handlebars provides the power necessary to let you build semantic templates effe
  
  The [Handlebars.java blog](https://jknack.github.io/handlebars.java) is a good place for getting started too. Javadoc is available at [javadoc.io](https://javadoc.io/doc/com.github.jknack/handlebars).
 
+  Since 4.3.0 release Handlebars.java requires Java 8 or higher.
+
 ## Maven
 #### Stable version: [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.jknack/handlebars/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.jknack/handlebars)
 
@@ -42,10 +44,6 @@ Handlebars provides the power necessary to let you build semantic templates effe
   </dependency>
 ```
  
-#### Development version
-
-SNAPSHOT versions are NOT synchronized to Central. If you want to use a snapshot version you need to add the https://oss.sonatype.org/content/repositories/snapshots/ repository to your pom.xml.
-
 ### Loading templates
 Templates are loaded using the ```TemplateLoader``` class. Handlebars.java provides three implementations of a ```TemplateLoader```:
  * ClassPathTemplateLoader (default)
