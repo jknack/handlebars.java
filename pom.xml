@@ -15,7 +15,7 @@
   <modules>
     <module>handlebars</module>
     <module>handlebars-helpers</module>
-<!--    <module>handlebars-springmvc</module>-->
+    <module>handlebars-springmvc</module>
     <module>handlebars-jackson2</module>
     <module>handlebars-humanize</module>
     <module>handlebars-proto</module>
@@ -76,13 +76,13 @@
       <dependency>
         <groupId>org.springframework</groupId>
         <artifactId>spring-webmvc</artifactId>
-        <version>3.1.1.RELEASE</version>
+        <version>5.3.10</version>
       </dependency>
 
       <dependency>
         <groupId>org.springframework</groupId>
         <artifactId>spring-test</artifactId>
-        <version>3.1.1.RELEASE</version>
+        <version>5.3.10</version>
         <scope>test</scope>
       </dependency>
 
