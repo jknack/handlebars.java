@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import com.github.jknack.handlebars.context.MapValueResolver;
@@ -181,22 +182,22 @@ public class Context {
     /**
      * The internal value resolvers.
      */
-    private ValueResolver[] resolvers;
+    private List<ValueResolver> resolvers;
 
     /**
      * Creates a new {@link CompositeValueResolver}.
      *
      * @param resolvers The value resolvers.
      */
-    CompositeValueResolver(final ValueResolver... resolvers) {
+    CompositeValueResolver(final List<ValueResolver> resolvers) {
       this.resolvers = resolvers;
     }
 
     @Override
     public Object resolve(final Object context, final String name) {
       int i = 0;
-      while (i < resolvers.length) {
-        Object value = resolvers[i].resolve(context, name);
+      while (i < resolvers.size()) {
+        Object value = resolvers.get(i).resolve(context, name);
         if (value != UNRESOLVED) {
           return value == null ? NULL : value;
         }
@@ -208,8 +209,8 @@ public class Context {
     @Override
     public Object resolve(final Object context) {
       int i = 0;
-      while (i < resolvers.length) {
-        Object value = resolvers[i].resolve(context);
+      while (i < resolvers.size()) {
+        Object value = resolvers.get(i).resolve(context);
         if (value != UNRESOLVED) {
           return value == null ? NULL : value;
         }
@@ -258,7 +259,7 @@ public class Context {
      */
     private Builder(final Object model) {
       context = Context.root(model);
-      context.setResolver(new CompositeValueResolver(ValueResolver.VALUE_RESOLVERS));
+      context.setResolver(new CompositeValueResolver(ValueResolver.defaultValueResolvers()));
     }
 
     /**
@@ -294,19 +295,19 @@ public class Context {
       notEmpty(resolvers, "At least one value-resolver must be present.");
       boolean mapResolver = Stream.of(resolvers).anyMatch(MapValueResolver.class::isInstance);
       if (!mapResolver) {
-        ValueResolver[] safeResolvers = new ValueResolver[resolvers.length + 1];
-        System.arraycopy(resolvers, 0, safeResolvers, 0, resolvers.length);
-        safeResolvers[safeResolvers.length - 1] = MapValueResolver.INSTANCE;
-        context.setResolver(new CompositeValueResolver(safeResolvers));
+        context.setResolver(new CompositeValueResolver(
+            Stream.concat(Stream.of(resolvers), Stream.of(MapValueResolver.INSTANCE))
+                .collect(Collectors.toList())
+        ));
       } else {
-        context.setResolver(new CompositeValueResolver(resolvers));
+        context.setResolver(new CompositeValueResolver(Arrays.asList(resolvers)));
       }
       return this;
     }
 
     /**
      * Add one or more value resolver to the defaults defined by
-     * {@link ValueResolver#VALUE_RESOLVERS}.
+     * {@link ValueResolver#defaultValueResolvers()}.
      *
      * @param resolvers The value resolvers. Required.
      * @return This builder.
@@ -314,10 +315,9 @@ public class Context {
     public Builder push(final ValueResolver... resolvers) {
       notEmpty(resolvers, "At least one value-resolver must be present.");
       List<ValueResolver> merged = new ArrayList<>();
-      merged.addAll(Arrays.asList(ValueResolver.VALUE_RESOLVERS));
-      merged.addAll(Arrays.asList(resolvers));
-      context.setResolver(
-          new CompositeValueResolver(merged.toArray(new ValueResolver[merged.size()])));
+      merged.addAll(ValueResolver.defaultValueResolvers());
+      Stream.of(resolvers).forEach(merged::add);
+      context.setResolver(new CompositeValueResolver(merged));
       return this;
     }
 
