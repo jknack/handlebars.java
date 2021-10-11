@@ -17,14 +17,15 @@
  */
 package com.github.jknack.handlebars.helper;
 
+import static org.apache.commons.lang3.Validate.isTrue;
+
+import java.io.IOException;
+import java.util.Objects;
+
 import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Helper;
 import com.github.jknack.handlebars.Options;
 import com.github.jknack.handlebars.TagType;
-import static org.apache.commons.lang3.Validate.isTrue;
-import org.apache.commons.lang3.builder.EqualsBuilder;
-
-import java.io.IOException;
 
 /**
  * Implementation of equals, greater, lessThan, and, or, etc.. operators.
@@ -59,7 +60,7 @@ public enum ConditionalHelpers implements Helper<Object> {
   eq {
     @Override public Object apply(final Object a, final Options options) throws IOException {
       Object b = options.param(0, null);
-      boolean result = new EqualsBuilder().append(a, b).isEquals();
+      boolean result = eq(a, b);
       if (options.tagType == TagType.SECTION) {
         return result ? options.fn() : options.inverse();
       }
@@ -94,7 +95,7 @@ public enum ConditionalHelpers implements Helper<Object> {
   neq {
     @Override public Object apply(final Object a, final Options options) throws IOException {
       Object b = options.param(0, null);
-      boolean result = !new EqualsBuilder().append(a, b).isEquals();
+      boolean result = !eq(a, b);
       if (options.tagType == TagType.SECTION) {
         return result ? options.fn() : options.inverse();
       }
@@ -394,8 +395,46 @@ public enum ConditionalHelpers implements Helper<Object> {
    * @return Int.
    */
   protected int cmp(final Object a, final Object b) {
-    isTrue(a instanceof Comparable, "Not a comparable: " + a);
-    isTrue(b instanceof Comparable, "Not a comparable: " + b);
-    return ((Comparable) a).compareTo(b);
+    try {
+      isTrue(a instanceof Comparable, "Not a comparable: " + a);
+      isTrue(b instanceof Comparable, "Not a comparable: " + b);
+      return ((Comparable) a).compareTo(b);
+    } catch (ClassCastException x) {
+      return Double.compare(toDoubleOrError(a, x), toDoubleOrError(b, x));
+    }
+  }
+
+  /**
+   * Compare two values. Number equality are treated as equals on they are like: 2 vs 2.0
+   *
+   * @param a First value.
+   * @param b Second value.
+   * @return True when equals.
+   */
+  protected boolean eq(final Object a, final Object b) {
+    boolean value = Objects.equals(a, b);
+    if (!value) {
+      if (a instanceof Number && b instanceof Number) {
+        // int vs double: 2 vs 2.0
+        return ((Number) a).doubleValue() == ((Number) b).doubleValue();
+      }
+    }
+    return value;
+  }
+
+  /**
+   * Generate double from value or throw existing exception.
+   * @param value Value to cast.
+   * @param x Exception.
+   * @return Double.
+   */
+  private double toDoubleOrError(final Object value, final RuntimeException x) {
+    if (value instanceof Double) {
+      return (Double) value;
+    }
+    if (value instanceof Number) {
+      return ((Number) value).doubleValue();
+    }
+    throw x;
   }
 }
