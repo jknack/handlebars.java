@@ -19,19 +19,17 @@ package com.github.jknack.handlebars.io;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
 
+import com.github.benmanes.caffeine.cache.Cache;
 import com.github.jknack.handlebars.Handlebars;
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
 
 /**
  * Decorates an existing TemplateLoader with a GuavaCache.
  * This is useful to avoid constantly creating TemplateSources.
  * @author agent
  */
-public class GuavaCachedTemplateLoader implements TemplateLoader {
+public class CaffeineTemplateLoader implements TemplateLoader {
 
   /**
    * never null.
@@ -48,40 +46,17 @@ public class GuavaCachedTemplateLoader implements TemplateLoader {
    * @param cache
    *          Guava Cache.
    */
-  public GuavaCachedTemplateLoader(final TemplateLoader delegate,
+  public CaffeineTemplateLoader(final TemplateLoader delegate,
       final Cache<String, TemplateSource> cache) {
-    super();
     this.delegate = delegate;
     this.cache = cache;
   }
 
   /**
-   * Create a cached template loader that will expire entries if they are not
-   * used after some time.
-   * @param delegate
-   *          to be decorated.
-   * @param duration
-   *          never negative.
-   * @param unit
-   *          never null.
-   * @return never null.
-   */
-  public static GuavaCachedTemplateLoader cacheWithExpiration(
-      final TemplateLoader delegate, final long duration, final TimeUnit unit) {
-    Cache<String, TemplateSource> cache = CacheBuilder.newBuilder()
-        .expireAfterAccess(duration, unit).build();
-    return new GuavaCachedTemplateLoader(delegate, cache);
-  }
-
-  /**
    * {@inheritDoc}
    */
-  public TemplateSource sourceAt(final String location) throws IOException {
-    try {
-      return cache.get(location, () -> delegate.sourceAt(location));
-    } catch (ExecutionException e) {
-      throw Handlebars.Utils.propagate(e.getCause());
-    }
+  public TemplateSource sourceAt(final String location) {
+    return cache.get(location, loadTemplate());
   }
 
   /**
@@ -120,10 +95,20 @@ public class GuavaCachedTemplateLoader implements TemplateLoader {
   }
 
   @Override public void setCharset(final Charset charset) {
-   delegate.setCharset(charset);
+    delegate.setCharset(charset);
   }
 
   @Override public Charset getCharset() {
     return delegate.getCharset();
+  }
+
+  private Function<String, TemplateSource> loadTemplate() {
+    return path -> {
+      try {
+        return delegate.sourceAt(path);
+      } catch (IOException ex) {
+        throw Handlebars.Utils.propagate(ex);
+      }
+    };
   }
 }

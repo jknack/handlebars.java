@@ -20,6 +20,7 @@
     <module>handlebars-humanize</module>
     <module>handlebars-proto</module>
     <module>handlebars-guava-cache</module>
+    <module>handlebars-caffeine</module>
     <module>handlebars-maven-plugin</module>
     <module>handlebars-maven-plugin-tests</module>
   </modules>
