@@ -103,8 +103,15 @@ public enum StringHelpers implements Helper<Object> {
    * If value is "String with spaces", the output will be "Stringwithspaces".
    */
   cut {
+    @Override public Object apply(Object context, Options options) throws IOException {
+      return safeApply(context, options);
+    }
+
     @Override
     protected CharSequence safeApply(final Object value, final Options options) {
+      if (options.isFalsy(value)) {
+        return "";
+      }
       String strip = options.param(0, " ");
       return value.toString().replace(strip, "");
     }
