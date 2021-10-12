@@ -103,7 +103,7 @@ public enum StringHelpers implements Helper<Object> {
    * If value is "String with spaces", the output will be "Stringwithspaces".
    */
   cut {
-    @Override public Object apply(Object context, Options options) throws IOException {
+    @Override public Object apply(final Object context, final Options options) throws IOException {
       return safeApply(context, options);
     }
 

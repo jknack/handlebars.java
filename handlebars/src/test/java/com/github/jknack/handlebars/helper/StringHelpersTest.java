@@ -471,6 +471,7 @@ public class StringHelpersTest extends AbstractTest {
     helpers.remove(StringHelpers.join);
     helpers.remove(StringHelpers.yesno);
     helpers.remove(StringHelpers.defaultIfEmpty);
+    helpers.remove(cut);
 
     Options options = mock(Options.class);
     when(options.isFalsy(any())).thenReturn(true);
@@ -490,6 +491,7 @@ public class StringHelpersTest extends AbstractTest {
     helpers.remove(StringHelpers.join);
     helpers.remove(StringHelpers.yesno);
     helpers.remove(StringHelpers.defaultIfEmpty);
+    helpers.remove(cut);
 
     String nothing = "nothing";
     Options options = mock(Options.class);
@@ -510,6 +512,7 @@ public class StringHelpersTest extends AbstractTest {
     helpers.remove(StringHelpers.join);
     helpers.remove(StringHelpers.yesno);
     helpers.remove(StringHelpers.defaultIfEmpty);
+    helpers.remove(cut);
 
     Object number = 32;
     Options options = mock(Options.class);
