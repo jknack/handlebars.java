@@ -22,8 +22,11 @@ import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-import org.junit.Ignore;
+import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
 
 import com.github.jknack.handlebars.context.JavaBeanValueResolver;
@@ -57,28 +60,29 @@ public class EachKeyTest extends AbstractTest {
         .build();
   }
 
-  @Ignore
+  @Test
   public void eachKeyWithString() throws IOException {
-    String result = compile("{{#each this}}{{@key}} {{/each}}").apply("String");
+    Set<String> result = Stream.of(StringUtils.split(
+            compile("{{#each this}}{{@key}} {{/each}}").apply(configureContext("String")), " "))
+        .collect(Collectors.toSet());
 
-    String expected1 = "empty bytes ";
-    String expected2 = "bytes empty ";
-    assertTrue(result.equals(expected1) || result.equals(expected2));
+    Set<String> expected = Stream.of("empty", "bytes").collect(Collectors.toSet());
+    assertTrue(result.containsAll(expected));
   }
 
-  @Ignore
+  @Test
   public void eachKeyWithInt() throws IOException {
-    shouldCompileTo("{{#each this}}{{@key}} {{/each}}", 7, "");
+    shouldCompileTo("{{#each this}}{{@key}} {{/each}}", configureContext(7), "");
   }
 
   @Test
   public void eachKeyWithJavaBean() throws IOException {
     Blog blog = new Blog("Handlebars.java", "...");
-    String result = compile("{{#each this}}{{@key}}: {{this}} {{/each}}").apply(configureContext(blog));
+    Set<String> result = Stream.of(StringUtils.split(compile("{{#each this}}{{@key}}:{{this}} {{/each}}").apply(configureContext(blog)), " ")).collect(
+        Collectors.toSet());
 
-    String expected1 = "body: ... title: Handlebars.java ";
-    String expected2 = "title: Handlebars.java body: ... ";
-    assertTrue(result.equals(expected1) || result.equals(expected2));
+    Set<String> expected = Stream.of("body:...", "title:Handlebars.java").collect(Collectors.toSet());
+    assertTrue(result.containsAll(expected));
   }
 
   @Test
