@@ -25,12 +25,15 @@ Handlebars provides the power necessary to let you build semantic templates effe
 
 [Mustache](https://mustache.github.io/mustache.5.html) templates are compatible with Handlebars, so you can take a [Mustache](https://mustache.github.io) template, import it into Handlebars, and start taking advantage of the extra Handlebars features.
 
+# Requirements
+
+- Handlebars 4.3+ requires Java 8 or higher.
+
+
 # Getting Started
  In general, the syntax of **Handlebars** templates is a superset of [Mustache](https://mustache.github.io) templates. For basic syntax, check out the [Mustache manpage](https://mustache.github.io).
  
  The [Handlebars.java blog](https://jknack.github.io/handlebars.java) is a good place for getting started too. Javadoc is available at [javadoc.io](https://javadoc.io/doc/com.github.jknack/handlebars).
-
-  Since 4.3.0 release Handlebars.java requires Java 8 or higher.
 
 ## Maven
 #### Stable version: [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.jknack/handlebars/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.jknack/handlebars)
