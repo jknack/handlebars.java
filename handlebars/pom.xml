@@ -228,7 +228,7 @@
   </dependencies>
 
   <properties>
-    <antlr-version>4.9.2</antlr-version>
+    <antlr-version>4.9.3</antlr-version>
     <nashorn.version>15.3</nashorn.version>
   </properties>
 
