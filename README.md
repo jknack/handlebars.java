@@ -544,8 +544,8 @@ Template template = handlebars.compileInline("{{#blog-list blogs}}{{/blog-list}}
 ```java
 handlebars.registerHelper("blog-list", new Helper<Blog>() {
   public CharSequence apply(List<Blog> list, Options options) {
-    String class = options.hash("class");
-    assertEquals("blog-css", class);
+    String classParam = options.hash("class");
+    assertEquals("blog-css", classParam);
     ...
   }
 });
