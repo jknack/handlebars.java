@@ -17,9 +17,9 @@
  */
 package com.github.jknack.handlebars.io;
 
-import org.apache.commons.lang3.builder.HashCodeBuilder;
-
 import com.github.jknack.handlebars.cache.TemplateCache;
+
+import java.util.Objects;
 
 /**
  * Template source with auto-reload supports. Auto-reload is done via {@link #lastModified()}.
@@ -42,20 +42,19 @@ public class ReloadableTemplateSource extends ForwardingTemplateSource {
   }
 
   @Override
-  public int hashCode() {
-    return new HashCodeBuilder().append(filename()).append(lastModified()).build();
+  public boolean equals(final Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (!(o instanceof ReloadableTemplateSource)) {
+      return false;
+    }
+    ReloadableTemplateSource that = (ReloadableTemplateSource) o;
+    return super.equals(that) && lastModified() == that.lastModified();
   }
 
   @Override
-  public boolean equals(final Object obj) {
-    if (this == obj) {
-      return true;
-    }
-    if (obj instanceof TemplateSource) {
-      TemplateSource that = (TemplateSource) obj;
-      return filename().equals(that.filename()) && lastModified() == that.lastModified();
-    }
-    return false;
+  public int hashCode() {
+    return Objects.hash(super.hashCode(), lastModified());
   }
-
 }
