@@ -26,7 +26,7 @@ import java.util.Set;
 
 import com.github.jknack.handlebars.context.JavaBeanValueResolver;
 import com.github.jknack.handlebars.context.MapValueResolver;
-import com.github.jknack.handlebars.context.MethodValueResolver;
+import com.github.jknack.handlebars.context.RecordValueResolver;
 
 /**
  * A hook interface for resolving values from the {@link Context context stack}.
@@ -79,15 +79,12 @@ public interface ValueResolver {
    *
    * - {@link MapValueResolver}
    * - {@link JavaBeanValueResolver}
-   * - {@link MethodValueResolver}. On Java 14 or higher.
+   * - {@link RecordValueResolver}.
    *
    * @return Immutable list of value resolvers.
    */
   static List<ValueResolver> defaultValueResolvers() {
-    if (Handlebars.Utils.javaVersion14) {
-      return unmodifiableList(asList(MapValueResolver.INSTANCE,
-          JavaBeanValueResolver.INSTANCE, MethodValueResolver.INSTANCE));
-    }
-    return unmodifiableList(asList(MapValueResolver.INSTANCE, JavaBeanValueResolver.INSTANCE));
+    return unmodifiableList(
+        asList(MapValueResolver.INSTANCE, JavaBeanValueResolver.INSTANCE, RecordValueResolver.INSTANCE));
   }
 }
