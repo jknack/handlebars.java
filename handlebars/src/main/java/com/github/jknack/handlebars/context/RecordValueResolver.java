@@ -18,7 +18,7 @@ public class RecordValueResolver extends MethodValueResolver {
   @Override
   protected boolean matches(final Object context) {
     Class<?> superClass = context.getClass().getSuperclass();
-    return superClass.getName().equals("java.lang.Record");
+    return superClass != null && superClass.getName().equals("java.lang.Record");
   }
 
 }
