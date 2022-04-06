@@ -85,6 +85,9 @@ public interface ValueResolver {
    */
   static List<ValueResolver> defaultValueResolvers() {
     return unmodifiableList(
-        asList(MapValueResolver.INSTANCE, JavaBeanValueResolver.INSTANCE, RecordValueResolver.INSTANCE));
+        asList(
+            MapValueResolver.INSTANCE,
+            JavaBeanValueResolver.INSTANCE,
+            RecordValueResolver.INSTANCE));
   }
 }

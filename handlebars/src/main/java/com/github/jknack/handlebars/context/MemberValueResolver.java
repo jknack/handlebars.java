@@ -50,7 +50,7 @@ public abstract class MemberValueResolver<M extends Member> implements ValueReso
 
   @Override
   public final Object resolve(final Object context, final String name) {
-    if (! matches(context)) {
+    if (!matches(context)) {
       return UNRESOLVED;
     }
     Class<?> key = context.getClass();
@@ -62,7 +62,7 @@ public abstract class MemberValueResolver<M extends Member> implements ValueReso
       return invokeMember(member, context);
     }
   }
-  
+
   @Override
   public Object resolve(final Object context) {
     return UNRESOLVED;
@@ -131,10 +131,10 @@ public abstract class MemberValueResolver<M extends Member> implements ValueReso
    * @param context The context object.
    * @return True, if the context is suitable.
    */
-  protected boolean matches(Object context) {
+  protected boolean matches(final Object context) {
     return true;
   }
-  
+
   /**
    * True, if the member matches the one we look for.
    *
