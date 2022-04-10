@@ -17,11 +17,13 @@
  */
 package com.github.jknack.handlebars;
 
+import java.util.AbstractList;
 import java.util.AbstractMap;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -84,7 +86,7 @@ public enum JsonNodeValueResolver implements ValueResolver {
    * Resolve a {@link JsonNode} object to a primitive value.
    *
    * @param node A {@link JsonNode} object.
-   * @return A primitive value, json object, json array or null.
+   * @return A primitive value, json object as a map, json array as a list, or null.
    */
   private static Object resolve(final JsonNode node) {
     // binary node
@@ -127,7 +129,12 @@ public enum JsonNodeValueResolver implements ValueResolver {
     if (node instanceof ObjectNode) {
       return toMap((ObjectNode) node);
     }
-    // container, array or null
+    // array node to list
+    if (node instanceof ArrayNode) {
+      return toList((ArrayNode) node);
+    }
+
+    // container or literal null
     return node;
   }
 
@@ -156,6 +163,21 @@ public enum JsonNodeValueResolver implements ValueResolver {
           set.add(it.next());
         }
         return set;
+      }
+    };
+  }
+
+  private static List<Object> toList(final ArrayNode node) {
+    return new AbstractList<Object>() {
+
+      @Override
+      public Object get(int index) {
+        return resolve(node.get(index));
+      }
+
+      @Override
+      public int size() {
+        return node.size();
       }
     };
   }
