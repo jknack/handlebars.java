@@ -160,7 +160,27 @@ public enum JsonNodeValueResolver implements ValueResolver {
         Iterator<Map.Entry<String, JsonNode>> it = node.fields();
         Set set = new LinkedHashSet();
         while (it.hasNext()) {
-          set.add(it.next());
+          Map.Entry<String, JsonNode> current = it.next();
+
+          set.add(
+            new Map.Entry<String, Object>() {
+
+              @Override
+              public String getKey() {
+                return current.getKey();
+              }
+
+              @Override
+              public Object getValue() {
+                return resolve(current.getValue());
+              }
+
+              @Override
+              public Object setValue(Object value) {
+                throw new UnsupportedOperationException();
+              }
+            }
+          );
         }
         return set;
       }
