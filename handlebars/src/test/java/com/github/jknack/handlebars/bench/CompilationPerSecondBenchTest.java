@@ -1,6 +1,7 @@
 package com.github.jknack.handlebars.bench;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -11,6 +12,7 @@ import org.junit.Test;
 import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.MapTemplateLoader;
 import com.github.jknack.handlebars.bench.Bench.Unit;
+import com.github.jknack.handlebars.internal.Files;
 
 public class CompilationPerSecondBenchTest {
 
@@ -149,6 +151,27 @@ public class CompilationPerSecondBenchTest {
         "Hello {{name}}! You have {{count}} new messages.");
     final Handlebars handlebars = new Handlebars(new MapTemplateLoader(templates));
 
+    new Bench().run(new Unit() {
+
+      @Override
+      public void run() throws IOException {
+        handlebars.compileInline(template);
+      }
+
+      @Override
+      public String toString() {
+        return compilerLabel(template);
+      }
+    });
+  }
+
+  @Test
+  public void plainHtml() throws IOException {
+    // Using response data from https://de.wikipedia.org/wiki/Handlebars.js
+    final String template = Files.read(
+        "/com/github/jknack/handlebars/bench/handlebars.js.wikipedia.hbs.html",
+        StandardCharsets.UTF_8);
+    final Handlebars handlebars = new Handlebars();
     new Bench().run(new Unit() {
 
       @Override

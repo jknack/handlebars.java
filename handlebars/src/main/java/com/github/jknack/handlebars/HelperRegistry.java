@@ -86,7 +86,7 @@ public interface HelperRegistry {
    * @param helper The helper object. Required.
    * @return This handlebars.
    */
-  <H> HelperRegistry registerHelperMissing(final Helper<H> helper);
+  <H> HelperRegistry registerHelperMissing(Helper<H> helper);
 
   /**
    * <p>

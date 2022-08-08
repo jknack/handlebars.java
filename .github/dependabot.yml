@@ -1,0 +1,38 @@
+version: 2
+updates:
+- package-ecosystem: maven
+  directory: "/"
+  schedule:
+    interval: daily
+    time: "09:00"
+  open-pull-requests-limit: 10
+  ignore:
+  - dependency-name: org.springframework:spring-test
+    versions:
+    - ">= 5.a, < 6"
+  - dependency-name: com.google.javascript:closure-compiler
+    versions:
+    - v20210106
+    - v20210202
+    - v20210302
+  - dependency-name: org.eclipse.jetty:jetty-servlet
+    versions:
+    - 11.0.0
+    - 11.0.1
+  - dependency-name: org.eclipse.jetty:jetty-webapp
+    versions:
+    - 11.0.0
+    - 11.0.1
+  - dependency-name: org.eclipse.jetty:jetty-server
+    versions:
+    - 11.0.0
+    - 11.0.1
+  - dependency-name: org.yaml:snakeyaml
+    versions:
+    - "1.27"
+  - dependency-name: org.apache.commons:commons-lang3
+    versions:
+    - "3.11"
+  - dependency-name: org.apache.felix:maven-bundle-plugin
+    versions:
+    - 5.1.1

@@ -30,7 +30,7 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * An implementation of {@link TemplateCache} built on top of Guava. If {@link #setReload(boolean)}
- * is <code>on</code> we recommended to use one of the available auto-eviction policy of Guava, it
+ * is <code>on</code> we recommended one of the available auto-eviction policy of Guava, it
  * helps to reduce leaks when auto-reload is <code>on</code>.
  *
  * @author edgar.espina

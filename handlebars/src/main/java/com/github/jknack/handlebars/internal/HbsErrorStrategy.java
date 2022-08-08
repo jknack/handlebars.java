@@ -72,7 +72,7 @@ class HbsErrorStrategy extends DefaultErrorStrategy {
      * @param startDelimiter The start delimiter.
      * @param endDelimiter The end delimiter.
      */
-    public ErrorStrategyVisitor(final String startDelimiter, final String endDelimiter) {
+    ErrorStrategyVisitor(final String startDelimiter, final String endDelimiter) {
       this.startDelimiter = notEmpty(startDelimiter, "The startDelimiter can't be empty/null.");
       this.endDelimiter = notEmpty(endDelimiter, "The end delimiter can't be empty/null.");
     }

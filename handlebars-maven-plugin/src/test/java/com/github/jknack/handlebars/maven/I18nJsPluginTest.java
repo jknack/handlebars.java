@@ -1,9 +1,8 @@
 package com.github.jknack.handlebars.maven;
 
-import static org.easymock.EasyMock.createMock;
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.replay;
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.io.File;
 import java.io.IOException;
@@ -47,8 +46,7 @@ public class I18nJsPluginTest {
 
     plugin.execute();
 
-    assertEquals(FileUtils.fileRead("src/test/resources/deep.expected.js"),
-        FileUtils.fileRead("target/deep.js"));
+    equalsToIgnoreBlanks("src/test/resources/deep.expected.js", "target/deep.js");
   }
 
   @Test
@@ -96,9 +94,8 @@ public class I18nJsPluginTest {
 
   private MavenProject newProject(final String... classpath)
       throws DependencyResolutionRequiredException {
-    MavenProject project = createMock(MavenProject.class);
-    expect(project.getRuntimeClasspathElements()).andReturn(Lists.newArrayList(classpath));
-    replay(project);
+    MavenProject project = mock(MavenProject.class);
+    when(project.getRuntimeClasspathElements()).thenReturn(Lists.newArrayList(classpath));
     return project;
   }
 
@@ -106,7 +103,21 @@ public class I18nJsPluginTest {
    * Matches on tokens and avoid errors between Java 6.x and Java 7.x.
    */
   private Set<String> tokens(final String filename) throws IOException {
-    String content = FileUtils.fileRead(filename);
+    String content = FileUtils.fileRead(filename)
+        .replace("\r", "")
+        .replace("\t", " ");
     return Sets.newLinkedHashSet(Splitter.on(Pattern.compile("\\s|,")).split(content));
+  }
+
+  private void equalsToIgnoreBlanks(String expected, String found) throws IOException {
+    assertEquals(replaceWhiteCharsWithSpace(FileUtils.fileRead(expected)),
+        replaceWhiteCharsWithSpace(FileUtils.fileRead(found)));
+  }
+
+  private String replaceWhiteCharsWithSpace(String content) {
+    return content
+        .replace("\r", "")
+        .replace("\t", " ")
+        .trim();
   }
 }

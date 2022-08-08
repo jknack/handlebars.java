@@ -1,25 +1,21 @@
 package com.github.jknack.handlebars.io;
 
-import static org.easymock.EasyMock.expect;
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.JarURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
+import java.net.URLStreamHandler;
 import java.nio.charset.StandardCharsets;
 
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.powermock.api.easymock.PowerMock;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({URLTemplateSource.class})
 public class URLTemplateSourceTest {
-
   @Test
   public void content() throws Exception {
     URLTemplateSource templateSource = new URLTemplateSource("template.hbs", getClass().getResource("/template.hbs"));
@@ -29,66 +25,67 @@ public class URLTemplateSourceTest {
 
   @Test
   public void openConnectionThrowIOException() throws IOException {
-    URL url = PowerMock.createMock(URL.class);
-    expect(url.openConnection()).andThrow(new IOException());
+    URL url = createThrowingMockUrl(new IOException());
 
     String filename = "home.hbs";
 
-    Object[] mocks = {url};
-
-    PowerMock.replay(mocks);
-
     assertEquals(-1, new URLTemplateSource(filename, url).lastModified());
-
-    PowerMock.verify(mocks);
   }
 
   @Test
   public void closeOpenedConnection() throws IOException {
-    InputStream is = PowerMock.createMock(InputStream.class);
+    InputStream is = mock(InputStream.class);
     is.close();
 
-    URLConnection uc = PowerMock.createMock(URLConnection.class);
-    expect(uc.getLastModified()).andReturn(123L);
-    expect(uc.getInputStream()).andReturn(is);
+    URLConnection uc = mock(URLConnection.class);
+    when(uc.getLastModified()).thenReturn(123L);
+    when(uc.getInputStream()).thenReturn(is);
 
-    URL url = PowerMock.createMock(URL.class);
-    expect(url.openConnection()).andReturn(uc);
+    URL url = createMockUrl(uc);
 
     String filename = "home.hbs";
 
-    Object[] mocks = {url, uc, is};
-
-    PowerMock.replay(mocks);
-
     assertEquals(123L, new URLTemplateSource(filename, url).lastModified());
 
-    PowerMock.verify(mocks);
+    verify(uc).getLastModified();
+    verify(uc).getInputStream();
   }
 
   @Test
   public void lastModifiedFromJar() throws IOException {
     String jarFilename = "app.jar";
 
-    URL jarUrl = PowerMock.createMock(URL.class);
-    expect(jarUrl.getProtocol()).andReturn("file");
-    expect(jarUrl.getFile()).andReturn(jarFilename);
+    URL jarUrl = new URL("file", null, jarFilename);
 
-    JarURLConnection juc = PowerMock.createMock(JarURLConnection.class);
-    expect(juc.getJarFileURL()).andReturn(jarUrl);
+    JarURLConnection juc = mock(JarURLConnection.class);
+    when(juc.getJarFileURL()).thenReturn(jarUrl);
 
-    URL url = PowerMock.createMock(URL.class);
-    expect(url.openConnection()).andReturn(juc);
+    URL url = createMockUrl(juc);
 
     String filename = "home.hbs";
 
-    Object[] mocks = {url, juc, jarUrl};
-
-    PowerMock.replay(mocks);
-
     assertEquals(0, new URLTemplateSource(filename, url).lastModified());
 
-    PowerMock.verify(mocks);
+    verify(juc).getJarFileURL();
   }
 
+  private URL createThrowingMockUrl(IOException ioException) throws IOException {
+    URLStreamHandler handler = new URLStreamHandler() {
+      @Override
+      protected URLConnection openConnection(final URL arg0) throws IOException {
+        throw ioException;
+      }
+    };
+    return new URL("http://foo.bar", "foo.bar", 80, "", handler);
+  }
+
+  private URL createMockUrl(URLConnection urlConnection) throws IOException {
+    URLStreamHandler handler = new URLStreamHandler() {
+      @Override
+      protected URLConnection openConnection(final URL arg0) {
+        return urlConnection;
+      }
+    };
+    return new URL("http://foo.bar", "foo.bar", 80, "", handler);
+  }
 }

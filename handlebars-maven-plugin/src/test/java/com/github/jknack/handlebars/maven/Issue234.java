@@ -1,9 +1,10 @@
 package com.github.jknack.handlebars.maven;
 
-import static org.easymock.EasyMock.createMock;
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.replay;
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
+import java.io.IOException;
 
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.project.MavenProject;
@@ -24,19 +25,29 @@ public class Issue234 {
     plugin.addTemplate("c");
     plugin.setAmd(true);
     plugin.setProject(newProject());
-    plugin.setHandlebarsJsFile("/handlebars-v4.0.4.js");
+    plugin.setHandlebarsJsFile("/handlebars-v4.7.7.js");
 
     plugin.execute();
 
-    assertEquals(FileUtils.fileRead("src/test/resources/issue234.expected.js"),
-        FileUtils.fileRead("target/issue234.js"));
+    equalsToIgnoreBlanks("src/test/resources/issue234.expected", "target/issue234.js");
+  }
+
+  private void equalsToIgnoreBlanks(String expected, String found) throws IOException {
+    assertEquals(replaceWhiteCharsWithSpace(FileUtils.fileRead(expected)),
+        replaceWhiteCharsWithSpace(FileUtils.fileRead(found)));
+  }
+
+  private String replaceWhiteCharsWithSpace(String content) {
+    return content.trim()
+        .replace("\\r\\n", "\\n")
+        .replace("\r", "")
+        .replace("\t", " ");
   }
 
   private MavenProject newProject(final String... classpath)
       throws DependencyResolutionRequiredException {
-    MavenProject project = createMock(MavenProject.class);
-    expect(project.getRuntimeClasspathElements()).andReturn(Lists.newArrayList(classpath));
-    replay(project);
+    MavenProject project = mock(MavenProject.class);
+    when(project.getRuntimeClasspathElements()).thenReturn(Lists.newArrayList(classpath));
     return project;
   }
 }

@@ -2,7 +2,6 @@ package com.github.jknack.handlebars.issues;
 
 import com.github.jknack.handlebars.Handlebars;
 import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
 import java.io.IOException;

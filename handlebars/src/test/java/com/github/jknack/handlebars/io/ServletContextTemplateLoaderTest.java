@@ -1,145 +1,119 @@
 package com.github.jknack.handlebars.io;
 
-import static org.easymock.EasyMock.capture;
-import static org.easymock.EasyMock.createMock;
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.replay;
-import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertNotNull;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.net.URL;
 
 import javax.servlet.ServletContext;
 
-import org.easymock.Capture;
-import org.easymock.IAnswer;
 import org.junit.Test;
 
 public class ServletContextTemplateLoaderTest {
-
   @Test
   public void sourceAt() throws IOException {
-    ServletContext servletContext = createMock(ServletContext.class);
+    ServletContext servletContext = mock(ServletContext.class);
     expectGetResource(servletContext, "src/test/resources");
-
-    replay(servletContext);
 
     TemplateSource source = new ServletContextTemplateLoader(servletContext).sourceAt("template");
     assertNotNull(source);
 
-    verify(servletContext);
+    verify(servletContext).getResource(anyString());
   }
 
   @Test
   public void subFolder() throws IOException {
-    ServletContext servletContext = createMock(ServletContext.class);
+    ServletContext servletContext = mock(ServletContext.class);
     expectGetResource(servletContext, "src/test/resources");
-
-    replay(servletContext);
 
     TemplateSource source = new ServletContextTemplateLoader(servletContext, "/", ".yml")
         .sourceAt("mustache/specs/comments");
     assertNotNull(source);
 
-    verify(servletContext);
+    verify(servletContext).getResource(anyString());
   }
 
   @Test
   public void subFolderwithDashAtBeginning() throws IOException {
-    ServletContext servletContext = createMock(ServletContext.class);
+    ServletContext servletContext = mock(ServletContext.class);
     expectGetResource(servletContext, "src/test/resources");
-
-    replay(servletContext);
 
     TemplateSource source = new ServletContextTemplateLoader(servletContext, "/", ".yml")
         .sourceAt("/mustache/specs/comments");
     assertNotNull(source);
 
-    verify(servletContext);
+    verify(servletContext).getResource(anyString());
   }
 
   @Test(expected = FileNotFoundException.class)
   public void fileNotFound() throws IOException {
-    ServletContext servletContext = createMock(ServletContext.class);
+    ServletContext servletContext = mock(ServletContext.class);
     expectGetResource(servletContext, "src/test/resources");
-
-    replay(servletContext);
 
     TemplateSource source = new ServletContextTemplateLoader(servletContext).sourceAt("notExist");
     assertNotNull(source);
 
-    verify(servletContext);
+    verify(servletContext).getResource(anyString());
   }
 
   @Test
   public void setBasePath() throws IOException {
-    ServletContext servletContext = createMock(ServletContext.class);
+    ServletContext servletContext = mock(ServletContext.class);
     expectGetResource(servletContext, "src/test/resources/mustache/specs");
-
-    replay(servletContext);
 
     TemplateSource source = new ServletContextTemplateLoader(servletContext, "/", ".yml")
         .sourceAt("comments");
     assertNotNull(source);
 
-    verify(servletContext);
+    verify(servletContext).getResource(anyString());
   }
 
   @Test
   public void setBasePathWithDash() throws IOException {
-    ServletContext servletContext = createMock(ServletContext.class);
+    ServletContext servletContext = mock(ServletContext.class);
     expectGetResource(servletContext, "src/test/resources/mustache/specs/");
-
-    replay(servletContext);
 
     TemplateSource source = new ServletContextTemplateLoader(servletContext, "/", ".yml")
         .sourceAt("comments");
     assertNotNull(source);
 
-    verify(servletContext);
+    verify(servletContext).getResource(anyString());
   }
 
   @Test
   public void nullSuffix() throws IOException {
-    ServletContext servletContext = createMock(ServletContext.class);
+    ServletContext servletContext = mock(ServletContext.class);
     expectGetResource(servletContext, "src/test/resources/");
-
-    replay(servletContext);
 
     TemplateSource source = new ServletContextTemplateLoader(servletContext, "/", null)
         .sourceAt("noextension");
     assertNotNull(source);
 
-    verify(servletContext);
+    verify(servletContext).getResource(anyString());
   }
 
   @Test
   public void emotySuffix() throws IOException {
-    ServletContext servletContext = createMock(ServletContext.class);
+    ServletContext servletContext = mock(ServletContext.class);
     expectGetResource(servletContext, "src/test/resources/");
-
-    replay(servletContext);
 
     TemplateSource source = new ServletContextTemplateLoader(servletContext, "/", "")
         .sourceAt("noextension");
     assertNotNull(source);
 
-    verify(servletContext);
+    verify(servletContext).getResource(anyString());
   }
 
   private void expectGetResource(final ServletContext servletContext, final String prefix)
       throws IOException {
-    final Capture<String> path = new Capture<>();
-    expect(servletContext.getResource(capture(path))).andAnswer(
-        new IAnswer<URL>() {
-          @Override
-          public URL answer() throws Throwable {
-            File file = new File(prefix, path.getValue());
-            return file.exists() ? file.toURI().toURL() : null;
-          }
-        });
+    when(servletContext.getResource(anyString())).thenAnswer(invocation -> {
+        File file = new File(prefix, invocation.getArgument(0));
+        return file.exists() ? file.toURI().toURL() : null;
+    });
   }
 }

@@ -23,7 +23,11 @@ import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import org.junit.Ignore;
 import org.junit.Test;
+
+import com.github.jknack.handlebars.context.JavaBeanValueResolver;
+import com.github.jknack.handlebars.context.MapValueResolver;
 
 public class EachKeyTest extends AbstractTest {
 
@@ -47,7 +51,13 @@ public class EachKeyTest extends AbstractTest {
     }
   }
 
-  @Test
+  @Override protected Object configureContext(Object context) {
+    return Context.newBuilder(context)
+        .resolver(MapValueResolver.INSTANCE, JavaBeanValueResolver.INSTANCE)
+        .build();
+  }
+
+  @Ignore
   public void eachKeyWithString() throws IOException {
     String result = compile("{{#each this}}{{@key}} {{/each}}").apply("String");
 
@@ -56,7 +66,7 @@ public class EachKeyTest extends AbstractTest {
     assertTrue(result.equals(expected1) || result.equals(expected2));
   }
 
-  @Test
+  @Ignore
   public void eachKeyWithInt() throws IOException {
     shouldCompileTo("{{#each this}}{{@key}} {{/each}}", 7, "");
   }
@@ -64,7 +74,7 @@ public class EachKeyTest extends AbstractTest {
   @Test
   public void eachKeyWithJavaBean() throws IOException {
     Blog blog = new Blog("Handlebars.java", "...");
-    String result = compile("{{#each this}}{{@key}}: {{this}} {{/each}}").apply(blog);
+    String result = compile("{{#each this}}{{@key}}: {{this}} {{/each}}").apply(configureContext(blog));
 
     String expected1 = "body: ... title: Handlebars.java ";
     String expected2 = "title: Handlebars.java body: ... ";

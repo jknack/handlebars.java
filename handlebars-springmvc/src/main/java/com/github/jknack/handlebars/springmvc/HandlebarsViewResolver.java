@@ -17,6 +17,7 @@
  */
 package com.github.jknack.handlebars.springmvc;
 
+import static com.github.jknack.handlebars.ValueResolver.defaultValueResolvers;
 import static java.util.Objects.requireNonNull;
 
 import java.io.File;
@@ -34,6 +35,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.ResourceBundle;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationContext;
@@ -79,7 +82,7 @@ public class HandlebarsViewResolver extends AbstractTemplateViewResolver
   /**
    * The value's resolvers.
    */
-  private ValueResolver[] valueResolvers = ValueResolver.VALUE_RESOLVERS;
+  private List<ValueResolver> valueResolvers = new ArrayList<>(defaultValueResolvers());
 
   /**
    * Fail on missing file. Default is: true.
@@ -197,7 +200,7 @@ public class HandlebarsViewResolver extends AbstractTemplateViewResolver
     // Compile the template.
     try {
       view.setTemplate(handlebars.compile(url));
-      view.setValueResolver(valueResolvers);
+      view.setValueResolver(valueResolvers.toArray(new ValueResolver[0]));
     } catch (IOException ex) {
       if (failOnMissingFile) {
         throw ex;
@@ -331,7 +334,7 @@ public class HandlebarsViewResolver extends AbstractTemplateViewResolver
   /**
    * @return The array of resolvers.
    */
-  protected ValueResolver[] getValueResolvers() {
+  protected List<ValueResolver> getValueResolvers() {
     return this.valueResolvers;
   }
 
@@ -341,8 +344,10 @@ public class HandlebarsViewResolver extends AbstractTemplateViewResolver
    * @param valueResolvers The value resolvers. Required.
    */
   public void setValueResolvers(final ValueResolver... valueResolvers) {
-    this.valueResolvers = requireNonNull(valueResolvers,
+    requireNonNull(valueResolvers,
         "At least one value-resolver must be present.");
+    this.valueResolvers = Stream.of(valueResolvers)
+        .collect(Collectors.toList());
   }
 
   /**
@@ -371,10 +376,10 @@ public class HandlebarsViewResolver extends AbstractTemplateViewResolver
    *
    * <pre>
    *   Handlebars handlebars = new Handlebars()
-   *      .handlebarsJsFile("handlebars-v4.0.4.js");
+   *      .handlebarsJsFile("handlebars-v4.7.7.js");
    * </pre>
    *
-   * Default handlebars.js is <code>handlebars-v4.0.4.js</code>.
+   * Default handlebars.js is <code>handlebars-v4.7.7.js</code>.
    *
    * @param location A classpath location of the handlebar.js file.
    */

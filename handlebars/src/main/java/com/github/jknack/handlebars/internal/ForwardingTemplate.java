@@ -48,7 +48,7 @@ class ForwardingTemplate implements Template {
    *
    * @param template The original template. Required.
    */
-  public ForwardingTemplate(final Template template) {
+  ForwardingTemplate(final Template template) {
     this.template = notNull(template, "The template is required.");
   }
 

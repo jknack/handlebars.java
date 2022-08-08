@@ -71,7 +71,7 @@ abstract class HelperResolver extends BaseTemplate {
    *
    * @param handlebars The handlebars object. Required.
    */
-  public HelperResolver(final Handlebars handlebars) {
+  HelperResolver(final Handlebars handlebars) {
     super(handlebars);
   }
 

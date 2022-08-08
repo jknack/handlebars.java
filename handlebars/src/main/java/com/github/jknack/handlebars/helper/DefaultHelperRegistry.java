@@ -112,7 +112,7 @@ public class DefaultHelperRegistry implements HelperRegistry {
 
     Helper<?> oldHelper = helpers.put(name, helper);
     if (oldHelper != null) {
-      logger.warn("Helper '{}' has been replaced by '{}'", name, helper);
+      logger.debug("Helper '{}' has been replaced by '{}'", name, helper);
     }
     return this;
   }
@@ -234,10 +234,11 @@ public class DefaultHelperRegistry implements HelperRegistry {
       Method[] methods = clazz.getDeclaredMethods();
       for (Method method : methods) {
         boolean isPublic = Modifier.isPublic(method.getModifiers());
-        String helperName = method.getName();
         if (isPublic) {
           boolean isStatic = Modifier.isStatic(method.getModifiers());
           if (source != null || isStatic) {
+            HelperFunction annotation = method.getAnnotation(HelperFunction.class);
+            String helperName = annotation != null ? annotation.value() : method.getName();
             isTrue(overloaded.add(helperName), "name conflict found: " + helperName);
             registerHelper(helperName, new MethodHelper(method, source));
           }

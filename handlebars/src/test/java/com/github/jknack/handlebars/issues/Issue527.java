@@ -1,7 +1,6 @@
 package com.github.jknack.handlebars.issues;
 
 import com.github.jknack.handlebars.v4Test;
-import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
 public class Issue527 extends v4Test {
@@ -11,8 +10,15 @@ public class Issue527 extends v4Test {
     shouldCompileTo("{{precompile \"client_side\"}}",
         $("partials", $("client_side", "{{myhelper \"something\"}}")),
         "(function() {\n"
-            + "  var template = Handlebars.template({\"compiler\":[7,\">= 4.0.0\"],\"main\":function(container,depth0,helpers,partials,data) {\n"
-            + "    return container.escapeExpression((helpers.myhelper || (depth0 && depth0.myhelper) || helpers.helperMissing).call(depth0 != null ? depth0 : {},\"something\",{\"name\":\"myhelper\",\"hash\":{},\"data\":data}));\n"
+            + "  var template = Handlebars.template({\"compiler\":[8,\">= 4.3.0\"],\"main\":function(container,depth0,helpers,partials,data) {\n"
+            + "    var lookupProperty = container.lookupProperty || function(parent, propertyName) {\n"
+            + "        if (Object.prototype.hasOwnProperty.call(parent, propertyName)) {\n"
+            + "          return parent[propertyName];\n"
+            + "        }\n"
+            + "        return undefined\n"
+            + "    };\n"
+            + "\n"
+            + "  return container.escapeExpression((lookupProperty(helpers,\"myhelper\")||(depth0 && lookupProperty(depth0,\"myhelper\"))||container.hooks.helperMissing).call(depth0 != null ? depth0 : (container.nullContext || {}),\"something\",{\"name\":\"myhelper\",\"hash\":{},\"data\":data,\"loc\":{\"start\":{\"line\":1,\"column\":0},\"end\":{\"line\":1,\"column\":24}}}));\n"
             + "},\"useData\":true});\n"
             + "  var templates = Handlebars.templates = Handlebars.templates || {};\n"
             + "  templates['client_side'] = template;\n"

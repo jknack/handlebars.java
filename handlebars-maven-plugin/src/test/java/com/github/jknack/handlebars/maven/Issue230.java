@@ -1,9 +1,10 @@
 package com.github.jknack.handlebars.maven;
 
-import static org.easymock.EasyMock.createMock;
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.replay;
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
+import java.io.IOException;
 
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.project.MavenProject;
@@ -27,16 +28,22 @@ public class Issue230 {
         "  /* English (United States) */\n" +
         "  I18n.translations = I18n.translations || {};\n" +
         "  I18n.translations['en_US'] = {\n" +
-        "    \"pagination_top_of_page\": \"Inicio de la página\"\n" +
+        "    \"pagination_top_of_page\": \"Inicio de la pagina\"\n" +
         "  };\n" +
-        "})();\n", FileUtils.fileRead("target/i230.js"));
+        "})();", replaceWhiteCharsWithSpace(FileUtils.fileRead("target/i230.js")));
   }
 
   private MavenProject newProject(final String... classpath)
       throws DependencyResolutionRequiredException {
-    MavenProject project = createMock(MavenProject.class);
-    expect(project.getRuntimeClasspathElements()).andReturn(Lists.newArrayList(classpath));
-    replay(project);
+    MavenProject project = mock(MavenProject.class);
+    when(project.getRuntimeClasspathElements()).thenReturn(Lists.newArrayList(classpath));
     return project;
+  }
+
+  private String replaceWhiteCharsWithSpace(String content) {
+    return content
+        .replace("\r", "")
+        .replace("\t", " ")
+        .trim();
   }
 }

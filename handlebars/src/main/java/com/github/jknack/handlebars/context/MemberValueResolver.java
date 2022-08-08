@@ -78,7 +78,7 @@ public abstract class MemberValueResolver<M extends Member> implements ValueReso
       Set<M> members = members(clazz);
       for (M m : members) {
         // Mark as accessible.
-        if (m instanceof AccessibleObject) {
+        if (isUseSetAccessible(m) && m instanceof AccessibleObject) {
           ((AccessibleObject) m).setAccessible(true);
         }
         mcache.put(memberName(m), m);
@@ -86,6 +86,31 @@ public abstract class MemberValueResolver<M extends Member> implements ValueReso
       this.cache.put(clazz, mcache);
     }
     return mcache;
+  }
+
+  /**
+   * Determines whether or not to call
+   * {@link AccessibleObject#setAccessible(boolean)} on members before they are
+   * cached.
+   *
+   * Calling setAccessible on JDK 9 or later on private or protected declaring
+   * classes in modules will result in errors so the default implementation checks
+   * to see if the declared class cannonical name starts with "java." or "sun." to
+   * prevent most of these errors.
+   *
+   * Modular applications should create their own resolvers and override this
+   * method to prevent encapsulation violation errors.
+   *
+   * @param member Not null.
+   * @return true will cause setAccessible(true) to be called.
+   */
+  protected boolean isUseSetAccessible(final M member) {
+    Class<?> dc = member.getDeclaringClass();
+    String dn = dc == null ? null : dc.getCanonicalName();
+    if (dn != null && (dn.startsWith("java.") || dn.startsWith("sun."))) {
+      return false;
+    }
+    return true;
   }
 
   /**

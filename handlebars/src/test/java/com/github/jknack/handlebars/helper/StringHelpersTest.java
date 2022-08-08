@@ -17,17 +17,19 @@ import static com.github.jknack.handlebars.helper.StringHelpers.substring;
 import static com.github.jknack.handlebars.helper.StringHelpers.upper;
 import static com.github.jknack.handlebars.helper.StringHelpers.wordWrap;
 import static com.github.jknack.handlebars.helper.StringHelpers.yesno;
-import static org.easymock.EasyMock.anyObject;
-import static org.easymock.EasyMock.createMock;
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.replay;
-import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import java.util.*;
 
-import org.apache.commons.lang3.SystemUtils;
 import org.junit.Test;
 
 import com.github.jknack.handlebars.AbstractTest;
@@ -48,86 +50,80 @@ public class StringHelpersTest extends AbstractTest {
 
   @Test
   public void capFirst() throws IOException {
-    Options options = createMock(Options.class);
-    expect(options.isFalsy(anyObject())).andReturn(false);
-
-    replay(options);
+    Options options = mock(Options.class);
+    when(options.isFalsy(any())).thenReturn(false);
 
     assertEquals("capitalizeFirst", capitalizeFirst.name());
     assertEquals("Handlebars.java",
         capitalizeFirst.apply("handlebars.java", options));
 
-    verify(options);
+    verify(options).isFalsy(any());
   }
 
   @Test
   public void center() throws IOException {
-    Options options = createMock(Options.class);
-    expect(options.hash("size")).andReturn(19);
-    expect(options.isFalsy(anyObject())).andReturn(false);
-    expect(options.hash("pad", " ")).andReturn(null);
-
-    replay(options);
+    Options options = mock(Options.class);
+    when(options.hash("size")).thenReturn(19);
+    when(options.isFalsy(any())).thenReturn(false);
+    when(options.hash("pad", " ")).thenReturn(null);
 
     assertEquals("center", center.name());
     assertEquals("  Handlebars.java  ",
         center.apply("Handlebars.java", options));
 
-    verify(options);
+    verify(options).hash("size");
+    verify(options).isFalsy(any());
+    verify(options).hash("pad", " ");
   }
 
   @Test
   public void centerWithPad() throws IOException {
-    Options options = createMock(Options.class);
-    expect(options.hash("size")).andReturn(19);
-    expect(options.hash("pad", " ")).andReturn("*");
-    expect(options.isFalsy(anyObject())).andReturn(false);
-
-    replay(options);
+    Options options = mock(Options.class);
+    when(options.hash("size")).thenReturn(19);
+    when(options.hash("pad", " ")).thenReturn("*");
+    when(options.isFalsy(any())).thenReturn(false);
 
     assertEquals("center", center.name());
     assertEquals("**Handlebars.java**",
         center.apply("Handlebars.java", options));
 
-    verify(options);
+    verify(options).hash("size");
+    verify(options).hash("pad", " ");
+    verify(options).isFalsy(any());
   }
 
   @Test
   public void cut() throws IOException {
-    Options options = createMock(Options.class);
-    expect(options.param(0, " ")).andReturn(" ");
-    expect(options.isFalsy(anyObject())).andReturn(false);
-
-    replay(options);
+    Options options = mock(Options.class);
+    when(options.param(0, " ")).thenReturn(" ");
+    when(options.isFalsy(any())).thenReturn(false);
 
     assertEquals("cut", cut.name());
     assertEquals("handlebars.java",
         cut.apply("handle bars .  java", options));
 
-    verify(options);
+    verify(options).param(0, " ");
+    verify(options).isFalsy(any());
   }
 
   @Test
   public void cutNoWhitespace() throws IOException {
-    Options options = createMock(Options.class);
-    expect(options.param(0, " ")).andReturn("*");
-    expect(options.isFalsy(anyObject())).andReturn(false);
-
-    replay(options);
+    Options options = mock(Options.class);
+    when(options.param(0, " ")).thenReturn("*");
+    when(options.isFalsy(any())).thenReturn(false);
 
     assertEquals("cut", cut.name());
     assertEquals("handlebars.java",
         cut.apply("handle*bars*.**java", options));
 
-    verify(options);
+    verify(options).param(0, " ");
+    verify(options).isFalsy(any());
   }
 
   @Test
   public void defaultStr() throws IOException {
-    Options options = createMock(Options.class);
-    expect(options.param(0, "")).andReturn("handlebars.java").anyTimes();
-
-    replay(options);
+    Options options = mock(Options.class);
+    when(options.param(0, "")).thenReturn("handlebars.java");
 
     assertEquals("defaultIfEmpty", defaultIfEmpty.name());
     assertEquals("handlebars.java",
@@ -140,7 +136,7 @@ public class StringHelpersTest extends AbstractTest {
     assertEquals("something",
         defaultIfEmpty.apply("something", options));
 
-    verify(options);
+    verify(options, times(3)).param(anyInt(), anyString());
   }
 
   @Test
@@ -181,73 +177,73 @@ public class StringHelpersTest extends AbstractTest {
 
   @Test
   public void ljust() throws IOException {
-    Options options = createMock(Options.class);
-    expect(options.hash("size")).andReturn(20);
-    expect(options.hash("pad", " ")).andReturn(null);
-    expect(options.isFalsy(anyObject())).andReturn(false);
-
-    replay(options);
+    Options options = mock(Options.class);
+    when(options.hash("size")).thenReturn(20);
+    when(options.hash("pad", " ")).thenReturn(null);
+    when(options.isFalsy(any())).thenReturn(false);
 
     assertEquals("ljust", ljust.name());
     assertEquals("Handlebars.java     ",
         ljust.apply("Handlebars.java", options));
 
-    verify(options);
+    verify(options).hash("size");
+    verify(options).hash("pad", " ");
+    verify(options).isFalsy(any());
   }
 
   @Test
   public void ljustWithPad() throws IOException {
-    Options options = createMock(Options.class);
-    expect(options.hash("size")).andReturn(17);
-    expect(options.hash("pad", " ")).andReturn("+");
-    expect(options.isFalsy(anyObject())).andReturn(false);
-
-    replay(options);
+    Options options = mock(Options.class);
+    when(options.hash("size")).thenReturn(17);
+    when(options.hash("pad", " ")).thenReturn("+");
+    when(options.isFalsy(any())).thenReturn(false);
 
     assertEquals("ljust", ljust.name());
     assertEquals("Handlebars.java++",
         ljust.apply("Handlebars.java", options));
 
-    verify(options);
+    verify(options).hash("size");
+    verify(options).hash("pad", " ");
+    verify(options).isFalsy(any());
   }
 
   @Test
   public void rjust() throws IOException {
-    Options options = createMock(Options.class);
-    expect(options.hash("size")).andReturn(20);
-    expect(options.hash("pad", " ")).andReturn(null);
-    expect(options.isFalsy(anyObject())).andReturn(false);
-
-    replay(options);
+    Options options = mock(Options.class);
+    when(options.hash("size")).thenReturn(20);
+    when(options.hash("pad", " ")).thenReturn(null);
+    when(options.isFalsy(any())).thenReturn(false);
 
     assertEquals("rjust", rjust.name());
     assertEquals("     Handlebars.java",
         rjust.apply("Handlebars.java", options));
 
-    verify(options);
+    verify(options).hash("size");
+    verify(options).hash("pad", " ");
+    verify(options).isFalsy(any());
   }
 
   @Test
   public void rjustWithPad() throws IOException {
-    Options options = createMock(Options.class);
-    expect(options.hash("size")).andReturn(17);
-    expect(options.hash("pad", " ")).andReturn("+");
-    expect(options.isFalsy(anyObject())).andReturn(false);
-
-    replay(options);
+    Options options = mock(Options.class);
+    when(options.hash("size")).thenReturn(17);
+    when(options.hash("pad", " ")).thenReturn("+");
+    when(options.isFalsy(any())).thenReturn(false);
 
     assertEquals("rjust", rjust.name());
     assertEquals("++Handlebars.java",
         rjust.apply("Handlebars.java", options));
 
-    verify(options);
+    verify(options).hash("size");
+    verify(options).hash("pad", " ");
+    verify(options).isFalsy(any());
   }
 
   @Test
   public void substringWithStart() throws IOException {
-    Handlebars hbs = createMock(Handlebars.class);
-    Context ctx = createMock(Context.class);
-    Template fn = createMock(Template.class);
+    Handlebars hbs = mock(Handlebars.class);
+    Context ctx = mock(Context.class);
+    Template fn = mock(Template.class);
 
     Options options = new Options.Builder(hbs, substring.name(), TagType.VAR, ctx, fn)
         .setParams(new Object[]{11 })
@@ -260,9 +256,9 @@ public class StringHelpersTest extends AbstractTest {
 
   @Test
   public void substringWithStartAndEnd() throws IOException {
-    Handlebars hbs = createMock(Handlebars.class);
-    Context ctx = createMock(Context.class);
-    Template fn = createMock(Template.class);
+    Handlebars hbs = mock(Handlebars.class);
+    Context ctx = mock(Context.class);
+    Template fn = mock(Template.class);
 
     Options options = new Options.Builder(hbs, substring.name(), TagType.VAR, ctx, fn)
         .setParams(new Object[]{0, 10 })
@@ -275,51 +271,45 @@ public class StringHelpersTest extends AbstractTest {
 
   @Test
   public void lower() throws IOException {
-    Options options = createMock(Options.class);
-    expect(options.isFalsy(anyObject())).andReturn(false);
-
-    replay(options);
+    Options options = mock(Options.class);
+    when(options.isFalsy(any())).thenReturn(false);
 
     assertEquals("lower", lower.name());
     assertEquals("handlebars.java",
         lower.apply("Handlebars.java", options));
 
-    verify(options);
+    verify(options).isFalsy(any());
   }
 
   @Test
   public void upper() throws IOException {
-    Options options = createMock(Options.class);
-    expect(options.isFalsy(anyObject())).andReturn(false);
-
-    replay(options);
+    Options options = mock(Options.class);
+    when(options.isFalsy(any())).thenReturn(false);
 
     assertEquals("upper", upper.name());
     assertEquals("HANDLEBARS.JAVA",
         upper.apply("Handlebars.java", options));
 
-    verify(options);
+    verify(options).isFalsy(any());
   }
 
   @Test
   public void slugify() throws IOException {
-    Options options = createMock(Options.class);
-    expect(options.isFalsy(anyObject())).andReturn(false);
-
-    replay(options);
+    Options options = mock(Options.class);
+    when(options.isFalsy(any())).thenReturn(false);
 
     assertEquals("slugify", slugify.name());
     assertEquals("joel-is-a-slug",
         slugify.apply("  Joel is a slug  ", options));
 
-    verify(options);
+    verify(options).isFalsy(any());
   }
 
   @Test
   public void replace() throws IOException {
-    Handlebars hbs = createMock(Handlebars.class);
-    Context ctx = createMock(Context.class);
-    Template fn = createMock(Template.class);
+    Handlebars hbs = mock(Handlebars.class);
+    Context ctx = mock(Context.class);
+    Template fn = mock(Template.class);
 
     Options options = new Options.Builder(hbs, replace.name(), TagType.VAR, ctx, fn)
         .setParams(new Object[]{"...", "rocks" })
@@ -332,9 +322,9 @@ public class StringHelpersTest extends AbstractTest {
 
   @Test
   public void stringFormat() throws IOException {
-    Handlebars hbs = createMock(Handlebars.class);
-    Context ctx = createMock(Context.class);
-    Template fn = createMock(Template.class);
+    Handlebars hbs = mock(Handlebars.class);
+    Context ctx = mock(Context.class);
+    Template fn = mock(Template.class);
 
     Options options = new Options.Builder(hbs, stringFormat.name(), TagType.VAR, ctx, fn)
         .setParams(new Object[]{"handlebars.java" })
@@ -348,9 +338,9 @@ public class StringHelpersTest extends AbstractTest {
 
   @Test
   public void stringDecimalFormat() throws IOException {
-    Handlebars hbs = createMock(Handlebars.class);
-    Context ctx = createMock(Context.class);
-    Template fn = createMock(Template.class);
+    Handlebars hbs = mock(Handlebars.class);
+    Context ctx = mock(Context.class);
+    Template fn = mock(Template.class);
 
     Options options = new Options.Builder(hbs, stringFormat.name(), TagType.VAR, ctx, fn)
         .setParams(new Object[]{10.0 / 3.0 })
@@ -364,25 +354,21 @@ public class StringHelpersTest extends AbstractTest {
 
   @Test
   public void stripTags() throws IOException {
-    Options options = createMock(Options.class);
-    expect(options.isFalsy(anyObject())).andReturn(false);
-
-    replay(options);
+    Options options = mock(Options.class);
+    when(options.isFalsy(any())).thenReturn(false);
 
     assertEquals("stripTags", stripTags.name());
     assertEquals("Joel is a slug",
         stripTags.apply("<b>Joel</b> <button>is</button> a <span>slug</span>",
             options));
 
-    verify(options);
+    verify(options).isFalsy(any());
   }
 
   @Test
   public void stripTagsMultiLine() throws IOException {
-    Options options = createMock(Options.class);
-    expect(options.isFalsy(anyObject())).andReturn(false);
-
-    replay(options);
+    Options options = mock(Options.class);
+    when(options.isFalsy(any())).thenReturn(false);
 
     assertEquals("stripTags", stripTags.name());
     assertEquals("Joel\nis a slug",
@@ -390,17 +376,15 @@ public class StringHelpersTest extends AbstractTest {
             "<b>Joel</b>\n<button>is<\n/button> a <span>slug</span>",
             options));
 
-    verify(options);
+    verify(options).isFalsy(any());
   }
 
   @Test
   public void capitalize() throws IOException {
-    Options options = createMock(Options.class);
-    expect(options.hash("fully", false)).andReturn(false);
-    expect(options.hash("fully", false)).andReturn(true);
-    expect(options.isFalsy(anyObject())).andReturn(false).times(2);
-
-    replay(options);
+    Options options = mock(Options.class);
+    when(options.hash("fully", false)).thenReturn(false)
+            .thenReturn(true);
+    when(options.isFalsy(any())).thenReturn(false);
 
     assertEquals("capitalize", capitalize.name());
 
@@ -410,50 +394,47 @@ public class StringHelpersTest extends AbstractTest {
     assertEquals("Handlebars Java",
         capitalize.apply("HAndleBars JAVA", options));
 
-    verify(options);
+    verify(options, times(2)).hash("fully", false);
+    verify(options, times(2)).isFalsy(any());
   }
 
   @Test
   public void abbreviate() throws IOException {
-    Options options = createMock(Options.class);
-    expect(options.isFalsy(anyObject())).andReturn(false);
-    expect(options.param(0, null)).andReturn(13);
-
-    replay(options);
+    Options options = mock(Options.class);
+    when(options.isFalsy(any())).thenReturn(false);
+    when(options.param(0, null)).thenReturn(13);
 
     assertEquals("abbreviate", abbreviate.name());
 
     assertEquals("Handlebars...",
         abbreviate.apply("Handlebars.java", options));
 
-    verify(options);
+    verify(options).isFalsy(any());
+    verify(options).param(0, null);
   }
 
   @Test
   public void wordWrap() throws IOException {
-    Options options = createMock(Options.class);
-    expect(options.isFalsy(anyObject())).andReturn(false);
-    expect(options.param(0, null)).andReturn(5);
-
-    replay(options);
+    Options options = mock(Options.class);
+    when(options.isFalsy(any())).thenReturn(false);
+    when(options.param(0, null)).thenReturn(5);
 
     assertEquals("wordWrap", wordWrap.name());
 
-    assertEquals("Joel" + SystemUtils.LINE_SEPARATOR + "is a"
-        + SystemUtils.LINE_SEPARATOR + "slug",
+    assertEquals("Joel" + System.lineSeparator() + "is a"
+        + System.lineSeparator() + "slug",
         wordWrap.apply("Joel is a slug", options));
 
-    verify(options);
+    verify(options).isFalsy(any());
+    verify(options).param(0, null);
   }
 
   @Test
   public void yesno() throws IOException {
-    Options options = createMock(Options.class);
-    expect(options.hash("yes", "yes")).andReturn("yes");
-    expect(options.hash("no", "no")).andReturn("no");
-    expect(options.hash("maybe", "maybe")).andReturn("maybe");
-
-    replay(options);
+    Options options = mock(Options.class);
+    when(options.hash("yes", "yes")).thenReturn("yes");
+    when(options.hash("no", "no")).thenReturn("no");
+    when(options.hash("maybe", "maybe")).thenReturn("maybe");
 
     assertEquals("yesno", yesno.name());
 
@@ -461,17 +442,17 @@ public class StringHelpersTest extends AbstractTest {
     assertEquals("no", yesno.apply(false, options));
     assertEquals("maybe", yesno.apply(null, options));
 
-    verify(options);
+    verify(options).hash("yes", "yes");
+    verify(options).hash("no", "no");
+    verify(options).hash("maybe", "maybe");
   }
 
   @Test
   public void yesnoCustom() throws IOException {
-    Options options = createMock(Options.class);
-    expect(options.hash("yes", "yes")).andReturn("yea");
-    expect(options.hash("no", "no")).andReturn("nop");
-    expect(options.hash("maybe", "maybe")).andReturn("whatever");
-
-    replay(options);
+    Options options = mock(Options.class);
+    when(options.hash("yes", "yes")).thenReturn("yea");
+    when(options.hash("no", "no")).thenReturn("nop");
+    when(options.hash("maybe", "maybe")).thenReturn("whatever");
 
     assertEquals("yesno", yesno.name());
 
@@ -479,71 +460,70 @@ public class StringHelpersTest extends AbstractTest {
     assertEquals("nop", yesno.apply(false, options));
     assertEquals("whatever", yesno.apply(null, options));
 
-    verify(options);
+    verify(options).hash("yes", "yes");
+    verify(options).hash("no", "no");
+    verify(options).hash("maybe", "maybe");
   }
 
   @Test
   public void nullContext() throws IOException {
-    Set<Helper<Object>> helpers = new LinkedHashSet<Helper<Object>>(Arrays.asList(StringHelpers
-        .values()));
+    Set<Helper<Object>> helpers = new LinkedHashSet<>(Arrays.asList(StringHelpers.values()));
     helpers.remove(StringHelpers.join);
     helpers.remove(StringHelpers.yesno);
     helpers.remove(StringHelpers.defaultIfEmpty);
+    helpers.remove(cut);
 
-    Options options = createMock(Options.class);
-    expect(options.isFalsy(anyObject())).andReturn(true).times(helpers.size() - 1);
-    expect(options.param(0, null)).andReturn(null).times(helpers.size());
-
-    replay(options);
+    Options options = mock(Options.class);
+    when(options.isFalsy(any())).thenReturn(true);
+    when(options.param(0, null)).thenReturn(null);
 
     for (Helper<Object> helper : helpers) {
-      assertEquals(null, helper.apply($, options));
+      assertNull(helper.apply($, options));
     }
 
-    verify(options);
+    verify(options, times(helpers.size() - 1)).isFalsy(any());
+    verify(options, times(helpers.size())).param(0, null);
   }
 
   @Test
   public void nullContextWithDefault() throws IOException {
-    Set<Helper<Object>> helpers = new LinkedHashSet<Helper<Object>>(Arrays.asList(StringHelpers
-        .values()));
+    Set<Helper<Object>> helpers = new LinkedHashSet<>(Arrays.asList(StringHelpers.values()));
     helpers.remove(StringHelpers.join);
     helpers.remove(StringHelpers.yesno);
     helpers.remove(StringHelpers.defaultIfEmpty);
+    helpers.remove(cut);
 
     String nothing = "nothing";
-    Options options = createMock(Options.class);
-    expect(options.isFalsy(anyObject())).andReturn(true).times(helpers.size() - 1);
-    expect(options.param(0, null)).andReturn(nothing).times(helpers.size());
-
-    replay(options);
+    Options options = mock(Options.class);
+    when(options.isFalsy(any())).thenReturn(true);
+    when(options.param(0, null)).thenReturn(nothing);
 
     for (Helper<Object> helper : helpers) {
       assertEquals(nothing, helper.apply($, options));
     }
 
-    verify(options);
+    verify(options, times(helpers.size() - 1)).isFalsy(any());
+    verify(options, times(helpers.size())).param(0, null);
   }
 
   @Test
   public void nullContextWithNumber() throws IOException {
-    Set<Helper<Object>> helpers = new LinkedHashSet<Helper<Object>>(Arrays.asList(StringHelpers
-        .values()));
+    Set<Helper<Object>> helpers = new LinkedHashSet<>(Arrays.asList(StringHelpers.values()));
     helpers.remove(StringHelpers.join);
     helpers.remove(StringHelpers.yesno);
     helpers.remove(StringHelpers.defaultIfEmpty);
+    helpers.remove(cut);
 
     Object number = 32;
-    Options options = createMock(Options.class);
-    expect(options.isFalsy(anyObject())).andReturn(true).times(helpers.size() - 1);
-    expect(options.param(0, null)).andReturn(number).times(helpers.size());
-
-    replay(options);
+    Options options = mock(Options.class);
+    when(options.isFalsy(any())).thenReturn(true);
+    when(options.param(0, null)).thenReturn(number);
 
     for (Helper<Object> helper : helpers) {
       assertEquals(number.toString(), helper.apply($, options));
     }
 
-    verify(options);
+    verify(options, times(helpers.size() - 1)).isFalsy(any());
+    verify(options, times(helpers.size())).param(0, null);
   }
 }

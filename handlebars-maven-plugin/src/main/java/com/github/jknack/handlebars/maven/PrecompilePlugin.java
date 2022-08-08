@@ -113,7 +113,7 @@ public class PrecompilePlugin extends HandlebarsPlugin {
   /**
    * The handlebars js file.
    */
-  @Parameter(defaultValue = "/handlebars-v4.0.4.js")
+  @Parameter(defaultValue = "/handlebars-v4.7.7.js")
   private String handlebarsJsFile;
 
   /**
@@ -230,7 +230,6 @@ public class PrecompilePlugin extends HandlebarsPlugin {
                 .setHash(hash)
                 .build();
 
-        writer.append("// Source: ").append(file.getPath()).append("\n");
         writer.append(PrecompileHelper.INSTANCE.apply(templateName, opts).toString())
             .append("\n\n");
       }
@@ -361,12 +360,12 @@ public class PrecompilePlugin extends HandlebarsPlugin {
     compiler.initOptions(options);
 
     Result result = compiler.compile(Collections.<SourceFile> emptyList(),
-        Arrays.asList(SourceFile.fromFile(output)), options);
+        Arrays.asList(SourceFile.fromFile(output.getAbsolutePath())), options);
     if (result.success) {
       FileUtils.fileWrite(output, compiler.toSource());
     } else {
-      JSError[] errors = result.errors;
-      throw new MojoFailureException(errors[0].toString());
+      List<JSError> errors = result.errors;
+      throw new MojoFailureException(errors.get(0).toString());
     }
   }
 

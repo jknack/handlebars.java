@@ -5,10 +5,15 @@ import static org.junit.Assert.assertEquals;
 import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.Map.Entry;
+import java.util.function.Predicate;
 
 import org.yaml.snakeyaml.Yaml;
 
 public class AbstractTest {
+
+  public interface Task {
+    void run() throws IOException;
+  }
 
   @SuppressWarnings("serial")
   public static class Hash extends LinkedHashMap<String, Object> {
@@ -33,7 +38,7 @@ public class AbstractTest {
       final String expected, final String message) throws IOException {
     Object deserializedContext = context;
     if (deserializedContext != null) {
-      deserializedContext = new Yaml().load(context);
+      deserializedContext = parseYaml(context);
     }
     shouldCompileTo(template, deserializedContext, expected, message);
   }
@@ -50,12 +55,16 @@ public class AbstractTest {
 
   public void shouldCompileTo(final String template, final String context,
       final Hash helpers, final String expected) throws IOException {
-    shouldCompileTo(template, new Yaml().load(context), helpers, expected, "");
+    shouldCompileTo(template, parseYaml(context), helpers, expected, "");
+  }
+
+  private Object parseYaml(String context) {
+    return new Yaml().load(context);
   }
 
   public void shouldCompileTo(final String template, final String context,
       final Hash helpers, final String expected, final String message) throws IOException {
-    shouldCompileTo(template, new Yaml().load(context), helpers, expected, message);
+    shouldCompileTo(template, parseYaml(context), helpers, expected, message);
   }
 
   public void shouldCompileTo(final String template, final Object context,
@@ -149,5 +158,11 @@ public class AbstractTest {
       model.$((String) attributes[i], attributes[i + 1]);
     }
     return model;
+  }
+
+  public void withJava(Predicate<Integer> predicate, Task task) throws IOException {
+    if (predicate.test(Handlebars.Utils.javaVersion)) {
+      task.run();
+    }
   }
 }

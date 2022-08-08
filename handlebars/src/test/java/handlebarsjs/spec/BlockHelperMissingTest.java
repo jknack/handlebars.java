@@ -15,8 +15,15 @@ import com.github.jknack.handlebars.Helper;
 import com.github.jknack.handlebars.HelperRegistry;
 import com.github.jknack.handlebars.Options;
 import com.github.jknack.handlebars.Template;
+import com.github.jknack.handlebars.context.JavaBeanValueResolver;
 
 public class BlockHelperMissingTest extends AbstractTest {
+
+  @Override protected Object configureContext(Object context) {
+    return Context.newBuilder(context)
+        .resolver(JavaBeanValueResolver.INSTANCE)
+        .build();
+  }
 
   @Test
   public void ifContextIsNotFoundHelperMissingIsUsed() throws IOException {

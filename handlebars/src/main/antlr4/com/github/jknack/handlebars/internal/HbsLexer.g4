@@ -15,22 +15,39 @@ lexer grammar HbsLexer;
     this.end = end;
   }
 
-  private boolean isWhite(int ch) {
-    return ch == ' ' || ch == '\t' || ch == '\r' || ch == '\n';
-  }
-
   private boolean consumeUntil(final String token) {
-    int offset = 0;
-    while(!isEOF(offset) && !(ahead("\\" + token, offset) || ahead(token, offset)) &&
-      !isWhite(_input.LA(offset + 1))) {
-      offset+=1;
+    int tokenOffset = 0;
+    int colOffset = 0;
+    int lineOffset = 0;
+    boolean inNewline = false;
+    boolean resetLine = false;
+    boolean hasNewLine = false;
+    while(!isEOF(tokenOffset) && !(ahead("\\" + token, tokenOffset) || ahead(token, tokenOffset))) {
+      if (resetLine) {
+        hasNewLine = true;
+        colOffset = 0;
+        lineOffset+=1;
+        resetLine = false;
+      }
+      tokenOffset+=1;
+      colOffset+=1;
+      int chr = _input.LA(tokenOffset);
+      if (!inNewline && '\n' == chr) {
+        resetLine = true;
+      }
+      inNewline = false;
+      if ('\r' == chr) {
+        inNewline = true;
+        resetLine = true;
+      }
     }
-    if (offset == 0) {
+    if (tokenOffset == 0) {
       return false;
     }
     // Since we found the text, increase the CharStream's index.
-    _input.seek(_input.index() + offset - 1);
-    getInterpreter().setCharPositionInLine(_tokenStartCharPositionInLine + offset - 1);
+    _input.seek(_input.index() + tokenOffset - 1);
+    getInterpreter().setCharPositionInLine(hasNewLine ? (colOffset - 1) : (_tokenStartCharPositionInLine + colOffset - 1));
+    getInterpreter().setLine(_tokenStartLine + lineOffset);
     return true;
   }
 
@@ -205,17 +222,6 @@ START
  : {startToken(start)}? . -> pushMode(VAR)
  ;
 
-SPACE
- :
-  [ \t]+
- ;
-
-NL
- :
-   '\r'? '\n'
- | '\r'
- ;
-
 mode SET_DELIMS;
 
 END_DELIM
@@ -267,12 +273,12 @@ PIPE
 
 DOUBLE_STRING
   :
-    '"' ( '\\"' | ~[\n] )*? '"'
+    '"' ( '\\"' | . )*? '"'
   ;
 
 SINGLE_STRING
   :
-    '\'' ( '\\\'' | ~[\n] )*? '\''
+    '\'' ( '\\\'' | . )*? '\''
   ;
 
 EQ
@@ -333,7 +339,7 @@ ID
 fragment
 ID_START
   :
-   [a-zA-ZА-Яа-я_$@:\u0001-\u0009\u000b-\u001E\u00C0-\u00FF]
+   [a-zA-ZА-Яа-я_$@:\u0001-\u0008\u000b\u000c\u000e-\u001E\u00C0-\u00FF]
   ;
 
 fragment

@@ -126,7 +126,7 @@ class Block extends HelperResolver {
    * @param hash The hash.
    * @param blockParams The block param names.
    */
-  public Block(final Handlebars handlebars, final String name,
+  Block(final Handlebars handlebars, final String name,
       final boolean inverted, final String type, final List<Param> params,
       final Map<String, Param> hash, final List<String> blockParams) {
     super(handlebars);

@@ -43,11 +43,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.github.jknack.handlebars.Handlebars;
-import com.github.jknack.handlebars.Helper;
 import com.github.jknack.handlebars.HelperRegistry;
 import com.github.jknack.handlebars.HumanizeHelper;
 import com.github.jknack.handlebars.Jackson2Helper;
-import com.github.jknack.handlebars.MarkdownHelper;
 import com.github.jknack.handlebars.helper.StringHelpers;
 import com.github.jknack.handlebars.io.FileTemplateLoader;
 import com.github.jknack.handlebars.io.TemplateLoader;
@@ -169,7 +167,7 @@ public class HbsServer {
       (context, options) -> new Handlebars.SafeString(options.fn.text())
     );
     handlebars.registerHelper("json", Jackson2Helper.INSTANCE);
-    handlebars.registerHelper("md", new MarkdownHelper());
+//    handlebars.registerHelper("md", new MarkdownHelper());
     // String helpers
     StringHelpers.register(handlebars);
     // Humanize helpers

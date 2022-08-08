@@ -1,9 +1,7 @@
 package com.github.jknack.handlebars;
 
-import static org.easymock.EasyMock.createMock;
-import static org.easymock.EasyMock.replay;
-import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertNotNull;
+import static org.mockito.Mockito.mock;
 
 import org.junit.Test;
 
@@ -50,49 +48,33 @@ public class Issue266 {
 
   @Test
   public void withParserFactory() {
-    ParserFactory parserFactory = createMock(ParserFactory.class);
-
-    replay(parserFactory);
+    ParserFactory parserFactory = mock(ParserFactory.class);
 
     Handlebars handlebars = new Handlebars().with(parserFactory);
     assertNotNull(handlebars);
-
-    verify(parserFactory);
   }
 
   @Test
   public void withTemplateCache() {
-    TemplateCache cache = createMock(TemplateCache.class);
-
-    replay(cache);
+    TemplateCache cache = mock(TemplateCache.class);
 
     Handlebars handlebars = new Handlebars().with(cache);
     assertNotNull(handlebars);
-
-    verify(cache);
   }
 
   @Test
   public void withHelperRegistry() {
-    HelperRegistry registry = createMock(HelperRegistry.class);
-
-    replay(registry);
+    HelperRegistry registry = mock(HelperRegistry.class);
 
     Handlebars handlebars = new Handlebars().with(registry);
     assertNotNull(handlebars);
-
-    verify(registry);
   }
 
   @Test
   public void withEscapingStrategy() {
-    EscapingStrategy escapingStrategy = createMock(EscapingStrategy.class);
-
-    replay(escapingStrategy);
+    EscapingStrategy escapingStrategy = mock(EscapingStrategy.class);
 
     Handlebars handlebars = new Handlebars().with(escapingStrategy);
     assertNotNull(handlebars);
-
-    verify(escapingStrategy);
   }
 }

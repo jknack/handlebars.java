@@ -17,11 +17,16 @@
  */
 package com.github.jknack.handlebars;
 
+import static java.util.Arrays.asList;
+import static java.util.Collections.unmodifiableList;
+
+import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
 
 import com.github.jknack.handlebars.context.JavaBeanValueResolver;
 import com.github.jknack.handlebars.context.MapValueResolver;
+import com.github.jknack.handlebars.context.MethodValueResolver;
 
 /**
  * A hook interface for resolving values from the {@link Context context stack}.
@@ -30,12 +35,6 @@ import com.github.jknack.handlebars.context.MapValueResolver;
  * @since 0.1.1
  */
 public interface ValueResolver {
-
-  /**
-   * The default value resolvers.
-   */
-  ValueResolver[] VALUE_RESOLVERS = {MapValueResolver.INSTANCE,
-      JavaBeanValueResolver.INSTANCE };
 
   /**
    * A mark object.
@@ -67,7 +66,6 @@ public interface ValueResolver {
    */
   Object resolve(Object context);
 
-
   /**
    * List all the properties and their values for the given object.
    *
@@ -75,4 +73,21 @@ public interface ValueResolver {
    * @return All the properties and their values for the given object.
    */
   Set<Entry<String, Object>> propertySet(Object context);
+
+  /**
+   * Default value resolvers. Including:
+   *
+   * - {@link MapValueResolver}
+   * - {@link JavaBeanValueResolver}
+   * - {@link MethodValueResolver}. On Java 14 or higher.
+   *
+   * @return Immutable list of value resolvers.
+   */
+  static List<ValueResolver> defaultValueResolvers() {
+    if (Handlebars.Utils.javaVersion14) {
+      return unmodifiableList(asList(MapValueResolver.INSTANCE,
+          JavaBeanValueResolver.INSTANCE, MethodValueResolver.INSTANCE));
+    }
+    return unmodifiableList(asList(MapValueResolver.INSTANCE, JavaBeanValueResolver.INSTANCE));
+  }
 }

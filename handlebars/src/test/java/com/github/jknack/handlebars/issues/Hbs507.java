@@ -1,6 +1,7 @@
 package com.github.jknack.handlebars.issues;
 
-import static org.junit.Assert.assertEquals;
+import static com.github.jknack.handlebars.IgnoreWindowsLineMatcher.equalsToStringIgnoringWindowsNewLine;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.io.IOException;
 import java.util.Map;
@@ -12,11 +13,11 @@ import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Helper;
 import com.github.jknack.handlebars.Options;
 import com.github.jknack.handlebars.Template;
-import com.github.jknack.handlebars.v4Test;
 import com.github.jknack.handlebars.cache.HighConcurrencyTemplateCache;
 import com.github.jknack.handlebars.cache.NullTemplateCache;
 import com.github.jknack.handlebars.cache.TemplateCache;
 import com.github.jknack.handlebars.io.ClassPathTemplateLoader;
+import com.github.jknack.handlebars.v4Test;
 
 public class Hbs507 extends v4Test {
 
@@ -61,19 +62,21 @@ public class Hbs507 extends v4Test {
         $("aggregateId", "ID:y0", "aggregateType", "brett", "businessKey", "favre"));
 
     Template template = handlebars.compile("a");
-    assertEquals("This is a test for: \"ID:x0\"\n" +
-        "\n" +
-        "\"metadata.aggregateId\" : \"ID:x0\" \n" +
-        "\"metadata.businessKey\" : \"favre\"\n" +
-        "\n" +
-        "End test", template.apply(h1));
+    assertThat(template.apply(h1),
+        equalsToStringIgnoringWindowsNewLine("This is a test for: \"ID:x0\"\n" +
+            "\n" +
+            "\"metadata.aggregateId\" : \"ID:x0\" \n" +
+            "\"metadata.businessKey\" : \"favre\"\n" +
+            "\n" +
+            "End test"));
 
-    assertEquals("This is a test for: \"ID:y0\"\n" +
-        "\n" +
-        "\"metadata.aggregateId\" : \"ID:y0\" \n" +
-        "\"metadata.businessKey\" : \"favre\"\n" +
-        "\n" +
-        "End test", template.apply(h2));
+    assertThat(template.apply(h2),
+        equalsToStringIgnoringWindowsNewLine("This is a test for: \"ID:y0\"\n" +
+            "\n" +
+            "\"metadata.aggregateId\" : \"ID:y0\" \n" +
+            "\"metadata.businessKey\" : \"favre\"\n" +
+            "\n" +
+            "End test"));
   }
 
 }

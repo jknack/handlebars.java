@@ -22,7 +22,7 @@ import java.nio.charset.Charset;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
-import com.google.common.base.Throwables;
+import com.github.jknack.handlebars.Handlebars;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 
@@ -80,8 +80,7 @@ public class GuavaCachedTemplateLoader implements TemplateLoader {
     try {
       return cache.get(location, () -> delegate.sourceAt(location));
     } catch (ExecutionException e) {
-      Throwables.propagateIfPossible(e.getCause(), IOException.class);
-      throw Throwables.propagate(e.getCause());
+      throw Handlebars.Utils.propagate(e.getCause());
     }
   }
 

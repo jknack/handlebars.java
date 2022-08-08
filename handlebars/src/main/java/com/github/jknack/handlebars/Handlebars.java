@@ -17,9 +17,6 @@
  */
 package com.github.jknack.handlebars;
 
-import com.github.jknack.handlebars.helper.I18nHelper;
-import com.github.jknack.handlebars.internal.Files;
-import com.github.jknack.handlebars.internal.Throwing;
 import static org.apache.commons.lang3.Validate.isTrue;
 import static org.apache.commons.lang3.Validate.notEmpty;
 import static org.apache.commons.lang3.Validate.notNull;
@@ -40,22 +37,25 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import javax.script.Bindings;
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
+
 import org.slf4j.Logger;
 
 import com.github.jknack.handlebars.cache.NullTemplateCache;
 import com.github.jknack.handlebars.cache.TemplateCache;
 import com.github.jknack.handlebars.helper.DefaultHelperRegistry;
+import com.github.jknack.handlebars.helper.I18nHelper;
+import com.github.jknack.handlebars.internal.Files;
 import com.github.jknack.handlebars.internal.FormatterChain;
 import com.github.jknack.handlebars.internal.HbsParserFactory;
+import com.github.jknack.handlebars.internal.Throwing;
 import com.github.jknack.handlebars.io.ClassPathTemplateLoader;
 import com.github.jknack.handlebars.io.CompositeTemplateLoader;
 import com.github.jknack.handlebars.io.StringTemplateSource;
 import com.github.jknack.handlebars.io.TemplateLoader;
 import com.github.jknack.handlebars.io.TemplateSource;
-
-import javax.script.Bindings;
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
 
 /**
  * <p>
@@ -176,6 +176,18 @@ public class Handlebars implements HelperRegistry {
    */
   public static class Utils {
 
+    /** Java 14. */
+    private static final int JAVA_14 = 14;
+
+    /** Current Java version: 8, 11, 15, etc. */
+    public static final int javaVersion = javaVersion();
+
+    /** True when running on Java 14 or higher. */
+    public static final boolean javaVersion14 = javaVersion() >= JAVA_14;
+
+    /** Prefix for Java version: 1.8 (mostly). */
+    private static final String VERSION_PREFIX = "1.";
+
     /**
      * Evaluate the given object and return true is the object is considered
      * empty. Nulls, empty list or array and false values are considered empty.
@@ -232,6 +244,56 @@ public class Handlebars implements HelperRegistry {
      */
     public static CharSequence escapeExpression(final CharSequence input) {
       return EscapingStrategy.DEF.escape(input);
+    }
+
+    static int javaVersion() {
+      String version = System.getProperty("java.specification.version").trim();
+      return Integer.parseInt(version.replace(VERSION_PREFIX, ""));
+    }
+
+    /**
+     * Throws any throwable 'sneakily' - you don't need to catch it, nor declare that you throw it
+     * onwards.
+     * The exception is still thrown - javac will just stop whining about it.
+     * <p>
+     * Example usage:
+     * <pre>public void run() {
+     *     throw sneakyThrow(new IOException("You don't need to catch me!"));
+     * }</pre>
+     * <p>
+     * NB: The exception is not wrapped, ignored, swallowed, or redefined. The JVM actually does
+     * not know or care about the concept of a 'checked exception'. All this method does is hide
+     * the act of throwing a checked exception from the java compiler.
+     * <p>
+     * Note that this method has a return type of {@code RuntimeException}; it is advised you
+     * always  call this method as argument to the {@code throw} statement to avoid compiler
+     * errors regarding no return statement and similar problems. This method won't of course
+     * return an actual {@code RuntimeException} - it never returns, it always throws the provided
+     * exception.
+     *
+     * @param x The throwable to throw without requiring you to catch its type.
+     * @return A dummy RuntimeException; this method never returns normally, it <em>always</em>
+     *    throws an exception!
+     */
+    public static RuntimeException propagate(final Throwable x) {
+      if (x == null) {
+        throw new NullPointerException("x");
+      }
+
+      sneakyThrow0(x);
+      return null;
+    }
+
+    /**
+     * Make a checked exception un-checked and rethrow it.
+     *
+     * @param x Exception to throw.
+     * @param <E> Exception type.
+     * @throws E Exception to throw.
+     */
+    @SuppressWarnings("unchecked")
+    private static <E extends Throwable> void sneakyThrow0(final Throwable x) throws E {
+      throw (E) x;
     }
   }
 
@@ -313,7 +375,7 @@ public class Handlebars implements HelperRegistry {
   private String endDelimiter = DELIM_END;
 
   /** Location of the handlebars.js file. */
-  private String handlebarsJsFile = "/handlebars-v4.0.4.js";
+  private String handlebarsJsFile = "/handlebars-v4.7.7.js";
 
   /** List of formatters. */
   private List<Formatter> formatters = new ArrayList<>();
@@ -1000,6 +1062,15 @@ public class Handlebars implements HelperRegistry {
   }
 
   /**
+   * The End Delimiter.
+   *
+   * @return The End Delimiter.
+   */
+  public String getEndDelimiter() {
+    return this.endDelimiter;
+  }
+
+  /**
    * Set the start delimiter.
    *
    * @param startDelimiter The start delimiter. Required.
@@ -1017,6 +1088,15 @@ public class Handlebars implements HelperRegistry {
   public Handlebars startDelimiter(final String startDelimiter) {
     setStartDelimiter(startDelimiter);
     return this;
+  }
+
+  /**
+   * The Start Delimiter.
+   *
+   * @return The Start Delimiter.
+   */
+  public String getStartDelimiter() {
+    return this.startDelimiter;
   }
 
   /**

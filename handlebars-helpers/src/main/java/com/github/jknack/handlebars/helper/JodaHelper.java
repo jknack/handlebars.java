@@ -96,6 +96,6 @@ public enum JodaHelper implements Helper<ReadableInstant> {
    *          Any formatting options, such as the Pattern, Style, or ISO format.
    * @return The String result.
    */
-  protected abstract CharSequence safeApply(final ReadableInstant time, final Options options);
+  protected abstract CharSequence safeApply(ReadableInstant time, Options options);
 
 }

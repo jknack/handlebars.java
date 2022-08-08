@@ -296,8 +296,7 @@ public class HbsServlet extends HttpServlet {
 
     Template template = handlebars.compile("/error-pages/error");
 
-    PrintWriter writer = null;
-    writer = response.getWriter();
+    PrintWriter writer = response.getWriter();
     template.apply(
         Context
             .newBuilder(error)
@@ -305,8 +304,8 @@ public class HbsServlet extends HttpServlet {
                 JavaBeanValueResolver.INSTANCE)
             .combine("lang", lang)
             .combine("version", HbsServer.version)
-            .combine("firstLine", firstLine).build()
-        , writer);
+            .combine("firstLine", firstLine).build(),
+        writer);
 
     IOUtils.closeQuietly(writer);
   }

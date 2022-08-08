@@ -18,6 +18,7 @@
 package com.github.jknack.handlebars.internal;
 
 import java.io.IOException;
+import java.util.Optional;
 
 import org.antlr.v4.runtime.ANTLRErrorListener;
 import org.antlr.v4.runtime.CharStream;
@@ -73,7 +74,8 @@ public class HbsParserFactory implements ParserFactory {
         final ANTLRErrorListener errorReporter = new HbsErrorReporter(sourceName);
 
         // 1. Lexer
-        String content = source.content(handlebars.getCharset());
+        String content = Optional.ofNullable(source.content(handlebars.getCharset()))
+            .orElse("");
         final HbsLexer lexer = newLexer(CharStreams.fromString(content, sourceName), startDelimiter, endDelimiter);
         configure(lexer, errorReporter);
 
@@ -90,10 +92,10 @@ public class HbsParserFactory implements ParserFactory {
           logger.debug("Applying Mustache spec");
           new ParseTreeWalker().walk(new MustacheSpec(), tree);
         }
-
+        
         if (lexer.whiteSpaceControl) {
           logger.debug("Applying white spaces control");
-          new ParseTreeWalker().walk(new WhiteSpaceControl(), tree);
+          new ParseTreeWalker().walk(new WhiteSpaceControl((CommonTokenStream)parser.getTokenStream()), tree);
         }
 
         /**

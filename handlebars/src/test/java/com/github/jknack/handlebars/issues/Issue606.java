@@ -4,8 +4,6 @@ import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.v4Test;
 import org.junit.Test;
 
-import java.util.Arrays;
-
 public class Issue606 extends v4Test {
 
   public static class Helpers {
