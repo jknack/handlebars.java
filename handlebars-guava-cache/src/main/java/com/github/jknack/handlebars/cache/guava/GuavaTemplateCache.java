@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.jknack.handlebars.cache;
+package com.github.jknack.handlebars.cache.guava;
 
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
@@ -23,6 +23,7 @@ import java.util.concurrent.ExecutionException;
 import com.github.jknack.handlebars.HandlebarsException;
 import com.github.jknack.handlebars.Parser;
 import com.github.jknack.handlebars.Template;
+import com.github.jknack.handlebars.cache.TemplateCache;
 import com.github.jknack.handlebars.io.ReloadableTemplateSource;
 import com.github.jknack.handlebars.io.TemplateSource;
 import com.google.common.cache.Cache;

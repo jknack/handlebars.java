@@ -1,4 +1,4 @@
-package com.github.jknack.handlebars.cache;
+package com.github.jknack.handlebars.cache.guava;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 
+import com.github.jknack.handlebars.cache.guava.GuavaTemplateCache;
 import org.junit.Test;
 
 import com.github.jknack.handlebars.HandlebarsException;

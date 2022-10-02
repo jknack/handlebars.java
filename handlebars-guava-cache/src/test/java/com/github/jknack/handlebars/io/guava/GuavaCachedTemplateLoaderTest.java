@@ -1,4 +1,4 @@
-package com.github.jknack.handlebars.io;
+package com.github.jknack.handlebars.io.guava;
 
 import static java.lang.System.out;
 import static org.junit.Assert.assertNotNull;
@@ -6,6 +6,9 @@ import static org.junit.Assert.assertNotNull;
 import java.io.File;
 import java.util.concurrent.TimeUnit;
 
+import com.github.jknack.handlebars.io.FileTemplateLoader;
+import com.github.jknack.handlebars.io.TemplateLoader;
+import com.github.jknack.handlebars.io.guava.GuavaCachedTemplateLoader;
 import org.junit.Test;
 
 import com.google.common.base.Stopwatch;
