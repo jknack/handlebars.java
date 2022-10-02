@@ -1,4 +1,4 @@
-package com.github.jknack.handlebars.cache;
+package com.github.jknack.handlebars.cache.caffeine;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;

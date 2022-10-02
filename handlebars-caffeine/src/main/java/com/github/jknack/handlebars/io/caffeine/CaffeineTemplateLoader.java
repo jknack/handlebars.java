@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.jknack.handlebars.io;
+package com.github.jknack.handlebars.io.caffeine;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -23,6 +23,8 @@ import java.util.function.Function;
 
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.jknack.handlebars.Handlebars;
+import com.github.jknack.handlebars.io.TemplateLoader;
+import com.github.jknack.handlebars.io.TemplateSource;
 
 /**
  * Decorates an existing TemplateLoader with a GuavaCache.

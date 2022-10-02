@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.jknack.handlebars.cache;
+package com.github.jknack.handlebars.cache.caffeine;
 
 import static java.util.Objects.requireNonNull;
 
@@ -26,6 +26,7 @@ import com.github.benmanes.caffeine.cache.Cache;
 import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Parser;
 import com.github.jknack.handlebars.Template;
+import com.github.jknack.handlebars.cache.TemplateCache;
 import com.github.jknack.handlebars.io.TemplateSource;
 
 /**
