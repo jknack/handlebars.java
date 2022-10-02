@@ -44,7 +44,7 @@ import org.slf4j.LoggerFactory;
 
 import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.HelperRegistry;
-import com.github.jknack.handlebars.HumanizeHelper;
+import com.github.jknack.handlebars.humanize.HumanizeHelper;
 import com.github.jknack.handlebars.jackson2.Jackson2Helper;
 import com.github.jknack.handlebars.helper.StringHelpers;
 import com.github.jknack.handlebars.io.FileTemplateLoader;

@@ -1,4 +1,4 @@
-package com.github.jknack.handlebars;
+package com.github.jknack.handlebars.humanize;
 
 import static org.junit.Assert.assertEquals;
 
@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
 
+import com.github.jknack.handlebars.AbstractTest;
+import com.github.jknack.handlebars.Handlebars;
 import org.junit.Test;
 
 public class HumanizeHelperTest extends AbstractTest {

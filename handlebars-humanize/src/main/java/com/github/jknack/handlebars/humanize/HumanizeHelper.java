@@ -15,8 +15,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.jknack.handlebars;
+package com.github.jknack.handlebars.humanize;
 
+import com.github.jknack.handlebars.Handlebars;
+import com.github.jknack.handlebars.Helper;
+import com.github.jknack.handlebars.Options;
 import humanize.Humanize;
 
 import java.io.IOException;
