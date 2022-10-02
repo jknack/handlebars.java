@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.jknack.handlebars;
+package com.github.jknack.handlebars.jackson2;
 
 import java.util.AbstractMap;
 import java.util.Collections;
@@ -39,6 +39,7 @@ import com.fasterxml.jackson.databind.node.NullNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.POJONode;
 import com.fasterxml.jackson.databind.node.TextNode;
+import com.github.jknack.handlebars.ValueResolver;
 
 /**
  * Resolve a context stack value from {@link JsonNode}.

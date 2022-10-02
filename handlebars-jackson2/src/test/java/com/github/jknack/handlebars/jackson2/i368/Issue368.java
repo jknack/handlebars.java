@@ -1,4 +1,4 @@
-package com.github.jknack.handlebars.i368;
+package com.github.jknack.handlebars.jackson2.i368;
 
 import java.io.IOException;
 
@@ -8,7 +8,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.jknack.handlebars.AbstractTest;
 import com.github.jknack.handlebars.Context;
-import com.github.jknack.handlebars.JsonNodeValueResolver;
+import com.github.jknack.handlebars.jackson2.JsonNodeValueResolver;
 import com.github.jknack.handlebars.context.MapValueResolver;
 
 public class Issue368 extends AbstractTest {

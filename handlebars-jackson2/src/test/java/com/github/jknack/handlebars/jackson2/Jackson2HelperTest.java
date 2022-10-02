@@ -11,7 +11,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.jknack.handlebars;
+package com.github.jknack.handlebars.jackson2;
 
 import static com.github.jknack.handlebars.IgnoreWindowsLineMatcher.equalsToStringIgnoringWindowsNewLine;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -20,11 +20,14 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.github.jknack.handlebars.Handlebars;
+import com.github.jknack.handlebars.HandlebarsException;
+import com.github.jknack.handlebars.Template;
 import org.junit.Test;
 
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.jknack.handlebars.Blog.Views.Public;
+import com.github.jknack.handlebars.jackson2.Blog.Views.Public;
 
 /**
  * Unit test for {@link Jackson2Helper}.

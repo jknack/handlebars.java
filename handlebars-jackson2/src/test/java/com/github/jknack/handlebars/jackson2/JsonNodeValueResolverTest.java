@@ -1,4 +1,4 @@
-package com.github.jknack.handlebars;
+package com.github.jknack.handlebars.jackson2;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -15,6 +15,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import com.github.jknack.handlebars.Context;
+import com.github.jknack.handlebars.Handlebars;
+import com.github.jknack.handlebars.ValueResolver;
 import org.junit.Test;
 
 import com.fasterxml.jackson.databind.JsonNode;

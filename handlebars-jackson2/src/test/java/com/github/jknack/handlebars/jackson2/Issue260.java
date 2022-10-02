@@ -1,7 +1,9 @@
-package com.github.jknack.handlebars;
+package com.github.jknack.handlebars.jackson2;
 
 import java.io.IOException;
 
+import com.github.jknack.handlebars.AbstractTest;
+import com.github.jknack.handlebars.Context;
 import org.junit.Test;
 
 import com.fasterxml.jackson.databind.JsonNode;

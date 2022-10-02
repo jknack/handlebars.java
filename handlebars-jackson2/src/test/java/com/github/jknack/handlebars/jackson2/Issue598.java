@@ -1,7 +1,9 @@
-package com.github.jknack.handlebars;
+package com.github.jknack.handlebars.jackson2;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.jknack.handlebars.AbstractTest;
+import com.github.jknack.handlebars.Context;
 import com.github.jknack.handlebars.context.MapValueResolver;
 import org.junit.Test;
 

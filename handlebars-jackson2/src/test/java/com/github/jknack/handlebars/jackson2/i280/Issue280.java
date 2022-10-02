@@ -1,4 +1,4 @@
-package com.github.jknack.handlebars.i280;
+package com.github.jknack.handlebars.jackson2.i280;
 
 import org.junit.Test;
 
@@ -6,7 +6,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.jknack.handlebars.AbstractTest;
 import com.github.jknack.handlebars.Context;
-import com.github.jknack.handlebars.JsonNodeValueResolver;
+import com.github.jknack.handlebars.jackson2.JsonNodeValueResolver;
 
 public class Issue280 extends AbstractTest {
 
