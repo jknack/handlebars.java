@@ -1,4 +1,4 @@
-package com.github.jknack.handlebars.helper;
+package com.github.jknack.handlebars.helpers;
 
 import java.io.IOException;
 

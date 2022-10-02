@@ -15,40 +15,38 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.jknack.handlebars.helper;
+package com.github.jknack.handlebars.helpers;
 
 import java.io.IOException;
 
+import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Helper;
 import com.github.jknack.handlebars.Options;
+import com.github.jknack.handlebars.Template;
 
 /**
- * You can use the assign helper to create auxiliary variables. Example:
+ * Allows to include partials with custom context.
+ * This is a port of https://github.com/wycats/handlebars.js/pull/368
  *
- * <pre>
- *  {{#assign "benefitsTitle"}} benefits.{{type}}.title {{/assign}}
- *  &lt;span class="benefit-title"&gt; {{i18n benefitsTitle}} &lt;/span&gt;
- * </pre>
- *
- * @author https://github.com/Jarlakxen
+ * @author https://github.com/c089
  */
-public class AssignHelper implements Helper<String> {
-
+public class IncludeHelper implements Helper<String> {
   /**
    * A singleton instance of this helper.
    */
-  public static final Helper<String> INSTANCE = new AssignHelper();
+  public static final Helper<String> INSTANCE = new IncludeHelper();
 
   /**
    * The helper's name.
    */
-  public static final String NAME = "assign";
+  public static final String NAME = "include";
 
   @Override
-  public Object apply(final String variableName, final Options options)
-      throws IOException {
-    CharSequence finalValue = options.apply(options.fn);
-    options.context.data(variableName, finalValue.toString().trim());
-    return null;
+  public Object apply(final String partial, final Options options) throws IOException {
+    // merge all the hashes into the context
+    options.context.data(options.hash);
+    Template template = options.handlebars.compile(partial);
+    return new Handlebars.SafeString(template.apply(options.context));
   }
+
 }
