@@ -81,6 +81,7 @@ public interface HelperRegistry {
 
   /**
    * Register the special helper missing in the registry.
+   * Default behaviour is throwing exception on missing helper.
    *
    * @param <H> The helper runtime type.
    * @param helper The helper object. Required.
