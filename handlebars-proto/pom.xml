@@ -14,7 +14,7 @@
   <name>A standalone Handlebars Server</name>
 
   <properties>
-    <jetty-version>9.4.44.v20210927</jetty-version>
+    <jetty-version>11.0.12</jetty-version>
   </properties>
 
   <build>
