@@ -44,10 +44,6 @@
                   <shadedPattern>com.github.jknack.handlebars.internal.lang3</shadedPattern>
                 </relocation>
                 <relocation>
-                  <pattern>org.apache.commons.text</pattern>
-                  <shadedPattern>com.github.jknack.handlebars.internal.text</shadedPattern>
-                </relocation>
-                <relocation>
                   <pattern>org.antlr.v4.runtime</pattern>
                   <shadedPattern>com.github.jknack.handlebars.internal.antlr</shadedPattern>
                 </relocation>
