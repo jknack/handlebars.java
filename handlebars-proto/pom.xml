@@ -14,7 +14,7 @@
   <name>A standalone Handlebars Server</name>
 
   <properties>
-    <jetty-version>9.4.44.v20210927</jetty-version>
+    <jetty-version>11.0.12</jetty-version>
   </properties>
 
   <build>
@@ -107,9 +107,9 @@
   <dependencies>
     <!-- Servlet API -->
     <dependency>
-      <groupId>org.eclipse.jetty.orbit</groupId>
-      <artifactId>javax.servlet</artifactId>
-      <version>3.0.0.v201112011016</version>
+      <groupId>jakarta.servlet</groupId>
+      <artifactId>jakarta.servlet-api</artifactId>
+      <version>5.0.0</version>
     </dependency>
 
     <dependency>

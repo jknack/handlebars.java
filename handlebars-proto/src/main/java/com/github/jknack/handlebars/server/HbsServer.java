@@ -17,20 +17,25 @@
  */
 package com.github.jknack.handlebars.server;
 
+import com.github.jknack.handlebars.Handlebars;
+import com.github.jknack.handlebars.HelperRegistry;
+import com.github.jknack.handlebars.HumanizeHelper;
+import com.github.jknack.handlebars.Jackson2Helper;
+import com.github.jknack.handlebars.helper.StringHelpers;
+import com.github.jknack.handlebars.io.FileTemplateLoader;
+import com.github.jknack.handlebars.io.TemplateLoader;
+import com.github.jknack.handlebars.io.URLTemplateLoader;
+import jakarta.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Writer;
 import java.net.MalformedURLException;
 import java.util.Properties;
-
-import javax.servlet.http.HttpServletRequest;
-
 import org.apache.commons.io.IOUtils;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.ErrorHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
-import org.eclipse.jetty.util.component.AbstractLifeCycle.AbstractLifeCycleListener;
 import org.eclipse.jetty.util.component.LifeCycle;
 import org.eclipse.jetty.util.resource.Resource;
 import org.eclipse.jetty.webapp.Configuration;
@@ -41,15 +46,6 @@ import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.github.jknack.handlebars.Handlebars;
-import com.github.jknack.handlebars.HelperRegistry;
-import com.github.jknack.handlebars.HumanizeHelper;
-import com.github.jknack.handlebars.Jackson2Helper;
-import com.github.jknack.handlebars.helper.StringHelpers;
-import com.github.jknack.handlebars.io.FileTemplateLoader;
-import com.github.jknack.handlebars.io.TemplateLoader;
-import com.github.jknack.handlebars.io.URLTemplateLoader;
 
 /**
  * A handlebars web server.
@@ -183,14 +179,16 @@ public class HbsServer {
       }
     }));
 
-    server.addLifeCycleListener(new AbstractLifeCycleListener() {
+    server.getEventListeners().add(new LifeCycle.Listener() {
       @Override
-      public void lifeCycleStarted(final LifeCycle event) {
+      public void lifeCycleStarted(LifeCycle event) {
+        LifeCycle.Listener.super.lifeCycleStarted(event);
         logger.info("Open a browser and type:");
-        logger.info("  http://localhost:{}{}/[page]{}", new Object[]{
+        logger.info("  http://localhost:{}{}/[page]{}",
             args.port,
             args.contextPath.equals(CONTEXT) ? "" : args.contextPath,
-            args.suffix });
+            args.suffix
+        );
       }
     });
 

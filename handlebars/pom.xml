@@ -181,8 +181,8 @@
 
     <!-- Servlet API -->
     <dependency>
-      <groupId>javax.servlet</groupId>
-      <artifactId>servlet-api</artifactId>
+      <groupId>jakarta.servlet</groupId>
+      <artifactId>jakarta.servlet-api</artifactId>
       <scope>provided</scope>
     </dependency>
 
@@ -225,11 +225,17 @@
       <artifactId>mockito-core</artifactId>
       <scope>test</scope>
     </dependency>
+
+    <dependency>
+      <groupId>org.openjdk.nashorn</groupId>
+      <artifactId>nashorn-core</artifactId>
+      <version>${nashorn.version}</version>
+    </dependency>
   </dependencies>
 
   <properties>
     <antlr-version>4.9.3</antlr-version>
-    <nashorn.version>15.3</nashorn.version>
+    <nashorn.version>15.4</nashorn.version>
   </properties>
 
   <profiles>
@@ -290,134 +296,6 @@
           </plugin>
         </plugins>
       </build>
-    </profile>
-
-    <!-- Range jdk version doesn't work, have to set each jdk -->
-    <profile>
-      <id>nashorn9</id>
-      <activation>
-        <jdk>9</jdk>
-      </activation>
-      <dependencies>
-        <!-- Nashorn JS engine -->
-        <dependency>
-          <groupId>org.openjdk.nashorn</groupId>
-          <artifactId>nashorn-core</artifactId>
-          <version>${nashorn.version}</version>
-        </dependency>
-      </dependencies>
-    </profile>
-    <profile>
-      <id>nashorn10</id>
-      <activation>
-        <jdk>10</jdk>
-      </activation>
-      <dependencies>
-        <!-- Nashorn JS engine -->
-        <dependency>
-          <groupId>org.openjdk.nashorn</groupId>
-          <artifactId>nashorn-core</artifactId>
-          <version>${nashorn.version}</version>
-        </dependency>
-      </dependencies>
-    </profile>
-    <profile>
-      <id>nashorn11</id>
-      <activation>
-        <jdk>11</jdk>
-      </activation>
-      <dependencies>
-        <!-- Nashorn JS engine -->
-        <dependency>
-          <groupId>org.openjdk.nashorn</groupId>
-          <artifactId>nashorn-core</artifactId>
-          <version>${nashorn.version}</version>
-        </dependency>
-      </dependencies>
-    </profile>
-    <profile>
-      <id>nashorn12</id>
-      <activation>
-        <jdk>12</jdk>
-      </activation>
-      <dependencies>
-        <!-- Nashorn JS engine -->
-        <dependency>
-          <groupId>org.openjdk.nashorn</groupId>
-          <artifactId>nashorn-core</artifactId>
-          <version>${nashorn.version}</version>
-        </dependency>
-      </dependencies>
-    </profile>
-    <profile>
-      <id>nashorn13</id>
-      <activation>
-        <jdk>13</jdk>
-      </activation>
-      <dependencies>
-        <!-- Nashorn JS engine -->
-        <dependency>
-          <groupId>org.openjdk.nashorn</groupId>
-          <artifactId>nashorn-core</artifactId>
-          <version>${nashorn.version}</version>
-        </dependency>
-      </dependencies>
-    </profile>
-    <profile>
-      <id>nashorn14</id>
-      <activation>
-        <jdk>14</jdk>
-      </activation>
-      <dependencies>
-        <!-- Nashorn JS engine -->
-        <dependency>
-          <groupId>org.openjdk.nashorn</groupId>
-          <artifactId>nashorn-core</artifactId>
-          <version>${nashorn.version}</version>
-        </dependency>
-      </dependencies>
-    </profile>
-    <profile>
-      <id>nashorn15</id>
-      <activation>
-        <jdk>15</jdk>
-      </activation>
-      <dependencies>
-        <!-- Nashorn JS engine -->
-        <dependency>
-          <groupId>org.openjdk.nashorn</groupId>
-          <artifactId>nashorn-core</artifactId>
-          <version>${nashorn.version}</version>
-        </dependency>
-      </dependencies>
-    </profile>
-    <profile>
-      <id>nashorn16</id>
-      <activation>
-        <jdk>16</jdk>
-      </activation>
-      <dependencies>
-        <!-- Nashorn JS engine -->
-        <dependency>
-          <groupId>org.openjdk.nashorn</groupId>
-          <artifactId>nashorn-core</artifactId>
-          <version>${nashorn.version}</version>
-        </dependency>
-      </dependencies>
-    </profile>
-    <profile>
-      <id>nashorn17</id>
-      <activation>
-        <jdk>17</jdk>
-      </activation>
-      <dependencies>
-        <!-- Nashorn JS engine -->
-        <dependency>
-          <groupId>org.openjdk.nashorn</groupId>
-          <artifactId>nashorn-core</artifactId>
-          <version>${nashorn.version}</version>
-        </dependency>
-      </dependencies>
     </profile>
   </profiles>
 </project>
