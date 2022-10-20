@@ -19,10 +19,10 @@ package com.github.jknack.handlebars.io;
 
 import static org.apache.commons.lang3.Validate.notNull;
 
+import jakarta.servlet.ServletContext;
 import java.io.IOException;
 import java.net.URL;
 
-import javax.servlet.ServletContext;
 
 
 /**

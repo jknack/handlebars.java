@@ -10,7 +10,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 
 import org.junit.Test;
 
