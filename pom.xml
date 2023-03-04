@@ -18,7 +18,6 @@
     <module>handlebars-springmvc</module>
     <module>handlebars-jackson2</module>
     <module>handlebars-humanize</module>
-    <module>handlebars-proto</module>
     <module>handlebars-guava-cache</module>
     <module>handlebars-caffeine</module>
     <module>handlebars-maven-plugin</module>
