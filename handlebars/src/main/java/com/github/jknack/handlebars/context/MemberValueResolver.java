@@ -50,6 +50,9 @@ public abstract class MemberValueResolver<M extends Member> implements ValueReso
 
   @Override
   public final Object resolve(final Object context, final String name) {
+    if (!matches(context)) {
+      return UNRESOLVED;
+    }
     Class<?> key = context.getClass();
     Map<String, M> mcache = cache(key);
     M member = mcache.get(name);
@@ -121,6 +124,16 @@ public abstract class MemberValueResolver<M extends Member> implements ValueReso
    * @return The resulting value.
    */
   protected abstract Object invokeMember(M member, Object context);
+
+  /**
+   * True, if the context is worth examing by this resolver.
+   *
+   * @param context The context object.
+   * @return True, if the context is suitable.
+   */
+  protected boolean matches(final Object context) {
+    return true;
+  }
 
   /**
    * True, if the member matches the one we look for.
