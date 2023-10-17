@@ -14,6 +14,10 @@
 
   <name>Handlebars Guava Cache</name>
 
+  <properties>
+    <module.name>handlebars.guavacache</module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>com.github.jknack</groupId>

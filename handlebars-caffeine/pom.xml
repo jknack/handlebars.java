@@ -14,6 +14,10 @@
 
   <name>Handlebars Caffeine Cache</name>
 
+  <properties>
+    <module.name>handlebars.caffeine</module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>com.github.jknack</groupId>

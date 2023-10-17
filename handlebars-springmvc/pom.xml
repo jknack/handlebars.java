@@ -14,6 +14,10 @@
   <name>Handlebars Spring MVC</name>
   <description>Spring MVC Integration for Handlebars.java</description>
 
+  <properties>
+    <module.name>handlebars.springmvc</module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>com.github.jknack</groupId>

@@ -13,6 +13,10 @@
 
   <name>Handlebars Helpers</name>
   <description>A collection helpers donated by the community</description>
+  
+  <properties>
+    <module.name>handlebars.helpers</module.name>
+  </properties>
 
   <dependencies>
     <dependency>

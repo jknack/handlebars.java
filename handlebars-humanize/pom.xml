@@ -13,6 +13,10 @@
 
   <name>Humanize helpers</name>
 
+  <properties>
+    <module.name>handlebars.humanize</module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>com.github.jknack</groupId>

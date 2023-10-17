@@ -15,6 +15,10 @@
   <name>Handlebars.js maven plugin</name>
   <description>Compile Handlebars templates to JavaScript</description>
 
+  <properties>
+    <module.name>handlebars.maven</module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>com.github.jknack</groupId>

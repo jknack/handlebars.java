@@ -15,6 +15,7 @@
 
   <properties>
     <jetty-version>9.4.44.v20210927</jetty-version>
+    <module.name>handlebars.proto</module.name>
   </properties>
 
   <build>
