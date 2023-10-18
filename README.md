@@ -898,26 +898,6 @@ Maven:
 
 Same as Jackson1.x, except for the name of the helper: ```Jackson2Helper```
 
-## Markdown
-
-Maven:
-```xml
- <dependency>
-   <groupId>com.github.jknack</groupId>
-   <artifactId>handlebars-markdown</artifactId>
-   <version>${handlebars-version}</version>
- </dependency>
-```
-Usage:
-
-```java
- handlebars.registerHelper("md", new MarkdownHelper());
-```
-```
- {{md context}}
-```
-context: An object or null. Required.
-
 ## Humanize
 
 Maven:
