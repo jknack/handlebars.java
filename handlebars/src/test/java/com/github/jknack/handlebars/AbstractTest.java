@@ -87,7 +87,7 @@ public class AbstractTest {
       throws IOException {
     Template t = compile(template, helpers, partials);
     String result = t.apply(configureContext(context));
-    assertEquals("'" + expected + "' should === '" + result + "': " + message, expected, result);
+    assertEquals("'" + result + "' should === '" + expected + "': " + message, expected, result);
   }
 
   protected Object configureContext(final Object context) {
