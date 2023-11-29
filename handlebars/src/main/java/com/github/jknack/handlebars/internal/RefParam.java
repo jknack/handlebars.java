@@ -21,6 +21,7 @@ import java.util.List;
 
 import com.github.jknack.handlebars.Context;
 import com.github.jknack.handlebars.PathExpression;
+import com.github.jknack.handlebars.Param;
 
 /**
  * Look param in the given context.

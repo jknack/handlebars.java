@@ -26,6 +26,7 @@ import com.github.jknack.handlebars.Context;
 import com.github.jknack.handlebars.Decorator;
 import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Options;
+import com.github.jknack.handlebars.Param;
 import com.github.jknack.handlebars.TagType;
 import com.github.jknack.handlebars.Template;
 
