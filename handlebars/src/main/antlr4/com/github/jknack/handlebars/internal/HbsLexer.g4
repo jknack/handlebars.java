@@ -76,6 +76,11 @@ lexer grammar HbsLexer;
   }
 
   private boolean varEscape(final String start, final String end) {
+      // Support escaping raw expressions (TVar) and normal expressions (VAR)
+      return consumeVarEscape(start + "{", end + "}") || consumeVarEscape(start, end);
+    }
+
+    private boolean consumeVarEscape(final String start, final String end) {
     if (ahead("\\" + start)) {
       int offset = start.length();
       while (!isEOF(offset)) {
