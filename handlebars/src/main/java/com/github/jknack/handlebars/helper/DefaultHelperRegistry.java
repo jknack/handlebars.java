@@ -301,6 +301,10 @@ public class DefaultHelperRegistry implements HelperRegistry {
       if (this.engine == null) {
         this.engine = new ScriptEngineManager().getEngineByName("nashorn");
 
+        if (this.engine == null) {
+          throw new RuntimeException("Was unable to find Nashorn JavaScript engine. You may want to add nashorn-core to your classpath https://central.sonatype.com/artifact/org.openjdk.nashorn/nashorn-core/overview");
+        }
+
         this.engine.put("Handlebars_java", this);
 
         Throwing.run(() -> engine.eval(HELPERS_ENV));
