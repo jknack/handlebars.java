@@ -1058,9 +1058,6 @@ Hello {{#child}}{{this.value}}{{/child}}
 
  [Bugs, Issues and Features](https://github.com/jknack/handlebars.java/issues)
 
-## Donate
-
-Buy [Edgar](https://patreon.com/edgarespina) a beer!
 
 ## Related Projects
  * [Handlebars.js](http://handlebarsjs.com/)
