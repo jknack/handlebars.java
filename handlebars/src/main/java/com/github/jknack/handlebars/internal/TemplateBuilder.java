@@ -24,6 +24,7 @@ import com.github.jknack.handlebars.HandlebarsError;
 import com.github.jknack.handlebars.HandlebarsException;
 import com.github.jknack.handlebars.Helper;
 import com.github.jknack.handlebars.HelperRegistry;
+import com.github.jknack.handlebars.Param;
 import com.github.jknack.handlebars.PathCompiler;
 import com.github.jknack.handlebars.TagType;
 import com.github.jknack.handlebars.Template;

@@ -15,11 +15,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.jknack.handlebars.internal;
+package com.github.jknack.handlebars;
 
 import java.io.IOException;
-
-import com.github.jknack.handlebars.Context;
 
 /**
  * Helper or hash param.

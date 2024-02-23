@@ -45,6 +45,8 @@ import com.github.jknack.handlebars.Context;
 import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.HandlebarsError;
 import com.github.jknack.handlebars.HandlebarsException;
+import com.github.jknack.handlebars.Param;
+import com.github.jknack.handlebars.Tag;
 import com.github.jknack.handlebars.TagType;
 import com.github.jknack.handlebars.Template;
 import com.github.jknack.handlebars.TypeSafeTemplate;
@@ -353,6 +355,16 @@ abstract class BaseTemplate implements Template {
     return new ArrayList<>(tagNames);
   }
 
+  @Override
+  public List<Tag> collectWithParameters(final TagType... tagType) {
+    isTrue(tagType.length > 0, "At least one tag type is required.");
+    List<Tag> tagsWithParams = new ArrayList<>();
+    for (TagType tt : tagType) {
+      collectWithParameters(tagsWithParams, tt);
+    }
+    return new ArrayList<>(tagsWithParams);
+  }
+
   /**
    * Child classes might want to check if they apply to the tagtype and append them self to the
    * result list.
@@ -363,6 +375,14 @@ abstract class BaseTemplate implements Template {
   protected void collect(final Collection<String> result, final TagType tagType) {
   }
 
+  /**
+   * @param result The result list of Tag.
+   * @param tagType The matching tagtype.
+   */
+  protected void collectWithParameters(final Collection<Tag> result,
+                                       final TagType tagType) {
+  }
+
   @Override
   public List<String> collectReferenceParameters() {
     Set<String> paramNames = new LinkedHashSet<>();
@@ -370,10 +390,23 @@ abstract class BaseTemplate implements Template {
     return new ArrayList<>(paramNames);
   }
 
+  @Override
+  public List<Param> collectAllParameters() {
+    Set<Param> params = new LinkedHashSet<>();
+    collectAllParameters(params);
+    return new ArrayList<>(params);
+  }
+
   /**
    * @param result The result list to add new parameters to.
    */
   protected void collectReferenceParameters(final Collection<String> result) {
+  }
+
+  /**
+   * @param result The result list of Params to add new Params to.
+   */
+  protected void collectAllParameters(final Collection<Param> result) {
   }
 
   @Override

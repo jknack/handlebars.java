@@ -76,6 +76,7 @@ public class Context {
       this.extendedContext.resolver = parent.resolver;
       this.parent = parent;
       this.data = parent.data;
+      this.internalData = parent.internalData;
       this.resolver = parent.resolver;
     }
 
@@ -153,6 +154,7 @@ public class Context {
       this.extendedContext.extendedContext = new Context(Collections.emptyMap());
       this.parent = parent;
       this.data = parent.data;
+      this.internalData = parent.internalData;
       this.resolver = parent.resolver;
     }
 
@@ -433,6 +435,11 @@ public class Context {
   protected Map<String, Object> data;
 
   /**
+   * Functions similarly to data, but not resolved during rendering.
+   */
+  protected Map<String, Object> internalData;
+
+  /**
    * Additional, data can be stored here.
    */
   protected Context extendedContext;
@@ -470,6 +477,7 @@ public class Context {
     root.data.put(INLINE_PARTIALS, partials);
     root.data.put(INVOCATION_STACK, new LinkedList<TemplateSource>());
     root.data.put("root", model);
+    root.internalData = new HashMap<>();
     return root;
   }
 
@@ -532,6 +540,41 @@ public class Context {
    */
   public Context data(final Map<String, ?> attributes) {
     data.putAll(attributes);
+    return this;
+  }
+
+  /**
+   * Read the attribute from the internal data storage.
+   *
+   * @param name The attribute's name.
+   * @param <T> Data type.
+   * @return The attribute value or null.
+   */
+  @SuppressWarnings("unchecked")
+  public <T> T internalData(final String name) {
+    return (T) internalData.get(name);
+  }
+
+  /**
+   * Set an attribute in the internal data storage.
+   *
+   * @param name The attribute's name. Required.
+   * @param value The attribute's value. Required.
+   * @return This context.
+   */
+  public Context internalData(final String name, final Object value) {
+    internalData.put(name, value);
+    return this;
+  }
+
+  /**
+   * Store the map in the internal data storage.
+   *
+   * @param attributes The attributes to add. Required.
+   * @return This context.
+   */
+  public Context internalData(final Map<String, ?> attributes) {
+    internalData.putAll(attributes);
     return this;
   }
 
@@ -692,6 +735,9 @@ public class Context {
       if (data != null) {
         data.clear();
       }
+      if (internalData != null) {
+        internalData.clear();
+      }
     }
     if (extendedContext != null) {
       extendedContext.destroy();
@@ -790,6 +836,7 @@ public class Context {
     child.setResolver(this.resolver);
     child.parent = this;
     child.data = this.data;
+    child.internalData = this.internalData;
     return child;
   }
 
@@ -813,6 +860,7 @@ public class Context {
   public static Context copy(final Context context, final Object model) {
     Context ctx = Context.newContext(model);
     ctx.data = context.data;
+    ctx.internalData = context.internalData;
     ctx.resolver = context.resolver;
     return ctx;
   }

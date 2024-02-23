@@ -24,6 +24,8 @@ import java.io.Writer;
 import java.util.List;
 
 import com.github.jknack.handlebars.Context;
+import com.github.jknack.handlebars.Param;
+import com.github.jknack.handlebars.Tag;
 import com.github.jknack.handlebars.TagType;
 import com.github.jknack.handlebars.Template;
 import com.github.jknack.handlebars.TypeSafeTemplate;
@@ -186,6 +188,16 @@ class ForwardingTemplate implements Template {
   @Override
   public List<String> collect(final TagType... tagType) {
     return template.collect(tagType);
+  }
+
+  @Override
+  public List<Param> collectAllParameters() {
+    return template.collectAllParameters();
+  }
+
+  @Override
+  public List<Tag> collectWithParameters(final TagType... tagType) {
+    return template.collectWithParameters(tagType);
   }
 
   @Override

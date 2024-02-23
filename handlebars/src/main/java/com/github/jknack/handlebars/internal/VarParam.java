@@ -20,6 +20,7 @@ package com.github.jknack.handlebars.internal;
 import java.io.IOException;
 
 import com.github.jknack.handlebars.Context;
+import com.github.jknack.handlebars.Param;
 
 /**
  * Var sub-expr param.

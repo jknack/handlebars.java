@@ -32,8 +32,10 @@ import com.github.jknack.handlebars.Helper;
 import com.github.jknack.handlebars.HelperRegistry;
 import com.github.jknack.handlebars.Lambda;
 import com.github.jknack.handlebars.Options;
+import com.github.jknack.handlebars.Param;
 import com.github.jknack.handlebars.PathCompiler;
 import com.github.jknack.handlebars.PathExpression;
+import com.github.jknack.handlebars.Tag;
 import com.github.jknack.handlebars.TagType;
 import com.github.jknack.handlebars.Template;
 
@@ -214,6 +216,15 @@ class Variable extends HelperResolver {
       result.add(name);
     }
     super.collect(result, tagType);
+  }
+
+  @Override
+  protected void collectWithParameters(final Collection<Tag> result,
+                                       final TagType tagType) {
+    if (this.type == tagType) {
+      result.add(new Tag(name, collectAllParameters(), tagType));
+    }
+    super.collectWithParameters(result, tagType);
   }
 
   /**

@@ -103,9 +103,20 @@ public interface Template {
     }
 
     @Override
+    public List<Tag> collectWithParameters(final TagType... tagType) {
+      return Collections.emptyList();
+    }
+
+    @Override
     public List<String> collectReferenceParameters() {
       return Collections.emptyList();
     }
+
+    @Override
+    public List<Param> collectAllParameters() {
+      return Collections.emptyList();
+    }
+
   };
 
   /**
@@ -201,8 +212,41 @@ public interface Template {
    *
    * @param tagType The tag type. Required.
    * @return A list with tag names.
+   *
+   * @deprecated Use {@link #collectWithParameters(TagType...)} instead.
    */
+  @Deprecated
   List<String> collect(TagType... tagType);
+
+  /**
+   * Collect all the tag names under the given tagType and their parameters.
+   * <p>
+   * Usage:
+   * </p>
+   *
+   * <pre>
+   * {{hello}}
+   * {{var 1}}
+   * {{{tripleVar}}}
+   * </pre>
+   * <p>
+   * <code>collectWithParameters(TagType.VAR)</code> returns
+   * <code>[Tag(hello, [], TagType.VAR), Tag(var, [1], TagType.VAR)]</code>
+   * </p>
+   * <p>
+   * <code>collect(TagType.TRIPLE_VAR)</code> returns
+   * <code>[Tag(tripleVar, [], TagType.TRIPLE_VAR)]</code>
+   * </p>
+   * <p>
+   * <code>collect(TagType.VAR, TagType.TRIPLE_VAR)</code> returns
+   * <code>[Tag(hello, [], TagType.VAR), Tag(var, [1], TagType.VAR),
+   * Tag(tripleVar, [], TagType.TRIPLE_VAR)]</code>
+   * </p>
+   *
+   * @param tagType The tag type. Required.
+   * @return A list of Tag.
+   */
+  List<Tag> collectWithParameters(TagType... tagType);
 
   /**
    * Collects all the parameters which are also variables.
@@ -221,6 +265,24 @@ public interface Template {
    * @return A list with reference parameter names.
    */
   List<String> collectReferenceParameters();
+
+  /**
+   * Collects all the parameters.
+   * <p>
+   * Usage:
+   * </p>
+   *
+   * <pre>
+   * {{#if v1}}{{/if}}
+   * {{#each v2 "test"}}{{/each}}
+   * </pre>
+   * <p>
+   * <code>collectAllParameters()</code> returns <code>[v1, v2]</code>
+   * </p>
+   *
+   * @return A list of Param.
+   */
+  List<Param> collectAllParameters();
 
   /**
    * @return The template file's name.

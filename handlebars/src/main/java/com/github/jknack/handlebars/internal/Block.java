@@ -36,8 +36,10 @@ import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Helper;
 import com.github.jknack.handlebars.Lambda;
 import com.github.jknack.handlebars.Options;
+import com.github.jknack.handlebars.Param;
 import com.github.jknack.handlebars.PathCompiler;
 import com.github.jknack.handlebars.PathExpression;
+import com.github.jknack.handlebars.Tag;
 import com.github.jknack.handlebars.TagType;
 import com.github.jknack.handlebars.Template;
 import com.github.jknack.handlebars.helper.EachHelper;
@@ -388,11 +390,31 @@ class Block extends HelperResolver {
   }
 
   @Override
+  public List<Tag> collectWithParameters(final TagType... tagType) {
+    List<Tag> tagNames = new ArrayList<Tag>();
+    if (body != null) {
+      tagNames.addAll(body.collectWithParameters(tagType));
+    }
+    tagNames.addAll(inverse.collectWithParameters(tagType));
+    tagNames.addAll(super.collectWithParameters(tagType));
+    return new ArrayList<Tag>(tagNames);
+  }
+
+  @Override
   protected void collect(final Collection<String> result, final TagType tagType) {
     if (tagType == this.tagType) {
       result.add(name);
     }
     super.collect(result, tagType);
+  }
+
+  @Override
+  protected void collectWithParameters(final Collection<Tag> result,
+                                       final TagType tagType) {
+    if (tagType == this.tagType) {
+      result.add(new Tag(name, collectAllParameters(), tagType));
+    }
+    super.collectWithParameters(result, tagType);
   }
 
   @Override
@@ -403,6 +425,17 @@ class Block extends HelperResolver {
     }
     paramNames.addAll(inverse.collectReferenceParameters());
     paramNames.addAll(super.collectReferenceParameters());
+    return new ArrayList<>(paramNames);
+  }
+
+  @Override
+  public List<Param> collectAllParameters() {
+    Set<Param> paramNames = new LinkedHashSet<>();
+    if (body != null) {
+      paramNames.addAll(body.collectAllParameters());
+    }
+    paramNames.addAll(inverse.collectAllParameters());
+    paramNames.addAll(super.collectAllParameters());
     return new ArrayList<>(paramNames);
   }
 }
