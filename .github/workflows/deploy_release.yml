@@ -1,0 +1,68 @@
+name: Release Package to Nexus
+
+on:
+  workflow_dispatch:
+
+jobs:
+  publish-release:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.next-tag.outputs.version }}
+      createdNewTag: ${{ steps.next-tag.outputs.createdNewTag }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-java@v2
+        with:
+          java-version: '17'
+          distribution: 'adopt'
+      - run: mvn clean install
+      - name: get next release tag
+        continue-on-error: true
+        id: next-tag
+        run: |
+          VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "createdNewTag=true" >> $GITHUB_OUTPUT
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: publish release
+        run: |
+          if [ "${{ steps.next-tag.outputs.createdNewTag }}" = "true" ]; then
+              echo "::Notice::Released Version ${{ steps.next-tag.outputs.version }}"
+              mvn deploy
+          else
+              echo "::Warning::No new version created due to missing prefixed commits."
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  publish-package:
+    needs: publish-release
+    name: Deploy Handlebars to Nexus
+    runs-on: aws-bonprix-runner
+    container:
+      image: maven:3.8.4-openjdk-17
+    env:
+      MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
+      MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
+    if: ${{ needs.publish-release.outputs.createdNewTag == 'true' }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Install dependencies && Build package
+        run: |
+          mvn clean install
+          mvn versions:set -DnewVersion=${{ needs.publish-release.outputs.version }}
+      - name: Publish to Sonatype Nexus
+        run: |
+          mvn deploy:deploy-file \
+          -Durl=https://nexus.bonprix.work/repository/bonprix-maven/ \
+          -DrepositoryId=nexus \
+          -Dfile=target/your-artifact.jar \
+          -DpomFile=pom.xml
+        env:
+          MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
+          MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
