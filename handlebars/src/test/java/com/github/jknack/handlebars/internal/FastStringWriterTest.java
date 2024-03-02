@@ -37,7 +37,7 @@ public class FastStringWriterTest {
   @Test
   public void writeStringWithOffsetAndLength() throws IOException {
     Writer writer = new FastStringWriter();
-    writer.write("hello", 1, 3);
+    writer.write("hello", 1, 4);
     assertEquals("ell", writer.toString());
     IOUtils.closeQuietly(writer);
   }

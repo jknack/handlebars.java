@@ -17,8 +17,6 @@
  */
 package com.github.jknack.handlebars.internal;
 
-import org.apache.commons.text.TextStringBuilder;
-
 import java.io.IOException;
 import java.io.Writer;
 
@@ -42,7 +40,7 @@ class FastStringWriter extends Writer {
   /**
    * The internal buffer.
    */
-  private TextStringBuilder buffer = new TextStringBuilder(BUFFER_SIZE);
+  private StringBuilder buffer = new StringBuilder(BUFFER_SIZE);
 
   @Override
   public Writer append(final char c) throws IOException {

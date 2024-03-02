@@ -8,7 +8,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        java_version: [1.8, 11, 15, 17]
+        java_version: [17]
         os: [ubuntu-latest, windows-latest, macOS-latest]
 
     steps:
