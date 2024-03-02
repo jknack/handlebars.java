@@ -17,7 +17,6 @@
     <module>handlebars-helpers</module>
     <module>handlebars-springmvc</module>
     <module>handlebars-jackson2</module>
-    <module>handlebars-humanize</module>
     <module>handlebars-guava-cache</module>
     <module>handlebars-caffeine</module>
     <module>handlebars-maven-plugin</module>
@@ -113,19 +112,6 @@
         <groupId>org.pegdown</groupId>
         <artifactId>pegdown</artifactId>
         <version>1.6.0</version>
-      </dependency>
-
-      <!-- Humanize -->
-      <dependency>
-        <groupId>com.github.mfornos</groupId>
-        <artifactId>humanize-slim</artifactId>
-        <version>${humanize.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>com.github.mfornos</groupId>
-        <artifactId>humanize-icu</artifactId>
-        <version>${humanize.version}</version>
       </dependency>
 
       <!-- Test dependencies -->
@@ -394,7 +380,6 @@
     <!-- Encoding UTF-8 -->
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <jackson2-version>2.14.0-rc2</jackson2-version>
-    <humanize.version>1.2.2</humanize.version>
     <jacoco.version>0.8.7</jacoco.version>
     <maven.build.timestamp.format>yyyy-MM-dd HH:mm:ssa</maven.build.timestamp.format>
     <timestamp>${maven.build.timestamp}</timestamp>
