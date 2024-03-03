@@ -188,25 +188,42 @@
       </plugin>
 
       <plugin>
-        <groupId>com.mycila.maven-license-plugin</groupId>
-        <artifactId>maven-license-plugin</artifactId>
-        <version>1.10.b1</version>
+        <groupId>com.diffplug.spotless</groupId>
+        <artifactId>spotless-maven-plugin</artifactId>
+        <version>2.43.0</version>
         <configuration>
-          <header>LICENSE</header>
-          <strictCheck>true</strictCheck>
-          <skipExistingHeaders>true</skipExistingHeaders>
-          <includes>
-            <include>src/main/java/**/*.java</include>
-          </includes>
+          <upToDateChecking>
+            <enabled>true</enabled>
+            <indexFile>tmp/spotless</indexFile>
+          </upToDateChecking>
+          <formats>
+            <!-- you can define as many formats as you want, each is independent -->
+            <format>
+              <!-- define the files to apply to -->
+              <includes>
+                <include>*.java</include>
+              </includes>
+              <!-- define the steps to apply to those files -->
+              <trimTrailingWhitespace/>
+              <endWithNewline/>
+            </format>
+          </formats>
+          <java>
+            <googleJavaFormat>
+              <reflowLongStrings>true</reflowLongStrings>
+            </googleJavaFormat>
+
+            <formatAnnotations />
+
+            <importOrder>
+              <order>java,javax,org,</order>
+            </importOrder>
+
+            <licenseHeader>
+              <file>LICENSE</file>
+            </licenseHeader>
+          </java>
         </configuration>
-        <executions>
-          <execution>
-            <phase>verify</phase>
-            <goals>
-              <goal>format</goal>
-            </goals>
-          </execution>
-        </executions>
       </plugin>
 
       <!-- Deploy plugin -->
@@ -251,6 +268,57 @@
                 </property>
               </systemProperties>
             </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+    <profile>
+      <id>git-hooks</id>
+      <activation>
+        <file>
+          <exists>${pre-commit-hook}</exists>
+        </file>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <version>${maven-antrun-plugin.version}</version>
+            <executions>
+              <execution>
+                <id>formatter.sh</id>
+                <phase>initialize</phase>
+                <configuration>
+                  <target>
+                    <chmod file="${pre-commit-hook}" perm="755"/>
+                  </target>
+                </configuration>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+          <!-- Git Hooks -->
+          <plugin>
+            <groupId>com.rudikershaw.gitbuildhook</groupId>
+            <artifactId>git-build-hook-maven-plugin</artifactId>
+            <version>3.4.1</version>
+            <configuration>
+              <installHooks>
+                <pre-commit>${pre-commit-hook}</pre-commit>
+              </installHooks>
+            </configuration>
+            <executions>
+              <execution>
+                <id>install-hooks</id>
+                <goals>
+                  <goal>install</goal>
+                </goals>
+              </execution>
+            </executions>
           </plugin>
         </plugins>
       </build>
@@ -350,8 +418,10 @@
     <jackson2-version>2.14.0-rc2</jackson2-version>
     <jacoco.version>0.8.11</jacoco.version>
     <maven.build.timestamp.format>yyyy-MM-dd HH:mm:ssa</maven.build.timestamp.format>
+    <maven-antrun-plugin.version>3.1.0</maven-antrun-plugin.version>
     <timestamp>${maven.build.timestamp}</timestamp>
     <maven.compiler.source>17</maven.compiler.source>
     <maven.compiler.target>17</maven.compiler.target>
+    <pre-commit-hook>src${file.separator}etc${file.separator}formatter.sh</pre-commit-hook>
   </properties>
 </project>
