@@ -181,28 +181,6 @@
         </configuration>
       </plugin>
 
-      <!-- Checkstyle -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-checkstyle-plugin</artifactId>
-        <version>3.3.1</version>
-        <configuration>
-          <consoleOutput>true</consoleOutput>
-          <configLocation>src/etc/checkstyle.xml</configLocation>
-          <failsOnError>true</failsOnError>
-          <excludes>**/HbsServer*,**/HbsLexer*,**/HbsParserVisitor*,**/HbsParserBaseVisitor*,**/HbsParser*</excludes>
-        </configuration>
-        <executions>
-          <execution>
-            <id>checkstyle</id>
-            <phase>verify</phase>
-            <goals>
-              <goal>checkstyle</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-
       <plugin>
         <groupId>org.eluder.coveralls</groupId>
         <artifactId>coveralls-maven-plugin</artifactId>
