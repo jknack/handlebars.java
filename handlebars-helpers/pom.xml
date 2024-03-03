@@ -8,7 +8,6 @@
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
-  <groupId>com.github.jknack</groupId>
   <artifactId>handlebars-helpers</artifactId>
 
   <name>Handlebars Helpers</name>
@@ -32,13 +31,6 @@
       <artifactId>joda-time</artifactId>
       <version>2.12.7</version>
       <optional>true</optional>
-    </dependency>
-
-    <!-- Servlet API -->
-    <dependency>
-      <groupId>javax.servlet</groupId>
-      <artifactId>servlet-api</artifactId>
-      <scope>provided</scope>
     </dependency>
 
     <dependency>

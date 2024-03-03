@@ -10,7 +10,7 @@ import static org.apache.commons.lang3.Validate.notNull;
 import java.io.IOException;
 import java.net.URL;
 
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 
 /**
  * Load templates from the {@link ServletContext}.

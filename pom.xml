@@ -75,13 +75,13 @@
       <dependency>
         <groupId>org.springframework</groupId>
         <artifactId>spring-webmvc</artifactId>
-        <version>5.3.23</version>
+        <version>${spring.version}</version>
       </dependency>
 
       <dependency>
         <groupId>org.springframework</groupId>
         <artifactId>spring-test</artifactId>
-        <version>5.3.10</version>
+        <version>${spring.version}</version>
         <scope>test</scope>
       </dependency>
 
@@ -94,9 +94,9 @@
 
       <!-- Servlet API -->
       <dependency>
-        <groupId>javax.servlet</groupId>
-        <artifactId>servlet-api</artifactId>
-        <version>2.5</version>
+        <groupId>jakarta.servlet</groupId>
+        <artifactId>jakarta.servlet-api</artifactId>
+        <version>5.0.0</version>
         <scope>provided</scope>
       </dependency>
 
@@ -137,22 +137,25 @@
       <dependency>
         <groupId>org.yaml</groupId>
         <artifactId>snakeyaml</artifactId>
-        <version>1.31</version>
-        <scope>test</scope>
+        <version>2.2</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.hamcrest</groupId>
+        <artifactId>hamcrest</artifactId>
+        <version>2.2</version>
       </dependency>
 
       <dependency>
         <groupId>org.mockito</groupId>
         <artifactId>mockito-core</artifactId>
-        <version>4.8.0</version>
-        <scope>test</scope>
+        <version>5.11.0</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
 
   <build>
     <plugins>
-      <!-- We're on 1.8 -->
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
         <version>3.12.1</version>
@@ -432,6 +435,7 @@
     <!-- Encoding UTF-8 -->
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <jackson2-version>2.14.0-rc2</jackson2-version>
+    <spring.version>6.0.0</spring.version>
     <jacoco.version>0.8.11</jacoco.version>
     <maven.build.timestamp.format>yyyy-MM-dd HH:mm:ssa</maven.build.timestamp.format>
     <maven-antrun-plugin.version>3.1.0</maven-antrun-plugin.version>

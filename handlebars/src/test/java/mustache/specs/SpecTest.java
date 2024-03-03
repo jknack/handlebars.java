@@ -16,6 +16,7 @@ import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.*;
+import org.yaml.snakeyaml.LoaderOptions;
 import org.yaml.snakeyaml.TypeDescription;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
@@ -86,7 +87,7 @@ public abstract class SpecTest {
 
   @SuppressWarnings("unchecked")
   public static List<Spec> data(final Class<?> loader, final String filename) throws IOException {
-    Constructor constructor = new Constructor();
+    Constructor constructor = new Constructor(new LoaderOptions());
     constructor.addTypeDescription(new TypeDescription(Blog.class, "!blog"));
     constructor.addTypeDescription(new TypeDescription(Comment.class, "!comment"));
     constructor.addTypeDescription(new TypeDescription(Map.class, "!code"));

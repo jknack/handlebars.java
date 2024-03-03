@@ -9,7 +9,6 @@
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
-  <groupId>com.github.jknack</groupId>
   <artifactId>handlebars-guava-cache</artifactId>
 
   <name>Handlebars Guava Cache</name>
@@ -26,13 +25,6 @@
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
       <version>31.0.1-jre</version>
-    </dependency>
-
-    <!-- Servlet API -->
-    <dependency>
-      <groupId>javax.servlet</groupId>
-      <artifactId>servlet-api</artifactId>
-      <scope>provided</scope>
     </dependency>
 
     <!-- Test dependencies -->

@@ -8,7 +8,6 @@
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
-  <groupId>com.github.jknack</groupId>
   <artifactId>handlebars-maven-plugin</artifactId>
   <packaging>maven-plugin</packaging>
 
@@ -28,10 +27,9 @@
       <scope>compile</scope>
     </dependency>
 
-    <!-- Servlet API -->
     <dependency>
-      <groupId>javax.servlet</groupId>
-      <artifactId>servlet-api</artifactId>
+      <groupId>jakarta.servlet</groupId>
+      <artifactId>jakarta.servlet-api</artifactId>
       <scope>provided</scope>
     </dependency>
 
@@ -80,17 +78,17 @@
     </dependency>
 
     <dependency>
-      <groupId>org.mockito</groupId>
-      <artifactId>mockito-core</artifactId>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
       <groupId>com.github.jknack</groupId>
       <artifactId>handlebars</artifactId>
       <version>${project.version}</version>
       <scope>test</scope>
       <classifier>tests</classifier>
+    </dependency>
+
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-core</artifactId>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 
