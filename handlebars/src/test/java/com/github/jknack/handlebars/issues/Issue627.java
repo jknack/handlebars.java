@@ -1,13 +1,20 @@
+/*
+ * Handlebars.java: https://github.com/jknack/handlebars.java
+ * Apache License Version 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Copyright (c) 2012 Edgar Espina
+ */
 package com.github.jknack.handlebars.issues;
+
+import org.junit.Test;
 
 import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.helper.ConditionalHelpers;
 import com.github.jknack.handlebars.v4Test;
-import org.junit.Test;
 
 public class Issue627 extends v4Test {
 
-  @Override protected void configure(Handlebars handlebars) {
+  @Override
+  protected void configure(Handlebars handlebars) {
     handlebars.registerHelpers(ConditionalHelpers.class);
   }
 
@@ -141,8 +148,8 @@ public class Issue627 extends v4Test {
     shouldCompileTo("{{#not 1}}yes{{else}}no{{/not}}", $, "no");
     shouldCompileTo("{{#not false}}yes{{else}}no{{/not}}", $, "yes");
     shouldCompileTo("{{#not 0}}yes{{else}}no{{/not}}", $, "yes");
-    shouldCompileTo("{{#not list}}yes{{else}}no{{/not}}", $("hash", $("list", new Object[0])),
-        "yes");
+    shouldCompileTo(
+        "{{#not list}}yes{{else}}no{{/not}}", $("hash", $("list", new Object[0])), "yes");
 
     // as expression
     shouldCompileTo("{{not false}}", $, "true");
@@ -155,11 +162,25 @@ public class Issue627 extends v4Test {
 
   @Test
   public void complex() throws Exception {
-    shouldCompileTo("{{#if (and a (or b c))}}yes{{else}}no{{/if}}", $("hash", $("a", true, "b", false, "c", true)), "yes");
-    shouldCompileTo("{{#if (and a (or b c))}}yes{{else}}no{{/if}}", $("hash", $("a", true, "b", true, "c", false)), "yes");
-    shouldCompileTo("{{#if (and a (or b c))}}yes{{else}}no{{/if}}", $("hash", $("a", true, "b", true, "c", true)), "yes");
-    shouldCompileTo("{{#if (and a (or b c))}}yes{{else}}no{{/if}}", $("hash", $("a", true, "b", false, "c", false)), "no");
-    shouldCompileTo("{{#if (and a (or b c))}}yes{{else}}no{{/if}}", $("hash", $("a", false, "b", false, "c", true)), "no");
+    shouldCompileTo(
+        "{{#if (and a (or b c))}}yes{{else}}no{{/if}}",
+        $("hash", $("a", true, "b", false, "c", true)),
+        "yes");
+    shouldCompileTo(
+        "{{#if (and a (or b c))}}yes{{else}}no{{/if}}",
+        $("hash", $("a", true, "b", true, "c", false)),
+        "yes");
+    shouldCompileTo(
+        "{{#if (and a (or b c))}}yes{{else}}no{{/if}}",
+        $("hash", $("a", true, "b", true, "c", true)),
+        "yes");
+    shouldCompileTo(
+        "{{#if (and a (or b c))}}yes{{else}}no{{/if}}",
+        $("hash", $("a", true, "b", false, "c", false)),
+        "no");
+    shouldCompileTo(
+        "{{#if (and a (or b c))}}yes{{else}}no{{/if}}",
+        $("hash", $("a", false, "b", false, "c", true)),
+        "no");
   }
-
 }

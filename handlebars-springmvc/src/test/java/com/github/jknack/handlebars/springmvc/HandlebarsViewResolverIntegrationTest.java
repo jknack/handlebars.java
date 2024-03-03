@@ -1,3 +1,8 @@
+/*
+ * Handlebars.java: https://github.com/jknack/handlebars.java
+ * Apache License Version 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Copyright (c) 2012 Edgar Espina
+ */
 package com.github.jknack.handlebars.springmvc;
 
 import static org.junit.Assert.assertEquals;
@@ -19,20 +24,17 @@ import org.springframework.web.servlet.View;
 import com.github.jknack.handlebars.Handlebars;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = {HandlebarsApp.class })
+@ContextConfiguration(classes = {HandlebarsApp.class})
 public class HandlebarsViewResolverIntegrationTest {
 
   @Autowired
-  @Qualifier("viewResolver")
-  HandlebarsViewResolver viewResolver;
+  @Qualifier("viewResolver") HandlebarsViewResolver viewResolver;
 
   @Autowired
-  @Qualifier("viewResolverWithoutMessageHelper")
-  HandlebarsViewResolver viewResolverWithoutMessageHelper;
+  @Qualifier("viewResolverWithoutMessageHelper") HandlebarsViewResolver viewResolverWithoutMessageHelper;
 
   @Autowired
-  @Qualifier("parameterizedHandlebarsViewResolver")
-  HandlebarsViewResolver parameterizedHandlebarsViewResolver;
+  @Qualifier("parameterizedHandlebarsViewResolver") HandlebarsViewResolver parameterizedHandlebarsViewResolver;
 
   @Test
   public void getHandlebars() throws Exception {
@@ -51,7 +53,8 @@ public class HandlebarsViewResolverIntegrationTest {
   @Test
   public void resolveViewWithParameterized() throws Exception {
     assertNotNull(parameterizedHandlebarsViewResolver);
-    View view = parameterizedHandlebarsViewResolver.resolveViewName("template", Locale.getDefault());
+    View view =
+        parameterizedHandlebarsViewResolver.resolveViewName("template", Locale.getDefault());
     assertNotNull(view);
     assertEquals(HandlebarsView.class, view.getClass());
   }
@@ -73,7 +76,8 @@ public class HandlebarsViewResolverIntegrationTest {
     try {
       assertNotNull(parameterizedHandlebarsViewResolver);
       parameterizedHandlebarsViewResolver.setFailOnMissingFile(false);
-      View view = parameterizedHandlebarsViewResolver.resolveViewName("invalidView", Locale.getDefault());
+      View view =
+          parameterizedHandlebarsViewResolver.resolveViewName("invalidView", Locale.getDefault());
       assertNull(view);
     } finally {
       parameterizedHandlebarsViewResolver.setFailOnMissingFile(true);
@@ -111,9 +115,11 @@ public class HandlebarsViewResolverIntegrationTest {
   public void messageHelper() throws Exception {
     assertNotNull(viewResolver);
     Handlebars handlebars = viewResolver.getHandlebars();
-    assertEquals("Handlebars Spring MVC!",
+    assertEquals(
+        "Handlebars Spring MVC!",
         handlebars.compileInline("{{message \"hello\"}}").apply(new Object()));
-    assertEquals("Handlebars Spring MVC!",
+    assertEquals(
+        "Handlebars Spring MVC!",
         handlebars.compileInline("{{i18n \"hello\"}}").apply(new Object()));
   }
 
@@ -121,28 +127,33 @@ public class HandlebarsViewResolverIntegrationTest {
   public void messageHelperWithParams() throws Exception {
     assertNotNull(viewResolver);
     Handlebars handlebars = viewResolver.getHandlebars();
-    assertEquals("Hello Handlebars!",
+    assertEquals(
+        "Hello Handlebars!",
         handlebars.compileInline("{{message \"hello.0\" \"Handlebars\"}}").apply(new Object()));
-    assertEquals("Hello Handlebars!",
+    assertEquals(
+        "Hello Handlebars!",
         handlebars.compileInline("{{i18n \"hello.0\" \"Handlebars\"}}").apply(new Object()));
 
-    assertEquals("Hello Spring MVC!",
+    assertEquals(
+        "Hello Spring MVC!",
         handlebars.compileInline("{{message \"hello.0\" \"Spring MVC\"}}").apply(new Object()));
-    assertEquals("Hello Spring MVC!",
+    assertEquals(
+        "Hello Spring MVC!",
         handlebars.compileInline("{{i18n \"hello.0\" \"Spring MVC\"}}").apply(new Object()));
   }
 
   @Test
   public void i18nJs() throws Exception {
     // maven classpath
-    String expected = "<script type='text/javascript'>\n" +
-        "  /* Spanish (Argentina) */\n" +
-        "  I18n.translations = I18n.translations || {};\n" +
-        "  I18n.translations['es_AR'] = {\n" +
-        "    \"hello\": \"Handlebars Spring MVC!\",\n" +
-        "    \"hello.0\": \"Hello {{arg0}}!\"\n" +
-        "  };\n" +
-        "</script>\n";
+    String expected =
+        "<script type='text/javascript'>\n"
+            + "  /* Spanish (Argentina) */\n"
+            + "  I18n.translations = I18n.translations || {};\n"
+            + "  I18n.translations['es_AR'] = {\n"
+            + "    \"hello\": \"Handlebars Spring MVC!\",\n"
+            + "    \"hello.0\": \"Hello {{arg0}}!\"\n"
+            + "  };\n"
+            + "</script>\n";
 
     assertNotNull(viewResolver);
     Handlebars handlebars = viewResolver.getHandlebars();
@@ -153,24 +164,28 @@ public class HandlebarsViewResolverIntegrationTest {
     } catch (ComparisonFailure ex) {
       try {
         // eclipse classpath
-        assertEquals("<script type='text/javascript'>\n" +
-            "  /* Spanish (Argentina) */\n" +
-            "  I18n.translations = I18n.translations || {};\n" +
-            "  I18n.translations['es_AR'] = {\n" +
-            "    \"hello\": \"Hola\",\n" +
-            "    \"hello.0\": \"Hello {{arg0}}!\"\n" +
-            "  };\n" +
-            "</script>\n", output);
+        assertEquals(
+            "<script type='text/javascript'>\n"
+                + "  /* Spanish (Argentina) */\n"
+                + "  I18n.translations = I18n.translations || {};\n"
+                + "  I18n.translations['es_AR'] = {\n"
+                + "    \"hello\": \"Hola\",\n"
+                + "    \"hello.0\": \"Hello {{arg0}}!\"\n"
+                + "  };\n"
+                + "</script>\n",
+            output);
       } catch (ComparisonFailure java18) {
         // java 1.8
-        assertEquals("<script type='text/javascript'>\n" +
-            "  /* Spanish (Argentina) */\n" +
-            "  I18n.translations = I18n.translations || {};\n" +
-            "  I18n.translations['es_AR'] = {\n" +
-            "    \"hello.0\": \"Hello {{arg0}}!\",\n" +
-            "    \"hello\": \"Handlebars Spring MVC!\"\n" +
-            "  };\n" +
-            "</script>\n", output);
+        assertEquals(
+            "<script type='text/javascript'>\n"
+                + "  /* Spanish (Argentina) */\n"
+                + "  I18n.translations = I18n.translations || {};\n"
+                + "  I18n.translations['es_AR'] = {\n"
+                + "    \"hello.0\": \"Hello {{arg0}}!\",\n"
+                + "    \"hello\": \"Handlebars Spring MVC!\"\n"
+                + "  };\n"
+                + "</script>\n",
+            output);
       }
     }
   }
@@ -179,8 +194,8 @@ public class HandlebarsViewResolverIntegrationTest {
   public void messageHelperWithDefaultValue() throws Exception {
     assertNotNull(viewResolver);
     Handlebars handlebars = viewResolver.getHandlebars();
-    assertEquals("hey",
-        handlebars.compileInline("{{message \"hi\" default='hey'}}").apply(new Object()));
+    assertEquals(
+        "hey", handlebars.compileInline("{{message \"hi\" default='hey'}}").apply(new Object()));
   }
 
   @Test
@@ -201,7 +216,8 @@ public class HandlebarsViewResolverIntegrationTest {
   public void helperSource() throws Exception {
     assertNotNull(viewResolver);
     Handlebars handlebars = viewResolver.getHandlebars();
-    assertEquals("helper source!", handlebars.compileInline("{{helperSource}}").apply(new Object()));
+    assertEquals(
+        "helper source!", handlebars.compileInline("{{helperSource}}").apply(new Object()));
   }
 
   @Test

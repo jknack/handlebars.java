@@ -1,3 +1,8 @@
+/*
+ * Handlebars.java: https://github.com/jknack/handlebars.java
+ * Apache License Version 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Copyright (c) 2012 Edgar Espina
+ */
 package com.github.jknack.handlebars.issues;
 
 import java.io.IOException;
@@ -36,11 +41,12 @@ public class Issue471 extends v4Test {
 
     Collection<Dummy> dummies = Arrays.asList(dummy1, dummy2);
 
-    shouldCompileTo("{{#this}}{{val}}{{#subDum}}{{val}}{{/subDum}}{{/this}}",
-        $("hash", dummies), "d1d3d2d4");
+    shouldCompileTo(
+        "{{#this}}{{val}}{{#subDum}}{{val}}{{/subDum}}{{/this}}", $("hash", dummies), "d1d3d2d4");
 
-    shouldCompileTo("{{#each this}}{{val}}{{#each subDum}}{{val}}{{/each}}{{/each}}",
-        $("hash", dummies), "d1d3d2d4");
+    shouldCompileTo(
+        "{{#each this}}{{val}}{{#each subDum}}{{val}}{{/each}}{{/each}}",
+        $("hash", dummies),
+        "d1d3d2d4");
   }
-
 }

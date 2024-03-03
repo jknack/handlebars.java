@@ -1,3 +1,8 @@
+/*
+ * Handlebars.java: https://github.com/jknack/handlebars.java
+ * Apache License Version 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Copyright (c) 2012 Edgar Espina
+ */
 package com.github.jknack.handlebars;
 
 import static org.junit.Assert.assertArrayEquals;
@@ -18,18 +23,26 @@ public class DecoratorTest extends v4Test {
   public void shouldApplyMustacheDecorators() throws IOException {
     shouldCompileTo(
         "{{#helper}}{{*decorator}}{{/helper}}",
-        $("helpers", $("helper", new Helper<Object>() {
-          @Override
-          public Object apply(final Object context, final Options options)
-              throws IOException {
-            return options.data("run");
-          }
-        }), "decorators", $("decorator", new Decorator() {
-          @Override
-          public void apply(final Template fn, final Options options) throws IOException {
-            options.data("run", "success");
-          }
-        })),
+        $(
+            "helpers",
+            $(
+                "helper",
+                new Helper<Object>() {
+                  @Override
+                  public Object apply(final Object context, final Options options)
+                      throws IOException {
+                    return options.data("run");
+                  }
+                }),
+            "decorators",
+            $(
+                "decorator",
+                new Decorator() {
+                  @Override
+                  public void apply(final Template fn, final Options options) throws IOException {
+                    options.data("run", "success");
+                  }
+                })),
         "success");
   }
 
@@ -37,18 +50,26 @@ public class DecoratorTest extends v4Test {
   public void shouldApplyAllowUndefinedReturn() throws IOException {
     shouldCompileTo(
         "{{#helper}}{{*decorator}}suc{{/helper}}",
-        $("helpers", $("helper", new Helper<Object>() {
-          @Override
-          public Object apply(final Object context, final Options options)
-              throws IOException {
-            return options.fn().toString() + options.data("run");
-          }
-        }), "decorators", $("decorator", new Decorator() {
-          @Override
-          public void apply(final Template fn, final Options options) throws IOException {
-            options.data("run", "cess");
-          }
-        })),
+        $(
+            "helpers",
+            $(
+                "helper",
+                new Helper<Object>() {
+                  @Override
+                  public Object apply(final Object context, final Options options)
+                      throws IOException {
+                    return options.fn().toString() + options.data("run");
+                  }
+                }),
+            "decorators",
+            $(
+                "decorator",
+                new Decorator() {
+                  @Override
+                  public void apply(final Template fn, final Options options) throws IOException {
+                    options.data("run", "cess");
+                  }
+                })),
         "success");
   }
 
@@ -56,18 +77,26 @@ public class DecoratorTest extends v4Test {
   public void shouldApplyBlockDecorators() throws IOException {
     shouldCompileTo(
         "{{#helper}}{{#*decorator}}success{{/decorator}}{{/helper}}",
-        $("helpers", $("helper", new Helper<Object>() {
-          @Override
-          public Object apply(final Object context, final Options options)
-              throws IOException {
-            return options.data("run");
-          }
-        }), "decorators", $("decorator", new Decorator() {
-          @Override
-          public void apply(final Template fn, final Options options) throws IOException {
-            options.data("run", options.fn());
-          }
-        })),
+        $(
+            "helpers",
+            $(
+                "helper",
+                new Helper<Object>() {
+                  @Override
+                  public Object apply(final Object context, final Options options)
+                      throws IOException {
+                    return options.data("run");
+                  }
+                }),
+            "decorators",
+            $(
+                "decorator",
+                new Decorator() {
+                  @Override
+                  public void apply(final Template fn, final Options options) throws IOException {
+                    options.data("run", options.fn());
+                  }
+                })),
         "success");
   }
 
@@ -75,23 +104,33 @@ public class DecoratorTest extends v4Test {
   public void shouldSupportNestedDecorators() throws IOException {
     shouldCompileTo(
         "{{#helper}}{{#*decorator}}{{#*nested}}suc{{/nested}}cess{{/decorator}}{{/helper}}",
-        $("helpers", $("helper", new Helper<Object>() {
-          @Override
-          public Object apply(final Object context, final Options options)
-              throws IOException {
-            return options.data("run");
-          }
-        }), "decorators", $("decorator", new Decorator() {
-          @Override
-          public void apply(final Template fn, final Options options) throws IOException {
-            options.data("run", options.data("nested").toString() + options.fn());
-          }
-        }, "nested", new Decorator() {
-          @Override
-          public void apply(final Template fn, final Options options) throws IOException {
-            options.data("nested", options.fn());
-          }
-        })),
+        $(
+            "helpers",
+            $(
+                "helper",
+                new Helper<Object>() {
+                  @Override
+                  public Object apply(final Object context, final Options options)
+                      throws IOException {
+                    return options.data("run");
+                  }
+                }),
+            "decorators",
+            $(
+                "decorator",
+                new Decorator() {
+                  @Override
+                  public void apply(final Template fn, final Options options) throws IOException {
+                    options.data("run", options.data("nested").toString() + options.fn());
+                  }
+                },
+                "nested",
+                new Decorator() {
+                  @Override
+                  public void apply(final Template fn, final Options options) throws IOException {
+                    options.data("nested", options.fn());
+                  }
+                })),
         "success");
   }
 
@@ -99,19 +138,27 @@ public class DecoratorTest extends v4Test {
   public void shouldApplyMultipleDecorators() throws IOException {
     shouldCompileTo(
         "{{#helper}}{{#*decorator}}suc{{/decorator}}{{#*decorator}}cess{{/decorator}}{{/helper}}",
-        $("helpers", $("helper", new Helper<Object>() {
-          @Override
-          public Object apply(final Object context, final Options options)
-              throws IOException {
-            return options.data("run");
-          }
-        }), "decorators", $("decorator", new Decorator() {
-          @Override
-          public void apply(final Template fn, final Options options) throws IOException {
-            Object run = options.data("run");
-            options.data("run", run == null ? options.fn() : run.toString() + options.fn());
-          }
-        })),
+        $(
+            "helpers",
+            $(
+                "helper",
+                new Helper<Object>() {
+                  @Override
+                  public Object apply(final Object context, final Options options)
+                      throws IOException {
+                    return options.data("run");
+                  }
+                }),
+            "decorators",
+            $(
+                "decorator",
+                new Decorator() {
+                  @Override
+                  public void apply(final Template fn, final Options options) throws IOException {
+                    Object run = options.data("run");
+                    options.data("run", run == null ? options.fn() : run.toString() + options.fn());
+                  }
+                })),
         "success");
   }
 
@@ -119,18 +166,28 @@ public class DecoratorTest extends v4Test {
   public void shouldAccessParentVariables() throws IOException {
     shouldCompileTo(
         "{{#helper}}{{*decorator foo}}{{/helper}}",
-        $("hash", $("foo", "success"), "helpers", $("helper", new Helper<Object>() {
-          @Override
-          public Object apply(final Object context, final Options options)
-              throws IOException {
-            return options.data("run");
-          }
-        }), "decorators", $("decorator", new Decorator() {
-          @Override
-          public void apply(final Template fn, final Options options) throws IOException {
-            options.data("run", options.param(0));
-          }
-        })),
+        $(
+            "hash",
+            $("foo", "success"),
+            "helpers",
+            $(
+                "helper",
+                new Helper<Object>() {
+                  @Override
+                  public Object apply(final Object context, final Options options)
+                      throws IOException {
+                    return options.data("run");
+                  }
+                }),
+            "decorators",
+            $(
+                "decorator",
+                new Decorator() {
+                  @Override
+                  public void apply(final Template fn, final Options options) throws IOException {
+                    options.data("run", options.param(0));
+                  }
+                })),
         "success");
   }
 
@@ -139,13 +196,17 @@ public class DecoratorTest extends v4Test {
     final AtomicInteger count = new AtomicInteger(0);
     shouldCompileTo(
         "{{*decorator \"success\"}}",
-        $("decorators", $("decorator", new Decorator() {
-          @Override
-          public void apply(final Template fn, final Options options) throws IOException {
-            assertEquals("success", options.param(0));
-            count.incrementAndGet();
-          }
-        })),
+        $(
+            "decorators",
+            $(
+                "decorator",
+                new Decorator() {
+                  @Override
+                  public void apply(final Template fn, final Options options) throws IOException {
+                    assertEquals("success", options.param(0));
+                    count.incrementAndGet();
+                  }
+                })),
         "");
     assertEquals(1, count.get());
   }
@@ -155,13 +216,19 @@ public class DecoratorTest extends v4Test {
     final AtomicInteger count = new AtomicInteger(0);
     shouldCompileTo(
         "{{*decorator foo}}",
-        $("hash", $("foo", "fail"), "decorators", $("decorator", new Decorator() {
-          @Override
-          public void apply(final Template fn, final Options options) throws IOException {
-            assertArrayEquals((Object[])null, options.param(0));
-            count.incrementAndGet();
-          }
-        })),
+        $(
+            "hash",
+            $("foo", "fail"),
+            "decorators",
+            $(
+                "decorator",
+                new Decorator() {
+                  @Override
+                  public void apply(final Template fn, final Options options) throws IOException {
+                    assertArrayEquals((Object[]) null, options.param(0));
+                    count.incrementAndGet();
+                  }
+                })),
         "");
     assertEquals(1, count.get());
   }
@@ -171,13 +238,19 @@ public class DecoratorTest extends v4Test {
     final AtomicInteger count = new AtomicInteger(0);
     shouldCompileTo(
         "{{#*decorator foo}}success{{/decorator}}",
-        $("hash", $("foo", "fail"), "decorators", $("decorator", new Decorator() {
-          @Override
-          public void apply(final Template fn, final Options options) throws IOException {
-            assertArrayEquals((Object[])null, options.param(0));
-            count.incrementAndGet();
-          }
-        })),
+        $(
+            "hash",
+            $("foo", "fail"),
+            "decorators",
+            $(
+                "decorator",
+                new Decorator() {
+                  @Override
+                  public void apply(final Template fn, final Options options) throws IOException {
+                    assertArrayEquals((Object[]) null, options.param(0));
+                    count.incrementAndGet();
+                  }
+                })),
         "");
     assertEquals(1, count.get());
   }
@@ -187,13 +260,19 @@ public class DecoratorTest extends v4Test {
     final AtomicInteger count = new AtomicInteger(0);
     shouldCompileTo(
         "{{#*decorator foo}}success{{/decorator}}{{#*decorator foo}}success{{/decorator}}",
-        $("hash", $("foo", "fail"), "decorators", $("decorator", new Decorator() {
-          @Override
-          public void apply(final Template fn, final Options options) throws IOException {
-            assertArrayEquals((Object[])null, options.param(0));
-            count.incrementAndGet();
-          }
-        })),
+        $(
+            "hash",
+            $("foo", "fail"),
+            "decorators",
+            $(
+                "decorator",
+                new Decorator() {
+                  @Override
+                  public void apply(final Template fn, final Options options) throws IOException {
+                    assertArrayEquals((Object[]) null, options.param(0));
+                    count.incrementAndGet();
+                  }
+                })),
         "");
     assertEquals(2, count.get());
   }
@@ -203,12 +282,16 @@ public class DecoratorTest extends v4Test {
     final AtomicInteger count = new AtomicInteger(0);
     shouldCompileTo(
         "{{*decorator}}",
-        $("decorators", $("decorator", new Decorator() {
-          @Override
-          public void apply(final Template fn, final Options options) throws IOException {
-            count.incrementAndGet();
-          }
-        })),
+        $(
+            "decorators",
+            $(
+                "decorator",
+                new Decorator() {
+                  @Override
+                  public void apply(final Template fn, final Options options) throws IOException {
+                    count.incrementAndGet();
+                  }
+                })),
         "");
     assertEquals(1, count.get());
   }
@@ -218,12 +301,16 @@ public class DecoratorTest extends v4Test {
     final AtomicInteger count = new AtomicInteger(0);
     shouldCompileTo(
         "{{*decorator}}{{*decorator}}",
-        $("decorators", $("decorator", new Decorator() {
-          @Override
-          public void apply(final Template fn, final Options options) throws IOException {
-            count.incrementAndGet();
-          }
-        })),
+        $(
+            "decorators",
+            $(
+                "decorator",
+                new Decorator() {
+                  @Override
+                  public void apply(final Template fn, final Options options) throws IOException {
+                    count.incrementAndGet();
+                  }
+                })),
         "");
     assertEquals(2, count.get());
   }
@@ -233,12 +320,16 @@ public class DecoratorTest extends v4Test {
     final AtomicInteger count = new AtomicInteger(0);
     shouldCompileTo(
         "{{*decorator}}{{*decorator}}{{*decorator}}",
-        $("decorators", $("decorator", new Decorator() {
-          @Override
-          public void apply(final Template fn, final Options options) throws IOException {
-            count.incrementAndGet();
-          }
-        })),
+        $(
+            "decorators",
+            $(
+                "decorator",
+                new Decorator() {
+                  @Override
+                  public void apply(final Template fn, final Options options) throws IOException {
+                    count.incrementAndGet();
+                  }
+                })),
         "");
     assertEquals(3, count.get());
   }
@@ -246,81 +337,117 @@ public class DecoratorTest extends v4Test {
   @Test
   public void gridData() throws Exception {
     shouldCompileTo(
-        "{{#grid people}}\n" +
-            "  {{#*column \"First Name\"}}{{firstName}}{{/column}}\n" +
-            "  {{#*column \"Last Name\"}}{{lastName}}{{/column}}\n" +
-            "{{/grid}}",
-        $("helpers", $("grid", new Helper<List<Hash>>() {
-          @Override
-          public Object apply(final List<Hash> people, final Options options)
-              throws IOException {
-            List<Hash> columns = options.data("columns");
-            String headers = "";
-            for (Hash c : columns) {
-              headers += c.get("key") + ", ";
-            }
-            String output = headers + "\n";
-            for (Hash person : people) {
-              for (Hash c : columns) {
-                output += ((Template) c.get("body")).apply(person) + ", ";
-              }
-              output += "\n";
-            }
-            return output;
-          }
-        }), "decorators", $("column", new Decorator() {
-          @Override
-          public void apply(final Template fn, final Options options) throws IOException {
-            List<Hash> columns = options.data("columns");
-            if (columns == null) {
-              columns = new ArrayList<>();
-              options.data("columns", columns);
-            }
-            columns.add($("key", options.param(0), "body", options.fn));
-          }
-        }), "hash", $("people", Arrays.asList($("firstName", "Pedro", "lastName", "PicaPiedra"),
-            $("firstName", "Pablo", "lastName", "Marmol")))),
-        "First Name, Last Name, \n" +
-        "Pedro, PicaPiedra, \n" +
-        "Pablo, Marmol, \n" +
-        "");
+        "{{#grid people}}\n"
+            + "  {{#*column \"First Name\"}}{{firstName}}{{/column}}\n"
+            + "  {{#*column \"Last Name\"}}{{lastName}}{{/column}}\n"
+            + "{{/grid}}",
+        $(
+            "helpers",
+            $(
+                "grid",
+                new Helper<List<Hash>>() {
+                  @Override
+                  public Object apply(final List<Hash> people, final Options options)
+                      throws IOException {
+                    List<Hash> columns = options.data("columns");
+                    String headers = "";
+                    for (Hash c : columns) {
+                      headers += c.get("key") + ", ";
+                    }
+                    String output = headers + "\n";
+                    for (Hash person : people) {
+                      for (Hash c : columns) {
+                        output += ((Template) c.get("body")).apply(person) + ", ";
+                      }
+                      output += "\n";
+                    }
+                    return output;
+                  }
+                }),
+            "decorators",
+            $(
+                "column",
+                new Decorator() {
+                  @Override
+                  public void apply(final Template fn, final Options options) throws IOException {
+                    List<Hash> columns = options.data("columns");
+                    if (columns == null) {
+                      columns = new ArrayList<>();
+                      options.data("columns", columns);
+                    }
+                    columns.add($("key", options.param(0), "body", options.fn));
+                  }
+                }),
+            "hash",
+            $(
+                "people",
+                Arrays.asList(
+                    $("firstName", "Pedro", "lastName", "PicaPiedra"),
+                    $("firstName", "Pablo", "lastName", "Marmol")))),
+        "First Name, Last Name, \n" + "Pedro, PicaPiedra, \n" + "Pablo, Marmol, \n" + "");
   }
 
   @Test
   public void text() throws Exception {
-    text("{{*decorator}}{{*decorator}}{{*decorator}}",
-        $("decorators", $("decorator", new Decorator() {
-          @Override
-          public void apply(final Template fn, final Options options) throws IOException {
-          }
-        })), "{{*decorator}}{{*decorator}}{{*decorator}}");
+    text(
+        "{{*decorator}}{{*decorator}}{{*decorator}}",
+        $(
+            "decorators",
+            $(
+                "decorator",
+                new Decorator() {
+                  @Override
+                  public void apply(final Template fn, final Options options) throws IOException {}
+                })),
+        "{{*decorator}}{{*decorator}}{{*decorator}}");
 
-    text("{{#*decorator}}{{*decorator}}{{/decorator}}",
-        $("decorators", $("decorator", new Decorator() {
-          @Override
-          public void apply(final Template fn, final Options options) throws IOException {
-          }
-        })), "{{#*decorator}}{{*decorator}}{{/decorator}}");
+    text(
+        "{{#*decorator}}{{*decorator}}{{/decorator}}",
+        $(
+            "decorators",
+            $(
+                "decorator",
+                new Decorator() {
+                  @Override
+                  public void apply(final Template fn, final Options options) throws IOException {}
+                })),
+        "{{#*decorator}}{{*decorator}}{{/decorator}}");
   }
 
   @Test
   public void collectVarDecorator() throws IOException {
-    assertSetEquals(Arrays.asList("decorator"), compile("{{#hello}}{{*decorator}}{{/hello}}{{k}}",
-        $("decorators", $("decorator", new Decorator() {
-          @Override
-          public void apply(final Template fn, final Options options) throws IOException {
-          }
-        }))).collect(TagType.STAR_VAR));
+    assertSetEquals(
+        Arrays.asList("decorator"),
+        compile(
+                "{{#hello}}{{*decorator}}{{/hello}}{{k}}",
+                $(
+                    "decorators",
+                    $(
+                        "decorator",
+                        new Decorator() {
+                          @Override
+                          public void apply(final Template fn, final Options options)
+                              throws IOException {}
+                        })))
+            .collect(TagType.STAR_VAR));
   }
 
   @Test
   public void collectBlockDecorator() throws IOException {
-    assertSetEquals(Arrays.asList("decorator"), compile("{{#*decorator}}deco{{/decorator}}{{k}}",
-        $("decorators", $("decorator", new Decorator() {
-          @Override
-          public void apply(final Template fn, final Options options) throws IOException {
-          }
-        }))).collect(TagType.START_SECTION));
+    assertSetEquals(
+        Arrays.asList("decorator"),
+        compile(
+                "{{#*decorator}}deco{{/decorator}}{{k}}",
+                $(
+                    "decorators",
+                    $(
+                        "decorator",
+                        new Decorator() {
+                          @Override
+                          public void apply(final Template fn, final Options options)
+                              throws IOException {}
+                        })))
+            .collect(TagType.START_SECTION));
   }
 
   private void assertSetEquals(final List<String> list, final List<String> list2) {

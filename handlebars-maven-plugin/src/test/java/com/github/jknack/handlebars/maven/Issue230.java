@@ -1,10 +1,13 @@
+/*
+ * Handlebars.java: https://github.com/jknack/handlebars.java
+ * Apache License Version 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Copyright (c) 2012 Edgar Espina
+ */
 package com.github.jknack.handlebars.maven;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-
-import java.io.IOException;
 
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.project.MavenProject;
@@ -24,13 +27,15 @@ public class Issue230 {
 
     plugin.execute();
 
-    assertEquals("(function() {\n" +
-        "  /* English (United States) */\n" +
-        "  I18n.translations = I18n.translations || {};\n" +
-        "  I18n.translations['en_US'] = {\n" +
-        "    \"pagination_top_of_page\": \"Inicio de la pagina\"\n" +
-        "  };\n" +
-        "})();", replaceWhiteCharsWithSpace(FileUtils.fileRead("target/i230.js")));
+    assertEquals(
+        "(function() {\n"
+            + "  /* English (United States) */\n"
+            + "  I18n.translations = I18n.translations || {};\n"
+            + "  I18n.translations['en_US'] = {\n"
+            + "    \"pagination_top_of_page\": \"Inicio de la pagina\"\n"
+            + "  };\n"
+            + "})();",
+        replaceWhiteCharsWithSpace(FileUtils.fileRead("target/i230.js")));
   }
 
   private MavenProject newProject(final String... classpath)
@@ -41,9 +46,6 @@ public class Issue230 {
   }
 
   private String replaceWhiteCharsWithSpace(String content) {
-    return content
-        .replace("\r", "")
-        .replace("\t", " ")
-        .trim();
+    return content.replace("\r", "").replace("\t", " ").trim();
   }
 }

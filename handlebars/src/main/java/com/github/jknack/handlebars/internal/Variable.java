@@ -1,19 +1,7 @@
-/**
- * Copyright (c) 2012-2015 Edgar Espina
- *
- * This file is part of Handlebars.java.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+/*
+ * Handlebars.java: https://github.com/jknack/handlebars.java
+ * Apache License Version 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Copyright (c) 2012 Edgar Espina
  */
 package com.github.jknack.handlebars.internal;
 
@@ -38,12 +26,10 @@ import com.github.jknack.handlebars.TagType;
 import com.github.jknack.handlebars.Template;
 
 /**
- * The most basic tag type is the variable. A {{name}} tag in a basic template
- * will try to find the name key in the current context. If there is no name
- * key, nothing will be rendered.
- * All variables are HTML escaped by default. If you want to return unescaped
- * HTML, use the triple mustache: {{{name}}}.
- * You can also use &amp; to unescape a variable: {{&amp; name}}. This may be useful
+ * The most basic tag type is the variable. A {{name}} tag in a basic template will try to find the
+ * name key in the current context. If there is no name key, nothing will be rendered. All variables
+ * are HTML escaped by default. If you want to return unescaped HTML, use the triple mustache:
+ * {{{name}}}. You can also use &amp; to unescape a variable: {{&amp; name}}. This may be useful
  * when changing delimiters.
  *
  * @author edgar.espina
@@ -51,29 +37,19 @@ import com.github.jknack.handlebars.Template;
  */
 class Variable extends HelperResolver {
 
-  /**
-   * The variable's name. Required.
-   */
+  /** The variable's name. Required. */
   protected final String name;
 
-  /**
-   * The variable type.
-   */
+  /** The variable type. */
   protected final TagType type;
 
-  /**
-   * The start delimiter.
-   */
+  /** The start delimiter. */
   private String startDelimiter;
 
-  /**
-   * The end delimiter.
-   */
+  /** The end delimiter. */
   private String endDelimiter;
 
-  /**
-   * The escaping strategy.
-   */
+  /** The escaping strategy. */
   private EscapingStrategy escapingStrategy;
 
   /** Helper. */
@@ -106,8 +82,12 @@ class Variable extends HelperResolver {
    * @param params The variable's parameters. Required.
    * @param hash The variable's hash. Required.
    */
-  Variable(final Handlebars handlebars, final String name,
-      final TagType type, final List<Param> params, final Map<String, Param> hash) {
+  Variable(
+      final Handlebars handlebars,
+      final String name,
+      final TagType type,
+      final List<Param> params,
+      final Map<String, Param> hash) {
     super(handlebars);
     this.name = name.trim();
     this.path = PathCompiler.compile(name, handlebars.parentScopeResolution());
@@ -115,17 +95,14 @@ class Variable extends HelperResolver {
     this.emptyVar = empty(this);
     params(params);
     hash(hash);
-    this.escapingStrategy = type == TagType.VAR
-        ? handlebars.getEscapingStrategy()
-        : EscapingStrategy.NOOP;
+    this.escapingStrategy =
+        type == TagType.VAR ? handlebars.getEscapingStrategy() : EscapingStrategy.NOOP;
     this.formatter = handlebars.getFormatter();
     this.noArg = params.size() == 0 && hash.size() == 0;
     postInit();
   }
 
-  /**
-   * Apply any pending initialization.
-   */
+  /** Apply any pending initialization. */
   protected void postInit() {
     this.helper = helper(name);
     this.missing = handlebars.helper(HelperRegistry.HELPER_MISSING);
@@ -141,8 +118,7 @@ class Variable extends HelperResolver {
   }
 
   @Override
-  protected void merge(final Context scope, final Writer writer)
-      throws IOException {
+  protected void merge(final Context scope, final Writer writer) throws IOException {
     Object value = value(scope, writer);
     if (value != null) {
       writer.append(formatAndEscape(value, formatter));
@@ -161,16 +137,36 @@ class Variable extends HelperResolver {
   public Object value(final Context scope, final Writer writer) throws IOException {
     boolean blockParam = scope.isBlockParams() && noArg;
     if (helper != null && !blockParam) {
-      Options options = new Options(handlebars, name, type, scope, emptyVar, Template.EMPTY,
-          params(scope), hash(scope), BPARAMS, writer);
+      Options options =
+          new Options(
+              handlebars,
+              name,
+              type,
+              scope,
+              emptyVar,
+              Template.EMPTY,
+              params(scope),
+              hash(scope),
+              BPARAMS,
+              writer);
       options.data(Context.PARAM_SIZE, this.params.size());
       return helper.apply(determineContext(scope), options);
     } else {
       Object value = scope.get(path);
       if (value == null) {
         if (missing != null) {
-          Options options = new Options(handlebars, name, type, scope, emptyVar, Template.EMPTY,
-              params(scope), hash(scope), BPARAMS, writer);
+          Options options =
+              new Options(
+                  handlebars,
+                  name,
+                  type,
+                  scope,
+                  emptyVar,
+                  Template.EMPTY,
+                  params(scope),
+                  hash(scope),
+                  BPARAMS,
+                  writer);
           options.data(Context.PARAM_SIZE, this.params.size());
           value = missing.apply(determineContext(scope), options);
         }
@@ -194,8 +190,7 @@ class Variable extends HelperResolver {
       }
 
       @Override
-      public void apply(final Context context, final Writer writer) throws IOException {
-      }
+      public void apply(final Context context, final Writer writer) throws IOException {}
 
       @Override
       public String apply(final Object context) throws IOException {
@@ -203,8 +198,7 @@ class Variable extends HelperResolver {
       }
 
       @Override
-      public void apply(final Object context, final Writer writer) throws IOException {
-      }
+      public void apply(final Object context, final Writer writer) throws IOException {}
     };
   }
 
@@ -227,7 +221,7 @@ class Variable extends HelperResolver {
     Object formatted = formatter.format(value);
     CharSequence formattedString = formatted.toString();
     if (formatted instanceof Handlebars.SafeString) {
-        return formattedString;
+      return formattedString;
     }
     CharSequence escapedString = escapingStrategy.escape(formattedString);
     return escapedString;
@@ -294,5 +288,4 @@ class Variable extends HelperResolver {
   public String endDelimiter() {
     return endDelimiter;
   }
-
 }

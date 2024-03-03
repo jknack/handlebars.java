@@ -1,19 +1,7 @@
-/**
- * Copyright (c) 2012-2015 Edgar Espina
- *
- * This file is part of Handlebars.java.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+/*
+ * Handlebars.java: https://github.com/jknack/handlebars.java
+ * Apache License Version 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Copyright (c) 2012 Edgar Espina
  */
 package com.github.jknack.handlebars.internal;
 
@@ -36,9 +24,7 @@ import com.github.jknack.handlebars.TypeSafeTemplate;
  */
 class ForwardingTemplate implements Template {
 
-  /**
-   * The original template.
-   */
+  /** The original template. */
   private final Template template;
 
   /**
@@ -111,16 +97,14 @@ class ForwardingTemplate implements Template {
    *
    * @param context The template context.
    */
-  protected void afterApply(final Context context) {
-  }
+  protected void afterApply(final Context context) {}
 
   /**
    * Call it before a template has been applied.
    *
    * @param context The template context.
    */
-  protected void beforeApply(final Context context) {
-  }
+  protected void beforeApply(final Context context) {}
 
   @Override
   public String text() {

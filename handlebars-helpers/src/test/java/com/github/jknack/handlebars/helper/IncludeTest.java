@@ -1,3 +1,8 @@
+/*
+ * Handlebars.java: https://github.com/jknack/handlebars.java
+ * Apache License Version 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Copyright (c) 2012 Edgar Espina
+ */
 package com.github.jknack.handlebars.helper;
 
 import java.io.IOException;
@@ -19,71 +24,112 @@ public class IncludeTest extends AbstractTest {
     String template = "{{#each dudes}}{{include \"dude\" greeting=\"Hi\"}} {{/each}}";
     String partial = "{{greeting}}, {{name}}!";
     String expected = "Hi, Yehuda! Hi, Alan! ";
-    Hash dudes = $("dudes",
-        new Object[]{
-            $("name", "Yehuda", "url", "http://yehuda"),
-            $("name", "Alan", "url", "http://alan")
-        });
+    Hash dudes =
+        $(
+            "dudes",
+            new Object[] {
+              $("name", "Yehuda", "url", "http://yehuda"), $("name", "Alan", "url", "http://alan")
+            });
     shouldCompileToWithPartials(template, dudes, $("dude", partial), expected);
   }
 
   @Test
   public void accessToParentContext() throws IOException {
-    String string = "{{#each hobbies}}{{../name}} has hobby {{hobbyname}} and lives in {{../town}} {{/each}}";
-    Object hash = $("name", "Dennis", "town", "berlin", "hobbies",
-        new Object[]{$("hobbyname", "swimming"), $("hobbyname", "dancing"),
-            $("hobbyname", "movies") });
-    shouldCompileTo(string, hash, "Dennis has hobby swimming and lives in berlin " +
-        "Dennis has hobby dancing and lives in berlin " +
-        "Dennis has hobby movies and lives in berlin ");
+    String string =
+        "{{#each hobbies}}{{../name}} has hobby {{hobbyname}} and lives in {{../town}} {{/each}}";
+    Object hash =
+        $(
+            "name",
+            "Dennis",
+            "town",
+            "berlin",
+            "hobbies",
+            new Object[] {
+              $("hobbyname", "swimming"), $("hobbyname", "dancing"), $("hobbyname", "movies")
+            });
+    shouldCompileTo(
+        string,
+        hash,
+        "Dennis has hobby swimming and lives in berlin "
+            + "Dennis has hobby dancing and lives in berlin "
+            + "Dennis has hobby movies and lives in berlin ");
   }
 
   @Test
   public void accessToParentContextFromPartialUsingInclude() throws IOException {
-    String string = "{{#each hobbies}}{{include \"hobby\" parentcontext=.. town=../town}} {{/each}}";
-    Object hash = $("name", "Dennis", "town", "berlin", "hobbies",
-        new Object[]{$("hobbyname", "swimming"), $("hobbyname", "dancing"),
-            $("hobbyname", "movies") });
-    Hash partials = $("hobby",
-        "{{parentcontext.name}} has hobby {{hobbyname}} and lives in {{town}}");
+    String string =
+        "{{#each hobbies}}{{include \"hobby\" parentcontext=.. town=../town}} {{/each}}";
+    Object hash =
+        $(
+            "name",
+            "Dennis",
+            "town",
+            "berlin",
+            "hobbies",
+            new Object[] {
+              $("hobbyname", "swimming"), $("hobbyname", "dancing"), $("hobbyname", "movies")
+            });
+    Hash partials =
+        $("hobby", "{{parentcontext.name}} has hobby {{hobbyname}} and lives in {{town}}");
 
-    shouldCompileToWithPartials(string, hash, partials,
-        "Dennis has hobby swimming and lives in berlin " +
-            "Dennis has hobby dancing and lives in berlin " +
-            "Dennis has hobby movies and lives in berlin ");
+    shouldCompileToWithPartials(
+        string,
+        hash,
+        partials,
+        "Dennis has hobby swimming and lives in berlin "
+            + "Dennis has hobby dancing and lives in berlin "
+            + "Dennis has hobby movies and lives in berlin ");
   }
 
   @Test
   public void accessToParentContextFromPartialMustacheSpec() throws IOException {
     String string = "{{#each hobbies}}{{> hobby}} {{/each}}";
 
-    Object hash = $("name", "Dennis", "town", "berlin", "hobbies",
-        new Object[]{$("hobbyname", "swimming"), $("hobbyname", "dancing"),
-            $("hobbyname", "movies") });
+    Object hash =
+        $(
+            "name",
+            "Dennis",
+            "town",
+            "berlin",
+            "hobbies",
+            new Object[] {
+              $("hobbyname", "swimming"), $("hobbyname", "dancing"), $("hobbyname", "movies")
+            });
 
-    Hash partials = $("hobby",
-        "{{name}} has hobby {{hobbyname}} and lives in {{town}}");
+    Hash partials = $("hobby", "{{name}} has hobby {{hobbyname}} and lives in {{town}}");
 
-    shouldCompileToWithPartials(string, hash, partials,
-        "Dennis has hobby swimming and lives in berlin " +
-            "Dennis has hobby dancing and lives in berlin " +
-            "Dennis has hobby movies and lives in berlin ");
+    shouldCompileToWithPartials(
+        string,
+        hash,
+        partials,
+        "Dennis has hobby swimming and lives in berlin "
+            + "Dennis has hobby dancing and lives in berlin "
+            + "Dennis has hobby movies and lives in berlin ");
   }
 
   @Test
   public void explicitAccessToParentContextFromPartialMustacheSpec() throws IOException {
     String string = "{{#each hobbies}}{{> hobby}} {{/each}}";
 
-    Object hash = $("name", "Dennis", "town", "berlin", "hobbies",
-        new Object[]{$("hobbyname", "swimming"), $("hobbyname", "dancing"),
-            $("hobbyname", "movies") });
+    Object hash =
+        $(
+            "name",
+            "Dennis",
+            "town",
+            "berlin",
+            "hobbies",
+            new Object[] {
+              $("hobbyname", "swimming"), $("hobbyname", "dancing"), $("hobbyname", "movies")
+            });
 
-    Hash partials = $("hobby",
-        "{{../name}} has hobby {{hobbyname}} and lives in {{../town}}");
+    Hash partials = $("hobby", "{{../name}} has hobby {{hobbyname}} and lives in {{../town}}");
 
-    shouldCompileToWithPartials(string, hash, partials,
-        "Dennis has hobby swimming and lives in berlin " +
-            "Dennis has hobby dancing and lives in berlin " +
-            "Dennis has hobby movies and lives in berlin ");
+    shouldCompileToWithPartials(
+        string,
+        hash,
+        partials,
+        "Dennis has hobby swimming and lives in berlin "
+            + "Dennis has hobby dancing and lives in berlin "
+            + "Dennis has hobby movies and lives in berlin ");
   }
 }

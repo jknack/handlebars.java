@@ -1,19 +1,7 @@
-/**
- * Copyright (c) 2012-2015 Edgar Espina
- *
- * This file is part of Handlebars.java.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+/*
+ * Handlebars.java: https://github.com/jknack/handlebars.java
+ * Apache License Version 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Copyright (c) 2012 Edgar Espina
  */
 package com.github.jknack.handlebars.internal;
 
@@ -54,8 +42,13 @@ public class VarDecorator extends Variable {
    * @param hash The variable's hash. Required.
    * @param root True, if this is top level decorator.
    */
-  public VarDecorator(final Handlebars handlebars, final String name, final TagType type,
-      final List<Param> params, final Map<String, Param> hash, final boolean root) {
+  public VarDecorator(
+      final Handlebars handlebars,
+      final String name,
+      final TagType type,
+      final List<Param> params,
+      final Map<String, Param> hash,
+      final boolean root) {
     super(handlebars, name, type, params, hash);
     this.root = root;
   }
@@ -70,8 +63,18 @@ public class VarDecorator extends Variable {
 
     Context ctx = root ? Context.copy(context, null) : context;
 
-    Options options = new Options(handlebars, name, type, ctx, this, Template.EMPTY,
-        decoParams(ctx), hash(ctx), Collections.<String> emptyList(), null);
+    Options options =
+        new Options(
+            handlebars,
+            name,
+            type,
+            ctx,
+            this,
+            Template.EMPTY,
+            decoParams(ctx),
+            hash(ctx),
+            Collections.<String>emptyList(),
+            null);
     options.data(Context.PARAM_SIZE, this.params.size());
 
     decorator.apply(this, options);
@@ -91,5 +94,4 @@ public class VarDecorator extends Variable {
   protected String suffix() {
     return "*";
   }
-
 }

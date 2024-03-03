@@ -1,3 +1,8 @@
+/*
+ * Handlebars.java: https://github.com/jknack/handlebars.java
+ * Apache License Version 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Copyright (c) 2012 Edgar Espina
+ */
 package com.github.jknack.handlebars;
 
 import static org.junit.Assert.assertEquals;
@@ -18,10 +23,11 @@ import com.github.jknack.handlebars.io.URLTemplateLoader;
 @RunWith(Parameterized.class)
 public class PrecompileHelperTest {
 
-  URLTemplateLoader loader = new MapTemplateLoader()
-      .define("input", "Hi {{this}}!")
-      .define("root", "{{> partial/child}}")
-      .define("partial/child", "CHILD!!!");
+  URLTemplateLoader loader =
+      new MapTemplateLoader()
+          .define("input", "Hi {{this}}!")
+          .define("root", "{{> partial/child}}")
+          .define("partial/child", "CHILD!!!");
 
   Handlebars handlebars = new Handlebars(loader);
 
@@ -34,12 +40,11 @@ public class PrecompileHelperTest {
   @Test
   public void precompile() throws IOException {
     String js =
-        handlebars.compileInline(
-            "{{precompile \"input\" wrapper=\"" + wrapper + "\"}}").apply(
-            "Handlebar.js");
+        handlebars
+            .compileInline("{{precompile \"input\" wrapper=\"" + wrapper + "\"}}")
+            .apply("Handlebar.js");
 
-    InputStream in =
-        getClass().getResourceAsStream("/" + wrapper + ".precompiled.js");
+    InputStream in = getClass().getResourceAsStream("/" + wrapper + ".precompiled.js");
 
     assertEquals(wrapper, spaceSafe(IOUtils.toString(in)), spaceSafe(js));
 
@@ -52,12 +57,9 @@ public class PrecompileHelperTest {
 
   @Test
   public void precompileWithPartial() throws IOException {
-    String js =
-        handlebars
-            .compileInline("{{precompile \"root\"}}").apply("Handlebar.js");
+    String js = handlebars.compileInline("{{precompile \"root\"}}").apply("Handlebar.js");
 
-    InputStream in =
-        getClass().getResourceAsStream("/partial.precompiled.js");
+    InputStream in = getClass().getResourceAsStream("/partial.precompiled.js");
 
     assertEquals(spaceSafe(IOUtils.toString(in)), spaceSafe(js));
 
@@ -66,7 +68,6 @@ public class PrecompileHelperTest {
 
   @Parameters
   public static Collection<Object[]> data() {
-    return Arrays.asList(new Object[]{"anonymous" }, new Object[]{"none" },
-        new Object[]{"amd" });
+    return Arrays.asList(new Object[] {"anonymous"}, new Object[] {"none"}, new Object[] {"amd"});
   }
 }

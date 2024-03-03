@@ -1,3 +1,8 @@
+/*
+ * Handlebars.java: https://github.com/jknack/handlebars.java
+ * Apache License Version 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Copyright (c) 2012 Edgar Espina
+ */
 package com.github.jknack.handlebars.bench;
 
 import java.io.IOException;
@@ -25,15 +30,17 @@ public class HbsBench {
   public void setup() throws IOException {
     Assume.assumeTrue(Boolean.valueOf(System.getProperty("run.bench")));
 
-    template = new com.github.jknack.handlebars.Handlebars(
-        new ClassPathTemplateLoader("/", ".html"))
-            .registerHelper("minus", new Helper<Stock>() {
-              @Override
-              public Object apply(final Stock stock, final Options options)
-                  throws IOException {
-                return stock.getChange() < 0 ? new SafeString("class=\"minus\"") : null;
-              }
-            }).compile("com/github/jknack/handlebars/bench/stocks.hbs");
+    template =
+        new com.github.jknack.handlebars.Handlebars(new ClassPathTemplateLoader("/", ".html"))
+            .registerHelper(
+                "minus",
+                new Helper<Stock>() {
+                  @Override
+                  public Object apply(final Stock stock, final Options options) throws IOException {
+                    return stock.getChange() < 0 ? new SafeString("class=\"minus\"") : null;
+                  }
+                })
+            .compile("com/github/jknack/handlebars/bench/stocks.hbs");
     this.context = new HashMap<>();
     this.context.put("items", Stock.dummyItems());
   }
@@ -45,19 +52,19 @@ public class HbsBench {
 
   @Test
   public void benchmark() throws IOException {
-    new Bench(1000, 5, 30).run(new Unit() {
+    new Bench(1000, 5, 30)
+        .run(
+            new Unit() {
 
-      @Override
-      public void run() throws IOException {
-        template.apply(context);
-      }
+              @Override
+              public void run() throws IOException {
+                template.apply(context);
+              }
 
-      @Override
-      public String toString() {
-        return "stocks.hbs";
-      }
-    });
-
+              @Override
+              public String toString() {
+                return "stocks.hbs";
+              }
+            });
   }
-
 }

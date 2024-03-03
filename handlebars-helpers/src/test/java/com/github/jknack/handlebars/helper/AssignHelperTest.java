@@ -1,3 +1,8 @@
+/*
+ * Handlebars.java: https://github.com/jknack/handlebars.java
+ * Apache License Version 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Copyright (c) 2012 Edgar Espina
+ */
 package com.github.jknack.handlebars.helper;
 
 import static org.junit.Assert.assertEquals;
@@ -21,17 +26,17 @@ public class AssignHelperTest extends AbstractTest {
   public void assignResult() throws IOException {
     shouldCompileTo(
         "{{#assign \"benefitsTitle\"}} benefits.{{type}}.title {{/assign}}",
-        $("type", "discounts"), "");
+        $("type", "discounts"),
+        "");
   }
 
   @Test
   public void assignContext() throws IOException {
     Context context = Context.newContext($("type", "discounts"));
 
-    shouldCompileTo("{{#assign \"benefitsTitle\"}} benefits.{{type}}.title {{/assign}}",
-        context, "");
+    shouldCompileTo(
+        "{{#assign \"benefitsTitle\"}} benefits.{{type}}.title {{/assign}}", context, "");
 
     assertEquals("benefits.discounts.title", context.data("benefitsTitle"));
   }
-
 }

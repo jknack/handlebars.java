@@ -1,3 +1,8 @@
+/*
+ * Handlebars.java: https://github.com/jknack/handlebars.java
+ * Apache License Version 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Copyright (c) 2012 Edgar Espina
+ */
 package com.github.jknack.handlebars.io;
 
 import static org.junit.Assert.assertEquals;
@@ -18,7 +23,8 @@ import org.junit.Test;
 public class URLTemplateSourceTest {
   @Test
   public void content() throws Exception {
-    URLTemplateSource templateSource = new URLTemplateSource("template.hbs", getClass().getResource("/template.hbs"));
+    URLTemplateSource templateSource =
+        new URLTemplateSource("template.hbs", getClass().getResource("/template.hbs"));
 
     assertEquals("template.hbs", templateSource.content(StandardCharsets.UTF_8));
   }
@@ -70,22 +76,24 @@ public class URLTemplateSourceTest {
   }
 
   private URL createThrowingMockUrl(IOException ioException) throws IOException {
-    URLStreamHandler handler = new URLStreamHandler() {
-      @Override
-      protected URLConnection openConnection(final URL arg0) throws IOException {
-        throw ioException;
-      }
-    };
+    URLStreamHandler handler =
+        new URLStreamHandler() {
+          @Override
+          protected URLConnection openConnection(final URL arg0) throws IOException {
+            throw ioException;
+          }
+        };
     return new URL("http://foo.bar", "foo.bar", 80, "", handler);
   }
 
   private URL createMockUrl(URLConnection urlConnection) throws IOException {
-    URLStreamHandler handler = new URLStreamHandler() {
-      @Override
-      protected URLConnection openConnection(final URL arg0) {
-        return urlConnection;
-      }
-    };
+    URLStreamHandler handler =
+        new URLStreamHandler() {
+          @Override
+          protected URLConnection openConnection(final URL arg0) {
+            return urlConnection;
+          }
+        };
     return new URL("http://foo.bar", "foo.bar", 80, "", handler);
   }
 }

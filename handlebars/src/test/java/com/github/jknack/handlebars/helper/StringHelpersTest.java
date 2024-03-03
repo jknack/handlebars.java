@@ -1,3 +1,8 @@
+/*
+ * Handlebars.java: https://github.com/jknack/handlebars.java
+ * Apache License Version 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Copyright (c) 2012 Edgar Espina
+ */
 package com.github.jknack.handlebars.helper;
 
 import static com.github.jknack.handlebars.helper.StringHelpers.abbreviate;
@@ -54,8 +59,7 @@ public class StringHelpersTest extends AbstractTest {
     when(options.isFalsy(any())).thenReturn(false);
 
     assertEquals("capitalizeFirst", capitalizeFirst.name());
-    assertEquals("Handlebars.java",
-        capitalizeFirst.apply("handlebars.java", options));
+    assertEquals("Handlebars.java", capitalizeFirst.apply("handlebars.java", options));
 
     verify(options).isFalsy(any());
   }
@@ -68,8 +72,7 @@ public class StringHelpersTest extends AbstractTest {
     when(options.hash("pad", " ")).thenReturn(null);
 
     assertEquals("center", center.name());
-    assertEquals("  Handlebars.java  ",
-        center.apply("Handlebars.java", options));
+    assertEquals("  Handlebars.java  ", center.apply("Handlebars.java", options));
 
     verify(options).hash("size");
     verify(options).isFalsy(any());
@@ -84,8 +87,7 @@ public class StringHelpersTest extends AbstractTest {
     when(options.isFalsy(any())).thenReturn(false);
 
     assertEquals("center", center.name());
-    assertEquals("**Handlebars.java**",
-        center.apply("Handlebars.java", options));
+    assertEquals("**Handlebars.java**", center.apply("Handlebars.java", options));
 
     verify(options).hash("size");
     verify(options).hash("pad", " ");
@@ -99,8 +101,7 @@ public class StringHelpersTest extends AbstractTest {
     when(options.isFalsy(any())).thenReturn(false);
 
     assertEquals("cut", cut.name());
-    assertEquals("handlebars.java",
-        cut.apply("handle bars .  java", options));
+    assertEquals("handlebars.java", cut.apply("handle bars .  java", options));
 
     verify(options).param(0, " ");
     verify(options).isFalsy(any());
@@ -113,8 +114,7 @@ public class StringHelpersTest extends AbstractTest {
     when(options.isFalsy(any())).thenReturn(false);
 
     assertEquals("cut", cut.name());
-    assertEquals("handlebars.java",
-        cut.apply("handle*bars*.**java", options));
+    assertEquals("handlebars.java", cut.apply("handle*bars*.**java", options));
 
     verify(options).param(0, " ");
     verify(options).isFalsy(any());
@@ -126,53 +126,61 @@ public class StringHelpersTest extends AbstractTest {
     when(options.param(0, "")).thenReturn("handlebars.java");
 
     assertEquals("defaultIfEmpty", defaultIfEmpty.name());
-    assertEquals("handlebars.java",
-        defaultIfEmpty.apply(null, options));
-    assertEquals("handlebars.java",
-        defaultIfEmpty.apply(false, options));
-    assertEquals("handlebars.java",
-        defaultIfEmpty.apply(Collections.emptyList(), options));
+    assertEquals("handlebars.java", defaultIfEmpty.apply(null, options));
+    assertEquals("handlebars.java", defaultIfEmpty.apply(false, options));
+    assertEquals("handlebars.java", defaultIfEmpty.apply(Collections.emptyList(), options));
 
-    assertEquals("something",
-        defaultIfEmpty.apply("something", options));
+    assertEquals("something", defaultIfEmpty.apply("something", options));
 
     verify(options, times(3)).param(anyInt(), anyString());
   }
 
   @Test
   public void joinIterable() throws IOException {
-    shouldCompileTo("{{{join this \", \"}}}", Arrays.asList("6", "7", "8"),
-            $("join", StringHelpers.join), "6, 7, 8");
+    shouldCompileTo(
+        "{{{join this \", \"}}}",
+        Arrays.asList("6", "7", "8"),
+        $("join", StringHelpers.join),
+        "6, 7, 8");
   }
 
   @Test
   public void joinEmptyList() throws IOException {
-    shouldCompileTo("{{{join this \", \"}}}", Collections.emptyList(),
-            $("join", StringHelpers.join), "");
+    shouldCompileTo(
+        "{{{join this \", \"}}}", Collections.emptyList(), $("join", StringHelpers.join), "");
   }
 
   @Test
   public void joinIterator() throws IOException {
-    shouldCompileTo("{{{join this \", \"}}}", Arrays.asList("6", "7", "8").iterator(),
-        $("join", StringHelpers.join), "6, 7, 8");
+    shouldCompileTo(
+        "{{{join this \", \"}}}",
+        Arrays.asList("6", "7", "8").iterator(),
+        $("join", StringHelpers.join),
+        "6, 7, 8");
   }
 
   @Test
   public void joinArray() throws IOException {
-    shouldCompileTo("{{{join this \", \"}}}", new String[]{"6", "7", "8" },
-        $("join", StringHelpers.join), "6, 7, 8");
+    shouldCompileTo(
+        "{{{join this \", \"}}}",
+        new String[] {"6", "7", "8"},
+        $("join", StringHelpers.join),
+        "6, 7, 8");
   }
 
   @Test
   public void joinValues() throws IOException {
-    shouldCompileTo("{{{join \"6\" 7 n8 \"-\"}}}", $("n8", 8), $("join", StringHelpers.join),
-        "6-7-8");
+    shouldCompileTo(
+        "{{{join \"6\" 7 n8 \"-\"}}}", $("n8", 8), $("join", StringHelpers.join), "6-7-8");
   }
 
   @Test
   public void joinWithPrefixAndSuffix() throws IOException {
-    shouldCompileTo("{{{join this \", \" prefix='<' suffix='>'}}}", Arrays.asList("6", "7", "8"),
-        $("join", StringHelpers.join), "<6, 7, 8>");
+    shouldCompileTo(
+        "{{{join this \", \" prefix='<' suffix='>'}}}",
+        Arrays.asList("6", "7", "8"),
+        $("join", StringHelpers.join),
+        "<6, 7, 8>");
   }
 
   @Test
@@ -183,8 +191,7 @@ public class StringHelpersTest extends AbstractTest {
     when(options.isFalsy(any())).thenReturn(false);
 
     assertEquals("ljust", ljust.name());
-    assertEquals("Handlebars.java     ",
-        ljust.apply("Handlebars.java", options));
+    assertEquals("Handlebars.java     ", ljust.apply("Handlebars.java", options));
 
     verify(options).hash("size");
     verify(options).hash("pad", " ");
@@ -199,8 +206,7 @@ public class StringHelpersTest extends AbstractTest {
     when(options.isFalsy(any())).thenReturn(false);
 
     assertEquals("ljust", ljust.name());
-    assertEquals("Handlebars.java++",
-        ljust.apply("Handlebars.java", options));
+    assertEquals("Handlebars.java++", ljust.apply("Handlebars.java", options));
 
     verify(options).hash("size");
     verify(options).hash("pad", " ");
@@ -215,8 +221,7 @@ public class StringHelpersTest extends AbstractTest {
     when(options.isFalsy(any())).thenReturn(false);
 
     assertEquals("rjust", rjust.name());
-    assertEquals("     Handlebars.java",
-        rjust.apply("Handlebars.java", options));
+    assertEquals("     Handlebars.java", rjust.apply("Handlebars.java", options));
 
     verify(options).hash("size");
     verify(options).hash("pad", " ");
@@ -231,8 +236,7 @@ public class StringHelpersTest extends AbstractTest {
     when(options.isFalsy(any())).thenReturn(false);
 
     assertEquals("rjust", rjust.name());
-    assertEquals("++Handlebars.java",
-        rjust.apply("Handlebars.java", options));
+    assertEquals("++Handlebars.java", rjust.apply("Handlebars.java", options));
 
     verify(options).hash("size");
     verify(options).hash("pad", " ");
@@ -245,13 +249,13 @@ public class StringHelpersTest extends AbstractTest {
     Context ctx = mock(Context.class);
     Template fn = mock(Template.class);
 
-    Options options = new Options.Builder(hbs, substring.name(), TagType.VAR, ctx, fn)
-        .setParams(new Object[]{11 })
-        .build();
+    Options options =
+        new Options.Builder(hbs, substring.name(), TagType.VAR, ctx, fn)
+            .setParams(new Object[] {11})
+            .build();
 
     assertEquals("substring", substring.name());
-    assertEquals("java",
-        substring.apply("Handlebars.java", options));
+    assertEquals("java", substring.apply("Handlebars.java", options));
   }
 
   @Test
@@ -260,13 +264,13 @@ public class StringHelpersTest extends AbstractTest {
     Context ctx = mock(Context.class);
     Template fn = mock(Template.class);
 
-    Options options = new Options.Builder(hbs, substring.name(), TagType.VAR, ctx, fn)
-        .setParams(new Object[]{0, 10 })
-        .build();
+    Options options =
+        new Options.Builder(hbs, substring.name(), TagType.VAR, ctx, fn)
+            .setParams(new Object[] {0, 10})
+            .build();
 
     assertEquals("substring", substring.name());
-    assertEquals("Handlebars",
-        substring.apply("Handlebars.java", options));
+    assertEquals("Handlebars", substring.apply("Handlebars.java", options));
   }
 
   @Test
@@ -275,8 +279,7 @@ public class StringHelpersTest extends AbstractTest {
     when(options.isFalsy(any())).thenReturn(false);
 
     assertEquals("lower", lower.name());
-    assertEquals("handlebars.java",
-        lower.apply("Handlebars.java", options));
+    assertEquals("handlebars.java", lower.apply("Handlebars.java", options));
 
     verify(options).isFalsy(any());
   }
@@ -287,8 +290,7 @@ public class StringHelpersTest extends AbstractTest {
     when(options.isFalsy(any())).thenReturn(false);
 
     assertEquals("upper", upper.name());
-    assertEquals("HANDLEBARS.JAVA",
-        upper.apply("Handlebars.java", options));
+    assertEquals("HANDLEBARS.JAVA", upper.apply("Handlebars.java", options));
 
     verify(options).isFalsy(any());
   }
@@ -299,8 +301,7 @@ public class StringHelpersTest extends AbstractTest {
     when(options.isFalsy(any())).thenReturn(false);
 
     assertEquals("slugify", slugify.name());
-    assertEquals("joel-is-a-slug",
-        slugify.apply("  Joel is a slug  ", options));
+    assertEquals("joel-is-a-slug", slugify.apply("  Joel is a slug  ", options));
 
     verify(options).isFalsy(any());
   }
@@ -311,13 +312,13 @@ public class StringHelpersTest extends AbstractTest {
     Context ctx = mock(Context.class);
     Template fn = mock(Template.class);
 
-    Options options = new Options.Builder(hbs, replace.name(), TagType.VAR, ctx, fn)
-        .setParams(new Object[]{"...", "rocks" })
-        .build();
+    Options options =
+        new Options.Builder(hbs, replace.name(), TagType.VAR, ctx, fn)
+            .setParams(new Object[] {"...", "rocks"})
+            .build();
 
     assertEquals("replace", replace.name());
-    assertEquals("Handlebars rocks",
-        replace.apply("Handlebars ...", options));
+    assertEquals("Handlebars rocks", replace.apply("Handlebars ...", options));
   }
 
   @Test
@@ -326,14 +327,14 @@ public class StringHelpersTest extends AbstractTest {
     Context ctx = mock(Context.class);
     Template fn = mock(Template.class);
 
-    Options options = new Options.Builder(hbs, stringFormat.name(), TagType.VAR, ctx, fn)
-        .setParams(new Object[]{"handlebars.java" })
-        .build();
+    Options options =
+        new Options.Builder(hbs, stringFormat.name(), TagType.VAR, ctx, fn)
+            .setParams(new Object[] {"handlebars.java"})
+            .build();
 
     assertEquals("stringFormat", stringFormat.name());
 
-    assertEquals("Hello handlebars.java!",
-        stringFormat.apply("Hello %s!", options));
+    assertEquals("Hello handlebars.java!", stringFormat.apply("Hello %s!", options));
   }
 
   @Test
@@ -342,14 +343,15 @@ public class StringHelpersTest extends AbstractTest {
     Context ctx = mock(Context.class);
     Template fn = mock(Template.class);
 
-    Options options = new Options.Builder(hbs, stringFormat.name(), TagType.VAR, ctx, fn)
-        .setParams(new Object[]{10.0 / 3.0 })
-        .build();
+    Options options =
+        new Options.Builder(hbs, stringFormat.name(), TagType.VAR, ctx, fn)
+            .setParams(new Object[] {10.0 / 3.0})
+            .build();
 
     assertEquals("stringFormat", stringFormat.name());
 
-    assertEquals(String.format("10 / 3 = %.2f", 10.0 / 3.0),
-        stringFormat.apply("10 / 3 = %.2f", options));
+    assertEquals(
+        String.format("10 / 3 = %.2f", 10.0 / 3.0), stringFormat.apply("10 / 3 = %.2f", options));
   }
 
   @Test
@@ -358,9 +360,9 @@ public class StringHelpersTest extends AbstractTest {
     when(options.isFalsy(any())).thenReturn(false);
 
     assertEquals("stripTags", stripTags.name());
-    assertEquals("Joel is a slug",
-        stripTags.apply("<b>Joel</b> <button>is</button> a <span>slug</span>",
-            options));
+    assertEquals(
+        "Joel is a slug",
+        stripTags.apply("<b>Joel</b> <button>is</button> a <span>slug</span>", options));
 
     verify(options).isFalsy(any());
   }
@@ -371,10 +373,9 @@ public class StringHelpersTest extends AbstractTest {
     when(options.isFalsy(any())).thenReturn(false);
 
     assertEquals("stripTags", stripTags.name());
-    assertEquals("Joel\nis a slug",
-        stripTags.apply(
-            "<b>Joel</b>\n<button>is<\n/button> a <span>slug</span>",
-            options));
+    assertEquals(
+        "Joel\nis a slug",
+        stripTags.apply("<b>Joel</b>\n<button>is<\n/button> a <span>slug</span>", options));
 
     verify(options).isFalsy(any());
   }
@@ -382,17 +383,14 @@ public class StringHelpersTest extends AbstractTest {
   @Test
   public void capitalize() throws IOException {
     Options options = mock(Options.class);
-    when(options.hash("fully", false)).thenReturn(false)
-            .thenReturn(true);
+    when(options.hash("fully", false)).thenReturn(false).thenReturn(true);
     when(options.isFalsy(any())).thenReturn(false);
 
     assertEquals("capitalize", capitalize.name());
 
-    assertEquals("Handlebars Java",
-        capitalize.apply("handlebars java", options));
+    assertEquals("Handlebars Java", capitalize.apply("handlebars java", options));
 
-    assertEquals("Handlebars Java",
-        capitalize.apply("HAndleBars JAVA", options));
+    assertEquals("Handlebars Java", capitalize.apply("HAndleBars JAVA", options));
 
     verify(options, times(2)).hash("fully", false);
     verify(options, times(2)).isFalsy(any());
@@ -406,8 +404,7 @@ public class StringHelpersTest extends AbstractTest {
 
     assertEquals("abbreviate", abbreviate.name());
 
-    assertEquals("Handlebars...",
-        abbreviate.apply("Handlebars.java", options));
+    assertEquals("Handlebars...", abbreviate.apply("Handlebars.java", options));
 
     verify(options).isFalsy(any());
     verify(options).param(0, null);
@@ -421,8 +418,8 @@ public class StringHelpersTest extends AbstractTest {
 
     assertEquals("wordWrap", wordWrap.name());
 
-    assertEquals("Joel" + System.lineSeparator() + "is a"
-        + System.lineSeparator() + "slug",
+    assertEquals(
+        "Joel" + System.lineSeparator() + "is a" + System.lineSeparator() + "slug",
         wordWrap.apply("Joel is a slug", options));
 
     verify(options).isFalsy(any());

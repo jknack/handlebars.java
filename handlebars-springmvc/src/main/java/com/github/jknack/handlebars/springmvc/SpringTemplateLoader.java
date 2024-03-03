@@ -1,26 +1,15 @@
-/**
- * Copyright (c) 2012-2015 Edgar Espina
- *
- * This file is part of Handlebars.java.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+/*
+ * Handlebars.java: https://github.com/jknack/handlebars.java
+ * Apache License Version 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Copyright (c) 2012 Edgar Espina
  */
 package com.github.jknack.handlebars.springmvc;
+
+import static java.util.Objects.requireNonNull;
 
 import java.io.IOException;
 import java.net.URL;
 
-import static java.util.Objects.requireNonNull;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
@@ -30,10 +19,11 @@ import com.github.jknack.handlebars.io.URLTemplateLoader;
 
 /**
  * A template loader for a Spring application.
+ *
  * <ul>
- * <li>Must support fully qualified URLs, e.g. "file:C:/page.html".
- * <li>Must support classpath pseudo-URLs, e.g. "classpath:page.html".
- * <li>Should support relative file paths, e.g. "WEB-INF/page.html".
+ *   <li>Must support fully qualified URLs, e.g. "file:C:/page.html".
+ *   <li>Must support classpath pseudo-URLs, e.g. "classpath:page.html".
+ *   <li>Should support relative file paths, e.g. "WEB-INF/page.html".
  * </ul>
  *
  * @author edgar.espina
@@ -42,9 +32,7 @@ import com.github.jknack.handlebars.io.URLTemplateLoader;
  */
 public class SpringTemplateLoader extends URLTemplateLoader {
 
-  /**
-   * The Spring {@link ResourceLoader}.
-   */
+  /** The Spring {@link ResourceLoader}. */
   private ResourceLoader loader;
 
   /**
@@ -87,5 +75,4 @@ public class SpringTemplateLoader extends URLTemplateLoader {
     }
     return protocol + super.resolve(location.substring(protocol.length()));
   }
-
 }

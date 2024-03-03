@@ -1,3 +1,8 @@
+/*
+ * Handlebars.java: https://github.com/jknack/handlebars.java
+ * Apache License Version 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Copyright (c) 2012 Edgar Espina
+ */
 package com.github.jknack.handlebars.io;
 
 import static java.lang.System.out;
@@ -14,10 +19,9 @@ public class GuavaCachedTemplateLoaderTest {
 
   @Test
   public void testCacheWithExpiration() throws Exception {
-    TemplateLoader loader = new FileTemplateLoader(new File(
-        "src/test/resources"));
-    TemplateLoader cachedLoader = GuavaCachedTemplateLoader
-        .cacheWithExpiration(loader, 200, TimeUnit.MILLISECONDS);
+    TemplateLoader loader = new FileTemplateLoader(new File("src/test/resources"));
+    TemplateLoader cachedLoader =
+        GuavaCachedTemplateLoader.cacheWithExpiration(loader, 200, TimeUnit.MILLISECONDS);
 
     assertNotNull(loader.sourceAt("template"));
     assertNotNull(cachedLoader.sourceAt("template"));
@@ -35,7 +39,6 @@ public class GuavaCachedTemplateLoaderTest {
       cachedLoader.sourceAt("template");
     }
     out.println("Cached took: " + sw);
-
   }
 
   @Test
@@ -43,5 +46,4 @@ public class GuavaCachedTemplateLoaderTest {
     // lazy mans JVM warming
     testCacheWithExpiration();
   }
-
 }

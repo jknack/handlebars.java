@@ -1,19 +1,7 @@
-/**
- * Copyright (c) 2012-2015 Edgar Espina
- *
- * This file is part of Handlebars.java.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+/*
+ * Handlebars.java: https://github.com/jknack/handlebars.java
+ * Apache License Version 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Copyright (c) 2012 Edgar Espina
  */
 package com.github.jknack.handlebars.helper;
 
@@ -43,9 +31,7 @@ public final class PrecompileHelper implements Helper<String> {
    */
   private enum JsWrapper {
 
-    /**
-     * Wrap a pre-compiled function as a anonymous and auto-executable function.
-     */
+    /** Wrap a pre-compiled function as a anonymous and auto-executable function. */
     ANONYMOUS {
       @Override
       public void header(final String name, final StringBuilder buffer) {
@@ -58,14 +44,11 @@ public final class PrecompileHelper implements Helper<String> {
       }
     },
 
-    /**
-     * Wrap a pre-compiled function as a define function.
-     */
+    /** Wrap a pre-compiled function as a define function. */
     AMD {
       @Override
       public void header(final String name, final StringBuilder buffer) {
-        buffer.append("define('").append(name)
-            .append("', ['handlebars'], function(Handlebars) {");
+        buffer.append("define('").append(name).append("', ['handlebars'], function(Handlebars) {");
       }
 
       @Override
@@ -74,24 +57,21 @@ public final class PrecompileHelper implements Helper<String> {
         buffer.append("});");
       }
 
-      @Override public void registerTemplate(final StringBuilder buffer, final String name,
-          final String function) {
+      @Override
+      public void registerTemplate(
+          final StringBuilder buffer, final String name, final String function) {
         String templateName = name.substring(0, name.lastIndexOf('.'));
         super.registerTemplate(buffer, templateName, function);
       }
     },
 
-    /**
-     * Dont wrap anything.
-     */
+    /** Dont wrap anything. */
     NONE {
       @Override
-      public void header(final String name, final StringBuilder buffer) {
-      }
+      public void header(final String name, final StringBuilder buffer) {}
 
       @Override
-      public void tail(final StringBuilder buffer) {
-      }
+      public void tail(final StringBuilder buffer) {}
     };
 
     /**
@@ -116,15 +96,26 @@ public final class PrecompileHelper implements Helper<String> {
      * @param name The template's name.
      * @param function The JavaScript function.
      */
-    public void registerTemplate(final StringBuilder buffer, final String name,
-        final String function) {
+    public void registerTemplate(
+        final StringBuilder buffer, final String name, final String function) {
       buffer.append("\n  var template = Handlebars.template(").append(function).append(");\n");
       String[] namespaces = {"templates", "partials"};
       String separator = ";\n";
       for (String namespace : namespaces) {
-        buffer.append("  var ").append(namespace).append(" = Handlebars.").append(namespace)
-            .append(" = Handlebars.").append(namespace).append(" || {};\n");
-        buffer.append("  ").append(namespace).append("['").append(name).append("'] = template")
+        buffer
+            .append("  var ")
+            .append(namespace)
+            .append(" = Handlebars.")
+            .append(namespace)
+            .append(" = Handlebars.")
+            .append(namespace)
+            .append(" || {};\n");
+        buffer
+            .append("  ")
+            .append(namespace)
+            .append("['")
+            .append(name)
+            .append("'] = template")
             .append(separator);
       }
     }
@@ -160,30 +151,25 @@ public final class PrecompileHelper implements Helper<String> {
     }
   }
 
-  /**
-   * The default helper's name.
-   */
+  /** The default helper's name. */
   public static final String NAME = "precompile";
 
-  /**
-   * The default and shared instance.
-   */
+  /** The default and shared instance. */
   public static final Helper<String> INSTANCE = new PrecompileHelper();
 
-  /**
-   * Not allowed.
-   */
-  private PrecompileHelper() {
-  }
+  /** Not allowed. */
+  private PrecompileHelper() {}
 
   @Override
-  public Object apply(final String path, final Options options)
-      throws IOException {
+  public Object apply(final String path, final Options options) throws IOException {
     notEmpty(path, "found: '%s', expected 'template path'", path);
     String wrapperName = options.hash("wrapper", "anonymous");
     final JsWrapper wrapper = JsWrapper.wrapper(wrapperName);
-    notNull(wrapper, "found '%s', expected: '%s'",
-        wrapperName, StringUtils.join(JsWrapper.values(), ", ").toLowerCase());
+    notNull(
+        wrapper,
+        "found '%s', expected: '%s'",
+        wrapperName,
+        StringUtils.join(JsWrapper.values(), ", ").toLowerCase());
 
     Handlebars handlebars = options.handlebars;
     String name = path;
@@ -196,5 +182,4 @@ public final class PrecompileHelper implements Helper<String> {
     String precompiled = handlebars.precompile(path);
     return new Handlebars.SafeString(wrapper.wrap(name, precompiled));
   }
-
 }

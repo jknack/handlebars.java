@@ -1,3 +1,8 @@
+/*
+ * Handlebars.java: https://github.com/jknack/handlebars.java
+ * Apache License Version 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Copyright (c) 2012 Edgar Espina
+ */
 package com.github.jknack.handlebars;
 
 import java.io.IOException;
@@ -11,19 +16,18 @@ public class Issue332 extends AbstractTest {
 
   @Override
   protected void configure(final Handlebars handlebars) {
-    handlebars.with(new Formatter() {
+    handlebars.with(
+        new Formatter() {
 
-      @Override
-      public Object format(final Object value, final Chain chain) {
-        if (value instanceof Date) {
-          return ((Date) value).getTime();
-        }
-        return chain.format(value);
-      }
-
-    });
+          @Override
+          public Object format(final Object value, final Chain chain) {
+            if (value instanceof Date) {
+              return ((Date) value).getTime();
+            }
+            return chain.format(value);
+          }
+        });
   }
-
 
   @Test
   public void resolveThis() throws IOException {
@@ -42,5 +46,4 @@ public class Issue332 extends AbstractTest {
 
     shouldCompileTo("time is {{this.now}}", $("now", new Date(now)), "time is " + now);
   }
-
 }

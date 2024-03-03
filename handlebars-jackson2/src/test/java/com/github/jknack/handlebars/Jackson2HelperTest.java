@@ -1,15 +1,7 @@
-/**
+/*
+ * Handlebars.java: https://github.com/jknack/handlebars.java
+ * Apache License Version 2.0 http://www.apache.org/licenses/LICENSE-2.0
  * Copyright (c) 2012 Edgar Espina
- * This file is part of Handlebars.java.
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * http://www.apache.org/licenses/LICENSE-2.0
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
  */
 package com.github.jknack.handlebars;
 
@@ -41,8 +33,10 @@ public class Jackson2HelperTest {
 
     Template template = handlebars.compileInline("{{@json this}}");
 
-    assertThat(template.apply(new Blog("First Post", "...")), equalsToStringIgnoringWindowsNewLine(
-        "{\"title\":\"First Post\",\"body\":\"...\",\"comments\":[]}"));
+    assertThat(
+        template.apply(new Blog("First Post", "...")),
+        equalsToStringIgnoringWindowsNewLine(
+            "{\"title\":\"First Post\",\"body\":\"...\",\"comments\":[]}"));
   }
 
   @Test
@@ -52,12 +46,14 @@ public class Jackson2HelperTest {
 
     Template template = handlebars.compileInline("{{@json this pretty=true}}");
 
-    assertThat(template.apply(new Blog("First Post", "...")),
-        equalsToStringIgnoringWindowsNewLine("{\n" +
-            "  \"title\" : \"First Post\",\n" +
-            "  \"body\" : \"...\",\n" +
-            "  \"comments\" : [ ]\n" +
-            "}"));
+    assertThat(
+        template.apply(new Blog("First Post", "...")),
+        equalsToStringIgnoringWindowsNewLine(
+            "{\n"
+                + "  \"title\" : \"First Post\",\n"
+                + "  \"body\" : \"...\",\n"
+                + "  \"comments\" : [ ]\n"
+                + "}"));
   }
 
   @Test
@@ -67,11 +63,11 @@ public class Jackson2HelperTest {
     handlebars.registerHelper("@json", Jackson2Helper.INSTANCE);
 
     Template template =
-        handlebars
-            .compileInline(
-                "{{@json this view=\"com.github.jknack.handlebars.Blog$Views$Public\"}}");
+        handlebars.compileInline(
+            "{{@json this view=\"com.github.jknack.handlebars.Blog$Views$Public\"}}");
 
-    assertThat(template.apply(new Blog("First Post", "...")),
+    assertThat(
+        template.apply(new Blog("First Post", "...")),
         equalsToStringIgnoringWindowsNewLine(
             "{\"title\":\"First Post\",\"body\":\"...\",\"comments\":[]}"));
   }
@@ -86,11 +82,11 @@ public class Jackson2HelperTest {
     handlebars.registerHelper("@json", new Jackson2Helper(mapper));
 
     Template template =
-        handlebars
-            .compileInline(
-                "{{@json this view=\"com.github.jknack.handlebars.Blog$Views$Public\"}}");
+        handlebars.compileInline(
+            "{{@json this view=\"com.github.jknack.handlebars.Blog$Views$Public\"}}");
 
-    assertThat(template.apply(new Blog("First Post", "...")),
+    assertThat(
+        template.apply(new Blog("First Post", "...")),
         equalsToStringIgnoringWindowsNewLine("{\"title\":\"First Post\"}"));
   }
 
@@ -101,14 +97,13 @@ public class Jackson2HelperTest {
     ObjectMapper mapper = new ObjectMapper();
     mapper.configure(MapperFeature.DEFAULT_VIEW_INCLUSION, false);
 
-    handlebars.registerHelper("@json",
-        new Jackson2Helper(mapper).viewAlias("myView", Public.class));
+    handlebars.registerHelper(
+        "@json", new Jackson2Helper(mapper).viewAlias("myView", Public.class));
 
-    Template template =
-        handlebars
-            .compileInline("{{@json this view=\"myView\"}}");
+    Template template = handlebars.compileInline("{{@json this view=\"myView\"}}");
 
-    assertThat(template.apply(new Blog("First Post", "...")),
+    assertThat(
+        template.apply(new Blog("First Post", "...")),
         equalsToStringIgnoringWindowsNewLine("{\"title\":\"First Post\"}"));
   }
 
@@ -121,11 +116,10 @@ public class Jackson2HelperTest {
 
     handlebars.registerHelper("@json", new Jackson2Helper(mapper));
 
-    Template template =
-        handlebars
-            .compileInline("{{@json this view=\"missing.ViewClass\"}}");
+    Template template = handlebars.compileInline("{{@json this view=\"missing.ViewClass\"}}");
 
-    assertThat(template.apply(new Blog("First Post", "...")),
+    assertThat(
+        template.apply(new Blog("First Post", "...")),
         equalsToStringIgnoringWindowsNewLine("{\"title\":\"First Post\"}"));
   }
 
@@ -137,12 +131,15 @@ public class Jackson2HelperTest {
     Map<String, String> model = new HashMap<String, String>();
     model.put("script", "<script text=\"text/javascript\"></script>");
 
-    assertThat(handlebars
-        .compileInline("{{@json this}}").apply(model), equalsToStringIgnoringWindowsNewLine(
-        "{\"script\":\"<script text=\\\"text/javascript\\\"></script>\"}"));
-
-    assertThat(handlebars.compileInline("{{@json this escapeHTML=true}}").apply(model),
+    assertThat(
+        handlebars.compileInline("{{@json this}}").apply(model),
         equalsToStringIgnoringWindowsNewLine(
-            "{\"script\":\"\\u003Cscript text=\\\"text/javascript\\\"\\u003E\\u003C/script\\u003E\"}"));
+            "{\"script\":\"<script text=\\\"text/javascript\\\"></script>\"}"));
+
+    assertThat(
+        handlebars.compileInline("{{@json this escapeHTML=true}}").apply(model),
+        equalsToStringIgnoringWindowsNewLine(
+            "{\"script\":\"\\u003Cscript"
+                + " text=\\\"text/javascript\\\"\\u003E\\u003C/script\\u003E\"}"));
   }
 }

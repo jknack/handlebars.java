@@ -1,3 +1,8 @@
+/*
+ * Handlebars.java: https://github.com/jknack/handlebars.java
+ * Apache License Version 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Copyright (c) 2012 Edgar Espina
+ */
 package com.github.jknack.handlebars;
 
 import static org.apache.commons.lang3.StringUtils.join;
@@ -49,8 +54,9 @@ public class PropertyPathParserTest {
   @Test
   public void testMultipleLiteralsAndJavaNames() {
     eq(array("this", "foo", "bar.1"), PathCompiler.compile("this.foo.[bar.1]"));
-    eq(array("this", "_foo1", "bar.1", "_foo2", "bar.2"),
-      PathCompiler.compile("this._foo1.[bar.1]._foo2.[bar.2]"));
+    eq(
+        array("this", "_foo1", "bar.1", "_foo2", "bar.2"),
+        PathCompiler.compile("this._foo1.[bar.1]._foo2.[bar.2]"));
   }
 
   private List<String> array(final String... vals) {
@@ -60,5 +66,4 @@ public class PropertyPathParserTest {
   private void eq(final List<String> expected, final List<PathExpression> path) {
     assertEquals(join(expected, ", "), join(path, ", "));
   }
-
 }

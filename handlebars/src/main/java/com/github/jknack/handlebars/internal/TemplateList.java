@@ -1,26 +1,9 @@
-/**
- * Copyright (c) 2012-2015 Edgar Espina
- *
- * This file is part of Handlebars.java.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+/*
+ * Handlebars.java: https://github.com/jknack/handlebars.java
+ * Apache License Version 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Copyright (c) 2012 Edgar Espina
  */
 package com.github.jknack.handlebars.internal;
-
-import com.github.jknack.handlebars.Context;
-import com.github.jknack.handlebars.Handlebars;
-import com.github.jknack.handlebars.TagType;
-import com.github.jknack.handlebars.Template;
 
 import java.io.IOException;
 import java.io.Writer;
@@ -30,6 +13,11 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.github.jknack.handlebars.Context;
+import com.github.jknack.handlebars.Handlebars;
+import com.github.jknack.handlebars.TagType;
+import com.github.jknack.handlebars.Template;
+
 /**
  * A list of templates.
  *
@@ -38,9 +26,7 @@ import java.util.Set;
  */
 class TemplateList extends BaseTemplate implements Iterable<Template> {
 
-  /**
-   * The list of child templates.
-   */
+  /** The list of child templates. */
   private final List<Template> nodes = new ArrayList<>();
 
   /** Keep track of direct decorators and run them before merge. */
@@ -66,7 +52,8 @@ class TemplateList extends BaseTemplate implements Iterable<Template> {
    */
   public boolean add(final Template child) {
     nodes.add(child);
-    if (child instanceof VarDecorator || child instanceof BlockDecorator
+    if (child instanceof VarDecorator
+        || child instanceof BlockDecorator
         || child instanceof Partial) {
       decorators.add((BaseTemplate) child);
       decorate = true;
@@ -89,8 +76,7 @@ class TemplateList extends BaseTemplate implements Iterable<Template> {
   }
 
   @Override
-  protected void merge(final Context context, final Writer writer)
-      throws IOException {
+  protected void merge(final Context context, final Writer writer) throws IOException {
     for (Template node : nodes) {
       node.apply(context, writer);
     }

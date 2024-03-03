@@ -1,3 +1,8 @@
+/*
+ * Handlebars.java: https://github.com/jknack/handlebars.java
+ * Apache License Version 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Copyright (c) 2012 Edgar Espina
+ */
 package com.github.jknack.handlebars.springmvc;
 
 import static org.junit.Assert.assertEquals;
@@ -42,22 +47,21 @@ public class MessageSourceHelperTest {
     Context ctx = mock(Context.class);
     Template fn = mock(Template.class);
 
-    Options options = new Options.Builder(hbs, "messageSource", TagType.VAR, ctx, fn)
-        .setParams(params)
-        .setHash(hash)
-        .build();
+    Options options =
+        new Options.Builder(hbs, "messageSource", TagType.VAR, ctx, fn)
+            .setParams(params)
+            .setHash(hash)
+            .build();
 
     MessageSource messageSource = mock(MessageSource.class);
-    when(messageSource.getMessage(eq(code), eq(params), eq(defaultMessage),
-        any(Locale.class))).thenReturn(message);
+    when(messageSource.getMessage(eq(code), eq(params), eq(defaultMessage), any(Locale.class)))
+        .thenReturn(message);
 
-    Object result =
-        new MessageSourceHelper(messageSource).apply(code, options);
+    Object result = new MessageSourceHelper(messageSource).apply(code, options);
     assertEquals(message, result);
 
     verify(hash).get("default");
-    verify(messageSource).getMessage(eq(code), eq(params), eq(defaultMessage),
-        any(Locale.class));
+    verify(messageSource).getMessage(eq(code), eq(params), eq(defaultMessage), any(Locale.class));
   }
 
   @Test
@@ -67,7 +71,7 @@ public class MessageSourceHelperTest {
     String defaultMessage = null;
 
     // Options
-    Object[] params = {1, 2, 3 };
+    Object[] params = {1, 2, 3};
     @SuppressWarnings("unchecked")
     Map<String, Object> hash = mock(Map.class);
     when(hash.get("default")).thenReturn(defaultMessage);
@@ -76,22 +80,21 @@ public class MessageSourceHelperTest {
     Context ctx = mock(Context.class);
     Template fn = mock(Template.class);
 
-    Options options = new Options.Builder(hbs, "messageSource", TagType.VAR, ctx, fn)
-        .setParams(params)
-        .setHash(hash)
-        .build();
+    Options options =
+        new Options.Builder(hbs, "messageSource", TagType.VAR, ctx, fn)
+            .setParams(params)
+            .setHash(hash)
+            .build();
 
     MessageSource messageSource = mock(MessageSource.class);
-    when(messageSource.getMessage(eq(code), eq(params), eq(defaultMessage),
-        any(Locale.class))).thenReturn(message);
+    when(messageSource.getMessage(eq(code), eq(params), eq(defaultMessage), any(Locale.class)))
+        .thenReturn(message);
 
-    Object result =
-        new MessageSourceHelper(messageSource).apply(code, options);
+    Object result = new MessageSourceHelper(messageSource).apply(code, options);
     assertEquals(message, result);
 
     verify(hash).get("default");
-    verify(messageSource).getMessage(eq(code), eq(params), eq(defaultMessage),
-        any(Locale.class));
+    verify(messageSource).getMessage(eq(code), eq(params), eq(defaultMessage), any(Locale.class));
   }
 
   @Test
@@ -101,7 +104,7 @@ public class MessageSourceHelperTest {
     String defaultMessage = "Aca viene el 3";
 
     // Options
-    Object[] params = {1, 2, 3 };
+    Object[] params = {1, 2, 3};
     @SuppressWarnings("unchecked")
     Map<String, Object> hash = mock(Map.class);
     when(hash.get("default")).thenReturn(defaultMessage);
@@ -110,21 +113,20 @@ public class MessageSourceHelperTest {
     Context ctx = mock(Context.class);
     Template fn = mock(Template.class);
 
-    Options options = new Options.Builder(hbs, "messageSource", TagType.VAR, ctx, fn)
-        .setParams(params)
-        .setHash(hash)
-        .build();
+    Options options =
+        new Options.Builder(hbs, "messageSource", TagType.VAR, ctx, fn)
+            .setParams(params)
+            .setHash(hash)
+            .build();
 
     MessageSource messageSource = mock(MessageSource.class);
-    when(messageSource.getMessage(eq(code), eq(params), eq(defaultMessage),
-        any(Locale.class))).thenReturn(message);
+    when(messageSource.getMessage(eq(code), eq(params), eq(defaultMessage), any(Locale.class)))
+        .thenReturn(message);
 
-    Object result =
-        new MessageSourceHelper(messageSource).apply(code, options);
+    Object result = new MessageSourceHelper(messageSource).apply(code, options);
     assertEquals(message, result);
 
     verify(hash).get("default");
-    verify(messageSource).getMessage(eq(code), eq(params), eq(defaultMessage),
-        any(Locale.class));
+    verify(messageSource).getMessage(eq(code), eq(params), eq(defaultMessage), any(Locale.class));
   }
 }

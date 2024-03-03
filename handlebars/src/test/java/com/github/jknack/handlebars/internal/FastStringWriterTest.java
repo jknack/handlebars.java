@@ -1,3 +1,8 @@
+/*
+ * Handlebars.java: https://github.com/jknack/handlebars.java
+ * Apache License Version 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Copyright (c) 2012 Edgar Espina
+ */
 package com.github.jknack.handlebars.internal;
 
 import static org.junit.Assert.assertEquals;
@@ -13,7 +18,7 @@ public class FastStringWriterTest {
   @Test
   public void writeCharArray() throws IOException {
     Writer writer = new FastStringWriter();
-    writer.write(new char[]{'a', 'b', 'c' });
+    writer.write(new char[] {'a', 'b', 'c'});
     assertEquals("abc", writer.toString());
     IOUtils.closeQuietly(writer);
   }
@@ -45,7 +50,7 @@ public class FastStringWriterTest {
   @Test
   public void writeCharArrayWithOffsetAndLength() throws IOException {
     Writer writer = new FastStringWriter();
-    writer.write(new char[]{'h', 'e', 'l', 'l', 'o' }, 1, 3);
+    writer.write(new char[] {'h', 'e', 'l', 'l', 'o'}, 1, 3);
     assertEquals("ell", writer.toString());
     IOUtils.closeQuietly(writer);
   }
@@ -53,14 +58,14 @@ public class FastStringWriterTest {
   @Test(expected = IndexOutOfBoundsException.class)
   public void writeCharArrayWithBadOffsetAndLength() throws IOException {
     Writer writer = new FastStringWriter();
-    writer.write(new char[]{'h', 'e', 'l', 'l', 'o' }, -1, 3);
+    writer.write(new char[] {'h', 'e', 'l', 'l', 'o'}, -1, 3);
     IOUtils.closeQuietly(writer);
   }
 
   @Test
   public void writeCharArrayWithOffsetAndZeroLength() throws IOException {
     Writer writer = new FastStringWriter();
-    writer.write(new char[]{'h', 'e', 'l', 'l', 'o' }, 1, 0);
+    writer.write(new char[] {'h', 'e', 'l', 'l', 'o'}, 1, 0);
     assertEquals("", writer.toString());
     IOUtils.closeQuietly(writer);
   }

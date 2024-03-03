@@ -1,3 +1,8 @@
+/*
+ * Handlebars.java: https://github.com/jknack/handlebars.java
+ * Apache License Version 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Copyright (c) 2012 Edgar Espina
+ */
 package com.github.jknack.handlebars.i275;
 
 import static com.github.jknack.handlebars.IgnoreWindowsLineMatcher.equalsToStringIgnoringWindowsNewLine;
@@ -30,47 +35,47 @@ public class Issue275 {
 
   @Test
   public void temporalPartials() throws IOException {
-    Handlebars handlebars = new Handlebars(new ClassPathTemplateLoader("/issue275"))
-        .prettyPrint(true)
-        .deletePartialAfterMerge(true);
+    Handlebars handlebars =
+        new Handlebars(new ClassPathTemplateLoader("/issue275"))
+            .prettyPrint(true)
+            .deletePartialAfterMerge(true);
 
-    handlebars.registerHelper("item", new Helper<Item>() {
-      @Override
-      public CharSequence apply(final Item item, final Options options) throws IOException {
-        Template template = options.handlebars.compile("item" + item.getName());
-        return template.apply(options.context);
-      }
-    });
+    handlebars.registerHelper(
+        "item",
+        new Helper<Item>() {
+          @Override
+          public CharSequence apply(final Item item, final Options options) throws IOException {
+            Template template = options.handlebars.compile("item" + item.getName());
+            return template.apply(options.context);
+          }
+        });
     Template template = handlebars.compile("temporal-partials");
-    assertThat(template.apply(Arrays.asList(new Item("1"), new Item("2"))),
-        equalsToStringIgnoringWindowsNewLine("Items:\n" +
-            "\n" +
-            "Item: Custom\n" +
-            "...\n" +
-            "Item: 2\n" +
-            "...\n"));
+    assertThat(
+        template.apply(Arrays.asList(new Item("1"), new Item("2"))),
+        equalsToStringIgnoringWindowsNewLine(
+            "Items:\n" + "\n" + "Item: Custom\n" + "...\n" + "Item: 2\n" + "...\n"));
   }
 
   @Test
   public void defaultPartials() throws IOException {
-    Handlebars handlebars = new Handlebars(new ClassPathTemplateLoader("/issue275"))
-        .prettyPrint(true)
-        .deletePartialAfterMerge(false);
+    Handlebars handlebars =
+        new Handlebars(new ClassPathTemplateLoader("/issue275"))
+            .prettyPrint(true)
+            .deletePartialAfterMerge(false);
 
-    handlebars.registerHelper("item", new Helper<Item>() {
-      @Override
-      public CharSequence apply(final Item item, final Options options) throws IOException {
-        Template template = options.handlebars.compile("item" + item.getName());
-        return template.apply(options.context);
-      }
-    });
+    handlebars.registerHelper(
+        "item",
+        new Helper<Item>() {
+          @Override
+          public CharSequence apply(final Item item, final Options options) throws IOException {
+            Template template = options.handlebars.compile("item" + item.getName());
+            return template.apply(options.context);
+          }
+        });
     Template template = handlebars.compile("temporal-partials");
-    assertThat(template.apply(Arrays.asList(new Item("1"), new Item("2"))),
-        equalsToStringIgnoringWindowsNewLine("Items:\n" +
-            "\n" +
-            "Item: Custom\n" +
-            "...\n" +
-            "Item: Custom\n" +
-            "...\n"));
+    assertThat(
+        template.apply(Arrays.asList(new Item("1"), new Item("2"))),
+        equalsToStringIgnoringWindowsNewLine(
+            "Items:\n" + "\n" + "Item: Custom\n" + "...\n" + "Item: Custom\n" + "...\n"));
   }
 }

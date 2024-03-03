@@ -1,19 +1,7 @@
-/**
- * Copyright (c) 2012-2015 Edgar Espina
- *
- * This file is part of Handlebars.java.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+/*
+ * Handlebars.java: https://github.com/jknack/handlebars.java
+ * Apache License Version 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Copyright (c) 2012 Edgar Espina
  */
 package com.github.jknack.handlebars;
 
@@ -58,12 +46,10 @@ import com.github.jknack.handlebars.io.TemplateLoader;
 import com.github.jknack.handlebars.io.TemplateSource;
 
 /**
- * <p>
  * Handlebars provides the power necessary to let you build semantic templates effectively with no
  * frustration.
- * </p>
- * <h2>
- * Getting Started:</h2>
+ *
+ * <h2>Getting Started:</h2>
  *
  * <pre>
  * Handlebars handlebars = new Handlebars();
@@ -71,17 +57,18 @@ import com.github.jknack.handlebars.io.TemplateSource;
  * System.out.println(template.apply("Handlebars.java"));
  * </pre>
  *
- * <h2>Loading templates</h2> Templates are loaded using the ```TemplateLoader``` class.
- * Handlebars.java provides three implementations of a ```TemplateLoader```:
+ * <h2>Loading templates</h2>
+ *
+ * Templates are loaded using the ```TemplateLoader``` class. Handlebars.java provides three
+ * implementations of a ```TemplateLoader```:
+ *
  * <ul>
- * <li>ClassPathTemplateLoader (default)</li>
- * <li>FileTemplateLoader</li>
- * <li>SpringTemplateLoader (available at the handlebars-springmvc module)</li>
+ *   <li>ClassPathTemplateLoader (default)
+ *   <li>FileTemplateLoader
+ *   <li>SpringTemplateLoader (available at the handlebars-springmvc module)
  * </ul>
  *
- * <p>
- * This example load <code>mytemplate.hbs</code> from the root of the classpath:
- * </p>
+ * <p>This example load <code>mytemplate.hbs</code> from the root of the classpath:
  *
  * <pre>
  * Handlebars handlebars = new Handlebars();
@@ -91,9 +78,7 @@ import com.github.jknack.handlebars.io.TemplateSource;
  * System.out.println(template.apply("Handlebars.java"));
  * </pre>
  *
- * <p>
- * You can specify a different ```TemplateLoader``` by:
- * </p>
+ * <p>You can specify a different ```TemplateLoader``` by:
  *
  * <pre>
  * TemplateLoader loader = ...;
@@ -106,17 +91,14 @@ import com.github.jknack.handlebars.io.TemplateSource;
 public class Handlebars implements HelperRegistry {
 
   /**
-   * A {@link SafeString} tell {@link Handlebars} that the content should not be
-   * escaped as HTML.
+   * A {@link SafeString} tell {@link Handlebars} that the content should not be escaped as HTML.
    *
    * @author edgar.espina
    * @since 0.1.0
    */
   public static class SafeString implements CharSequence {
 
-    /**
-     * The content.
-     */
+    /** The content. */
     public final CharSequence content;
 
     /**
@@ -152,8 +134,7 @@ public class Handlebars implements HelperRegistry {
     public int hashCode() {
       final int prime = 31;
       int result = 1;
-      result = prime * result + (content == null ? 0
-          : content.hashCode());
+      result = prime * result + (content == null ? 0 : content.hashCode());
       return result;
     }
 
@@ -168,8 +149,8 @@ public class Handlebars implements HelperRegistry {
   }
 
   /**
-   * Utilities function like: {@link Utils#escapeExpression(CharSequence)} and
-   * {@link Utils#isEmpty(Object)}.
+   * Utilities function like: {@link Utils#escapeExpression(CharSequence)} and {@link
+   * Utils#isEmpty(Object)}.
    *
    * @author edgar.espina
    * @since 0.1.0
@@ -189,12 +170,12 @@ public class Handlebars implements HelperRegistry {
     private static final String VERSION_PREFIX = "1.";
 
     /**
-     * Evaluate the given object and return true is the object is considered
-     * empty. Nulls, empty list or array and false values are considered empty.
+     * Evaluate the given object and return true is the object is considered empty. Nulls, empty
+     * list or array and false values are considered empty.
      *
      * @param value The object value.
-     * @return Return true is the object is considered empty. Nulls, empty list
-     *         or array and false values are considered empty.
+     * @return Return true is the object is considered empty. Nulls, empty list or array and false
+     *     values are considered empty.
      */
     @SuppressWarnings("rawtypes")
     public static boolean isEmpty(final Object value) {
@@ -223,24 +204,18 @@ public class Handlebars implements HelperRegistry {
     }
 
     /**
-     * <p>
      * Escapes the characters in a {@code String} using HTML entities.
-     * </p>
-     * <p>
-     * For example:
-     * </p>
-     * <p>
-     * <code>"bread" {@literal &} "butter"</code>
-     * </p>
-     * becomes:
+     *
+     * <p>For example:
+     *
+     * <p><code>"bread" {@literal &} "butter"</code> becomes:
      *
      * <pre>
      *  &amp;quot;bread&amp;quot; &amp;amp; &amp;quot;butter&amp;quot;
      * </pre>
      *
      * @param input the {@code String} to escape, may be null.
-     * @return The escaped version of the input or the same input if it's a
-     *         SafeString.
+     * @return The escaped version of the input or the same input if it's a SafeString.
      */
     public static CharSequence escapeExpression(final CharSequence input) {
       return EscapingStrategy.DEF.escape(input);
@@ -253,27 +228,28 @@ public class Handlebars implements HelperRegistry {
 
     /**
      * Throws any throwable 'sneakily' - you don't need to catch it, nor declare that you throw it
-     * onwards.
-     * The exception is still thrown - javac will just stop whining about it.
-     * <p>
-     * Example usage:
-     * <pre>public void run() {
-     *     throw sneakyThrow(new IOException("You don't need to catch me!"));
-     * }</pre>
-     * <p>
-     * NB: The exception is not wrapped, ignored, swallowed, or redefined. The JVM actually does
-     * not know or care about the concept of a 'checked exception'. All this method does is hide
-     * the act of throwing a checked exception from the java compiler.
-     * <p>
-     * Note that this method has a return type of {@code RuntimeException}; it is advised you
-     * always  call this method as argument to the {@code throw} statement to avoid compiler
-     * errors regarding no return statement and similar problems. This method won't of course
-     * return an actual {@code RuntimeException} - it never returns, it always throws the provided
-     * exception.
+     * onwards. The exception is still thrown - javac will just stop whining about it.
+     *
+     * <p>Example usage:
+     *
+     * <pre>
+     * public void run() {
+     * 	throw sneakyThrow(new IOException("You don't need to catch me!"));
+     * }
+     * </pre>
+     *
+     * <p>NB: The exception is not wrapped, ignored, swallowed, or redefined. The JVM actually does
+     * not know or care about the concept of a 'checked exception'. All this method does is hide the
+     * act of throwing a checked exception from the java compiler.
+     *
+     * <p>Note that this method has a return type of {@code RuntimeException}; it is advised you
+     * always call this method as argument to the {@code throw} statement to avoid compiler errors
+     * regarding no return statement and similar problems. This method won't of course return an
+     * actual {@code RuntimeException} - it never returns, it always throws the provided exception.
      *
      * @param x The throwable to throw without requiring you to catch its type.
      * @return A dummy RuntimeException; this method never returns normally, it <em>always</em>
-     *    throws an exception!
+     *     throws an exception!
      */
     public static RuntimeException propagate(final Throwable x) {
       if (x == null) {
@@ -297,44 +273,28 @@ public class Handlebars implements HelperRegistry {
     }
   }
 
-  /**
-   * The default start delimiter.
-   */
+  /** The default start delimiter. */
   public static final String DELIM_START = "{{";
 
-  /**
-   * The default end delimiter.
-   */
+  /** The default end delimiter. */
   public static final String DELIM_END = "}}";
 
-  /**
-   * The logging system.
-   */
+  /** The logging system. */
   private static final Logger logger = getLogger(Handlebars.class);
 
-  /**
-   * The template loader. Required.
-   */
+  /** The template loader. Required. */
   private TemplateLoader loader;
 
-  /**
-   * The template cache. Required.
-   */
+  /** The template cache. Required. */
   private TemplateCache cache = NullTemplateCache.INSTANCE;
 
-  /**
-   * If true, missing helper parameters will be resolve to their names.
-   */
+  /** If true, missing helper parameters will be resolve to their names. */
   private boolean stringParams;
 
-  /**
-   * If true, unnecessary whitespace and new lines will be removed.
-   */
+  /** If true, unnecessary whitespace and new lines will be removed. */
   private boolean prettyPrint;
 
-  /**
-   * The helper registry.
-   */
+  /** The helper registry. */
   private HelperRegistry registry = new DefaultHelperRegistry();
 
   /**
@@ -345,8 +305,7 @@ public class Handlebars implements HelperRegistry {
 
   /**
    * If true, templates will be deleted once applied. Useful, in some advanced template inheritance
-   * use cases. Default is: false.
-   * At any time you can override the default setup with:
+   * use cases. Default is: false. At any time you can override the default setup with:
    *
    * <pre>
    * {{#block "footer" delete-after-merge=true}}
@@ -354,24 +313,16 @@ public class Handlebars implements HelperRegistry {
    */
   private boolean deletePartialAfterMerge;
 
-  /**
-   * The escaping strategy.
-   */
+  /** The escaping strategy. */
   private EscapingStrategy escapingStrategy = EscapingStrategy.HTML_ENTITY;
 
-  /**
-   * The parser factory. Required.
-   */
+  /** The parser factory. Required. */
   private ParserFactory parserFactory = new HbsParserFactory();
 
-  /**
-   * The start delimiter.
-   */
+  /** The start delimiter. */
   private String startDelimiter = DELIM_START;
 
-  /**
-   * The end delimiter.
-   */
+  /** The end delimiter. */
   private String endDelimiter = DELIM_END;
 
   /** Location of the handlebars.js file. */
@@ -387,24 +338,28 @@ public class Handlebars implements HelperRegistry {
   private boolean parentScopeResolution = true;
 
   /**
-   * If true partial blocks will be evaluated to allow side effects by defining inline
-   * blocks within the partials blocks.
-   * Attention: This feature slows down the performance severly if your templates use
-   * deeply nested partial blocks.
-   * Handlebars works *much* faster if this feature is set to false.
+   * If true partial blocks will be evaluated to allow side effects by defining inline blocks within
+   * the partials blocks. Attention: This feature slows down the performance severly if your
+   * templates use deeply nested partial blocks. Handlebars works *much* faster if this feature is
+   * set to false.
    *
-   * Example of a feature that is usable when this is set to true:
+   * <p>Example of a feature that is usable when this is set to true:
+   *
    * <pre>
    *     {{#> myPartial}}{{#*inline 'myInline'}}Wow!!!{{/inline}}{{/myPartial}}
    * </pre>
+   *
    * With a myPartial.hbs template like this:
+   *
    * <pre>
    *     {{> myInline}}
    * </pre>
+   *
    * The text "Wow!!!" will actually be rendered.
    *
-   * If this flag is set to false, you need to explicitly evaluate the partial block.
-   * The template myPartial.hbs will have to look like this:
+   * <p>If this flag is set to false, you need to explicitly evaluate the partial block. The
+   * template myPartial.hbs will have to look like this:
+   *
    * <pre>
    *     {{> @partial-block}}{{> myInline}}
    * </pre>
@@ -428,10 +383,7 @@ public class Handlebars implements HelperRegistry {
     with(loader);
   }
 
-  /**
-   * Creates a new {@link Handlebars} with a {@link ClassPathTemplateLoader} and no
-   * cache.
-   */
+  /** Creates a new {@link Handlebars} with a {@link ClassPathTemplateLoader} and no cache. */
   public Handlebars() {
     this(new ClassPathTemplateLoader());
   }
@@ -443,9 +395,7 @@ public class Handlebars implements HelperRegistry {
    * @return JavaScript.
    */
   public String precompile(final String path) {
-    return Throwing.get(() ->
-        precompileInline(loader.sourceAt(path).content(charset))
-    );
+    return Throwing.get(() -> precompileInline(loader.sourceAt(path).content(charset)));
   }
 
   /**
@@ -455,23 +405,23 @@ public class Handlebars implements HelperRegistry {
    * @return JavaScript.
    */
   public String precompileInline(final String template) {
-    return Throwing.get(() -> {
-      ScriptEngine engine = engine();
-      Object handlebars = engine.getContext().getAttribute("Handlebars");
-      Bindings bindings = engine.createBindings();
-      bindings.put("Handlebars", handlebars);
-      bindings.put("template", template);
-      return (String) engine.eval("Handlebars.precompile(template);", bindings);
-    });
+    return Throwing.get(
+        () -> {
+          ScriptEngine engine = engine();
+          Object handlebars = engine.getContext().getAttribute("Handlebars");
+          Bindings bindings = engine.createBindings();
+          bindings.put("Handlebars", handlebars);
+          bindings.put("template", template);
+          return (String) engine.eval("Handlebars.precompile(template);", bindings);
+        });
   }
 
   /**
-   * Compile the resource located at the given uri.
-   * The implementation uses a cache for previously compiled Templates. By default,
-   * if the resource has been compiled previously, and no changes have occurred
-   * since in the resource, compilation will be skipped and the previously created
-   * Template will be returned. You can set an alternate cache implementation
-   * using {@link #with(TemplateCache cache) with}.
+   * Compile the resource located at the given uri. The implementation uses a cache for previously
+   * compiled Templates. By default, if the resource has been compiled previously, and no changes
+   * have occurred since in the resource, compilation will be skipped and the previously created
+   * Template will be returned. You can set an alternate cache implementation using {@link
+   * #with(TemplateCache cache) with}.
    *
    * @param location The resource's location. Required.
    * @return A compiled template.
@@ -482,12 +432,11 @@ public class Handlebars implements HelperRegistry {
   }
 
   /**
-   * Compile the resource located at the given uri.
-   * The implementation uses a cache for previously compiled Templates. By default,
-   * if the resource has been compiled previously, and no changes have occurred
-   * since in the resource, compilation will be skipped and the previously created
-   * Template will be returned. You can set an alternate cache implementation
-   * using {@link #with(TemplateCache cache) with}.
+   * Compile the resource located at the given uri. The implementation uses a cache for previously
+   * compiled Templates. By default, if the resource has been compiled previously, and no changes
+   * have occurred since in the resource, compilation will be skipped and the previously created
+   * Template will be returned. You can set an alternate cache implementation using {@link
+   * #with(TemplateCache cache) with}.
    *
    * @param location The resource's location. Required.
    * @param startDelimiter The start delimiter. Required.
@@ -495,17 +444,17 @@ public class Handlebars implements HelperRegistry {
    * @return A compiled template.
    * @throws IOException If the resource cannot be loaded.
    */
-  public Template compile(final String location, final String startDelimiter,
-      final String endDelimiter) throws IOException {
+  public Template compile(
+      final String location, final String startDelimiter, final String endDelimiter)
+      throws IOException {
     return compile(loader.sourceAt(location), startDelimiter, endDelimiter);
   }
 
   /**
-   * Compile a handlebars template.
-   * The implementation uses a cache for previously compiled Templates. By default,
-   * if same input string has been compiled previously, compilation will be skipped
-   * and the previously created Template will be returned. You can set an alternate
-   * cache implementation using {@link #with(TemplateCache cache) with}.
+   * Compile a handlebars template. The implementation uses a cache for previously compiled
+   * Templates. By default, if same input string has been compiled previously, compilation will be
+   * skipped and the previously created Template will be returned. You can set an alternate cache
+   * implementation using {@link #with(TemplateCache cache) with}.
    *
    * @param input The handlebars input. Required.
    * @return A compiled template.
@@ -516,11 +465,10 @@ public class Handlebars implements HelperRegistry {
   }
 
   /**
-   * Compile a handlebars template.
-   * The implementation uses a cache for previously compiled Templates. By default,
-   * if same input string has been compiled previously, compilation will be skipped
-   * and the previously created Template will be returned. You can set an alternate
-   * cache implementation using {@link #with(TemplateCache cache) with}.
+   * Compile a handlebars template. The implementation uses a cache for previously compiled
+   * Templates. By default, if same input string has been compiled previously, compilation will be
+   * skipped and the previously created Template will be returned. You can set an alternate cache
+   * implementation using {@link #with(TemplateCache cache) with}.
    *
    * @param input The input text. Required.
    * @param startDelimiter The start delimiter. Required.
@@ -528,21 +476,20 @@ public class Handlebars implements HelperRegistry {
    * @return A compiled template.
    * @throws IOException If the resource cannot be loaded.
    */
-  public Template compileInline(final String input, final String startDelimiter,
-      final String endDelimiter) throws IOException {
+  public Template compileInline(
+      final String input, final String startDelimiter, final String endDelimiter)
+      throws IOException {
     notNull(input, "The input is required.");
     String filename = "inline@" + Integer.toHexString(Math.abs(input.hashCode()));
-    return compile(new StringTemplateSource(filename, input),
-        startDelimiter, endDelimiter);
+    return compile(new StringTemplateSource(filename, input), startDelimiter, endDelimiter);
   }
 
   /**
-   * Compile a handlebars template.
-   * The implementation uses a cache for previously compiled Templates. By default,
-   * if the resource has been compiled previously, and no changes have occurred
-   * since in the resource, compilation will be skipped and the previously created
-   * Template will be returned. You can set an alternate cache implementation
-   * using {@link #with(TemplateCache cache) with}.
+   * Compile a handlebars template. The implementation uses a cache for previously compiled
+   * Templates. By default, if the resource has been compiled previously, and no changes have
+   * occurred since in the resource, compilation will be skipped and the previously created Template
+   * will be returned. You can set an alternate cache implementation using {@link
+   * #with(TemplateCache cache) with}.
    *
    * @param source The template source. Required.
    * @return A handlebars template.
@@ -553,12 +500,11 @@ public class Handlebars implements HelperRegistry {
   }
 
   /**
-   * Compile a handlebars template.
-   * The implementation uses a cache for previously compiled Templates. By default,
-   * if the resource has been compiled previously, and no changes have occurred
-   * since in the resource, compilation will be skipped and the previously created
-   * Template will be returned. You can set an alternate cache implementation
-   * using {@link #with(TemplateCache cache) with}.
+   * Compile a handlebars template. The implementation uses a cache for previously compiled
+   * Templates. By default, if the resource has been compiled previously, and no changes have
+   * occurred since in the resource, compilation will be skipped and the previously created Template
+   * will be returned. You can set an alternate cache implementation using {@link
+   * #with(TemplateCache cache) with}.
    *
    * @param source The template source. Required.
    * @param startDelimiter The start delimiter. Required.
@@ -566,8 +512,9 @@ public class Handlebars implements HelperRegistry {
    * @return A handlebars template.
    * @throws IOException If the resource cannot be loaded.
    */
-  public Template compile(final TemplateSource source, final String startDelimiter,
-      final String endDelimiter) throws IOException {
+  public Template compile(
+      final TemplateSource source, final String startDelimiter, final String endDelimiter)
+      throws IOException {
     notNull(source, "The template source is required.");
     notEmpty(startDelimiter, "The start delimiter is required.");
     notEmpty(endDelimiter, "The end delimiter is required.");
@@ -615,12 +562,9 @@ public class Handlebars implements HelperRegistry {
   }
 
   /**
-   * <p>
    * Register all the helper methods for the given helper source.
-   * </p>
-   * <p>
-   * A helper method looks like:
-   * </p>
+   *
+   * <p>A helper method looks like:
    *
    * <pre>
    * public static? CharSequence methodName(context?, parameter*, options?) {
@@ -628,11 +572,12 @@ public class Handlebars implements HelperRegistry {
    * </pre>
    *
    * Where:
+   *
    * <ul>
-   * <li>A method can/can't be static</li>
-   * <li>The method's name became the helper's name</li>
-   * <li>Context, parameters and options are all optional</li>
-   * <li>If context and options are present they must be the first and last method arguments.</li>
+   *   <li>A method can/can't be static
+   *   <li>The method's name became the helper's name
+   *   <li>Context, parameters and options are all optional
+   *   <li>If context and options are present they must be the first and last method arguments.
    * </ul>
    *
    * Instance and static methods will be registered as helpers.
@@ -647,12 +592,9 @@ public class Handlebars implements HelperRegistry {
   }
 
   /**
-   * <p>
    * Register all the helper methods for the given helper source.
-   * </p>
-   * <p>
-   * A helper method looks like:
-   * </p>
+   *
+   * <p>A helper method looks like:
    *
    * <pre>
    * public static? CharSequence methodName(context?, parameter*, options?) {
@@ -660,17 +602,17 @@ public class Handlebars implements HelperRegistry {
    * </pre>
    *
    * Where:
+   *
    * <ul>
-   * <li>A method can/can't be static</li>
-   * <li>The method's name became the helper's name</li>
-   * <li>Context, parameters and options are all optional</li>
-   * <li>If context and options are present they must be the first and last method arguments.</li>
+   *   <li>A method can/can't be static
+   *   <li>The method's name became the helper's name
+   *   <li>Context, parameters and options are all optional
+   *   <li>If context and options are present they must be the first and last method arguments.
    * </ul>
    *
    * Only static methods will be registered as helpers.
-   * <p>
-   * Enums are supported too
-   * </p>
+   *
+   * <p>Enums are supported too
    *
    * @param helperSource The helper source. Enums are supported. Required.
    * @return This handlebars object.
@@ -682,12 +624,9 @@ public class Handlebars implements HelperRegistry {
   }
 
   /**
-   * <p>
    * Register helpers from a JavaScript source.
-   * </p>
-   * <p>
-   * A JavaScript source file looks like:
-   * </p>
+   *
+   * <p>A JavaScript source file looks like:
    *
    * <pre>
    *  Handlebars.registerHelper('hey', function (context) {
@@ -717,12 +656,9 @@ public class Handlebars implements HelperRegistry {
   }
 
   /**
-   * <p>
    * Register helpers from a JavaScript source.
-   * </p>
-   * <p>
-   * A JavaScript source file looks like:
-   * </p>
+   *
+   * <p>A JavaScript source file looks like:
    *
    * <pre>
    *  Handlebars.registerHelper('hey', function (context) {
@@ -752,12 +688,9 @@ public class Handlebars implements HelperRegistry {
   }
 
   /**
-   * <p>
    * Register helpers from a JavaScript source.
-   * </p>
-   * <p>
-   * A JavaScript source file looks like:
-   * </p>
+   *
+   * <p>A JavaScript source file looks like:
    *
    * <pre>
    *  Handlebars.registerHelper('hey', function (context) {
@@ -788,12 +721,9 @@ public class Handlebars implements HelperRegistry {
   }
 
   /**
-   * <p>
    * Register helpers from a JavaScript source.
-   * </p>
-   * <p>
-   * A JavaScript source file looks like:
-   * </p>
+   *
+   * <p>A JavaScript source file looks like:
    *
    * <pre>
    *  Handlebars.registerHelper('hey', function (context) {
@@ -825,12 +755,9 @@ public class Handlebars implements HelperRegistry {
   }
 
   /**
-   * <p>
    * Register helpers from a JavaScript source.
-   * </p>
-   * <p>
-   * A JavaScript source file looks like:
-   * </p>
+   *
+   * <p>A JavaScript source file looks like:
    *
    * <pre>
    *  Handlebars.registerHelper('hey', function (context) {
@@ -905,7 +832,7 @@ public class Handlebars implements HelperRegistry {
    * If true, unnecessary spaces and new lines will be removed from output. Default is: false.
    *
    * @return If true, unnecessary spaces and new lines will be removed from output. Default is:
-   *         false.
+   *     false.
    */
   public boolean prettyPrint() {
     return prettyPrint;
@@ -915,7 +842,7 @@ public class Handlebars implements HelperRegistry {
    * If true, unnecessary spaces and new lines will be removed from output. Default is: false.
    *
    * @param prettyPrint If true, unnecessary spaces and new lines will be removed from output.
-   *        Default is: false.
+   *     Default is: false.
    */
   public void setPrettyPrint(final boolean prettyPrint) {
     this.prettyPrint = prettyPrint;
@@ -925,7 +852,7 @@ public class Handlebars implements HelperRegistry {
    * If true, unnecessary spaces and new lines will be removed from output. Default is: false.
    *
    * @param prettyPrint If true, unnecessary spaces and new lines will be removed from output.
-   *        Default is: false.
+   *     Default is: false.
    * @return This handlebars object.
    */
   public Handlebars prettyPrint(final boolean prettyPrint) {
@@ -936,8 +863,7 @@ public class Handlebars implements HelperRegistry {
   /**
    * If true, missing helper parameters will be resolve to their names.
    *
-   * @param stringParams If true, missing helper parameters will be resolve to
-   *        their names.
+   * @param stringParams If true, missing helper parameters will be resolve to their names.
    */
   public void setStringParams(final boolean stringParams) {
     this.stringParams = stringParams;
@@ -946,8 +872,7 @@ public class Handlebars implements HelperRegistry {
   /**
    * If true, missing helper parameters will be resolve to their names.
    *
-   * @param stringParams If true, missing helper parameters will be resolve to
-   *        their names.
+   * @param stringParams If true, missing helper parameters will be resolve to their names.
    * @return The handlebars object.
    */
   public Handlebars stringParams(final boolean stringParams) {
@@ -960,7 +885,7 @@ public class Handlebars implements HelperRegistry {
    * Default is: false.
    *
    * @return If true, templates will be able to call him self directly or indirectly. Use with
-   *         caution. Default is: false.
+   *     caution. Default is: false.
    */
   public boolean infiniteLoops() {
     return infiniteLoops;
@@ -970,8 +895,7 @@ public class Handlebars implements HelperRegistry {
    * If true, templates will be able to call him self directly or indirectly. Use with caution.
    * Default is: false.
    *
-   * @param infiniteLoops If true, templates will be able to call him self directly or
-   *        indirectly.
+   * @param infiniteLoops If true, templates will be able to call him self directly or indirectly.
    */
   public void setInfiniteLoops(final boolean infiniteLoops) {
     this.infiniteLoops = infiniteLoops;
@@ -981,8 +905,7 @@ public class Handlebars implements HelperRegistry {
    * If true, templates will be able to call him self directly or indirectly. Use with caution.
    * Default is: false.
    *
-   * @param infiniteLoops If true, templates will be able to call him self directly or
-   *        indirectly.
+   * @param infiniteLoops If true, templates will be able to call him self directly or indirectly.
    * @return The handlebars object.
    */
   public Handlebars infiniteLoops(final boolean infiniteLoops) {
@@ -992,15 +915,15 @@ public class Handlebars implements HelperRegistry {
 
   /**
    * If true, templates will be deleted once applied. Useful, in some advanced template inheritance
-   * use cases. Used by <code>{{#block}} helper</code>. Default is: false.
-   * At any time you can override the default setup with:
+   * use cases. Used by <code>{{#block}} helper</code>. Default is: false. At any time you can
+   * override the default setup with:
    *
    * <pre>
    * {{#block "footer" delete-after-merge=true}}
    * </pre>
    *
-   * @return True for clearing up templates once they got applied. Used by
-   *         <code>{{#block}} helper</code>.
+   * @return True for clearing up templates once they got applied. Used by <code>{{#block}} helper
+   *     </code>.
    */
   public boolean deletePartialAfterMerge() {
     return deletePartialAfterMerge;
@@ -1008,16 +931,15 @@ public class Handlebars implements HelperRegistry {
 
   /**
    * If true, templates will be deleted once applied. Useful, in some advanced template inheritance
-   * use cases. Used by <code>{{#block}} helper</code>. Default is: false.
-   * At any time you can override the default setup with:
+   * use cases. Used by <code>{{#block}} helper</code>. Default is: false. At any time you can
+   * override the default setup with:
    *
    * <pre>
    * {{#block "footer" delete-after-merge=true}}
    * </pre>
    *
    * @param deletePartialAfterMerge True for clearing up templates once they got applied. Used by
-   *        <code>{{#block}} helper</code>.
-   *
+   *     <code>{{#block}} helper</code>.
    * @return This handlebars object.
    */
   public Handlebars deletePartialAfterMerge(final boolean deletePartialAfterMerge) {
@@ -1027,15 +949,15 @@ public class Handlebars implements HelperRegistry {
 
   /**
    * If true, templates will be deleted once applied. Useful, in some advanced template inheritance
-   * use cases. Used by <code>{{#block}} helper</code>. Default is: false.
-   * At any time you can override the default setup with:
+   * use cases. Used by <code>{{#block}} helper</code>. Default is: false. At any time you can
+   * override the default setup with:
    *
    * <pre>
    * {{#block "footer" delete-after-merge=true}}
    * </pre>
    *
    * @param deletePartialAfterMerge True for clearing up templates once they got applied. Used by
-   *        <code>{{#block}} helper</code>.
+   *     <code>{{#block}} helper</code>.
    */
   public void setDeletePartialAfterMerge(final boolean deletePartialAfterMerge) {
     this.deletePartialAfterMerge = deletePartialAfterMerge;
@@ -1155,8 +1077,7 @@ public class Handlebars implements HelperRegistry {
    * @return This handlebars object.
    */
   public Handlebars with(final EscapingStrategy escapingStrategy) {
-    this.escapingStrategy = notNull(escapingStrategy,
-        "The escaping strategy is required.");
+    this.escapingStrategy = notNull(escapingStrategy, "The escaping strategy is required.");
     return this;
   }
 
@@ -1185,12 +1106,12 @@ public class Handlebars implements HelperRegistry {
    * Handlebars hbs = new Handlebars();
    *
    * hbs.with(new Formatter() {
-   *   public Object format(Object value, Chain next) {
-   *    if (value instanceof Date) {
-   *      return ((Date) value).getTime();
-   *    }
-   *    return next.format(value);
-   *   }
+   * 	public Object format(Object value, Chain next) {
+   * 		if (value instanceof Date) {
+   * 			return ((Date) value).getTime();
+   * 		}
+   * 		return next.format(value);
+   * 	}
    * });
    *
    * </pre>
@@ -1210,21 +1131,17 @@ public class Handlebars implements HelperRegistry {
 
   /**
    * Set the handlebars.js location used it to compile/precompile template to JavaScript.
-   * <p>
-   * Using handlebars.js 4.x:
-   * </p>
+   *
+   * <p>Using handlebars.js 4.x:
    *
    * <pre>
-   *   Handlebars handlebars = new Handlebars()
-   *      .handlebarsJsFile("handlebars-v4.0.4.js");
+   * Handlebars handlebars = new Handlebars().handlebarsJsFile("handlebars-v4.0.4.js");
    * </pre>
-   * <p>
-   * Using handlebars.js 1.x:
-   * </p>
+   *
+   * <p>Using handlebars.js 1.x:
    *
    * <pre>
-   *   Handlebars handlebars = new Handlebars()
-   *      .handlebarsJsFile("handlebars-v1.3.0.js");
+   * Handlebars handlebars = new Handlebars().handlebarsJsFile("handlebars-v1.3.0.js");
    * </pre>
    *
    * Default handlebars.js is <code>handlebars-v4.0.4.js</code>.
@@ -1245,8 +1162,8 @@ public class Handlebars implements HelperRegistry {
   }
 
   /**
-   * @return Classpath location of the handlebars.js file. Default is:
-   *         <code>handlebars-v4.0.4.js</code>
+   * @return Classpath location of the handlebars.js file. Default is: <code>handlebars-v4.0.4.js
+   *     </code>
    */
   public String handlebarsJsFile() {
     return handlebarsJsFile;
@@ -1254,7 +1171,7 @@ public class Handlebars implements HelperRegistry {
 
   /**
    * @return True, if we want to extend lookup to parent scope, like Mustache Spec. Or false, if
-   *         lookup is restricted to current scope, like handlebars.js.
+   *     lookup is restricted to current scope, like handlebars.js.
    */
   public boolean parentScopeResolution() {
     return parentScopeResolution;
@@ -1262,6 +1179,7 @@ public class Handlebars implements HelperRegistry {
 
   /**
    * Given:
+   *
    * <pre>
    * {
    *   "value": "Brett",
@@ -1271,23 +1189,21 @@ public class Handlebars implements HelperRegistry {
    * }
    * </pre>
    *
-   * Handlebars.java will output: <code>Hello Favre Brett</code> while handlebars.js:
-   * <code>Hello Favre</code>.
+   * Handlebars.java will output: <code>Hello Favre Brett</code> while handlebars.js: <code>
+   * Hello Favre</code>.
    *
-   * Why? Handlebars.java is a 100% Mustache implementation while handlebars.js isn't.
+   * <p>Why? Handlebars.java is a 100% Mustache implementation while handlebars.js isn't.
    *
-   * This option forces Handlebars.java mimics handlebars.js behavior:
+   * <p>This option forces Handlebars.java mimics handlebars.js behavior:
    *
    * <pre>
-   * Handlebars hbs = new Handlebars()
-   *   .parentScopeResolution(true);
+   * Handlebars hbs = new Handlebars().parentScopeResolution(true);
    * </pre>
    *
    * Outputs: <code>Hello Favre</code>.
    *
-   *
    * @param parentScopeResolution False, if we want to restrict lookup to current scope (like in
-   *        handlebars.js). Default is <code>true</code>
+   *     handlebars.js). Default is <code>true</code>
    */
   public void setParentScopeResolution(final boolean parentScopeResolution) {
     this.parentScopeResolution = parentScopeResolution;
@@ -1295,6 +1211,7 @@ public class Handlebars implements HelperRegistry {
 
   /**
    * Given:
+   *
    * <pre>
    * {
    *   "value": "Brett",
@@ -1304,23 +1221,21 @@ public class Handlebars implements HelperRegistry {
    * }
    * </pre>
    *
-   * Handlebars.java will output: <code>Hello Favre Brett</code> while handlebars.js:
-   * <code>Hello Favre</code>.
+   * Handlebars.java will output: <code>Hello Favre Brett</code> while handlebars.js: <code>
+   * Hello Favre</code>.
    *
-   * Why? Handlebars.java is a 100% Mustache implementation while handlebars.js isn't.
+   * <p>Why? Handlebars.java is a 100% Mustache implementation while handlebars.js isn't.
    *
-   * This option forces Handlebars.java mimics handlebars.js behavior:
+   * <p>This option forces Handlebars.java mimics handlebars.js behavior:
    *
    * <pre>
-   * Handlebars hbs = new Handlebars()
-   *   .parentScopeResolution(true);
+   * Handlebars hbs = new Handlebars().parentScopeResolution(true);
    * </pre>
    *
    * Outputs: <code>Hello Favre</code>.
    *
-   *
    * @param parentScopeResolution False, if we want to restrict lookup to current scope (like in
-   *        handlebars.js). Default is <code>true</code>
+   *     handlebars.js). Default is <code>true</code>
    * @return This handlebars.
    */
   public Handlebars parentScopeResolution(final boolean parentScopeResolution) {
@@ -1329,57 +1244,57 @@ public class Handlebars implements HelperRegistry {
   }
 
   /**
-   * If true, partial blocks will implicitly be evaluated before the partials will actually
-   * be executed. If false, you need to explicitly evaluate and render partial blocks with
-   * <pre>{@code
-   *     {{> @partial-block}}
-   * }</pre>
-   * Attention: If this is set to true, Handlebars works *much* slower! while rendering
-   * partial blocks. Default is: true for compatibility reasons.
+   * If true, partial blocks will implicitly be evaluated before the partials will actually be
+   * executed. If false, you need to explicitly evaluate and render partial blocks with
    *
-   * @return If true partial blocks will be evaluated before the partial will be rendered
-   *         to allow inline block side effects.
-   *         If false, you will have to evaluate and render partial blocks explitly (this
-   *         option is *much* faster).
+   * <pre>{@code
+   * {{> @partial-block}}
+   * }</pre>
+   *
+   * Attention: If this is set to true, Handlebars works *much* slower! while rendering partial
+   * blocks. Default is: true for compatibility reasons.
+   *
+   * @return If true partial blocks will be evaluated before the partial will be rendered to allow
+   *     inline block side effects. If false, you will have to evaluate and render partial blocks
+   *     explitly (this option is *much* faster).
    */
   public boolean preEvaluatePartialBlocks() {
     return preEvaluatePartialBlocks;
   }
 
   /**
-   * If true, partial blocks will implicitly be evaluated before the partials will actually
-   * be executed. If false, you need to explicitly evaluate and render partial blocks with
-   * <pre>{@code
-   *     {{> @partial-block}}
-   * }</pre>
-   * Attention: If this is set to true, Handlebars works *much* slower! while rendering
-   * partial blocks. Default is: true for compatibility reasons.
+   * If true, partial blocks will implicitly be evaluated before the partials will actually be
+   * executed. If false, you need to explicitly evaluate and render partial blocks with
    *
-   * @param preEvaluatePartialBlocks If true partial blocks will be evaluated before the
-   *                                 partial will be rendered to allow inline block side
-   *                                 effects.
-   *                                 If false, you will have to evaluate and render partial
-   *                                 blocks explitly (this option is *much* faster).
+   * <pre>{@code
+   * {{> @partial-block}}
+   * }</pre>
+   *
+   * Attention: If this is set to true, Handlebars works *much* slower! while rendering partial
+   * blocks. Default is: true for compatibility reasons.
+   *
+   * @param preEvaluatePartialBlocks If true partial blocks will be evaluated before the partial
+   *     will be rendered to allow inline block side effects. If false, you will have to evaluate
+   *     and render partial blocks explitly (this option is *much* faster).
    */
   public void setPreEvaluatePartialBlocks(final boolean preEvaluatePartialBlocks) {
     this.preEvaluatePartialBlocks = preEvaluatePartialBlocks;
   }
 
   /**
-   * If true, partial blocks will implicitly be evaluated before the partials will actually
-   * be executed. If false, you need to explicitly evaluate and render partial blocks with
+   * If true, partial blocks will implicitly be evaluated before the partials will actually be
+   * executed. If false, you need to explicitly evaluate and render partial blocks with
    *
    * <pre>{@code
-   *     {{> @partial-block}}
+   * {{> @partial-block}}
    * }</pre>
-   * Attention: If this is set to true, Handlebars works *much* slower! while rendering
-   * partial blocks. Default is: true for compatibility reasons.
    *
-   * @param preEvaluatePartialBlocks If true partial blocks will be evaluated before the
-   *                                 partial will be rendered to allow inline block side
-   *                                 effects.
-   *                                 If false, you will have to evaluate and render partial
-   *                                 blocks explitly (this option is *much* faster).
+   * Attention: If this is set to true, Handlebars works *much* slower! while rendering partial
+   * blocks. Default is: true for compatibility reasons.
+   *
+   * @param preEvaluatePartialBlocks If true partial blocks will be evaluated before the partial
+   *     will be rendered to allow inline block side effects. If false, you will have to evaluate
+   *     and render partial blocks explitly (this option is *much* faster).
    * @return The Handlebars object
    */
   public Handlebars preEvaluatePartialBlocks(final boolean preEvaluatePartialBlocks) {
@@ -1470,7 +1385,6 @@ public class Handlebars implements HelperRegistry {
    * @param args The optional args.
    * @see String#format(String, Object...)
    */
-
   public static void error(final String message, final Object... args) {
     logger.error(String.format(message, args));
   }

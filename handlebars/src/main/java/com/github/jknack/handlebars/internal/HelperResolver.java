@@ -1,19 +1,7 @@
-/**
- * Copyright (c) 2012-2015 Edgar Espina
- *
- * This file is part of Handlebars.java.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+/*
+ * Handlebars.java: https://github.com/jknack/handlebars.java
+ * Apache License Version 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Copyright (c) 2012 Edgar Espina
  */
 package com.github.jknack.handlebars.internal;
 
@@ -21,10 +9,10 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.HashMap;
 import java.util.Map.Entry;
 
 import com.github.jknack.handlebars.Context;
@@ -43,14 +31,10 @@ import com.github.jknack.handlebars.Template;
  */
 abstract class HelperResolver extends BaseTemplate {
 
-  /**
-   * The parameter list.
-   */
+  /** The parameter list. */
   protected List<Param> params = Collections.emptyList();
 
-  /**
-   * The hash object.
-   */
+  /** The hash object. */
   protected Map<String, Param> hash = Collections.emptyMap();
 
   /** Param's size. */
@@ -59,9 +43,7 @@ abstract class HelperResolver extends BaseTemplate {
   /** Hash's size. */
   protected int hashSize;
 
-  /**
-   * Empty parameters.
-   */
+  /** Empty parameters. */
   private static final Object[] PARAMS = {};
 
   /**
@@ -107,8 +89,7 @@ abstract class HelperResolver extends BaseTemplate {
     for (int i = 1; i < paramSize; i++) {
       Param value = params.get(i);
       Object resolved = value.apply(ctx);
-      values[i - 1] = resolved == null && handlebars.stringParams()
-          ? value.toString() : resolved;
+      values[i - 1] = resolved == null && handlebars.stringParams() ? value.toString() : resolved;
     }
     return values;
   }
@@ -125,15 +106,14 @@ abstract class HelperResolver extends BaseTemplate {
     for (int i = 0; i < paramSize; i++) {
       Param value = params.get(i);
       Object resolved = value.apply(ctx);
-      values[i] = resolved == null && handlebars.stringParams()
-          ? value.toString() : resolved;
+      values[i] = resolved == null && handlebars.stringParams() ? value.toString() : resolved;
     }
     return values;
   }
 
   /**
-   * Determine the current context. If the param list is empty, the current
-   * context value is returned.
+   * Determine the current context. If the param list is empty, the current context value is
+   * returned.
    *
    * @param context The current context.
    * @return The current context.
@@ -245,8 +225,7 @@ abstract class HelperResolver extends BaseTemplate {
       for (Entry<String, Param> hash : this.hash.entrySet()) {
         Param hashValue = hash.getValue();
         String hashText = hashValue.toString();
-        buffer.append(hash.getKey()).append("=").append(hashText)
-            .append(sep);
+        buffer.append(hash.getKey()).append("=").append(hashText).append(sep);
       }
       buffer.setLength(buffer.length() - sep.length());
       return buffer.toString();
@@ -278,5 +257,4 @@ abstract class HelperResolver extends BaseTemplate {
       }
     }
   }
-
 }

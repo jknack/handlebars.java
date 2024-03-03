@@ -1,3 +1,8 @@
+/*
+ * Handlebars.java: https://github.com/jknack/handlebars.java
+ * Apache License Version 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Copyright (c) 2012 Edgar Espina
+ */
 package com.github.jknack.handlebars.maven;
 
 import static org.junit.Assert.assertEquals;
@@ -33,15 +38,13 @@ public class Issue234 {
   }
 
   private void equalsToIgnoreBlanks(String expected, String found) throws IOException {
-    assertEquals(replaceWhiteCharsWithSpace(FileUtils.fileRead(expected)),
+    assertEquals(
+        replaceWhiteCharsWithSpace(FileUtils.fileRead(expected)),
         replaceWhiteCharsWithSpace(FileUtils.fileRead(found)));
   }
 
   private String replaceWhiteCharsWithSpace(String content) {
-    return content.trim()
-        .replace("\\r\\n", "\\n")
-        .replace("\r", "")
-        .replace("\t", " ");
+    return content.trim().replace("\\r\\n", "\\n").replace("\r", "").replace("\t", " ");
   }
 
   private MavenProject newProject(final String... classpath)

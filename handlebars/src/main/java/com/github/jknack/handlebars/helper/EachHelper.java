@@ -1,19 +1,7 @@
-/**
- * Copyright (c) 2012-2015 Edgar Espina
- *
- * This file is part of Handlebars.java.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+/*
+ * Handlebars.java: https://github.com/jknack/handlebars.java
+ * Apache License Version 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Copyright (c) 2012 Edgar Espina
  */
 package com.github.jknack.handlebars.helper;
 
@@ -28,29 +16,23 @@ import com.github.jknack.handlebars.Options;
 import com.github.jknack.handlebars.Template;
 
 /**
- * You can iterate over a list using the built-in each helper. Inside the
- * block, you can use <code>this</code> to reference the element being
- * iterated over.
+ * You can iterate over a list using the built-in each helper. Inside the block, you can use <code>
+ * this</code> to reference the element being iterated over.
  *
  * @author edgar.espina
  * @since 0.3.0
  */
 public class EachHelper implements Helper<Object> {
 
-  /**
-   * A singleton instance of this helper.
-   */
+  /** A singleton instance of this helper. */
   public static final Helper<Object> INSTANCE = new EachHelper();
 
-  /**
-   * The helper's name.
-   */
+  /** The helper's name. */
   public static final String NAME = "each";
 
-  @SuppressWarnings({"rawtypes", "unchecked" })
+  @SuppressWarnings({"rawtypes", "unchecked"})
   @Override
-  public Object apply(final Object context, final Options options)
-      throws IOException {
+  public Object apply(final Object context, final Options options) throws IOException {
     if (context instanceof Iterable) {
       Options.Buffer buffer = options.buffer();
       Iterator<Object> loop = ((Iterable) context).iterator();
@@ -62,7 +44,8 @@ public class EachHelper implements Helper<Object> {
       while (loop.hasNext()) {
         Object it = loop.next();
         Context itCtx = Context.newContext(parent, it);
-        itCtx.combine("@key", index)
+        itCtx
+            .combine("@key", index)
             .combine("@index", index)
             .combine("@first", index == base ? "first" : "")
             .combine("@last", !loop.hasNext() ? "last" : "")
@@ -90,12 +73,13 @@ public class EachHelper implements Helper<Object> {
         Entry entry = (Entry) loop.next();
         Object key = entry.getKey();
         Object value = entry.getValue();
-        Context itCtx = Context.newBuilder(parent, value)
-            .combine("@key", key)
-            .combine("@index", index)
-            .combine("@first", first ? "first" : "")
-            .combine("@last", !loop.hasNext() ? "last" : "")
-            .build();
+        Context itCtx =
+            Context.newBuilder(parent, value)
+                .combine("@key", key)
+                .combine("@index", index)
+                .combine("@first", first ? "first" : "")
+                .combine("@last", !loop.hasNext() ? "last" : "")
+                .build();
         buffer.append(options.apply(fn, itCtx, Arrays.asList(value, key)));
         first = false;
         index++;
@@ -109,5 +93,4 @@ public class EachHelper implements Helper<Object> {
       return options.inverse();
     }
   }
-
 }

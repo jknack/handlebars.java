@@ -1,3 +1,8 @@
+/*
+ * Handlebars.java: https://github.com/jknack/handlebars.java
+ * Apache License Version 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Copyright (c) 2012 Edgar Espina
+ */
 package com.github.jknack.handlebars.io;
 
 import static org.junit.Assert.assertNotNull;
@@ -31,8 +36,9 @@ public class ServletContextTemplateLoaderTest {
     ServletContext servletContext = mock(ServletContext.class);
     expectGetResource(servletContext, "src/test/resources");
 
-    TemplateSource source = new ServletContextTemplateLoader(servletContext, "/", ".yml")
-        .sourceAt("mustache/specs/comments");
+    TemplateSource source =
+        new ServletContextTemplateLoader(servletContext, "/", ".yml")
+            .sourceAt("mustache/specs/comments");
     assertNotNull(source);
 
     verify(servletContext).getResource(anyString());
@@ -43,8 +49,9 @@ public class ServletContextTemplateLoaderTest {
     ServletContext servletContext = mock(ServletContext.class);
     expectGetResource(servletContext, "src/test/resources");
 
-    TemplateSource source = new ServletContextTemplateLoader(servletContext, "/", ".yml")
-        .sourceAt("/mustache/specs/comments");
+    TemplateSource source =
+        new ServletContextTemplateLoader(servletContext, "/", ".yml")
+            .sourceAt("/mustache/specs/comments");
     assertNotNull(source);
 
     verify(servletContext).getResource(anyString());
@@ -66,8 +73,8 @@ public class ServletContextTemplateLoaderTest {
     ServletContext servletContext = mock(ServletContext.class);
     expectGetResource(servletContext, "src/test/resources/mustache/specs");
 
-    TemplateSource source = new ServletContextTemplateLoader(servletContext, "/", ".yml")
-        .sourceAt("comments");
+    TemplateSource source =
+        new ServletContextTemplateLoader(servletContext, "/", ".yml").sourceAt("comments");
     assertNotNull(source);
 
     verify(servletContext).getResource(anyString());
@@ -78,8 +85,8 @@ public class ServletContextTemplateLoaderTest {
     ServletContext servletContext = mock(ServletContext.class);
     expectGetResource(servletContext, "src/test/resources/mustache/specs/");
 
-    TemplateSource source = new ServletContextTemplateLoader(servletContext, "/", ".yml")
-        .sourceAt("comments");
+    TemplateSource source =
+        new ServletContextTemplateLoader(servletContext, "/", ".yml").sourceAt("comments");
     assertNotNull(source);
 
     verify(servletContext).getResource(anyString());
@@ -90,8 +97,8 @@ public class ServletContextTemplateLoaderTest {
     ServletContext servletContext = mock(ServletContext.class);
     expectGetResource(servletContext, "src/test/resources/");
 
-    TemplateSource source = new ServletContextTemplateLoader(servletContext, "/", null)
-        .sourceAt("noextension");
+    TemplateSource source =
+        new ServletContextTemplateLoader(servletContext, "/", null).sourceAt("noextension");
     assertNotNull(source);
 
     verify(servletContext).getResource(anyString());
@@ -102,8 +109,8 @@ public class ServletContextTemplateLoaderTest {
     ServletContext servletContext = mock(ServletContext.class);
     expectGetResource(servletContext, "src/test/resources/");
 
-    TemplateSource source = new ServletContextTemplateLoader(servletContext, "/", "")
-        .sourceAt("noextension");
+    TemplateSource source =
+        new ServletContextTemplateLoader(servletContext, "/", "").sourceAt("noextension");
     assertNotNull(source);
 
     verify(servletContext).getResource(anyString());
@@ -111,9 +118,11 @@ public class ServletContextTemplateLoaderTest {
 
   private void expectGetResource(final ServletContext servletContext, final String prefix)
       throws IOException {
-    when(servletContext.getResource(anyString())).thenAnswer(invocation -> {
-        File file = new File(prefix, invocation.getArgument(0));
-        return file.exists() ? file.toURI().toURL() : null;
-    });
+    when(servletContext.getResource(anyString()))
+        .thenAnswer(
+            invocation -> {
+              File file = new File(prefix, invocation.getArgument(0));
+              return file.exists() ? file.toURI().toURL() : null;
+            });
   }
 }

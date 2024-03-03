@@ -1,26 +1,14 @@
-/**
- * Copyright (c) 2012-2015 Edgar Espina
- * <p>
- * This file is part of Handlebars.java.
- * <p>
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * <p>
- * http://www.apache.org/licenses/LICENSE-2.0
- * <p>
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+/*
+ * Handlebars.java: https://github.com/jknack/handlebars.java
+ * Apache License Version 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Copyright (c) 2012 Edgar Espina
  */
 package com.github.jknack.handlebars.context;
 
-import com.github.jknack.handlebars.ValueResolver;
-
 import java.lang.reflect.Method;
 import java.util.Collection;
+
+import com.github.jknack.handlebars.ValueResolver;
 
 /**
  * A JavaBean method value resolver.
@@ -30,19 +18,13 @@ import java.util.Collection;
  */
 public class JavaBeanValueResolver extends MethodValueResolver {
 
-  /**
-   * The 'is' prefix.
-   */
+  /** The 'is' prefix. */
   private static final String IS_PREFIX = "is";
 
-  /**
-   * The 'get' prefix.
-   */
+  /** The 'get' prefix. */
   private static final String GET_PREFIX = "get";
 
-  /**
-   * The default value resolver.
-   */
+  /** The default value resolver. */
   public static final ValueResolver INSTANCE = new JavaBeanValueResolver();
 
   @Override
@@ -67,11 +49,10 @@ public class JavaBeanValueResolver extends MethodValueResolver {
    * Convert the property's name to a JavaBean read method name.
    *
    * @param prefix The prefix: 'get' or 'is'.
-   * @param name   The unqualified property name.
+   * @param name The unqualified property name.
    * @return The javaBean method name.
    */
-  private static String javaBeanMethod(final String prefix,
-      final String name) {
+  private static String javaBeanMethod(final String prefix, final String name) {
     StringBuilder buffer = new StringBuilder(prefix);
     buffer.append(name);
     buffer.setCharAt(prefix.length(), Character.toUpperCase(name.charAt(0)));

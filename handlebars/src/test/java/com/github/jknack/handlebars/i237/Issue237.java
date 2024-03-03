@@ -1,3 +1,8 @@
+/*
+ * Handlebars.java: https://github.com/jknack/handlebars.java
+ * Apache License Version 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Copyright (c) 2012 Edgar Espina
+ */
 package com.github.jknack.handlebars.i237;
 
 import java.io.IOException;
@@ -12,7 +17,9 @@ import com.github.jknack.handlebars.AbstractTest;
 public class Issue237 extends AbstractTest {
 
   public enum Status {
-    NEW, DONE, CLOSED
+    NEW,
+    DONE,
+    CLOSED
   }
 
   @Test

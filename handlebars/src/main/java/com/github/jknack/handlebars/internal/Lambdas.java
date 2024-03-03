@@ -1,19 +1,7 @@
-/**
- * Copyright (c) 2012-2015 Edgar Espina
- *
- * This file is part of Handlebars.java.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+/*
+ * Handlebars.java: https://github.com/jknack/handlebars.java
+ * Apache License Version 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Copyright (c) 2012 Edgar Espina
  */
 package com.github.jknack.handlebars.internal;
 
@@ -32,11 +20,8 @@ import com.github.jknack.handlebars.Template;
  */
 final class Lambdas {
 
-  /**
-   * Not allowed.
-   */
-  private Lambdas() {
-  }
+  /** Not allowed. */
+  private Lambdas() {}
 
   /**
    * Merge the lambda result.
@@ -48,9 +33,12 @@ final class Lambdas {
    * @return The resulting text.
    * @throws IOException If the resource cannot be loaded.
    */
-  public static CharSequence merge(final Handlebars handlebars,
-      final Lambda<Object, Object> lambda, final Context scope,
-      final Template template) throws IOException {
+  public static CharSequence merge(
+      final Handlebars handlebars,
+      final Lambda<Object, Object> lambda,
+      final Context scope,
+      final Template template)
+      throws IOException {
     Template result = compile(handlebars, lambda, scope, template);
     return result.apply(scope);
   }
@@ -65,8 +53,10 @@ final class Lambdas {
    * @return The resulting template.
    * @throws IOException If the resource cannot be loaded.
    */
-  public static Template compile(final Handlebars handlebars,
-      final Lambda<Object, Object> lambda, final Context scope,
+  public static Template compile(
+      final Handlebars handlebars,
+      final Lambda<Object, Object> lambda,
+      final Context scope,
       final Template template)
       throws IOException {
     return compile(handlebars, lambda, scope, template, "{{", "}}");
@@ -84,9 +74,12 @@ final class Lambdas {
    * @return The resulting template.
    * @throws IOException If the resource cannot be loaded.
    */
-  public static Template compile(final Handlebars handlebars,
-      final Lambda<Object, Object> lambda, final Context scope,
-      final Template template, final String startDelimiter,
+  public static Template compile(
+      final Handlebars handlebars,
+      final Lambda<Object, Object> lambda,
+      final Context scope,
+      final Template template,
+      final String startDelimiter,
       final String endDelimiter)
       throws IOException {
     Object value = lambda.apply(scope, template);

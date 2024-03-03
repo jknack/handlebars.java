@@ -1,23 +1,10 @@
-/**
- * Copyright (c) 2012-2015 Edgar Espina
- *
- * This file is part of Handlebars.java.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+/*
+ * Handlebars.java: https://github.com/jknack/handlebars.java
+ * Apache License Version 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Copyright (c) 2012 Edgar Espina
  */
 package com.github.jknack.handlebars.helper;
 
-import com.github.jknack.handlebars.internal.Throwing;
 import static org.apache.commons.lang3.Validate.isTrue;
 import static org.apache.commons.lang3.Validate.notEmpty;
 import static org.apache.commons.lang3.Validate.notNull;
@@ -35,9 +22,12 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.Set;
+
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,9 +37,7 @@ import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Helper;
 import com.github.jknack.handlebars.HelperRegistry;
 import com.github.jknack.handlebars.internal.Files;
-
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
+import com.github.jknack.handlebars.internal.Throwing;
 
 /**
  * Default implementation of {@link HelperRegistry}.
@@ -62,9 +50,7 @@ public class DefaultHelperRegistry implements HelperRegistry {
   /** The logging system. */
   private final Logger logger = LoggerFactory.getLogger(HelperRegistry.class);
 
-  /**
-   * The JavaScript helpers environment for Rhino.
-   */
+  /** The JavaScript helpers environment for Rhino. */
   private static final String HELPERS_ENV;
 
   static {
@@ -76,9 +62,7 @@ public class DefaultHelperRegistry implements HelperRegistry {
     }
   }
 
-  /**
-   * The helper registry.
-   */
+  /** The helper registry. */
   private final Map<String, Helper<?>> helpers = new HashMap<>();
 
   /** Decorators. */
@@ -201,28 +185,25 @@ public class DefaultHelperRegistry implements HelperRegistry {
   }
 
   /**
-   * Since nashorn doesn't yet supports the ES6's "const" or "let" literals.
-   *  This method adapts the given helper source written in ES6 to work
-   *  with nashorn (by converting let/const to var).
+   * Since nashorn doesn't yet supports the ES6's "const" or "let" literals. This method adapts the
+   * given helper source written in ES6 to work with nashorn (by converting let/const to var).
    *
    * @param source the helper source.
    * @return the adapted helper source.
-   **/
+   */
   private String adaptES6Literals(final String source) {
     Matcher m = es6VarPattern.matcher(source);
     StringBuffer sb = new StringBuffer();
     while (m.find()) {
-        StringBuffer buf = new StringBuffer(m.group());
-        buf.replace(m.start(1) - m.start(), m.end(1) - m.start(), "var");
-        m.appendReplacement(sb, buf.toString());
+      StringBuffer buf = new StringBuffer(m.group());
+      buf.replace(m.start(1) - m.start(), m.end(1) - m.start(), "var");
+      m.appendReplacement(sb, buf.toString());
     }
     return m.appendTail(sb).toString();
   }
 
   /**
-   * <p>
    * Register all the helper methods for the given helper source.
-   * </p>
    *
    * @param source The helper source.
    * @param clazz The helper source class.
@@ -288,7 +269,8 @@ public class DefaultHelperRegistry implements HelperRegistry {
     return this;
   }
 
-  @Override public DefaultHelperRegistry setCharset(final Charset charset) {
+  @Override
+  public DefaultHelperRegistry setCharset(final Charset charset) {
     this.charset = notNull(charset, "Charset required.");
     return this;
   }

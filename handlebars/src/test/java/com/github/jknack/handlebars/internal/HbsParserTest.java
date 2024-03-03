@@ -1,12 +1,17 @@
+/*
+ * Handlebars.java: https://github.com/jknack/handlebars.java
+ * Apache License Version 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Copyright (c) 2012 Edgar Espina
+ */
 package com.github.jknack.handlebars.internal;
+
+import static org.junit.Assert.assertEquals;
 
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.junit.Test;
-
-import static org.junit.Assert.assertEquals;
 
 public class HbsParserTest {
 
@@ -16,11 +21,11 @@ public class HbsParserTest {
   public void hello() {
     parse("Hello {{who}}\n!");
   }
-  
+
   @Test
   public void subExpr() {
-	  // below expression has unicode char with value: \u0001
-	  parse("{{datawithCtrlChar}}");
+    // below expression has unicode char with value: \u0001
+    parse("{{datawithCtrlChar}}");
   }
 
   @Test
@@ -126,13 +131,22 @@ public class HbsParserTest {
     ParseTree tree = parse(withSpace);
 
     String withNewlines = "{{helper\nparam1=\"1\"\nparam2=2}}";
-    assertEquals("Newlines should be treated the same as spaces", tree.getText(), parse(withNewlines).getText());
+    assertEquals(
+        "Newlines should be treated the same as spaces",
+        tree.getText(),
+        parse(withNewlines).getText());
 
     String withDosNewlines = "{{helper\r\nparam1=\"1\"\r\nparam2=2}}";
-    assertEquals("DOS-style newlines should be treated the same as spaces", tree.getText(), parse(withDosNewlines).getText());
+    assertEquals(
+        "DOS-style newlines should be treated the same as spaces",
+        tree.getText(),
+        parse(withDosNewlines).getText());
 
     String alignedWithTabs = "{{helper\n\tparam1=\"1\"\n\tparam2=2}}";
-    assertEquals("Tab-aligned variables should be treated the same as spaces", tree.getText(), parse(alignedWithTabs).getText());
+    assertEquals(
+        "Tab-aligned variables should be treated the same as spaces",
+        tree.getText(),
+        parse(alignedWithTabs).getText());
   }
 
   private ParseTree parse(final String input) {
@@ -148,17 +162,18 @@ public class HbsParserTest {
 
     CommonTokenStream tokens = new CommonTokenStream(lexer);
 
-    HbsParser parser = new HbsParser(tokens) {
-      @Override
-      void setStart(final String start) {
-        lexer.start = start;
-      }
+    HbsParser parser =
+        new HbsParser(tokens) {
+          @Override
+          void setStart(final String start) {
+            lexer.start = start;
+          }
 
-      @Override
-      void setEnd(final String end) {
-        lexer.end = end;
-      }
-    };
+          @Override
+          void setEnd(final String end) {
+            lexer.end = end;
+          }
+        };
     parser.removeErrorListeners();
     parser.addErrorListener(errorReporter);
     ParseTree tree = parser.template();
@@ -166,8 +181,13 @@ public class HbsParserTest {
       String[] tokenNames = parser.tokenNames();
       for (Token token : tokens.getTokens()) {
         int type = token.getType();
-        String message = String.format("%s:%s:%s:%s", token.getText(), type == -1 ? ""
-            : tokenNames[token.getType()], token.getLine(), token.getCharPositionInLine());
+        String message =
+            String.format(
+                "%s:%s:%s:%s",
+                token.getText(),
+                type == -1 ? "" : tokenNames[token.getType()],
+                token.getLine(),
+                token.getCharPositionInLine());
         System.out.println(message);
       }
     }

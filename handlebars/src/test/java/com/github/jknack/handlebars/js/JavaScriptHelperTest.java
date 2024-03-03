@@ -1,3 +1,8 @@
+/*
+ * Handlebars.java: https://github.com/jknack/handlebars.java
+ * Apache License Version 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Copyright (c) 2012 Edgar Espina
+ */
 package com.github.jknack.handlebars.js;
 
 import static org.junit.Assert.assertEquals;
@@ -40,8 +45,8 @@ public class JavaScriptHelperTest extends AbstractTest {
   @BeforeClass
   public static void registerHelpers() throws Exception {
     long start = System.currentTimeMillis();
-    handlebars
-        .registerHelpers(new File("src/test/resources/com/github/jknack/handlebars/js/helpers.js"));
+    handlebars.registerHelpers(
+        new File("src/test/resources/com/github/jknack/handlebars/js/helpers.js"));
     long end = System.currentTimeMillis();
     System.out.printf("Handlebars.registerHelpers took: %sms\n", end - start);
   }
@@ -63,9 +68,10 @@ public class JavaScriptHelperTest extends AbstractTest {
 
   @Test
   public void publicFieldsContext() throws Exception {
-    Context ctx = Context.newBuilder(new ObjectWithPublicFields("curly"))
-        .resolver(FieldValueResolver.INSTANCE)
-        .build();
+    Context ctx =
+        Context.newBuilder(new ObjectWithPublicFields("curly"))
+            .resolver(FieldValueResolver.INSTANCE)
+            .build();
     eval("{{context this}}", ctx, "curly");
   }
 
@@ -101,7 +107,9 @@ public class JavaScriptHelperTest extends AbstractTest {
 
   @Test
   public void fnWithNewContext() throws Exception {
-    eval("{{#fnWithNewContext this}}I'm {{name}}!{{/fnWithNewContext}}", new Bean("curly"),
+    eval(
+        "{{#fnWithNewContext this}}I'm {{name}}!{{/fnWithNewContext}}",
+        new Bean("curly"),
         "I'm moe!");
   }
 
@@ -117,33 +125,41 @@ public class JavaScriptHelperTest extends AbstractTest {
 
   @Test
   public void helper_with_complex_lookup$() throws Exception {
-    eval("{{#goodbyes}}{{{link ../prefix}}}{{/goodbyes}}",
-        $("prefix", "/root", "goodbyes", new Object[]{$("text", "Goodbye", "url", "goodbye") }),
+    eval(
+        "{{#goodbyes}}{{{link ../prefix}}}{{/goodbyes}}",
+        $("prefix", "/root", "goodbyes", new Object[] {$("text", "Goodbye", "url", "goodbye")}),
         "<a href='/root/goodbye'>Goodbye</a>");
   }
 
   @Test
   public void helper_block_with_complex_lookup_expression() throws Exception {
-    eval("{{#goodbyes2}}{{name}}{{/goodbyes2}}", $("name", "Alan"),
+    eval(
+        "{{#goodbyes2}}{{name}}{{/goodbyes2}}",
+        $("name", "Alan"),
         "Goodbye Alan! goodbye Alan! GOODBYE Alan! ");
   }
 
   @Test
   public void helper_block_with_complex_lookup_expression4() throws Exception {
-    eval("{{#goodbyes4}}{{../name}}{{/goodbyes4}}", $("name", "Alan"),
+    eval(
+        "{{#goodbyes4}}{{../name}}{{/goodbyes4}}",
+        $("name", "Alan"),
         "Goodbye Alan! goodbye Alan! GOODBYE Alan! ");
   }
 
   @Test
   public void helper_with_complex_lookup_and_nested_template() throws Exception {
-    eval("{{#goodbyes}}{{#link2 ../prefix}}{{text}}{{/link2}}{{/goodbyes}}",
-        $("prefix", "/root", "goodbyes", new Object[]{$("text", "Goodbye", "url", "goodbye") }),
+    eval(
+        "{{#goodbyes}}{{#link2 ../prefix}}{{text}}{{/link2}}{{/goodbyes}}",
+        $("prefix", "/root", "goodbyes", new Object[] {$("text", "Goodbye", "url", "goodbye")}),
         "<a href='/root/goodbye'>Goodbye</a>");
   }
 
   @Test
   public void block_helper() throws Exception {
-    eval("{{#goodbyes3}}{{text}}! {{/goodbyes3}}cruel {{world}}!", $("world", "world"),
+    eval(
+        "{{#goodbyes3}}{{text}}! {{/goodbyes3}}cruel {{world}}!",
+        $("world", "world"),
         "GOODBYE! cruel world!");
   }
 
@@ -154,12 +170,11 @@ public class JavaScriptHelperTest extends AbstractTest {
 
   @Test
   public void block_helper_should_have_context_in_this() throws Exception {
-    eval("<ul>{{#people}}<li>{{#link3}}{{name}}{{/link3}}</li>{{/people}}</ul>",
-        $("people", new Object[]{
-            $("name", "Alan", "id", 1),
-            $("name", "Yehuda", "id", 2)
-        }),
-        "<ul><li><a href=\"/people/1\">Alan</a></li><li><a href=\"/people/2\">Yehuda</a></li></ul>");
+    eval(
+        "<ul>{{#people}}<li>{{#link3}}{{name}}{{/link3}}</li>{{/people}}</ul>",
+        $("people", new Object[] {$("name", "Alan", "id", 1), $("name", "Yehuda", "id", 2)}),
+        "<ul><li><a href=\"/people/1\">Alan</a></li><li><a"
+            + " href=\"/people/2\">Yehuda</a></li></ul>");
   }
 
   @Test
@@ -169,22 +184,26 @@ public class JavaScriptHelperTest extends AbstractTest {
 
   @Test
   public void block_helper_passing_a_new_context() throws Exception {
-    eval("{{#form2 yehuda}}<p>{{name}}</p>{{/form2}}",
+    eval(
+        "{{#form2 yehuda}}<p>{{name}}</p>{{/form2}}",
         $("yehuda", $("name", "Yehuda")),
         "<form><p>Yehuda</p></form>");
   }
 
   @Test
   public void block_helper_inverted_sections() throws Exception {
-    eval("{{#list people}}{{name}}{{^}}<em>Nobody's here</em>{{/list}}",
-        $("people", new Object[]{$("name", "Alan"), $("name", "Yehuda") }),
+    eval(
+        "{{#list people}}{{name}}{{^}}<em>Nobody's here</em>{{/list}}",
+        $("people", new Object[] {$("name", "Alan"), $("name", "Yehuda")}),
         "<ul><li>Alan</li><li>Yehuda</li></ul>");
 
-    eval("{{#list people}}{{name}}{{^}}<em>Nobody's here</em>{{/list}}",
+    eval(
+        "{{#list people}}{{name}}{{^}}<em>Nobody's here</em>{{/list}}",
         $("people", new Object[0]),
         "<p><em>Nobody's here</em></p>");
 
-    eval("{{#list people}}Hello{{^}}{{message}}{{/list}}",
+    eval(
+        "{{#list people}}Hello{{^}}{{message}}{{/list}}",
         $("people", new Object[0], "message", "Nobody's here"),
         "<p>Nobody&#x27;s here</p>");
   }

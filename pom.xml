@@ -216,11 +216,11 @@
             <formatAnnotations />
 
             <importOrder>
-              <order>java,javax,org,</order>
+              <order>java,javax,jakarta,org,</order>
             </importOrder>
 
             <licenseHeader>
-              <file>LICENSE</file>
+              <file>src${file.separator}etc${file.separator}LICENSE</file>
             </licenseHeader>
           </java>
         </configuration>

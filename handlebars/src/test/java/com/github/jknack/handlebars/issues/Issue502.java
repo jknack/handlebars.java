@@ -1,3 +1,8 @@
+/*
+ * Handlebars.java: https://github.com/jknack/handlebars.java
+ * Apache License Version 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Copyright (c) 2012 Edgar Espina
+ */
 package com.github.jknack.handlebars.issues;
 
 import static org.junit.Assert.assertEquals;
@@ -34,11 +39,11 @@ public class Issue502 {
     Map<String, Object> params = new HashMap<>();
     params.put("data", data);
 
-    String result = new Handlebars()
-        .compileInline("{{#each data}}{{ @key }} - {{#each . }}Val:{{.}}{{/each}}{{/each}}")
-        .apply(params);
+    String result =
+        new Handlebars()
+            .compileInline("{{#each data}}{{ @key }} - {{#each . }}Val:{{.}}{{/each}}{{/each}}")
+            .apply(params);
 
     assertEquals("123 - Val:1Val:2Val:3456 - Val:4Val:5Val:6", result);
   }
-
 }

@@ -1,3 +1,8 @@
+/*
+ * Handlebars.java: https://github.com/jknack/handlebars.java
+ * Apache License Version 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Copyright (c) 2012 Edgar Espina
+ */
 package com.github.jknack.handlebars.i177;
 
 import java.io.IOException;
@@ -100,8 +105,8 @@ public class Issue177 extends AbstractTest {
 
   @Test
   public void test3() throws IOException {
-    shouldCompileTo("{{model1.listOfValues1.[0]}}\n{{model2.users.[0].name}}", modelMap,
-        "m1-1\nUser 1");
+    shouldCompileTo(
+        "{{model1.listOfValues1.[0]}}\n{{model2.users.[0].name}}", modelMap, "m1-1\nUser 1");
   }
 
   @Test
@@ -113,6 +118,7 @@ public class Issue177 extends AbstractTest {
   public void test4() throws IOException {
     shouldCompileTo(
         "{{model1.listOfValues1.[0]}}\n{{#if model3}}\n{{model2.users.[0].name}}\n{{/if}}",
-        modelMap, "m1-1\n\nUser 1\n");
+        modelMap,
+        "m1-1\n\nUser 1\n");
   }
 }

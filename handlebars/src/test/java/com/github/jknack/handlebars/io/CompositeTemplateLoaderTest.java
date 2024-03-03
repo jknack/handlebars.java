@@ -1,19 +1,7 @@
-/**
+/*
+ * Handlebars.java: https://github.com/jknack/handlebars.java
+ * Apache License Version 2.0 http://www.apache.org/licenses/LICENSE-2.0
  * Copyright (c) 2012 Edgar Espina
- *
- * This file is part of Handlebars.java.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
  */
 package com.github.jknack.handlebars.io;
 
@@ -39,25 +27,22 @@ public class CompositeTemplateLoaderTest {
 
   private CompositeTemplateLoader loader =
       new CompositeTemplateLoader(
-          new ClassPathTemplateLoader(),
-          new FileTemplateLoader("src/test/resources/inheritance")
-      );
+          new ClassPathTemplateLoader(), new FileTemplateLoader("src/test/resources/inheritance"));
 
   @Test
   public void handlebarsWithCompositeLoader() throws IOException {
-    Handlebars handlebars = new Handlebars()
-        .with(loader);
+    Handlebars handlebars = new Handlebars().with(loader);
     assertNotNull(handlebars.compile("template"));
     assertNotNull(handlebars.compile("home"));
   }
 
   @Test
   public void handlebarsWithTemplateLoaders() throws IOException {
-    Handlebars handlebars = new Handlebars()
-        .with(
-            new ClassPathTemplateLoader(),
-            new FileTemplateLoader("src/test/resources/inheritance")
-        );
+    Handlebars handlebars =
+        new Handlebars()
+            .with(
+                new ClassPathTemplateLoader(),
+                new FileTemplateLoader("src/test/resources/inheritance"));
     assertNotNull(handlebars.compile("template"));
     assertNotNull(handlebars.compile("home"));
   }
@@ -79,9 +64,11 @@ public class CompositeTemplateLoaderTest {
 
   @Test
   public void resolveSourceAtFs() throws IOException {
-    assertTrue(new File("src/test/resources/inheritance", "home.hbs").getPath()
-    		.compareTo(new File(loader.resolve("home")).getPath()) == 0
-        );
+    assertTrue(
+        new File("src/test/resources/inheritance", "home.hbs")
+                .getPath()
+                .compareTo(new File(loader.resolve("home")).getPath())
+            == 0);
   }
 
   @Test(expected = UnsupportedOperationException.class)

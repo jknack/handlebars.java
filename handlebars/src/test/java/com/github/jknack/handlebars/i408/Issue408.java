@@ -1,3 +1,8 @@
+/*
+ * Handlebars.java: https://github.com/jknack/handlebars.java
+ * Apache License Version 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Copyright (c) 2012 Edgar Espina
+ */
 package com.github.jknack.handlebars.i408;
 
 import java.io.IOException;
@@ -30,16 +35,13 @@ public class Issue408 extends AbstractTest {
 
   @Test
   public void shouldNotThrowNPE() throws IOException {
-    shouldCompileTo("{{#car}}\n" +
-        " Car Price: {{carPrice}}\n" +
-        "{{/car}}", new Car(false, null), "");
+    shouldCompileTo(
+        "{{#car}}\n" + " Car Price: {{carPrice}}\n" + "{{/car}}", new Car(false, null), "");
   }
 
   @Test(expected = HandlebarsException.class)
   public void shouldThrowNPE() throws IOException {
-    shouldCompileTo("{{#car}}\n" +
-        " Car Price: {{carPrice}}\n" +
-        "{{/car}}", new Car(true, null), "");
+    shouldCompileTo(
+        "{{#car}}\n" + " Car Price: {{carPrice}}\n" + "{{/car}}", new Car(true, null), "");
   }
-
 }

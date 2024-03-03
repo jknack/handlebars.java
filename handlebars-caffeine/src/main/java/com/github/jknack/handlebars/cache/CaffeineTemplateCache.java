@@ -1,19 +1,7 @@
-/**
- * Copyright (c) 2012-2015 Edgar Espina
- *
- * This file is part of Handlebars.java.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+/*
+ * Handlebars.java: https://github.com/jknack/handlebars.java
+ * Apache License Version 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Copyright (c) 2012 Edgar Espina
  */
 package com.github.jknack.handlebars.cache;
 
@@ -36,9 +24,7 @@ import com.github.jknack.handlebars.io.TemplateSource;
  */
 public class CaffeineTemplateCache implements TemplateCache {
 
-  /**
-   * Internal cache.
-   */
+  /** Internal cache. */
   private final Cache<TemplateSource, Template> cache;
 
   /**
@@ -50,28 +36,32 @@ public class CaffeineTemplateCache implements TemplateCache {
     this.cache = requireNonNull(cache, "The cache is required.");
   }
 
-  @Override public void clear() {
+  @Override
+  public void clear() {
     cache.invalidateAll();
   }
 
-  @Override public void evict(final TemplateSource source) {
+  @Override
+  public void evict(final TemplateSource source) {
     cache.invalidate(source);
   }
 
-  @Override public Template get(final TemplateSource source, final Parser parser) {
+  @Override
+  public Template get(final TemplateSource source, final Parser parser) {
     return cache.get(source, parseTemplate(parser));
   }
 
   /**
-   * This method does nothing on Caffeine. Better option is to use a loading cache with a
-   * eviction policy of your choice.
+   * This method does nothing on Caffeine. Better option is to use a loading cache with a eviction
+   * policy of your choice.
    *
-   * Don't use this method.
+   * <p>Don't use this method.
    *
    * @param reload Ignored.
    * @return This template cache.
    */
-  @Override public TemplateCache setReload(final boolean reload) {
+  @Override
+  public TemplateCache setReload(final boolean reload) {
     // NOOP
     return this;
   }

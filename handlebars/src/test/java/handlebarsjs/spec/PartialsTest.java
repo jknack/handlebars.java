@@ -1,3 +1,8 @@
+/*
+ * Handlebars.java: https://github.com/jknack/handlebars.java
+ * Apache License Version 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Copyright (c) 2012 Edgar Espina
+ */
 package handlebarsjs.spec;
 
 import static org.junit.Assert.assertEquals;
@@ -18,13 +23,17 @@ public class PartialsTest extends AbstractTest {
   public void basicPartials() throws IOException {
     String string = "Dudes: {{#dudes}}{{> dude}}{{/dudes}}";
     String partial = "{{name}} ({{url}}) ";
-    Object hash = $("dudes",
-        new Object[]{
-            $("name", "Yehuda", "url", "http://yehuda"),
-            $("name", "Alan", "url", "http://alan")
-        });
+    Object hash =
+        $(
+            "dudes",
+            new Object[] {
+              $("name", "Yehuda", "url", "http://yehuda"), $("name", "Alan", "url", "http://alan")
+            });
 
-    shouldCompileToWithPartials(string, hash, $("dude", partial),
+    shouldCompileToWithPartials(
+        string,
+        hash,
+        $("dude", partial),
         "Dudes: Yehuda (http://yehuda) Alan (http://alan) ",
         "Basic partials output based on current context.");
   }
@@ -33,13 +42,17 @@ public class PartialsTest extends AbstractTest {
   public void partialsWithContext() throws IOException {
     String string = "Dudes: {{>dude dudes}}";
     String partial = "{{#this}}{{name}} ({{url}}) {{/this}}";
-    Object hash = $("dudes",
-        new Object[]{
-            $("name", "Yehuda", "url", "http://yehuda"),
-            $("name", "Alan", "url", "http://alan")
-        });
+    Object hash =
+        $(
+            "dudes",
+            new Object[] {
+              $("name", "Yehuda", "url", "http://yehuda"), $("name", "Alan", "url", "http://alan")
+            });
 
-    shouldCompileToWithPartials(string, hash, $("dude", partial),
+    shouldCompileToWithPartials(
+        string,
+        hash,
+        $("dude", partial),
         "Dudes: Yehuda (http://yehuda) Alan (http://alan) ",
         "Partials can be passed a context");
   }
@@ -49,17 +62,19 @@ public class PartialsTest extends AbstractTest {
     String string = "Dudes: {{#dudes}}{{>dude}}{{/dudes}}";
     String dude = "{{name}} {{> url}} ";
     String url = "<a href='{{url}}'>{{url}}</a>";
-    Object hash = $("dudes",
-        new Object[]{
-            $("name", "Yehuda", "url", "http://yehuda"),
-            $("name", "Alan", "url", "http://alan")
-        });
+    Object hash =
+        $(
+            "dudes",
+            new Object[] {
+              $("name", "Yehuda", "url", "http://yehuda"), $("name", "Alan", "url", "http://alan")
+            });
 
     shouldCompileToWithPartials(
         string,
         hash,
         $("dude", dude, "url", url),
-        "Dudes: Yehuda <a href='http://yehuda'>http://yehuda</a> Alan <a href='http://alan'>http://alan</a> ",
+        "Dudes: Yehuda <a href='http://yehuda'>http://yehuda</a> Alan <a"
+            + " href='http://alan'>http://alan</a> ",
         "Partials are rendered inside of other partials");
   }
 
@@ -71,7 +86,8 @@ public class PartialsTest extends AbstractTest {
     } catch (HandlebarsException ex) {
       HandlebarsError error = ex.getError();
       assertNotNull(error);
-      assertEquals("The partial '/whatever.hbs' at '/whatever.hbs' could not be found", error.reason);
+      assertEquals(
+          "The partial '/whatever.hbs' at '/whatever.hbs' could not be found", error.reason);
     }
   }
 
@@ -80,13 +96,17 @@ public class PartialsTest extends AbstractTest {
     String string = "Dudes: {{#dudes}}{{> dude}}{{/dudes}}";
     String partial = "{{name}} ({{url}}) ";
 
-    Object hash = $("dudes",
-        new Object[]{
-            $("name", "Yehuda", "url", "http://yehuda"),
-            $("name", "Alan", "url", "http://alan")
-        });
+    Object hash =
+        $(
+            "dudes",
+            new Object[] {
+              $("name", "Yehuda", "url", "http://yehuda"), $("name", "Alan", "url", "http://alan")
+            });
 
-    shouldCompileToWithPartials(string, hash, $("dude", partial),
+    shouldCompileToWithPartials(
+        string,
+        hash,
+        $("dude", partial),
         "Dudes: Yehuda (http://yehuda) Alan (http://alan) ",
         "Function partials output based in VM.");
   }
@@ -97,7 +117,11 @@ public class PartialsTest extends AbstractTest {
     String dude = "{{name}}";
     Object hash = $("name", "Jeepers", "another_dude", "Creepers");
 
-    shouldCompileToWithPartials(string, hash, $("dude", dude), "Dudes: Jeepers Creepers",
+    shouldCompileToWithPartials(
+        string,
+        hash,
+        $("dude", dude),
+        "Dudes: Jeepers Creepers",
         "Regular selectors can follow a partial");
   }
 
@@ -106,7 +130,7 @@ public class PartialsTest extends AbstractTest {
     String string = "Dudes: {{> [dude]}}";
     String dude = "{{name}}";
     Object hash = $("name", "Jeepers", "another_dude", "Creepers");
-    shouldCompileToWithPartials(string, hash, $("dude", dude), "Dudes: Jeepers",
-        "Partials can use literal paths");
+    shouldCompileToWithPartials(
+        string, hash, $("dude", dude), "Dudes: Jeepers", "Partials can use literal paths");
   }
 }

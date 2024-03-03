@@ -1,3 +1,8 @@
+/*
+ * Handlebars.java: https://github.com/jknack/handlebars.java
+ * Apache License Version 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Copyright (c) 2012 Edgar Espina
+ */
 package com.github.jknack.handlebars.springmvc;
 
 import static org.junit.Assert.assertEquals;
@@ -16,16 +21,14 @@ import org.springframework.web.servlet.view.InternalResourceView;
 import org.springframework.web.servlet.view.RedirectView;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = {HandlebarsApp.class })
+@ContextConfiguration(classes = {HandlebarsApp.class})
 public class Issue304 {
 
   @Autowired
-  @Qualifier("viewResolver")
-  HandlebarsViewResolver viewResolver;
+  @Qualifier("viewResolver") HandlebarsViewResolver viewResolver;
 
   @Autowired
-  @Qualifier("viewResolverWithoutMessageHelper")
-  HandlebarsViewResolver viewResolverWithoutMessageHelper;
+  @Qualifier("viewResolverWithoutMessageHelper") HandlebarsViewResolver viewResolverWithoutMessageHelper;
 
   @Test
   public void forward() throws Exception {
@@ -42,5 +45,4 @@ public class Issue304 {
     assertNotNull(view);
     assertEquals(RedirectView.class, view.getClass());
   }
-
 }

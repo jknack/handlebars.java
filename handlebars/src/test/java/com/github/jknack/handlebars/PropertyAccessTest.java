@@ -1,15 +1,7 @@
-/**
+/*
+ * Handlebars.java: https://github.com/jknack/handlebars.java
+ * Apache License Version 2.0 http://www.apache.org/licenses/LICENSE-2.0
  * Copyright (c) 2012 Edgar Espina
- * This file is part of Handlebars.java.
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * http://www.apache.org/licenses/LICENSE-2.0
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
  */
 package com.github.jknack.handlebars;
 
@@ -30,7 +22,7 @@ public class PropertyAccessTest {
     Handlebars handlebars = new Handlebars();
     Template template = handlebars.compileInline("{{array.[0]}}");
     Map<String, Object> context = new HashMap<>();
-    context.put("array", new String[]{"s1", "s2" });
+    context.put("array", new String[] {"s1", "s2"});
     assertEquals("s1", template.apply(context));
   }
 
@@ -66,7 +58,7 @@ public class PropertyAccessTest {
     Handlebars handlebars = new Handlebars();
     Template template = handlebars.compileInline("{{list.[10]}}");
     Map<String, Object> context = new HashMap<>();
-    context.put("list", new String[]{"s1", "s2" });
+    context.put("list", new String[] {"s1", "s2"});
     assertEquals("", template.apply(context));
   }
 
@@ -87,7 +79,7 @@ public class PropertyAccessTest {
     Handlebars handlebars = new Handlebars();
     Template template = handlebars.compileInline("{{#if array.[0]}}S1{{/if}}");
     Map<String, Object> context = new HashMap<>();
-    context.put("array", new String[]{"s1", "s2" });
+    context.put("array", new String[] {"s1", "s2"});
     assertEquals("S1", template.apply(context));
   }
 
@@ -96,7 +88,7 @@ public class PropertyAccessTest {
     Handlebars handlebars = new Handlebars();
     Template template = handlebars.compileInline("{{#if array.[0]}}S1{{/if}}");
     Map<String, Object> context = new HashMap<>();
-    context.put("array", new String[]{"" });
+    context.put("array", new String[] {""});
     assertEquals("", template.apply(context));
   }
 
@@ -110,11 +102,14 @@ public class PropertyAccessTest {
     context.put("foo.bar", "foo");
     context.put("134", "134");
 
-//    assertEquals("foo", handlebars.compileInline("{{this.[1foo]}}").apply(context));
-//    assertEquals("foo", handlebars.compileInline("{{this.['foo']}}").apply(context));
-//    assertEquals("foo", handlebars.compileInline("{{this.[foo or bar]}}")
-//        .apply(context));
-//    assertEquals("foo", handlebars.compileInline("{{this.[foo.bar]}}").apply(context));
+    // assertEquals("foo",
+    // handlebars.compileInline("{{this.[1foo]}}").apply(context));
+    // assertEquals("foo",
+    // handlebars.compileInline("{{this.['foo']}}").apply(context));
+    // assertEquals("foo", handlebars.compileInline("{{this.[foo or bar]}}")
+    // .apply(context));
+    // assertEquals("foo",
+    // handlebars.compileInline("{{this.[foo.bar]}}").apply(context));
     assertEquals("134", handlebars.compileInline("{{this.[134]}}").apply(context));
   }
 }

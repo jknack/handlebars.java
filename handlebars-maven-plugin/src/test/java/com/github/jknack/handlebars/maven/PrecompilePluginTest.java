@@ -1,3 +1,8 @@
+/*
+ * Handlebars.java: https://github.com/jknack/handlebars.java
+ * Apache License Version 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Copyright (c) 2012 Edgar Espina
+ */
 package com.github.jknack.handlebars.maven;
 
 import static org.junit.Assert.assertEquals;
@@ -8,7 +13,6 @@ import static org.mockito.Mockito.when;
 import java.io.File;
 import java.io.IOException;
 
-import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -35,16 +39,13 @@ public class PrecompilePluginTest {
   }
 
   private void equalsToIgnoreBlanks(String expected, String found) throws IOException {
-    assertEquals(replaceWhiteCharsWithSpace(FileUtils.fileRead(expected)),
+    assertEquals(
+        replaceWhiteCharsWithSpace(FileUtils.fileRead(expected)),
         replaceWhiteCharsWithSpace(FileUtils.fileRead(found)));
   }
 
   private String replaceWhiteCharsWithSpace(String content) {
-    return content
-        .replace("\\r\\n", "\\n")
-        .replace("\r", "")
-        .replace("\t", " ")
-        .trim();
+    return content.replace("\\r\\n", "\\n").replace("\r", "").replace("\t", " ").trim();
   }
 
   @Test
@@ -126,8 +127,8 @@ public class PrecompilePluginTest {
   @Test(expected = MojoFailureException.class)
   public void mustFailOnUnExpectedException() throws Exception {
     MavenProject project = mock(MavenProject.class);
-    when(project.getRuntimeClasspathElements()).thenThrow(
-        new DependencyResolutionRequiredException(null));
+    when(project.getRuntimeClasspathElements())
+        .thenThrow(new DependencyResolutionRequiredException(null));
 
     PrecompilePlugin plugin = new PrecompilePlugin();
     plugin.setPrefix("src/test/resources/no templates");
@@ -160,9 +161,10 @@ public class PrecompilePluginTest {
 
     withRT.execute();
 
-    assertTrue("File with runtime must be larger",
-        FileUtils.fileRead("target/without-rt-helpers.js").length() <
-            FileUtils.fileRead("target/with-rt-helpers.js").length());
+    assertTrue(
+        "File with runtime must be larger",
+        FileUtils.fileRead("target/without-rt-helpers.js").length()
+            < FileUtils.fileRead("target/with-rt-helpers.js").length());
   }
 
   @Test
@@ -185,9 +187,10 @@ public class PrecompilePluginTest {
     withRT.setHandlebarsJsFile("/handlebars-v4.7.7.js");
     withRT.execute();
 
-    assertTrue("Normal file must be larger than minimized",
-        FileUtils.fileRead("target/helpers-normal.js").length() >
-            FileUtils.fileRead("target/helpers.min.js").length());
+    assertTrue(
+        "Normal file must be larger than minimized",
+        FileUtils.fileRead("target/helpers-normal.js").length()
+            > FileUtils.fileRead("target/helpers.min.js").length());
   }
 
   @Test

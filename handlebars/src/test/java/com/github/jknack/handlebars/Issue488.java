@@ -1,12 +1,18 @@
+/*
+ * Handlebars.java: https://github.com/jknack/handlebars.java
+ * Apache License Version 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Copyright (c) 2012 Edgar Espina
+ */
 package com.github.jknack.handlebars;
 
-import com.github.jknack.handlebars.helper.I18nHelper;
+import java.io.IOException;
+import java.util.Locale;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.io.IOException;
-import java.util.Locale;
+import com.github.jknack.handlebars.helper.I18nHelper;
 
 public class Issue488 extends AbstractTest {
 
@@ -26,6 +32,4 @@ public class Issue488 extends AbstractTest {
   public void utf8() throws IOException {
     shouldCompileTo("{{i18n \"utf8\"}}", $, "Bonjour à tous.");
   }
-
-
 }

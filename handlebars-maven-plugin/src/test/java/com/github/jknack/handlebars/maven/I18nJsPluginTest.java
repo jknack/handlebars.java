@@ -1,3 +1,8 @@
+/*
+ * Handlebars.java: https://github.com/jknack/handlebars.java
+ * Apache License Version 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Copyright (c) 2012 Edgar Espina
+ */
 package com.github.jknack.handlebars.maven;
 
 import static org.junit.Assert.assertEquals;
@@ -28,10 +33,10 @@ public class I18nJsPluginTest {
 
     plugin.execute();
 
-    assertEquals(tokens("src/test/resources/messages.expected.js"),
-        tokens("target/messages.js"));
+    assertEquals(tokens("src/test/resources/messages.expected.js"), tokens("target/messages.js"));
 
-    assertEquals(tokens("src/test/resources/messages_es_AR.expected.js"),
+    assertEquals(
+        tokens("src/test/resources/messages_es_AR.expected.js"),
         tokens("target/messages_es_AR.js"));
 
     FileUtils.copyFile(new File("target/messages.js"), new File("target/messages-tests.js"));
@@ -58,10 +63,11 @@ public class I18nJsPluginTest {
 
     plugin.execute();
 
-    assertEquals(tokens("src/test/resources/messages-amd.expected.js"),
-        tokens("target/messages.js"));
+    assertEquals(
+        tokens("src/test/resources/messages-amd.expected.js"), tokens("target/messages.js"));
 
-    assertEquals(tokens("src/test/resources/messages_es_AR-amd.expected.js"),
+    assertEquals(
+        tokens("src/test/resources/messages_es_AR-amd.expected.js"),
         tokens("target/messages_es_AR.js"));
   }
 
@@ -74,8 +80,7 @@ public class I18nJsPluginTest {
 
     plugin.execute();
 
-    assertEquals(tokens("src/test/resources/messages-merged.js"),
-        tokens("target/messages.js"));
+    assertEquals(tokens("src/test/resources/messages-merged.js"), tokens("target/messages.js"));
   }
 
   @Test
@@ -88,8 +93,7 @@ public class I18nJsPluginTest {
 
     plugin.execute();
 
-    assertEquals(tokens("src/test/resources/messages-merged-amd.js"),
-        tokens("target/messages.js"));
+    assertEquals(tokens("src/test/resources/messages-merged-amd.js"), tokens("target/messages.js"));
   }
 
   private MavenProject newProject(final String... classpath)
@@ -99,25 +103,19 @@ public class I18nJsPluginTest {
     return project;
   }
 
-  /**
-   * Matches on tokens and avoid errors between Java 6.x and Java 7.x.
-   */
+  /** Matches on tokens and avoid errors between Java 6.x and Java 7.x. */
   private Set<String> tokens(final String filename) throws IOException {
-    String content = FileUtils.fileRead(filename)
-        .replace("\r", "")
-        .replace("\t", " ");
+    String content = FileUtils.fileRead(filename).replace("\r", "").replace("\t", " ");
     return Sets.newLinkedHashSet(Splitter.on(Pattern.compile("\\s|,")).split(content));
   }
 
   private void equalsToIgnoreBlanks(String expected, String found) throws IOException {
-    assertEquals(replaceWhiteCharsWithSpace(FileUtils.fileRead(expected)),
+    assertEquals(
+        replaceWhiteCharsWithSpace(FileUtils.fileRead(expected)),
         replaceWhiteCharsWithSpace(FileUtils.fileRead(found)));
   }
 
   private String replaceWhiteCharsWithSpace(String content) {
-    return content
-        .replace("\r", "")
-        .replace("\t", " ")
-        .trim();
+    return content.replace("\r", "").replace("\t", " ").trim();
   }
 }

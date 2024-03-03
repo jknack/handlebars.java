@@ -1,19 +1,7 @@
-/**
- * Copyright (c) 2012-2015 Edgar Espina
- *
- * This file is part of Handlebars.java.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+/*
+ * Handlebars.java: https://github.com/jknack/handlebars.java
+ * Apache License Version 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Copyright (c) 2012 Edgar Espina
  */
 package com.github.jknack.handlebars.helper;
 
@@ -34,10 +22,9 @@ import com.github.jknack.handlebars.Options;
 public enum JodaHelper implements Helper<ReadableInstant> {
 
   /**
-   * A Helper for pattern-formatted <code>ReadableInstance</code>. Pattern usage
-   * is as specified in {@link DateTimeFormat}. Defaults to
-   * <code>M d y, H:m:s z</code>, for example
-   * <code>11 15 1995, 14:32:10 CST</code>.
+   * A Helper for pattern-formatted <code>ReadableInstance</code>. Pattern usage is as specified in
+   * {@link DateTimeFormat}. Defaults to <code>M d y, H:m:s z</code>, for example <code>
+   * 11 15 1995, 14:32:10 CST</code>.
    */
   jodaPattern {
 
@@ -46,13 +33,11 @@ public enum JodaHelper implements Helper<ReadableInstant> {
       String pattern = options.param(0, "M d y, H:m:s z");
       return DateTimeFormat.forPattern(pattern).print(time);
     }
-
   },
 
   /**
-   * A Helper for style-formatted <code>ReadableInstant</code>. Style usage is
-   * as specified in {@link DateTimeFormat}. Defaults to <code>MM</code>,
-   * for example
+   * A Helper for style-formatted <code>ReadableInstant</code>. Style usage is as specified in
+   * {@link DateTimeFormat}. Defaults to <code>MM</code>, for example
    */
   jodaStyle {
 
@@ -61,12 +46,11 @@ public enum JodaHelper implements Helper<ReadableInstant> {
       String style = options.param(0, "MM");
       return DateTimeFormat.forStyle(style).print(time);
     }
-
   },
 
   /**
-   * A Helper for ISO-formatted <code>ReadableInstant</code>.
-   * Usages is detailed in {@link ISODateTimeFormat}.
+   * A Helper for ISO-formatted <code>ReadableInstant</code>. Usages is detailed in {@link
+   * ISODateTimeFormat}.
    */
   jodaISO {
 
@@ -79,7 +63,6 @@ public enum JodaHelper implements Helper<ReadableInstant> {
         return ISODateTimeFormat.dateTimeNoMillis().print(time);
       }
     }
-
   };
 
   @Override
@@ -90,12 +73,9 @@ public enum JodaHelper implements Helper<ReadableInstant> {
   /**
    * Apply the helper to the context.
    *
-   * @param time
-   *          The JodaTime ReadableInstant.
-   * @param options
-   *          Any formatting options, such as the Pattern, Style, or ISO format.
+   * @param time The JodaTime ReadableInstant.
+   * @param options Any formatting options, such as the Pattern, Style, or ISO format.
    * @return The String result.
    */
   protected abstract CharSequence safeApply(ReadableInstant time, Options options);
-
 }

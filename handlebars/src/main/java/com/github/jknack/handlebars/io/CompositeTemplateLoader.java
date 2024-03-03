@@ -1,19 +1,7 @@
-/**
- * Copyright (c) 2012-2015 Edgar Espina
- *
- * This file is part of Handlebars.java.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+/*
+ * Handlebars.java: https://github.com/jknack/handlebars.java
+ * Apache License Version 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Copyright (c) 2012 Edgar Espina
  */
 package com.github.jknack.handlebars.io;
 
@@ -28,18 +16,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * <p>
- * Combine two or more {@link TemplateLoader} as a single {@link TemplateLoader}.
- * {@link TemplateLoader}s are executed in the order they are provided.
- * </p>
- * <p>
- * Execution is as follows:
- * </p>
+ * Combine two or more {@link TemplateLoader} as a single {@link TemplateLoader}. {@link
+ * TemplateLoader}s are executed in the order they are provided.
+ *
+ * <p>Execution is as follows:
+ *
  * <ul>
- * <li>If a {@link TemplateLoader} is able to resolve a {@link TemplateSource}, that
- * {@link TemplateSource} is considered the response.</li>
- * <li>If a {@link TemplateLoader} throws a {@link IOException} exception the next
- * {@link TemplateLoader} in the chain will be used.</li>
+ *   <li>If a {@link TemplateLoader} is able to resolve a {@link TemplateSource}, that {@link
+ *       TemplateSource} is considered the response.
+ *   <li>If a {@link TemplateLoader} throws a {@link IOException} exception the next {@link
+ *       TemplateLoader} in the chain will be used.
  * </ul>
  *
  * @author edgar.espina
@@ -47,14 +33,10 @@ import org.slf4j.LoggerFactory;
  */
 public class CompositeTemplateLoader implements TemplateLoader {
 
-  /**
-   * The logging system.
-   */
+  /** The logging system. */
   private static final Logger logger = LoggerFactory.getLogger(CompositeTemplateLoader.class);
 
-  /**
-   * The template loader list.
-   */
+  /** The template loader list. */
   private final TemplateLoader[] delegates;
 
   /**

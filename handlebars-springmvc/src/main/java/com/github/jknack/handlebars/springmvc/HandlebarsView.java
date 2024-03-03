@@ -1,21 +1,11 @@
-/**
- * Copyright (c) 2012-2015 Edgar Espina
- *
- * This file is part of Handlebars.java.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+/*
+ * Handlebars.java: https://github.com/jknack/handlebars.java
+ * Apache License Version 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Copyright (c) 2012 Edgar Espina
  */
 package com.github.jknack.handlebars.springmvc;
+
+import static java.util.Objects.requireNonNull;
 
 import java.io.IOException;
 import java.util.Locale;
@@ -24,7 +14,6 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import static java.util.Objects.requireNonNull;
 import org.springframework.web.servlet.view.AbstractTemplateView;
 
 import com.github.jknack.handlebars.Context;
@@ -39,26 +28,20 @@ import com.github.jknack.handlebars.ValueResolver;
  */
 public class HandlebarsView extends AbstractTemplateView {
 
-  /**
-   * The compiled template.
-   */
+  /** The compiled template. */
   protected Template template;
 
-  /**
-   * The value's resolvers.
-   */
+  /** The value's resolvers. */
   protected ValueResolver[] valueResolvers;
 
-  /**
-   * Merge model into the view. {@inheritDoc}
-   */
+  /** Merge model into the view. {@inheritDoc} */
   @Override
-  protected void renderMergedTemplateModel(final Map<String, Object> model,
-      final HttpServletRequest request, final HttpServletResponse response)
+  protected void renderMergedTemplateModel(
+      final Map<String, Object> model,
+      final HttpServletRequest request,
+      final HttpServletResponse response)
       throws IOException {
-    Context context = Context.newBuilder(model)
-        .resolver(valueResolvers)
-        .build();
+    Context context = Context.newBuilder(model).resolver(valueResolvers).build();
     try {
       template.apply(context, response.getWriter());
     } finally {
@@ -93,8 +76,8 @@ public class HandlebarsView extends AbstractTemplateView {
    * @param valueResolvers The value resolvers. Required.
    */
   public void setValueResolver(final ValueResolver... valueResolvers) {
-    this.valueResolvers = requireNonNull(valueResolvers,
-        "At least one value-resolver must be present.");
+    this.valueResolvers =
+        requireNonNull(valueResolvers, "At least one value-resolver must be present.");
   }
 
   @Override

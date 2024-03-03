@@ -1,3 +1,8 @@
+/*
+ * Handlebars.java: https://github.com/jknack/handlebars.java
+ * Apache License Version 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Copyright (c) 2012 Edgar Espina
+ */
 package com.github.jknack.handlebars.issues;
 
 import java.io.IOException;
@@ -31,14 +36,9 @@ public class Issue448b extends v4Test {
   @Test
   public void shouldApplySubOnBlockParams() throws IOException {
     shouldCompileTo(
-        "{{#each this as |c|}} {{c}} - {{#is 0 (remainder c 2)}}even{{else}} odd{{/is}} \n" +
-            "{{/each}}",
-        $("hash", new Object[]{4, 5, 6, 7, 8 }),
-        " 4 - even \n" +
-        " 5 -  odd \n" +
-        " 6 - even \n" +
-        " 7 -  odd \n" +
-        " 8 - even \n");
+        "{{#each this as |c|}} {{c}} - {{#is 0 (remainder c 2)}}even{{else}} odd{{/is}} \n"
+            + "{{/each}}",
+        $("hash", new Object[] {4, 5, 6, 7, 8}),
+        " 4 - even \n" + " 5 -  odd \n" + " 6 - even \n" + " 7 -  odd \n" + " 8 - even \n");
   }
-
 }

@@ -1,25 +1,35 @@
+/*
+ * Handlebars.java: https://github.com/jknack/handlebars.java
+ * Apache License Version 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Copyright (c) 2012 Edgar Espina
+ */
 package com.github.jknack.handlebars.issues;
 
-import com.github.jknack.handlebars.v4Test;
 import org.junit.Test;
+
+import com.github.jknack.handlebars.v4Test;
 
 public class Issue655 extends v4Test {
 
   @Test
   public void inlinePartialsLeak() throws Exception {
-    shouldCompileTo("main has partials:<br>\n"
+    shouldCompileTo(
+        "main has partials:<br>\n"
             + "-------------<br>\n"
             + "{{>inherit1}}\n"
             + "-------------<br>\n"
             + "{{>inherit2}}",
-        $("hash", $,
+        $(
+            "hash",
+            $,
             "partials",
             $(
                 "base",
                 "text from base partial<br>\n"
                     + "{{#>inlinePartial}}{{/inlinePartial}}<br>\n"
                     + "{{#>inlinePartial2}}{{/inlinePartial2}}<br>",
-                "inherit1", "inherit1<br>\n"
+                "inherit1",
+                "inherit1<br>\n"
                     + "{{#>base}}\n"
                     + "    {{#*inline \"inlinePartial\"}}\n"
                     + "        inline partial defined by inherit1, called from base\n"
@@ -28,11 +38,10 @@ public class Issue655 extends v4Test {
                     + "        {{>some-other-template}}\n"
                     + "    {{/inline}}\n"
                     + "{{/base}}",
-                "inherit2", "inherit2<br>\n"
-                    + "{{#>base}}\n"
-                    + "{{/base}}",
-                "some-other-template", "template called from second inline partial of inherit 1")
-        ),
+                "inherit2",
+                "inherit2<br>\n" + "{{#>base}}\n" + "{{/base}}",
+                "some-other-template",
+                "template called from second inline partial of inherit 1")),
         "main has partials:<br>\n"
             + "-------------<br>\n"
             + "inherit1<br>\n"

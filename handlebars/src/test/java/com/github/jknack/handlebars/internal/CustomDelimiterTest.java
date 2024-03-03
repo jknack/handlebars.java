@@ -1,3 +1,8 @@
+/*
+ * Handlebars.java: https://github.com/jknack/handlebars.java
+ * Apache License Version 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Copyright (c) 2012 Edgar Espina
+ */
 package com.github.jknack.handlebars.internal;
 
 import static org.junit.Assert.assertEquals;
@@ -9,7 +14,8 @@ import com.github.jknack.handlebars.AbstractTest;
 public class CustomDelimiterTest extends AbstractTest {
   @Test
   public void block() throws Exception {
-    assertEquals("`*`#test`*`inside`*`/test`*`",
+    assertEquals(
+        "`*`#test`*`inside`*`/test`*`",
         compile("{{=`*` `*`=}}`*`#test`*`inside`*`/test`*`").text());
   }
 

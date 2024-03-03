@@ -1,19 +1,7 @@
-/**
- * Copyright (c) 2012-2015 Edgar Espina
- *
- * This file is part of Handlebars.java.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+/*
+ * Handlebars.java: https://github.com/jknack/handlebars.java
+ * Apache License Version 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Copyright (c) 2012 Edgar Espina
  */
 package com.github.jknack.handlebars.internal;
 
@@ -48,9 +36,7 @@ import com.github.jknack.handlebars.io.TemplateSource;
  */
 public class HbsParserFactory implements ParserFactory {
 
-  /**
-   * The logging system.
-   */
+  /** The logging system. */
   private final Logger logger = LoggerFactory.getLogger(getClass());
 
   /**
@@ -62,9 +48,8 @@ public class HbsParserFactory implements ParserFactory {
    * @return A new {@link Parser}.
    */
   @Override
-  public Parser create(final Handlebars handlebars,
-      final String startDelimiter,
-      final String endDelimiter) {
+  public Parser create(
+      final Handlebars handlebars, final String startDelimiter, final String endDelimiter) {
     return new Parser() {
 
       @Override
@@ -74,9 +59,9 @@ public class HbsParserFactory implements ParserFactory {
         final ANTLRErrorListener errorReporter = new HbsErrorReporter(sourceName);
 
         // 1. Lexer
-        String content = Optional.ofNullable(source.content(handlebars.getCharset()))
-            .orElse("");
-        final HbsLexer lexer = newLexer(CharStreams.fromString(content, sourceName), startDelimiter, endDelimiter);
+        String content = Optional.ofNullable(source.content(handlebars.getCharset())).orElse("");
+        final HbsLexer lexer =
+            newLexer(CharStreams.fromString(content, sourceName), startDelimiter, endDelimiter);
         configure(lexer, errorReporter);
 
         // 2. Parser
@@ -92,28 +77,29 @@ public class HbsParserFactory implements ParserFactory {
           logger.debug("Applying Mustache spec");
           new ParseTreeWalker().walk(new MustacheSpec(), tree);
         }
-        
+
         if (lexer.whiteSpaceControl) {
           logger.debug("Applying white spaces control");
-          new ParseTreeWalker().walk(new WhiteSpaceControl((CommonTokenStream)parser.getTokenStream()), tree);
+          new ParseTreeWalker()
+              .walk(new WhiteSpaceControl((CommonTokenStream) parser.getTokenStream()), tree);
         }
 
-        /**
-         * Build the AST.
-         */
-        TemplateBuilder builder = new TemplateBuilder(handlebars, source) {
-          @Override
-          protected void reportError(final CommonToken offendingToken, final int line,
-              final int column,
-              final String message) {
-            errorReporter.syntaxError(parser, offendingToken, line, column, message, null);
-          }
-        };
+        /** Build the AST. */
+        TemplateBuilder builder =
+            new TemplateBuilder(handlebars, source) {
+              @Override
+              protected void reportError(
+                  final CommonToken offendingToken,
+                  final int line,
+                  final int column,
+                  final String message) {
+                errorReporter.syntaxError(parser, offendingToken, line, column, message, null);
+              }
+            };
         logger.debug("Creating templates");
         Template template = builder.visit(tree);
         return template;
       }
-
     };
   }
 
@@ -125,8 +111,8 @@ public class HbsParserFactory implements ParserFactory {
    * @param endDelimiter The end delimiter.
    * @return A new {@link HbsLexer}.
    */
-  private HbsLexer newLexer(final CharStream stream, final String startDelimiter,
-      final String endDelimiter) {
+  private HbsLexer newLexer(
+      final CharStream stream, final String startDelimiter, final String endDelimiter) {
     return new HbsLexer(stream, startDelimiter, endDelimiter) {
 
       @Override
@@ -134,8 +120,7 @@ public class HbsParserFactory implements ParserFactory {
         String text = _input.getText(Interval.of(_tokenStartCharIndex, _input.index()));
         String msg = "found: '" + getErrorDisplay(text) + "'";
         ANTLRErrorListener listener = getErrorListenerDispatch();
-        listener
-            .syntaxError(this, null, _tokenStartLine, _tokenStartCharPositionInLine, msg, e);
+        listener.syntaxError(this, null, _tokenStartLine, _tokenStartCharPositionInLine, msg, e);
       }
 
       @Override
@@ -185,8 +170,8 @@ public class HbsParserFactory implements ParserFactory {
    * @param recognizer A recognizer.
    * @param errorReporter The error reporter.
    */
-  private void configure(final Recognizer<?, ?> recognizer,
-      final ANTLRErrorListener errorReporter) {
+  private void configure(
+      final Recognizer<?, ?> recognizer, final ANTLRErrorListener errorReporter) {
     recognizer.removeErrorListeners();
     recognizer.addErrorListener(errorReporter);
   }

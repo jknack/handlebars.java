@@ -1,3 +1,8 @@
+/*
+ * Handlebars.java: https://github.com/jknack/handlebars.java
+ * Apache License Version 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Copyright (c) 2012 Edgar Espina
+ */
 package com.github.jknack.handlebars;
 
 import static org.apache.commons.lang3.StringUtils.join;
@@ -8,11 +13,11 @@ import static org.junit.Assert.fail;
 
 import java.io.IOException;
 
-import com.github.jknack.handlebars.helper.HelperFunction;
 import org.junit.Test;
 
 import com.github.jknack.handlebars.Handlebars.SafeString;
 import com.github.jknack.handlebars.custom.Blog;
+import com.github.jknack.handlebars.helper.HelperFunction;
 
 public class ReflectiveHelperTest extends AbstractTest {
 
@@ -50,7 +55,9 @@ public class ReflectiveHelperTest extends AbstractTest {
 
   @Test
   public void testHelperWithParamsAndOptions() throws IOException {
-    shouldCompileTo("{{helperWithParamsAndOptions \"string\" true 4}}", $,
+    shouldCompileTo(
+        "{{helperWithParamsAndOptions \"string\" true 4}}",
+        $,
         "helperWithParamsAndOptions:string:true:4");
   }
 
@@ -61,8 +68,7 @@ public class ReflectiveHelperTest extends AbstractTest {
 
   @Test
   public void testBlog() throws IOException {
-    shouldCompileTo("{{blog this}}", new Blog("title", "body"),
-        "blog:title");
+    shouldCompileTo("{{blog this}}", new Blog("title", "body"), "blog:title");
   }
 
   @Test
@@ -72,20 +78,26 @@ public class ReflectiveHelperTest extends AbstractTest {
 
   @Test
   public void testBlogTitle() throws IOException {
-    shouldCompileTo("{{blogTitle this title}}", new Blog("awesome!", "body"),
-        "blog:awesome!");
+    shouldCompileTo("{{blogTitle this title}}", new Blog("awesome!", "body"), "blog:awesome!");
   }
 
   @Test
   public void testParams() throws IOException {
-    shouldCompileTo("{{params this l d f c b s}}",
+    shouldCompileTo(
+        "{{params this l d f c b s}}",
         $("l", 1L, "d", 2.0D, "f", 3.0f, "c", '4', "b", (byte) 5, "s", (short) 6),
         "1, 2.0, 3.0, 4, 5, 6");
   }
 
-  public CharSequence params(final Object context, final long l, final double d, final float f,
-      final char c, final byte b, final short s) {
-    return join(new Object[]{l, d, f, c, b, s }, ", ");
+  public CharSequence params(
+      final Object context,
+      final long l,
+      final double d,
+      final float f,
+      final char c,
+      final byte b,
+      final short s) {
+    return join(new Object[] {l, d, f, c, b, s}, ", ");
   }
 
   @Test
@@ -154,9 +166,8 @@ public class ReflectiveHelperTest extends AbstractTest {
     return new StringBuilder(String.format("helperWithParams:%s:%s:%s", context, p0, p1));
   }
 
-  public SafeString helperWithParamsAndOptions(final String context, final boolean p0,
-      final int p1,
-      final Options options) {
+  public SafeString helperWithParamsAndOptions(
+      final String context, final boolean p0, final int p1, final Options options) {
     assertNotNull(options);
     return new SafeString(String.format("helperWithParamsAndOptions:%s:%s:%s", context, p0, p1));
   }
@@ -186,5 +197,4 @@ public class ReflectiveHelperTest extends AbstractTest {
     assertNotNull(options);
     return "blog:" + title;
   }
-
 }

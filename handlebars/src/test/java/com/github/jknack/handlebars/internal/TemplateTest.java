@@ -1,19 +1,7 @@
-/**
+/*
+ * Handlebars.java: https://github.com/jknack/handlebars.java
+ * Apache License Version 2.0 http://www.apache.org/licenses/LICENSE-2.0
  * Copyright (c) 2012 Edgar Espina
- *
- * This file is part of Handlebars.java.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
  */
 package com.github.jknack.handlebars.internal;
 
@@ -73,7 +61,9 @@ public class TemplateTest extends AbstractTest {
 
   @Test
   public void nestedVarTest() throws IOException {
-    assertVariables("{{#if v1}}{{i18n locale=v4}}{{v2}}{{else}}{{#each v5}}{{#v6}}{{^v7}}{{v3}}{{/v7}}{{/v6}}{{/each}}{{/if}}",
+    assertVariables(
+        "{{#if v1}}{{i18n locale=v4}}{{v2}}{{else}}{{#each"
+            + " v5}}{{#v6}}{{^v7}}{{v3}}{{/v7}}{{/v6}}{{/each}}{{/if}}",
         Arrays.asList("v1", "v2", "v3", "v4", "v5", "v6", "v7"));
   }
 

@@ -1,3 +1,8 @@
+/*
+ * Handlebars.java: https://github.com/jknack/handlebars.java
+ * Apache License Version 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Copyright (c) 2012 Edgar Espina
+ */
 package com.github.jknack.handlebars;
 
 import static org.junit.Assert.assertEquals;
@@ -21,39 +26,48 @@ public class PseudoVarsTest {
   @Test
   public void list() throws IOException {
     String input =
-        "{{#list}}i={{@index}}\neven={{@even}}\nodd={{@odd}}\nfirst={{@first}}\nlast={{@last}}\ni+1={{@index_1}}\n{{/list}}";
+        "{{#list}}i={{@index}}\n"
+            + "even={{@even}}\n"
+            + "odd={{@odd}}\n"
+            + "first={{@first}}\n"
+            + "last={{@last}}\n"
+            + "i+1={{@index_1}}\n"
+            + "{{/list}}";
     Handlebars handlebars = new Handlebars();
 
-    assertEquals("i=0\n" +
-        "even=even\n" +
-        "odd=\n" +
-        "first=first\n" +
-        "last=\n" +
-        "i+1=1\n" +
-        "i=1\n" +
-        "even=\n" +
-        "odd=odd\n" +
-        "first=\n" +
-        "last=\n" +
-        "i+1=2\n" +
-        "i=2\n" +
-        "even=even\n" +
-        "odd=\n" +
-        "first=\n" +
-        "last=last\n" +
-        "i+1=3\n",
-        handlebars.compileInline(input).apply(new Object() {
-          @SuppressWarnings("unused")
-          public List<String> getList() {
-            return Arrays.asList("a", "b", "c");
-          }
-        }));
+    assertEquals(
+        "i=0\n"
+            + "even=even\n"
+            + "odd=\n"
+            + "first=first\n"
+            + "last=\n"
+            + "i+1=1\n"
+            + "i=1\n"
+            + "even=\n"
+            + "odd=odd\n"
+            + "first=\n"
+            + "last=\n"
+            + "i+1=2\n"
+            + "i=2\n"
+            + "even=even\n"
+            + "odd=\n"
+            + "first=\n"
+            + "last=last\n"
+            + "i+1=3\n",
+        handlebars
+            .compileInline(input)
+            .apply(
+                new Object() {
+                  @SuppressWarnings("unused")
+                  public List<String> getList() {
+                    return Arrays.asList("a", "b", "c");
+                  }
+                }));
   }
 
   @Test
   public void lostParent$51() throws IOException {
-    String input =
-        "{{#parent}}{{#list}}{{@index}}. {{name}} {{/list}}{{/parent}}";
+    String input = "{{#parent}}{{#list}}{{@index}}. {{name}} {{/list}}{{/parent}}";
     Handlebars handlebars = new Handlebars();
 
     Map<String, Object> parent = new HashMap<>();

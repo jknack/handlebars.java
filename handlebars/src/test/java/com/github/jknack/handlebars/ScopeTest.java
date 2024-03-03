@@ -1,3 +1,8 @@
+/*
+ * Handlebars.java: https://github.com/jknack/handlebars.java
+ * Apache License Version 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Copyright (c) 2012 Edgar Espina
+ */
 package com.github.jknack.handlebars;
 
 import java.io.IOException;
@@ -26,13 +31,15 @@ public class ScopeTest extends AbstractTest {
     shouldCompileTo("{{inner.name}}", context, "an inner attribute");
 
     // A name conflict
-    Hash helpers = $("name", new Helper<Object>() {
-      @Override
-      public Object apply(final Object context, final Options options)
-          throws IOException {
-        return "helper response";
-      }
-    });
+    Hash helpers =
+        $(
+            "name",
+            new Helper<Object>() {
+              @Override
+              public Object apply(final Object context, final Options options) throws IOException {
+                return "helper response";
+              }
+            });
 
     // helper
     shouldCompileTo("{{name}}", context, helpers, "helper response");

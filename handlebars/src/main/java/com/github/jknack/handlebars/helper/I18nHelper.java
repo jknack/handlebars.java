@@ -1,19 +1,7 @@
-/**
- * Copyright (c) 2012-2015 Edgar Espina
- *
- * This file is part of Handlebars.java.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+/*
+ * Handlebars.java: https://github.com/jknack/handlebars.java
+ * Apache License Version 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Copyright (c) 2012 Edgar Espina
  */
 package com.github.jknack.handlebars.helper;
 
@@ -44,13 +32,11 @@ import com.github.jknack.handlebars.internal.Locales;
 
 /**
  * Implementation of i18n helper for Java and JavaScript.
- * <p>
- * The Java implementation use {@link ResourceBundle}.
- * </p>
- * <p>
- * The JavaScript version use the <a href="https://github.com/fnando/i18n-js">I18n</a> library.
+ *
+ * <p>The Java implementation use {@link ResourceBundle}.
+ *
+ * <p>The JavaScript version use the <a href="https://github.com/fnando/i18n-js">I18n</a> library.
  * {@link ResourceBundle} are converted to JavaScript code.
- * </p>
  *
  * @author edgar.espina
  * @since 0.9.0
@@ -59,15 +45,13 @@ import com.github.jknack.handlebars.internal.Locales;
 public enum I18nHelper implements Helper<String> {
 
   /**
-   * <p>
    * A helper built on top of {@link ResourceBundle}. A {@link ResourceBundle} is the most well
    * known mechanism for internationalization (i18n).
-   * </p>
    *
    * <h3>messages.properties:</h3>
    *
    * <pre>
-   *  hello=Hola
+   * hello = Hola
    * </pre>
    *
    * <h3>Basic Usage:</h3>
@@ -76,9 +60,8 @@ public enum I18nHelper implements Helper<String> {
    *  {{i18n "hello"}}
    * </pre>
    *
-   * <p>
-   * Will result in: <code>Hola</code>
-   * </p>
+   * <p>Will result in: <code>Hola</code>
+   *
    * <h3>Using a locale:</h3>
    *
    * <pre>
@@ -107,16 +90,15 @@ public enum I18nHelper implements Helper<String> {
    */
   i18n {
     /**
-     * <p>
      * A helper built on top of {@link ResourceBundle}. A {@link ResourceBundle} is the most well
      * known mechanism for internationalization (i18n).
-     * </p>
+     *
      * <p>
+     *
      * <h3>messages.properties:</h3>
-     * </p>
      *
      * <pre>
-     *  hello=Hola
+     * hello = Hola
      * </pre>
      *
      * <h3>Basic Usage:</h3>
@@ -125,9 +107,8 @@ public enum I18nHelper implements Helper<String> {
      *  {{i18n "hello"}}
      * </pre>
      *
-     * <p>
-     * Will result in: <code>Hola</code>
-     * </p>
+     * <p>Will result in: <code>Hola</code>
+     *
      * <h3>Using a locale:</h3>
      *
      * <pre>
@@ -158,33 +139,27 @@ public enum I18nHelper implements Helper<String> {
     @Override
     public Object apply(final String key, final Options options) throws IOException {
       notEmpty(key, "found: '%s', expected 'bundle's key'", key);
-      Locale locale = Locales
-          .fromString((String) options.hash("locale", defaultLocale.toString()));
+      Locale locale = Locales.fromString((String) options.hash("locale", defaultLocale.toString()));
       String baseName = options.hash("bundle", defaultBundle);
       ClassLoader classLoader = options.hash("classLoader", getClass().getClassLoader());
-      I18nSource localSource = source == null
-          ? new DefI18nSource(charset, baseName, locale, classLoader) : source;
+      I18nSource localSource =
+          source == null ? new DefI18nSource(charset, baseName, locale, classLoader) : source;
 
       return localSource.message(key, locale, options.params);
     }
   },
 
   /**
-   * <p>
    * Translate a {@link ResourceBundle} into JavaScript code. The generated code assume you added
    * the <a href="https://github.com/fnando/i18n-js">I18n</a>
-   * </p>
-   * <p>
-   * It converts message patterns like: <code>Hi {0}</code> into <code>Hi {{arg0}}</code>. This make
-   * possible to the I18n JS library to interpolate variables.
-   * </p>
-   * <p>
-   * Note: make sure you include <a href="https://github.com/fnando/i18n-js">I18n</a> in your
+   *
+   * <p>It converts message patterns like: <code>Hi {0}</code> into <code>Hi {{arg0}}</code>. This
+   * make possible to the I18n JS library to interpolate variables.
+   *
+   * <p>Note: make sure you include <a href="https://github.com/fnando/i18n-js">I18n</a> in your
    * application. Otherwise, the generated code will fail.
-   * </p>
-   * <p>
-   * Usage:
-   * </p>
+   *
+   * <p>Usage:
    *
    * <pre>
    *  {{i18nJs locale?}}
@@ -195,36 +170,29 @@ public enum I18nHelper implements Helper<String> {
    */
   i18nJs {
 
-    /**
-     * The message format pattern.
-     */
+    /** The message format pattern. */
     private final Pattern pattern = Pattern.compile("\\{(\\d+)\\}");
 
     /**
-     * <p>
      * Translate a {@link ResourceBundle} into JavaScript code. The generated code assume you added
      * the <a href="https://github.com/fnando/i18n-js">I18n</a>
-     * </p>
-     * <p>
-     * It converts message patterns like: <code>Hi {0}</code> into <code>Hi {{arg0}}</code>. This
+     *
+     * <p>It converts message patterns like: <code>Hi {0}</code> into <code>Hi {{arg0}}</code>. This
      * make possible to the I18n JS library to interpolate variables.
-     * </p>
-     * <p>
-     * Note: make sure you include <a href="https://github.com/fnando/i18n-js">I18n</a> in your
+     *
+     * <p>Note: make sure you include <a href="https://github.com/fnando/i18n-js">I18n</a> in your
      * application. Otherwise, the generated code will fail.
-     * </p>
-     * <p>
-     * Usage:
-     * </p>
+     *
+     * <p>Usage:
      *
      * <pre>
-     *  {{i18nJs [locale] [bundle=messages] [wrap=true]}}
+     * {{i18nJs[locale][bundle = messages][wrap = true]}}
      * </pre>
      *
      * If locale argument is present it will translate that locale to JavaScript. Otherwise, the
      * default locale.
      *
-     * Use wrap=true for wrapping the code with a script tag.
+     * <p>Use wrap=true for wrapping the code with a script tag.
      *
      * @param localeName The locale's name. Optional.
      * @param options The helper's options. Not null.
@@ -236,8 +204,8 @@ public enum I18nHelper implements Helper<String> {
       Locale locale = Locales.fromString(defaultIfEmpty(localeName, defaultLocale.toString()));
       String baseName = options.hash("bundle", defaultBundle);
       ClassLoader classLoader = options.hash("classLoader", getClass().getClassLoader());
-      I18nSource localSource = source == null
-          ? new DefI18nSource(charset, baseName, locale, classLoader) : source;
+      I18nSource localSource =
+          source == null ? new DefI18nSource(charset, baseName, locale, classLoader) : source;
       StringBuilder buffer = new StringBuilder();
       Boolean wrap = options.hash("wrap", true);
       if (wrap) {
@@ -284,26 +252,22 @@ public enum I18nHelper implements Helper<String> {
     }
   };
 
-  /**
-   * The default locale. Required.
-   */
+  /** The default locale. Required. */
   protected Locale defaultLocale = Locale.getDefault();
 
-  /**
-   * The default's bundle. Required.
-   */
+  /** The default's bundle. Required. */
   protected String defaultBundle = "messages";
 
   /** The message source to use. */
   protected I18nSource source;
 
-  /** Charset. **/
+  /** Charset. * */
   protected Charset charset = StandardCharsets.UTF_8;
 
   /**
    * Set the charset to use.
    *
-   * NotThreadSafe Make sure to call this method ONCE at start time.
+   * <p>NotThreadSafe Make sure to call this method ONCE at start time.
    *
    * @param charset Charset. Required.
    */
@@ -314,7 +278,7 @@ public enum I18nHelper implements Helper<String> {
   /**
    * Set the message source.
    *
-   * NotThreadSafe Make sure to call this method ONCE at start time.
+   * <p>NotThreadSafe Make sure to call this method ONCE at start time.
    *
    * @param source The message source. Required.
    */
@@ -326,7 +290,7 @@ public enum I18nHelper implements Helper<String> {
    * Set the default bundle's name. Default is: messages and this method let you override the
    * default bundle's name to something else.
    *
-   * NotThreadSafe Make sure to call this method ONCE at start time.
+   * <p>NotThreadSafe Make sure to call this method ONCE at start time.
    *
    * @param bundle The default's bundle name. Required.
    */
@@ -338,14 +302,13 @@ public enum I18nHelper implements Helper<String> {
    * Set the default locale. Default is system dependent and this method let you override the
    * default bundle's name to something else.
    *
-   * NotThreadSafe Make sure to call this method ONCE at start time.
+   * <p>NotThreadSafe Make sure to call this method ONCE at start time.
    *
    * @param locale The default locale name. Required.
    */
   public void setDefaultLocale(final Locale locale) {
     this.defaultLocale = notNull(locale, "A locale is required.");
   }
-
 }
 
 /** Default implementation of I18nSource. */
@@ -354,10 +317,9 @@ class DefI18nSource implements I18nSource {
   /**
    * UTF8 resource bundle control.
    *
-   * Source: Source: https://stackoverflow.com/questions/4659929
+   * <p>Source: Source: https://stackoverflow.com/questions/4659929
    *
    * @author edgar
-   *
    */
   public static class UTF8Control extends ResourceBundle.Control {
     /** Charset. */
@@ -371,17 +333,23 @@ class DefI18nSource implements I18nSource {
     UTF8Control(final Charset charset) {
       this.charset = charset;
     }
+
     @Override
-    public ResourceBundle newBundle(final String baseName, final Locale locale, final String format,
-        final ClassLoader loader, final boolean reload) throws IOException {
+    public ResourceBundle newBundle(
+        final String baseName,
+        final Locale locale,
+        final String format,
+        final ClassLoader loader,
+        final boolean reload)
+        throws IOException {
       // The below is a copy of the default implementation.
       String bundleName = toBundleName(baseName, locale);
       String resourceName = toResourceName(bundleName, "properties");
       InputStream stream = null;
-      try  {
+      try {
         stream = loader.getResourceAsStream(resourceName);
-        PropertyResourceBundle bundle = new PropertyResourceBundle(
-            new InputStreamReader(stream, charset));
+        PropertyResourceBundle bundle =
+            new PropertyResourceBundle(new InputStreamReader(stream, charset));
         return bundle;
       } finally {
         if (stream != null) {
@@ -402,7 +370,10 @@ class DefI18nSource implements I18nSource {
    * @param locale The locale.
    * @param classLoader The classloader.
    */
-  DefI18nSource(final Charset charset, final String baseName, final Locale locale,
+  DefI18nSource(
+      final Charset charset,
+      final String baseName,
+      final Locale locale,
       final ClassLoader classLoader) {
     bundle = ResourceBundle.getBundle(baseName, locale, classLoader, new UTF8Control(charset));
   }
@@ -428,5 +399,5 @@ class DefI18nSource implements I18nSource {
     MessageFormat format = new MessageFormat(message, locale);
     return format.format(args);
   }
-
-};
+}
+;

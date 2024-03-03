@@ -1,19 +1,7 @@
-/**
- * Copyright (c) 2012-2015 Edgar Espina
- *
- * This file is part of Handlebars.java.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+/*
+ * Handlebars.java: https://github.com/jknack/handlebars.java
+ * Apache License Version 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Copyright (c) 2012 Edgar Espina
  */
 package com.github.jknack.handlebars;
 
@@ -30,83 +18,78 @@ import java.util.List;
  */
 public interface Template {
 
-  /**
-   * An empty template implementation.
-   */
-  Template EMPTY = new Template() {
-    @Override
-    public String text() {
-      return "";
-    }
-
-    @Override
-    public String apply(final Object context) throws IOException {
-      return "";
-    }
-
-    @Override
-    public String apply(final Context context) throws IOException {
-      return "";
-    }
-
-    @Override
-    public void apply(final Context context, final Writer writer)
-        throws IOException {
-    }
-
-    @Override
-    public void apply(final Object context, final Writer writer)
-        throws IOException {
-    }
-
-    @Override
-    public String toJavaScript() {
-      return "";
-    }
-
-    @Override
-    public String filename() {
-      return "";
-    }
-
-    @Override
-    public int[] position() {
-      return new int[]{0, 0 };
-    }
-
-    @SuppressWarnings({"rawtypes", "unchecked" })
-    @Override
-    public <T> TypeSafeTemplate<T> as() {
-      TypeSafeTemplate template = as(TypeSafeTemplate.class);
-      return template;
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public <T, S extends TypeSafeTemplate<T>> S as(final Class<S> rootType) {
-      TypeSafeTemplate<T> template = new TypeSafeTemplate<T>() {
+  /** An empty template implementation. */
+  Template EMPTY =
+      new Template() {
         @Override
-        public String apply(final T context) throws IOException {
+        public String text() {
           return "";
         }
 
         @Override
-        public void apply(final T context, final Writer writer) throws IOException {
+        public String apply(final Object context) throws IOException {
+          return "";
+        }
+
+        @Override
+        public String apply(final Context context) throws IOException {
+          return "";
+        }
+
+        @Override
+        public void apply(final Context context, final Writer writer) throws IOException {}
+
+        @Override
+        public void apply(final Object context, final Writer writer) throws IOException {}
+
+        @Override
+        public String toJavaScript() {
+          return "";
+        }
+
+        @Override
+        public String filename() {
+          return "";
+        }
+
+        @Override
+        public int[] position() {
+          return new int[] {0, 0};
+        }
+
+        @SuppressWarnings({"rawtypes", "unchecked"})
+        @Override
+        public <T> TypeSafeTemplate<T> as() {
+          TypeSafeTemplate template = as(TypeSafeTemplate.class);
+          return template;
+        }
+
+        @SuppressWarnings("unchecked")
+        @Override
+        public <T, S extends TypeSafeTemplate<T>> S as(final Class<S> rootType) {
+          TypeSafeTemplate<T> template =
+              new TypeSafeTemplate<T>() {
+                @Override
+                public String apply(final T context) throws IOException {
+                  return "";
+                }
+
+                @Override
+                public void apply(final T context, final Writer writer) throws IOException {}
+              };
+          return (S) template;
+        }
+
+        @Override
+        public List<String> collect(final TagType... tagType) {
+          return Collections.emptyList();
+        }
+
+        @Override
+        public List<String> collectReferenceParameters() {
+          return Collections.emptyList();
         }
       };
-      return (S) template;
-    }
-
-    @Override
-    public List<String> collect(final TagType... tagType) {
-      return Collections.emptyList();
-    }
-
-    @Override
-    public List<String> collectReferenceParameters() {
-      return Collections.emptyList();
-    }
-  };
 
   /**
    * Merge the template tree using the given context.
@@ -179,25 +162,21 @@ public interface Template {
 
   /**
    * Collect all the tag names under the given tagType.
-   * <p>
-   * Usage:
-   * </p>
+   *
+   * <p>Usage:
    *
    * <pre>
    * {{hello}}
    * {{var 1}}
    * {{{tripleVar}}}
    * </pre>
-   * <p>
-   * <code>collect(TagType.VAR)</code> returns <code>[hello, var]</code>
-   * </p>
-   * <p>
-   * <code>collect(TagType.TRIPLE_VAR)</code> returns <code>[tripleVar]</code>
-   * </p>
-   * <p>
-   * <code>collect(TagType.VAR, TagType.TRIPLE_VAR)</code> returns
-   * <code>[hello, var, tripleVar]</code>
-   * </p>
+   *
+   * <p><code>collect(TagType.VAR)</code> returns <code>[hello, var]</code>
+   *
+   * <p><code>collect(TagType.TRIPLE_VAR)</code> returns <code>[tripleVar]</code>
+   *
+   * <p><code>collect(TagType.VAR, TagType.TRIPLE_VAR)</code> returns <code>[hello, var, tripleVar]
+   * </code>
    *
    * @param tagType The tag type. Required.
    * @return A list with tag names.
@@ -206,17 +185,15 @@ public interface Template {
 
   /**
    * Collects all the parameters which are also variables.
-   * <p>
-   * Usage:
-   * </p>
+   *
+   * <p>Usage:
    *
    * <pre>
    * {{#if v1}}{{/if}}
    * {{#each v2 "test"}}{{/each}}
    * </pre>
-   * <p>
-   * <code>collectReferenceParameters()</code> returns <code>[v1, v2]</code>
-   * </p>
+   *
+   * <p><code>collectReferenceParameters()</code> returns <code>[v1, v2]</code>
    *
    * @return A list with reference parameter names.
    */
@@ -231,5 +208,4 @@ public interface Template {
    * @return The line and column where the template was found.
    */
   int[] position();
-
 }

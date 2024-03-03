@@ -1,3 +1,8 @@
+/*
+ * Handlebars.java: https://github.com/jknack/handlebars.java
+ * Apache License Version 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Copyright (c) 2012 Edgar Espina
+ */
 package com.github.jknack.handlebars.cache;
 
 import static org.junit.Assert.assertEquals;
@@ -35,8 +40,8 @@ public class ConcurrentMapTemplateCacheTest {
   public void get() throws IOException {
     ConcurrentMap<TemplateSource, Pair<TemplateSource, Template>> cache = new ConcurrentHashMap<>();
 
-    TemplateSource source = new URLTemplateSource("/template.hbs", getClass().getResource(
-        "/template.hbs"));
+    TemplateSource source =
+        new URLTemplateSource("/template.hbs", getClass().getResource("/template.hbs"));
 
     Template template = mock(Template.class);
 
@@ -65,25 +70,27 @@ public class ConcurrentMapTemplateCacheTest {
     Parser parser = mock(Parser.class);
     when(parser.parse(same(source))).thenReturn(template);
 
-    TemplateSource reloadSource = new ForwardingTemplateSource(source) {
-      @Override
-      public long lastModified() {
-        return System.currentTimeMillis() * 7;
-      }
-    };
+    TemplateSource reloadSource =
+        new ForwardingTemplateSource(source) {
+          @Override
+          public long lastModified() {
+            return System.currentTimeMillis() * 7;
+          }
+        };
     when(parser.parse(same(reloadSource))).thenReturn(reloadTemplate);
 
     // 1st call, parse must be call it
-    assertEquals(template,
-        new ConcurrentMapTemplateCache(cache).setReload(true).get(source, parser));
+    assertEquals(
+        template, new ConcurrentMapTemplateCache(cache).setReload(true).get(source, parser));
 
     // 2nd call, should return from cache
-    assertEquals(template,
-        new ConcurrentMapTemplateCache(cache).setReload(true).get(source, parser));
+    assertEquals(
+        template, new ConcurrentMapTemplateCache(cache).setReload(true).get(source, parser));
 
     // 3th call, parse must be call it
-    assertEquals(reloadTemplate, new ConcurrentMapTemplateCache(cache).setReload(true)
-        .get(reloadSource, parser));
+    assertEquals(
+        reloadTemplate,
+        new ConcurrentMapTemplateCache(cache).setReload(true).get(reloadSource, parser));
 
     verify(parser).parse(same(source));
     verify(parser).parse(same(reloadSource));
@@ -94,8 +101,7 @@ public class ConcurrentMapTemplateCacheTest {
     TemplateSource source = mock(TemplateSource.class);
 
     @SuppressWarnings("unchecked")
-    ConcurrentMap<TemplateSource, Pair<TemplateSource, Template>> cache = mock(
-        ConcurrentMap.class);
+    ConcurrentMap<TemplateSource, Pair<TemplateSource, Template>> cache = mock(ConcurrentMap.class);
     when(cache.remove(source)).thenReturn(null);
 
     new ConcurrentMapTemplateCache(cache).evict(source);
@@ -106,16 +112,14 @@ public class ConcurrentMapTemplateCacheTest {
   @Test
   public void clear() throws IOException {
     @SuppressWarnings("unchecked")
-    ConcurrentMap<TemplateSource, Pair<TemplateSource, Template>> cache = mock(
-        ConcurrentMap.class);
+    ConcurrentMap<TemplateSource, Pair<TemplateSource, Template>> cache = mock(ConcurrentMap.class);
     cache.clear();
 
     new ConcurrentMapTemplateCache(cache).clear();
   }
 
   private TemplateSource source(final String filename) throws IOException {
-    TemplateSource source = new URLTemplateSource(filename, getClass().getResource(
-        filename));
+    TemplateSource source = new URLTemplateSource(filename, getClass().getResource(filename));
     return source;
   }
 }

@@ -1,3 +1,8 @@
+/*
+ * Handlebars.java: https://github.com/jknack/handlebars.java
+ * Apache License Version 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Copyright (c) 2012 Edgar Espina
+ */
 package com.github.jknack.handlebars;
 
 import static org.junit.Assert.assertEquals;
@@ -41,8 +46,10 @@ public class JsonNodeValueResolverTest {
     root.put("double", 3.14d);
     root.put("bool", true);
 
-    assertEquals("abc 678 6789 7.13 3.14 true",
-        handlebars.compileInline("{{string}} {{int}} {{long}} {{float}} {{double}} {{bool}}")
+    assertEquals(
+        "abc 678 6789 7.13 3.14 true",
+        handlebars
+            .compileInline("{{string}} {{int}} {{long}} {{float}} {{double}} {{bool}}")
             .apply(context(root)));
   }
 
@@ -54,7 +61,7 @@ public class JsonNodeValueResolverTest {
   @Test
   public void resolveBinaryNode() {
     String name = "binary";
-    byte[] result = new byte[]{1 };
+    byte[] result = new byte[] {1};
 
     JsonNode node = mock(JsonNode.class);
     BinaryNode value = BinaryNode.valueOf(result);
@@ -148,8 +155,8 @@ public class JsonNodeValueResolverTest {
 
   @Test
   public void emptyPropertySet() throws IOException {
-    Set<Entry<String, Object>> propertySet = JsonNodeValueResolver.INSTANCE
-        .propertySet(new Object());
+    Set<Entry<String, Object>> propertySet =
+        JsonNodeValueResolver.INSTANCE.propertySet(new Object());
     assertNotNull(propertySet);
     assertEquals(0, propertySet.size());
   }
@@ -157,12 +164,13 @@ public class JsonNodeValueResolverTest {
   @Test
   public void resolveObjectNode() throws IOException {
     Handlebars handlebars = new Handlebars();
-    Object item = new Object() {
-      @SuppressWarnings("unused")
-      public String getKey() {
-        return "pojo";
-      }
-    };
+    Object item =
+        new Object() {
+          @SuppressWarnings("unused")
+          public String getKey() {
+            return "pojo";
+          }
+        };
 
     Map<String, Object> root = new HashMap<String, Object>();
     root.put("pojo", item);
@@ -175,31 +183,33 @@ public class JsonNodeValueResolverTest {
     Handlebars handlebars = new Handlebars();
 
     Map<String, Object> root = new HashMap<String, Object>();
-    root.put("array", new Object[]{1, 2, 3 });
+    root.put("array", new Object[] {1, 2, 3});
 
-    assertEquals("123",
+    assertEquals(
+        "123",
         handlebars.compileInline("{{array.[0]}}{{array.[1]}}{{array.[2]}}").apply(context(root)));
-    assertEquals("123",
-        handlebars.compileInline("{{#array}}{{this}}{{/array}}").apply(context(root)));
+    assertEquals(
+        "123", handlebars.compileInline("{{#array}}{{this}}{{/array}}").apply(context(root)));
   }
 
   @Test
   public void resolveArrayNode() throws IOException {
     Handlebars handlebars = new Handlebars();
 
-    Object item = new Object() {
-      @SuppressWarnings("unused")
-      public String getKey() {
-        return "pojo";
-      }
-    };
+    Object item =
+        new Object() {
+          @SuppressWarnings("unused")
+          public String getKey() {
+            return "pojo";
+          }
+        };
 
     Map<String, Object> root = new HashMap<String, Object>();
-    root.put("array", new Object[]{item });
+    root.put("array", new Object[] {item});
 
     assertEquals("pojo", handlebars.compileInline("{{array.[0].key}}").apply(context(root)));
-    assertEquals("pojo",
-        handlebars.compileInline("{{#array}}{{key}}{{/array}}").apply(context(root)));
+    assertEquals(
+        "pojo", handlebars.compileInline("{{#array}}{{key}}{{/array}}").apply(context(root)));
   }
 
   public static JsonNode node(final Object object) throws IOException {
@@ -210,6 +220,7 @@ public class JsonNodeValueResolverTest {
 
   public static Context context(final Object object) throws IOException {
     return Context.newBuilder(node(object))
-        .resolver(MapValueResolver.INSTANCE, JsonNodeValueResolver.INSTANCE).build();
+        .resolver(MapValueResolver.INSTANCE, JsonNodeValueResolver.INSTANCE)
+        .build();
   }
 }

@@ -1,3 +1,8 @@
+/*
+ * Handlebars.java: https://github.com/jknack/handlebars.java
+ * Apache License Version 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Copyright (c) 2012 Edgar Espina
+ */
 package com.github.jknack.handlebars;
 
 import static org.junit.Assert.assertEquals;
@@ -24,18 +29,19 @@ public class AbstractTest {
     }
   }
 
-  public void shouldCompileTo(final String template, final String data,
-      final String expected) throws IOException {
+  public void shouldCompileTo(final String template, final String data, final String expected)
+      throws IOException {
     shouldCompileTo(template, data, expected, "");
   }
 
-  public void shouldCompileTo(final String template, final Object data,
-      final String expected) throws IOException {
+  public void shouldCompileTo(final String template, final Object data, final String expected)
+      throws IOException {
     shouldCompileTo(template, data, expected, "");
   }
 
-  public void shouldCompileTo(final String template, final String context,
-      final String expected, final String message) throws IOException {
+  public void shouldCompileTo(
+      final String template, final String context, final String expected, final String message)
+      throws IOException {
     Object deserializedContext = context;
     if (deserializedContext != null) {
       deserializedContext = parseYaml(context);
@@ -43,18 +49,21 @@ public class AbstractTest {
     shouldCompileTo(template, deserializedContext, expected, message);
   }
 
-  public void shouldCompileTo(final String template, final Object context,
-      final String expected, final String message) throws IOException {
+  public void shouldCompileTo(
+      final String template, final Object context, final String expected, final String message)
+      throws IOException {
     shouldCompileTo(template, context, new Hash(), expected, message);
   }
 
-  public void shouldCompileTo(final String template, final Object context,
-      final Hash helpers, final String expected) throws IOException {
+  public void shouldCompileTo(
+      final String template, final Object context, final Hash helpers, final String expected)
+      throws IOException {
     shouldCompileTo(template, context, helpers, expected, "");
   }
 
-  public void shouldCompileTo(final String template, final String context,
-      final Hash helpers, final String expected) throws IOException {
+  public void shouldCompileTo(
+      final String template, final String context, final Hash helpers, final String expected)
+      throws IOException {
     shouldCompileTo(template, parseYaml(context), helpers, expected, "");
   }
 
@@ -62,28 +71,49 @@ public class AbstractTest {
     return new Yaml().load(context);
   }
 
-  public void shouldCompileTo(final String template, final String context,
-      final Hash helpers, final String expected, final String message) throws IOException {
+  public void shouldCompileTo(
+      final String template,
+      final String context,
+      final Hash helpers,
+      final String expected,
+      final String message)
+      throws IOException {
     shouldCompileTo(template, parseYaml(context), helpers, expected, message);
   }
 
-  public void shouldCompileTo(final String template, final Object context,
-      final Hash helpers, final String expected, final String message) throws IOException {
+  public void shouldCompileTo(
+      final String template,
+      final Object context,
+      final Hash helpers,
+      final String expected,
+      final String message)
+      throws IOException {
     shouldCompileTo(template, context, helpers, new Hash(), expected, message);
   }
 
-  public void shouldCompileToWithPartials(final String template, final Object context,
-      final Hash partials, final String expected) throws IOException {
+  public void shouldCompileToWithPartials(
+      final String template, final Object context, final Hash partials, final String expected)
+      throws IOException {
     shouldCompileTo(template, context, new Hash(), partials, expected, "");
   }
 
-  public void shouldCompileToWithPartials(final String template, final Object context,
-      final Hash partials, final String expected, final String message) throws IOException {
+  public void shouldCompileToWithPartials(
+      final String template,
+      final Object context,
+      final Hash partials,
+      final String expected,
+      final String message)
+      throws IOException {
     shouldCompileTo(template, context, new Hash(), partials, expected, message);
   }
 
-  public void shouldCompileTo(final String template, final Object context,
-      final Hash helpers, final Hash partials, final String expected, final String message)
+  public void shouldCompileTo(
+      final String template,
+      final Object context,
+      final Hash helpers,
+      final Hash partials,
+      final String expected,
+      final String message)
       throws IOException {
     Template t = compile(template, helpers, partials);
     String result = t.apply(configureContext(context));
@@ -98,8 +128,7 @@ public class AbstractTest {
     return compile(template, new Hash());
   }
 
-  public Template compile(final String template, final Hash helpers)
-      throws IOException {
+  public Template compile(final String template, final Hash helpers) throws IOException {
     return compile(template, helpers, new Hash(), false);
   }
 
@@ -113,8 +142,8 @@ public class AbstractTest {
     return compile(template, helpers, partials, false);
   }
 
-  public Template compile(final String template, final Hash helpers, final Hash partials,
-      final boolean stringParams)
+  public Template compile(
+      final String template, final Hash helpers, final Hash partials, final boolean stringParams)
       throws IOException {
     MapTemplateLoader loader = new MapTemplateLoader();
     for (Entry<String, Object> entry : partials.entrySet()) {
@@ -128,12 +157,13 @@ public class AbstractTest {
       final Object value = entry.getValue();
       final Helper<?> helper;
       if (!(value instanceof Helper)) {
-        helper = new Helper<Object>() {
-          @Override
-          public Object apply(final Object context, final Options options) throws IOException {
-            return value.toString();
-          }
-        };
+        helper =
+            new Helper<Object>() {
+              @Override
+              public Object apply(final Object context, final Options options) throws IOException {
+                return value.toString();
+              }
+            };
       } else {
         helper = (Helper<?>) value;
       }
@@ -143,8 +173,7 @@ public class AbstractTest {
     return t;
   }
 
-  protected void configure(final Handlebars handlebars) {
-  }
+  protected void configure(final Handlebars handlebars) {}
 
   protected Handlebars newHandlebars() {
     return new Handlebars();

@@ -1,19 +1,7 @@
-/**
- * Copyright (c) 2012-2015 Edgar Espina
- *
- * This file is part of Handlebars.java.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+/*
+ * Handlebars.java: https://github.com/jknack/handlebars.java
+ * Apache License Version 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Copyright (c) 2012 Edgar Espina
  */
 package com.github.jknack.handlebars.internal;
 
@@ -42,9 +30,7 @@ import com.github.jknack.handlebars.internal.HbsParser.VarContext;
  */
 public class WhiteSpaceControl extends HbsParserBaseListener {
 
-  /**
-   * The token stream.
-   */
+  /** The token stream. */
   private CommonTokenStream tokens;
 
   /**
@@ -58,28 +44,22 @@ public class WhiteSpaceControl extends HbsParserBaseListener {
 
   @Override
   public void enterBlock(final BlockContext ctx) {
-    trim(ctx.start, ctx.END(0)
-        .getSymbol());
+    trim(ctx.start, ctx.END(0).getSymbol());
   }
 
   @Override
   public void enterElseStmt(final ElseStmtContext ctx) {
-    trim(ctx.start, ctx.END()
-        .getSymbol());
+    trim(ctx.start, ctx.END().getSymbol());
   }
 
   @Override
   public void enterElseStmtChain(final ElseStmtChainContext ctx) {
-    trim(ctx.start, ctx.END()
-        .getSymbol());
+    trim(ctx.start, ctx.END().getSymbol());
   }
 
   @Override
   public void exitBlock(final BlockContext ctx) {
-    trim(ctx.END_BLOCK()
-        .getSymbol(),
-        ctx.END(1)
-            .getSymbol());
+    trim(ctx.END_BLOCK().getSymbol(), ctx.END(1).getSymbol());
   }
 
   @Override
@@ -99,9 +79,7 @@ public class WhiteSpaceControl extends HbsParserBaseListener {
 
   @Override
   public void enterUnless(final UnlessContext ctx) {
-    trim(ctx.start, ctx.END()
-        .get(0)
-        .getSymbol());
+    trim(ctx.start, ctx.END().get(0).getSymbol());
   }
 
   @Override

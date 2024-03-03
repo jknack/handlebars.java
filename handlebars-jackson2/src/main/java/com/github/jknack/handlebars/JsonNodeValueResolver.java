@@ -1,19 +1,7 @@
-/**
- * Copyright (c) 2012-2015 Edgar Espina
- *
- * This file is part of Handlebars.java.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+/*
+ * Handlebars.java: https://github.com/jknack/handlebars.java
+ * Apache License Version 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Copyright (c) 2012 Edgar Espina
  */
 package com.github.jknack.handlebars;
 
@@ -48,9 +36,7 @@ import com.fasterxml.jackson.databind.node.TextNode;
  */
 public enum JsonNodeValueResolver implements ValueResolver {
 
-  /**
-   * The singleton instance.
-   */
+  /** The singleton instance. */
   INSTANCE;
 
   @Override
@@ -63,7 +49,8 @@ public enum JsonNodeValueResolver implements ValueResolver {
         }
         value = resolve(((ArrayNode) context).get(Integer.parseInt(name)));
       } catch (NumberFormatException ex) {
-        // ignore undefined key and move on, see https://github.com/jknack/handlebars.java/pull/280
+        // ignore undefined key and move on, see
+        // https://github.com/jknack/handlebars.java/pull/280
         value = null;
       }
     } else if (context instanceof JsonNode) {
@@ -147,7 +134,7 @@ public enum JsonNodeValueResolver implements ValueResolver {
         return node.size();
       }
 
-      @SuppressWarnings({"unchecked", "rawtypes" })
+      @SuppressWarnings({"unchecked", "rawtypes"})
       @Override
       public Set<Map.Entry<String, Object>> entrySet() {
         Iterator<Map.Entry<String, JsonNode>> it = node.fields();
@@ -174,5 +161,4 @@ public enum JsonNodeValueResolver implements ValueResolver {
     }
     return Collections.emptySet();
   }
-
 }

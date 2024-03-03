@@ -1,3 +1,8 @@
+/*
+ * Handlebars.java: https://github.com/jknack/handlebars.java
+ * Apache License Version 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Copyright (c) 2012 Edgar Espina
+ */
 package com.github.jknack.handlebars.springmvc;
 
 import static org.junit.Assert.assertNotNull;
@@ -10,12 +15,11 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = {HandlebarsApp.class })
+@ContextConfiguration(classes = {HandlebarsApp.class})
 public class Issue257 {
 
   @Autowired
-  @Qualifier("viewResolver")
-  HandlebarsViewResolver viewResolver;
+  @Qualifier("viewResolver") HandlebarsViewResolver viewResolver;
 
   @Test
   public void viewResolverShouldHaveBuiltInHelpers() {

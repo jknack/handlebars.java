@@ -1,3 +1,8 @@
+/*
+ * Handlebars.java: https://github.com/jknack/handlebars.java
+ * Apache License Version 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Copyright (c) 2012 Edgar Espina
+ */
 package com.github.jknack.handlebars.i407;
 
 import java.io.File;
@@ -21,23 +26,21 @@ public class Issue407 extends AbstractTest {
   @Test
   public void shouldNotThrowNPE() throws IOException {
     shouldCompileTo(
-        "{{#compare true true}}\n" +
-            "    {{uppercase \"aaa\"}}\n" +
-            "{{else}}\n" +
-            "    {{uppercase \"bbb\"}}\n" +
-            "{{/compare}}",
-        $, "\n    AAA\n");
+        "{{#compare true true}}\n"
+            + "    {{uppercase \"aaa\"}}\n"
+            + "{{else}}\n"
+            + "    {{uppercase \"bbb\"}}\n"
+            + "{{/compare}}",
+        $,
+        "\n    AAA\n");
 
     shouldCompileTo(
-        "{{#compare true true}}\n" +
-        "    {{#compare true true}}\n" +
-        "        kkk\n" +
-        "    {{/compare}}\n" +
-        "{{/compare}}",
-        $, "\n" +
-            "    \n" +
-            "        kkk\n" +
-            "    \n");
+        "{{#compare true true}}\n"
+            + "    {{#compare true true}}\n"
+            + "        kkk\n"
+            + "    {{/compare}}\n"
+            + "{{/compare}}",
+        $,
+        "\n" + "    \n" + "        kkk\n" + "    \n");
   }
-
 }

@@ -1,33 +1,7 @@
-/**
- * Copyright (c) 2012-2015 Edgar Espina
- *
- * This file is part of Handlebars.java.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-/**
- * This copy of Woodstox XML processor is licensed under the
- * Apache (Software) License, version 2.0 ("the License").
- * See the License for details about distribution rights, and the
- * specific rights regarding derivate works.
- *
- * You may obtain a copy of the License at:
- *
- * http://www.apache.org/licenses/
- *
- * A copy is also included in the downloadable source code package
- * containing Woodstox, in file "ASL2.0", under the same directory
- * as this file.
+/*
+ * Handlebars.java: https://github.com/jknack/handlebars.java
+ * Apache License Version 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Copyright (c) 2012 Edgar Espina
  */
 package com.github.jknack.handlebars.maven;
 
@@ -57,7 +31,6 @@ import com.github.jknack.handlebars.Options;
 import com.github.jknack.handlebars.TagType;
 import com.github.jknack.handlebars.Template;
 import com.github.jknack.handlebars.helper.I18nHelper;
-
 import edu.emory.mathcs.backport.java.util.Collections;
 
 /**
@@ -71,37 +44,28 @@ public class I18nJsPlugin extends HandlebarsPlugin {
 
   /**
    * The resource bundle name. Example:
+   *
    * <ul>
-   * <li><code>messages</code></li>
-   * <li><code>com.github.app.messages</code></li>
+   *   <li><code>messages</code>
+   *   <li><code>com.github.app.messages</code>
    * </ul>
+   *
    * Default is: <code>messages</code>.
    */
-  @Parameter
-  private String bundle = "messages";
+  @Parameter private String bundle = "messages";
 
-  /**
-   * The output directory. JavaScript files will be save here.
-   */
-  @Parameter(
-      defaultValue = "${project.build.directory}/${project.build.finalName}/js")
+  /** The output directory. JavaScript files will be save here. */
+  @Parameter(defaultValue = "${project.build.directory}/${project.build.finalName}/js")
   private String output;
 
-  /**
-   * True if all the messages bundle should be merge into a single file. Default: false.
-   */
+  /** True if all the messages bundle should be merge into a single file. Default: false. */
   @Parameter(defaultValue = "false")
   private boolean merge;
 
-  /**
-   * True, if the output should be in the AMD format. Default is anonymous function.
-   */
-  @Parameter
-  private boolean amd;
+  /** True, if the output should be in the AMD format. Default is anonymous function. */
+  @Parameter private boolean amd;
 
-  /**
-   * Character encoding. Default is: UTF-8.
-   */
+  /** Character encoding. Default is: UTF-8. */
   @Parameter(defaultValue = "UTF-8")
   private String encoding = "UTF-8";
 
@@ -151,16 +115,17 @@ public class I18nJsPlugin extends HandlebarsPlugin {
       // set bundle name
       hash.put("bundle", this.bundle);
 
-      Options options = new Options.Builder(handlebars, I18nHelper.i18nJs.name(), TagType.VAR,
-          context, Template.EMPTY)
-          .setHash(hash)
-          .build();
+      Options options =
+          new Options.Builder(
+                  handlebars, I18nHelper.i18nJs.name(), TagType.VAR, context, Template.EMPTY)
+              .setHash(hash)
+              .build();
       // convert to JS
       buffer.append(I18nHelper.i18nJs.apply(locale, options));
 
       if (!merge) {
-        FileUtils.fileWrite(new File(output, bundleName + ".js"), encoding,
-            wrap(bundleName, buffer, amd));
+        FileUtils.fileWrite(
+            new File(output, bundleName + ".js"), encoding, wrap(bundleName, buffer, amd));
         buffer.setLength(0);
         getLog().debug("  => " + bundleName + ".js");
       } else {
@@ -200,18 +165,20 @@ public class I18nJsPlugin extends HandlebarsPlugin {
     Set<File> bundles = new LinkedHashSet<File>();
     for (URL url : classpath) {
       File dir = new File(url.toURI());
-      bundles.addAll(FileUtils.getFiles(dir, bundle.replace(".", FileUtils.FS) + "*.properties",
-          null));
+      bundles.addAll(
+          FileUtils.getFiles(dir, bundle.replace(".", FileUtils.FS) + "*.properties", null));
     }
     return new ArrayList<File>(bundles);
   }
 
   /**
    * Set the resource bundle name. Example:
+   *
    * <ul>
-   * <li><code>messages</code></li>
-   * <li><code>com.github.app.messages</code></li>
+   *   <li><code>messages</code>
+   *   <li><code>com.github.app.messages</code>
    * </ul>
+   *
    * Default is: <code>messages</code>.
    *
    * @param bundle The bundle name.

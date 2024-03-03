@@ -1,19 +1,7 @@
-/**
- * Copyright (c) 2012-2015 Edgar Espina
- *
- * This file is part of Handlebars.java.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+/*
+ * Handlebars.java: https://github.com/jknack/handlebars.java
+ * Apache License Version 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Copyright (c) 2012 Edgar Espina
  */
 package com.github.jknack.handlebars.springmvc;
 
@@ -69,55 +57,42 @@ import com.github.jknack.handlebars.io.URLTemplateLoader;
 public class HandlebarsViewResolver extends AbstractTemplateViewResolver
     implements InitializingBean, HelperRegistry {
 
-  /**
-   * The default content type.
-   */
+  /** The default content type. */
   public static final String DEFAULT_CONTENT_TYPE = "text/html;charset=UTF-8";
 
-  /**
-   * The handlebars object.
-   */
+  /** The handlebars object. */
   private Handlebars handlebars;
 
-  /**
-   * The value's resolvers.
-   */
+  /** The value's resolvers. */
   private List<ValueResolver> valueResolvers = new ArrayList<>(defaultValueResolvers());
 
-  /**
-   * Fail on missing file. Default is: true.
-   */
+  /** Fail on missing file. Default is: true. */
   private boolean failOnMissingFile = true;
 
-  /**
-   * The helper registry.
-   */
+  /** The helper registry. */
   private HelperRegistry registry = new DefaultHelperRegistry();
 
   /** True, if the message helper (based on {@link MessageSource}) should be registered. */
   private boolean registerMessageHelper = true;
 
   /**
-   * If true, the i18n helpers will use a {@link MessageSource} instead of a plain
-   * {@link ResourceBundle} .
+   * If true, the i18n helpers will use a {@link MessageSource} instead of a plain {@link
+   * ResourceBundle} .
    */
   private boolean bindI18nToMessageSource;
 
   /**
    * If true, templates will be deleted once applied. Useful, in some advanced template inheritance
-   * use cases. Used by <code>{{#block}} helper</code>. Default is: false.
-   * At any time you can override the default setup with:
+   * use cases. Used by <code>{{#block}} helper</code>. Default is: false. At any time you can
+   * override the default setup with:
    *
    * <pre>
    * {{#block "footer" delete-after-merge=true}}
    * </pre>
-   *
    */
   private boolean deletePartialAfterMerge;
 
-  /**
-   * Set variable formatters.
-   */
+  /** Set variable formatters. */
   private Formatter[] formatters;
 
   /** Location of the handlebars.js file. */
@@ -134,17 +109,14 @@ public class HandlebarsViewResolver extends AbstractTemplateViewResolver
    *
    * @param viewClass The view's class. Required.
    */
-  public HandlebarsViewResolver(
-      final Class<? extends HandlebarsView> viewClass) {
+  public HandlebarsViewResolver(final Class<? extends HandlebarsView> viewClass) {
     setViewClass(viewClass);
     setContentType(DEFAULT_CONTENT_TYPE);
     setPrefix(TemplateLoader.DEFAULT_PREFIX);
     setSuffix(TemplateLoader.DEFAULT_SUFFIX);
   }
 
-  /**
-   * Creates a new {@link HandlebarsViewResolver}.
-   */
+  /** Creates a new {@link HandlebarsViewResolver}. */
   public HandlebarsViewResolver() {
     this(HandlebarsView.class);
   }
@@ -154,7 +126,7 @@ public class HandlebarsViewResolver extends AbstractTemplateViewResolver
    * underlying template lifecycle management.
    *
    * @param handlebars The {@link Handlebars} instance used for template lifecycle management.
-   *                   Required.
+   *     Required.
    */
   public HandlebarsViewResolver(final Handlebars handlebars) {
     this(handlebars, HandlebarsView.class);
@@ -165,22 +137,19 @@ public class HandlebarsViewResolver extends AbstractTemplateViewResolver
    * underlying template lifecycle management.
    *
    * @param handlebars The {@link Handlebars} instance used for template lifecycle management.
-   *                   Required.
+   *     Required.
    * @param viewClass The view's class. Required.
    */
-  public HandlebarsViewResolver(final Handlebars handlebars,
-                                final Class<? extends HandlebarsView> viewClass) {
+  public HandlebarsViewResolver(
+      final Handlebars handlebars, final Class<? extends HandlebarsView> viewClass) {
     this(viewClass);
 
     this.handlebars = handlebars;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
-  protected AbstractUrlBasedView buildView(final String viewName)
-      throws Exception {
+  protected AbstractUrlBasedView buildView(final String viewName) throws Exception {
     return configure((HandlebarsView) super.buildView(viewName));
   }
 
@@ -191,12 +160,10 @@ public class HandlebarsViewResolver extends AbstractTemplateViewResolver
    * @return The configured view.
    * @throws IOException If a resource cannot be loaded.
    */
-  protected AbstractUrlBasedView configure(final HandlebarsView view)
-      throws IOException {
+  protected AbstractUrlBasedView configure(final HandlebarsView view) throws IOException {
     String url = view.getUrl();
     // Remove prefix & suffix.
-    url = url.substring(getPrefix().length(), url.length()
-        - getSuffix().length());
+    url = url.substring(getPrefix().length(), url.length() - getSuffix().length());
     // Compile the template.
     try {
       view.setTemplate(handlebars.compile(url));
@@ -228,8 +195,8 @@ public class HandlebarsViewResolver extends AbstractTemplateViewResolver
       TemplateLoader templateLoader = createTemplateLoader(getApplicationContext());
 
       // Creates a new handlebars object.
-      handlebars = requireNonNull(createHandlebars(templateLoader),
-              "A handlebars object is required.");
+      handlebars =
+          requireNonNull(createHandlebars(templateLoader), "A handlebars object is required.");
     }
 
     handlebars.with(registry);
@@ -325,8 +292,7 @@ public class HandlebarsViewResolver extends AbstractTemplateViewResolver
    */
   public Handlebars getHandlebars() {
     if (handlebars == null) {
-      throw new IllegalStateException(
-          "afterPropertiesSet() method hasn't been call it.");
+      throw new IllegalStateException("afterPropertiesSet() method hasn't been call it.");
     }
     return handlebars;
   }
@@ -344,10 +310,8 @@ public class HandlebarsViewResolver extends AbstractTemplateViewResolver
    * @param valueResolvers The value resolvers. Required.
    */
   public void setValueResolvers(final ValueResolver... valueResolvers) {
-    requireNonNull(valueResolvers,
-        "At least one value-resolver must be present.");
-    this.valueResolvers = Stream.of(valueResolvers)
-        .collect(Collectors.toList());
+    requireNonNull(valueResolvers, "At least one value-resolver must be present.");
+    this.valueResolvers = Stream.of(valueResolvers).collect(Collectors.toList());
   }
 
   /**
@@ -356,27 +320,22 @@ public class HandlebarsViewResolver extends AbstractTemplateViewResolver
    * @param formatters Formatters to add.
    */
   public void setFormatters(final Formatter... formatters) {
-    this.formatters = requireNonNull(formatters,
-        "At least one formatter must be present.");
+    this.formatters = requireNonNull(formatters, "At least one formatter must be present.");
   }
 
   /**
    * Set the handlebars.js location used it to compile/precompile template to JavaScript.
-   * <p>
-   * Using handlebars.js 2.x:
-   * </p>
+   *
+   * <p>Using handlebars.js 2.x:
    *
    * <pre>
-   *   Handlebars handlebars = new Handlebars()
-   *      .handlebarsJsFile("handlebars-v2.0.0.js");
+   * Handlebars handlebars = new Handlebars().handlebarsJsFile("handlebars-v2.0.0.js");
    * </pre>
-   * <p>
-   * Using handlebars.js 1.x:
-   * </p>
+   *
+   * <p>Using handlebars.js 1.x:
    *
    * <pre>
-   *   Handlebars handlebars = new Handlebars()
-   *      .handlebarsJsFile("handlebars-v4.7.7.js");
+   * Handlebars handlebars = new Handlebars().handlebarsJsFile("handlebars-v4.7.7.js");
    * </pre>
    *
    * Default handlebars.js is <code>handlebars-v4.7.7.js</code>.
@@ -390,8 +349,8 @@ public class HandlebarsViewResolver extends AbstractTemplateViewResolver
   /**
    * True, if the view resolver should fail on missing files. Default is: true.
    *
-   * @param failOnMissingFile True, if the view resolver should fail on
-   *        missing files. Default is: true.
+   * @param failOnMissingFile True, if the view resolver should fail on missing files. Default is:
+   *     true.
    */
   public void setFailOnMissingFile(final boolean failOnMissingFile) {
     this.failOnMissingFile = failOnMissingFile;
@@ -425,12 +384,9 @@ public class HandlebarsViewResolver extends AbstractTemplateViewResolver
   }
 
   /**
-   * <p>
    * Register all the helper methods for the given helper source.
-   * </p>
-   * <p>
-   * A helper method looks like:
-   * </p>
+   *
+   * <p>A helper method looks like:
    *
    * <pre>
    * public static? CharSequence methodName(context?, parameter*, options?) {
@@ -438,12 +394,13 @@ public class HandlebarsViewResolver extends AbstractTemplateViewResolver
    * </pre>
    *
    * Where:
+   *
    * <ul>
-   * <li>A method can/can't be static</li>
-   * <li>The method's name became the helper's name</li>
-   * <li>Context, parameters and options are all optionals</li>
-   * <li>If context and options are present they must be the first and last arguments of the
-   *    method</li>
+   *   <li>A method can/can't be static
+   *   <li>The method's name became the helper's name
+   *   <li>Context, parameters and options are all optionals
+   *   <li>If context and options are present they must be the first and last arguments of the
+   *       method
    * </ul>
    *
    * Instance and static methods will be registered as helpers.
@@ -458,12 +415,9 @@ public class HandlebarsViewResolver extends AbstractTemplateViewResolver
   }
 
   /**
-   * <p>
    * Register all the helper methods for the given helper source.
-   * </p>
-   * <p>
-   * A helper method looks like:
-   * </p>
+   *
+   * <p>A helper method looks like:
    *
    * <pre>
    * public static? CharSequence methodName(context?, parameter*, options?) {
@@ -471,12 +425,13 @@ public class HandlebarsViewResolver extends AbstractTemplateViewResolver
    * </pre>
    *
    * Where:
+   *
    * <ul>
-   * <li>A method can/can't be static</li>
-   * <li>The method's name became the helper's name</li>
-   * <li>Context, parameters and options are all optionals</li>
-   * <li>If context and options are present they must be the first and last arguments of the
-   *    method</li>
+   *   <li>A method can/can't be static
+   *   <li>The method's name became the helper's name
+   *   <li>Context, parameters and options are all optionals
+   *   <li>If context and options are present they must be the first and last arguments of the
+   *       method
    * </ul>
    *
    * Only static methods will be registered as helpers.
@@ -561,7 +516,7 @@ public class HandlebarsViewResolver extends AbstractTemplateViewResolver
    * true.
    *
    * @param registerMessageHelper True, if the message helper (based on {@link MessageSource})
-   *        should be registered. Default is: true.
+   *     should be registered. Default is: true.
    */
   public void setRegisterMessageHelper(final boolean registerMessageHelper) {
     this.registerMessageHelper = registerMessageHelper;
@@ -569,7 +524,7 @@ public class HandlebarsViewResolver extends AbstractTemplateViewResolver
 
   /**
    * @param bindI18nToMessageSource If true, the i18n helpers will use a {@link MessageSource}
-   *        instead of a plain {@link ResourceBundle}. Default is: false.
+   *     instead of a plain {@link ResourceBundle}. Default is: false.
    */
   public void setBindI18nToMessageSource(final boolean bindI18nToMessageSource) {
     this.bindI18nToMessageSource = bindI18nToMessageSource;
@@ -577,15 +532,15 @@ public class HandlebarsViewResolver extends AbstractTemplateViewResolver
 
   /**
    * If true, templates will be deleted once applied. Useful, in some advanced template inheritance
-   * use cases. Used by <code>{{#block}} helper</code>. Default is: false.
-   * At any time you can override the default setup with:
+   * use cases. Used by <code>{{#block}} helper</code>. Default is: false. At any time you can
+   * override the default setup with:
    *
    * <pre>
    * {{#block "footer" delete-after-merge=true}}
    * </pre>
    *
    * @param deletePartialAfterMerge True for clearing up templates once they got applied. Used by
-   *        <code>{{#block}} helper</code>.
+   *     <code>{{#block}} helper</code>.
    */
   public void setDeletePartialAfterMerge(final boolean deletePartialAfterMerge) {
     this.deletePartialAfterMerge = deletePartialAfterMerge;
@@ -617,7 +572,8 @@ public class HandlebarsViewResolver extends AbstractTemplateViewResolver
     return this;
   }
 
-  @Override public HandlebarsViewResolver setCharset(final Charset charset) {
+  @Override
+  public HandlebarsViewResolver setCharset(final Charset charset) {
     this.charset = requireNonNull(charset, "Charset required.");
     return this;
   }

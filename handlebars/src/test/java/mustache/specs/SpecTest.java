@@ -1,19 +1,7 @@
-/**
+/*
+ * Handlebars.java: https://github.com/jknack/handlebars.java
+ * Apache License Version 2.0 http://www.apache.org/licenses/LICENSE-2.0
  * Copyright (c) 2012 Edgar Espina
- *
- * This file is part of Handlebars.java.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
  */
 package mustache.specs;
 
@@ -64,7 +52,6 @@ public abstract class SpecTest {
     public void append(final Object message, final Object... arguments) {
       Handlebars.log(message == null ? "" : message.toString(), arguments);
     }
-
   }
 
   private static long start;
@@ -111,27 +98,24 @@ public abstract class SpecTest {
   }
 
   @SuppressWarnings("unchecked")
-  public static Collection<Object[]> data(final Class<?> loader,
-      final String filename) throws IOException {
+  public static Collection<Object[]> data(final Class<?> loader, final String filename)
+      throws IOException {
     Constructor constructor = new Constructor();
     constructor.addTypeDescription(new TypeDescription(Blog.class, "!blog"));
-    constructor.addTypeDescription(new TypeDescription(Comment.class,
-        "!comment"));
-    constructor.addTypeDescription(new TypeDescription(Map.class,
-        "!code"));
+    constructor.addTypeDescription(new TypeDescription(Comment.class, "!comment"));
+    constructor.addTypeDescription(new TypeDescription(Map.class, "!code"));
 
     Yaml yaml = new Yaml(constructor);
 
     String location = path(loader) + filename;
     String input = FileUtils.readFileToString(new File("src/test/resources", location));
     Map<String, Object> data = (Map<String, Object>) yaml.load(input);
-    List<Map<String, Object>> tests =
-        (List<Map<String, Object>>) data.get("tests");
+    List<Map<String, Object>> tests = (List<Map<String, Object>>) data.get("tests");
     int number = 0;
     Collection<Object[]> dataset = new ArrayList<>();
     for (Map<String, Object> test : tests) {
       test.put("number", number++);
-      dataset.add(new Object[]{new Spec(test) });
+      dataset.add(new Object[] {new Spec(test)});
     }
     return dataset;
   }
@@ -185,8 +169,7 @@ public abstract class SpecTest {
     } finally {
       report.append("TOTAL    : %sms", total);
       if (total > 0) {
-        report.append("  (%s%%)compile: %sms", compile * 100 / total,
-            compile);
+        report.append("  (%s%%)compile: %sms", compile * 100 / total, compile);
         report.append("  (%s%%)merge  : %sms", merge * 100 / total, merge);
       }
       report.header(80);

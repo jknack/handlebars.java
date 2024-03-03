@@ -1,19 +1,7 @@
-/**
- * Copyright (c) 2012-2015 Edgar Espina
- *
- * This file is part of Handlebars.java.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+/*
+ * Handlebars.java: https://github.com/jknack/handlebars.java
+ * Apache License Version 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Copyright (c) 2012 Edgar Espina
  */
 package com.github.jknack.handlebars.context;
 
@@ -34,8 +22,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import com.github.jknack.handlebars.ValueResolver;
 
 /**
- * A specialization of {@link ValueResolver} that is built on top of reflections
- * API. It use an internal cache for saving {@link Member members}.
+ * A specialization of {@link ValueResolver} that is built on top of reflections API. It use an
+ * internal cache for saving {@link Member members}.
  *
  * @author edgar.espina
  * @param <M> The member type.
@@ -43,9 +31,7 @@ import com.github.jknack.handlebars.ValueResolver;
  */
 public abstract class MemberValueResolver<M extends Member> implements ValueResolver {
 
-  /**
-   * A concurrent and thread-safe cache for {@link Member}.
-   */
+  /** A concurrent and thread-safe cache for {@link Member}. */
   private final Map<Class<?>, Map<String, M>> cache = new ConcurrentHashMap<>();
 
   @Override
@@ -89,17 +75,15 @@ public abstract class MemberValueResolver<M extends Member> implements ValueReso
   }
 
   /**
-   * Determines whether or not to call
-   * {@link AccessibleObject#setAccessible(boolean)} on members before they are
-   * cached.
+   * Determines whether or not to call {@link AccessibleObject#setAccessible(boolean)} on members
+   * before they are cached.
    *
-   * Calling setAccessible on JDK 9 or later on private or protected declaring
-   * classes in modules will result in errors so the default implementation checks
-   * to see if the declared class cannonical name starts with "java." or "sun." to
-   * prevent most of these errors.
+   * <p>Calling setAccessible on JDK 9 or later on private or protected declaring classes in modules
+   * will result in errors so the default implementation checks to see if the declared class
+   * cannonical name starts with "java." or "sun." to prevent most of these errors.
    *
-   * Modular applications should create their own resolvers and override this
-   * method to prevent encapsulation violation errors.
+   * <p>Modular applications should create their own resolvers and override this method to prevent
+   * encapsulation violation errors.
    *
    * @param member Not null.
    * @return true will cause setAccessible(true) to be called.
@@ -203,5 +187,4 @@ public abstract class MemberValueResolver<M extends Member> implements ValueReso
    * @return The member's name.
    */
   protected abstract String memberName(M member);
-
 }

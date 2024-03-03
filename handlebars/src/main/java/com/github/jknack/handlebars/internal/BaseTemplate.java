@@ -1,19 +1,7 @@
-/**
- * Copyright (c) 2012-2015 Edgar Espina
- *
- * This file is part of Handlebars.java.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+/*
+ * Handlebars.java: https://github.com/jknack/handlebars.java
+ * Apache License Version 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Copyright (c) 2012 Edgar Espina
  */
 package com.github.jknack.handlebars.internal;
 
@@ -57,29 +45,19 @@ import com.github.jknack.handlebars.TypeSafeTemplate;
  */
 abstract class BaseTemplate implements Template {
 
-  /**
-   * The handlebars object. Required.
-   */
+  /** The handlebars object. Required. */
   protected final Handlebars handlebars;
 
-  /**
-   * The line of this template.
-   */
+  /** The line of this template. */
   protected int line;
 
-  /**
-   * The column of this template.
-   */
+  /** The column of this template. */
   protected int column;
 
-  /**
-   * The file's name.
-   */
+  /** The file's name. */
   protected String filename;
 
-  /**
-   * A pre-compiled JavaScript function.
-   */
+  /** A pre-compiled JavaScript function. */
   private String javaScript;
 
   /**
@@ -91,20 +69,15 @@ abstract class BaseTemplate implements Template {
     this.handlebars = notNull(handlebars, "The handlebars can't be null.");
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public final String apply(final Object context) throws IOException {
     return apply(wrap(context));
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
-  public final void apply(final Object context, final Writer writer)
-      throws IOException {
+  public final void apply(final Object context, final Writer writer) throws IOException {
     apply(wrap(context), writer);
   }
 
@@ -116,8 +89,7 @@ abstract class BaseTemplate implements Template {
   }
 
   @Override
-  public void apply(final Context context, final Writer writer)
-      throws IOException {
+  public void apply(final Context context, final Writer writer) throws IOException {
     boolean decorate = decorate();
     try {
       if (decorate) {
@@ -129,11 +101,10 @@ abstract class BaseTemplate implements Template {
     } catch (Exception ex) {
       String evidence = toString();
       String reason = ex.toString();
-      String message = filename + ":" + line + ":" + column + ": "
-          + reason + "\n";
+      String message = filename + ":" + line + ":" + column + ": " + reason + "\n";
       message += "    " + join(split(evidence, "\n"), "\n    ");
-      HandlebarsError error = new HandlebarsError(filename, line, column, reason, evidence,
-          message);
+      HandlebarsError error =
+          new HandlebarsError(filename, line, column, reason, evidence, message);
       HandlebarsException hex = new HandlebarsException(error, ex);
       // Override the stack-trace
       hex.setStackTrace(ex.getStackTrace());
@@ -165,8 +136,7 @@ abstract class BaseTemplate implements Template {
    * @param writer The writer object. Required.
    * @throws IOException If a resource cannot be loaded.
    */
-  public void before(final Context context, final Writer writer) throws IOException {
-  }
+  public void before(final Context context, final Writer writer) throws IOException {}
 
   /**
    * Notify that template has been processed.
@@ -175,8 +145,7 @@ abstract class BaseTemplate implements Template {
    * @param writer The writer object. Required.
    * @throws IOException If a resource cannot be loaded.
    */
-  public void after(final Context context, final Writer writer) throws IOException {
-  }
+  public void after(final Context context, final Writer writer) throws IOException {}
 
   /**
    * Merge a child template into the writer.
@@ -210,7 +179,7 @@ abstract class BaseTemplate implements Template {
 
   @Override
   public int[] position() {
-    return new int[]{line, column};
+    return new int[] {line, column};
   }
 
   /**
@@ -238,8 +207,8 @@ abstract class BaseTemplate implements Template {
   @Override
   public <T> TypeSafeTemplate<T> as() {
     @SuppressWarnings("unchecked")
-    TypeSafeTemplate<T> template = (TypeSafeTemplate<T>) newTypeSafeTemplate(
-        TypeSafeTemplate.class, this);
+    TypeSafeTemplate<T> template =
+        (TypeSafeTemplate<T>) newTypeSafeTemplate(TypeSafeTemplate.class, this);
     return template;
   }
 
@@ -251,7 +220,9 @@ abstract class BaseTemplate implements Template {
    * @return A new {@link TypeSafeTemplate}.
    */
   private static Object newTypeSafeTemplate(final Class<?> rootType, final Template template) {
-    return Proxy.newProxyInstance(rootType.getClassLoader(), new Class[]{rootType},
+    return Proxy.newProxyInstance(
+        rootType.getClassLoader(),
+        new Class[] {rootType},
         new InvocationHandler() {
 
           private final Map<String, Object> attributes = new HashMap<>();
@@ -259,28 +230,38 @@ abstract class BaseTemplate implements Template {
 
           private boolean isDefault(final Method method) {
             return ((method.getModifiers()
-                & (Modifier.ABSTRACT | Modifier.PUBLIC | Modifier.STATIC)) == Modifier.PUBLIC)
+                        & (Modifier.ABSTRACT | Modifier.PUBLIC | Modifier.STATIC))
+                    == Modifier.PUBLIC)
                 && method.getDeclaringClass().isInterface();
           }
 
-          private Object invokeDefaultMethod(final Method method, final Class<?> lookupClass,
-              final Object proxy, final Object... args) throws Throwable {
+          private Object invokeDefaultMethod(
+              final Method method,
+              final Class<?> lookupClass,
+              final Object proxy,
+              final Object... args)
+              throws Throwable {
             if (Handlebars.Utils.javaVersion14) {
-              MethodType methodType = MethodType.methodType(method.getReturnType(),
-                  method.getParameterTypes());
+              MethodType methodType =
+                  MethodType.methodType(method.getReturnType(), method.getParameterTypes());
               return MethodHandles.lookup()
                   .findSpecial(lookupClass, method.getName(), methodType, lookupClass)
                   .bindTo(proxy)
                   .invokeWithArguments(args);
             } else {
-              // Jumping through these hoops is needed because calling unreflectSpecial requires
-              // that the lookup instance have private access to the special caller. None of the
-              // static factory methods for Lookup will give us an instance with the access modes
-              // we need, so we work around it by calling the private constructor via reflection.
-              Constructor<MethodHandles.Lookup> constructor = MethodHandles.Lookup.class
-                  .getDeclaredConstructor(Class.class, int.class);
+              // Jumping through these hoops is needed because calling unreflectSpecial
+              // requires
+              // that the lookup instance have private access to the special caller. None of
+              // the
+              // static factory methods for Lookup will give us an instance with the access
+              // modes
+              // we need, so we work around it by calling the private constructor via
+              // reflection.
+              Constructor<MethodHandles.Lookup> constructor =
+                  MethodHandles.Lookup.class.getDeclaredConstructor(Class.class, int.class);
               constructor.setAccessible(true);
-              return constructor.newInstance(lookupClass, -1 /* trusted */)
+              return constructor
+                  .newInstance(lookupClass, -1 /* trusted */)
                   .unreflectSpecial(method, lookupClass)
                   .bindTo(proxy)
                   .invokeWithArguments(args);
@@ -314,9 +295,7 @@ abstract class BaseTemplate implements Template {
             }
 
             if ("apply".equals(methodName)) {
-              Context context = Context.newBuilder(args[0])
-                  .combine(attributes)
-                  .build();
+              Context context = Context.newBuilder(args[0]).combine(attributes).build();
               attributes.clear();
               if (args.length == 2) {
                 template.apply(context, (Writer) args[1]);
@@ -335,9 +314,11 @@ abstract class BaseTemplate implements Template {
                 return null;
               }
             }
-            String message = String.format(
-                "No handler method for: '%s(%s)', expected method signature is: 'setXxx(value)'",
-                methodName, join(args, ", "));
+            String message =
+                String.format(
+                    "No handler method for: '%s(%s)', expected method signature is:"
+                        + " 'setXxx(value)'",
+                    methodName, join(args, ", "));
             throw new UnsupportedOperationException(message);
           }
         });
@@ -360,8 +341,7 @@ abstract class BaseTemplate implements Template {
    * @param result The result list.
    * @param tagType The matching tagtype.
    */
-  protected void collect(final Collection<String> result, final TagType tagType) {
-  }
+  protected void collect(final Collection<String> result, final TagType tagType) {}
 
   @Override
   public List<String> collectReferenceParameters() {
@@ -373,8 +353,7 @@ abstract class BaseTemplate implements Template {
   /**
    * @param result The result list to add new parameters to.
    */
-  protected void collectReferenceParameters(final Collection<String> result) {
-  }
+  protected void collectReferenceParameters(final Collection<String> result) {}
 
   @Override
   public String toJavaScript() {
@@ -390,5 +369,4 @@ abstract class BaseTemplate implements Template {
   public boolean decorate() {
     return false;
   }
-
 }

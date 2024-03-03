@@ -1,33 +1,7 @@
-/**
- * Copyright (c) 2012-2015 Edgar Espina
- *
- * This file is part of Handlebars.java.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-/**
- * This copy of Woodstox XML processor is licensed under the
- * Apache (Software) License, version 2.0 ("the License").
- * See the License for details about distribution rights, and the
- * specific rights regarding derivate works.
- *
- * You may obtain a copy of the License at:
- *
- * http://www.apache.org/licenses/
- *
- * A copy is also included in the downloadable source code package
- * containing Woodstox, in file "ASL2.0", under the same directory
- * as this file.
+/*
+ * Handlebars.java: https://github.com/jknack/handlebars.java
+ * Apache License Version 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Copyright (c) 2012 Edgar Espina
  */
 package com.github.jknack.handlebars.maven;
 
@@ -86,59 +60,38 @@ import com.google.javascript.jscomp.SourceFile;
 @Mojo(name = "precompile", defaultPhase = LifecyclePhase.PREPARE_PACKAGE, threadSafe = true)
 public class PrecompilePlugin extends HandlebarsPlugin {
 
-  /**
-   * A prefix location, default is ${basedir}/src/main/webapp.
-   */
+  /** A prefix location, default is ${basedir}/src/main/webapp. */
   @Parameter(defaultValue = "${basedir}/src/main/webapp")
   private String prefix;
 
-  /**
-   * The file extension, default is: .hbs.
-   */
+  /** The file extension, default is: .hbs. */
   @Parameter(defaultValue = ".hbs")
   private String suffix = ".hbs";
 
-  /**
-   * The template files to precompile.
-   */
-  @Parameter
-  private List<String> templates;
+  /** The template files to precompile. */
+  @Parameter private List<String> templates;
 
-  /**
-   * The output file.
-   */
+  /** The output file. */
   @Parameter(defaultValue = "${project.build.directory}/${project.build.finalName}/js/helpers.js")
   private String output;
 
-  /**
-   * The handlebars js file.
-   */
+  /** The handlebars js file. */
   @Parameter(defaultValue = "/handlebars-v4.7.7.js")
   private String handlebarsJsFile;
 
   /**
    * True, if the handlebars.runtime.js file need to be included in the output. Default is: false.
    */
-  @Parameter
-  private String runtime;
+  @Parameter private String runtime;
 
-  /**
-   * Minimize the output. Default is: false.
-   */
-  @Parameter
-  private boolean minimize;
+  /** Minimize the output. Default is: false. */
+  @Parameter private boolean minimize;
 
-  /**
-   * True, if the output should be in the AMD format. Default is false.
-   */
-  @Parameter
-  private boolean amd;
+  /** True, if the output should be in the AMD format. Default is false. */
+  @Parameter private boolean amd;
 
-  /**
-   * The encoding char set. Default is: UTF-8.
-   */
-  @Parameter
-  private String encoding = "UTF-8";
+  /** The encoding char set. Default is: UTF-8. */
+  @Parameter private String encoding = "UTF-8";
 
   @Override
   protected void doExecute() throws Exception {
@@ -171,9 +124,7 @@ public class PrecompilePlugin extends HandlebarsPlugin {
 
       i18n(handlebars);
 
-      /**
-       * Silent any missing helper.
-       */
+      /** Silent any missing helper. */
       silentHelpers(handlebars);
 
       File parent = output.getParentFile();
@@ -225,12 +176,14 @@ public class PrecompilePlugin extends HandlebarsPlugin {
         Template template = handlebars.compileInline("{{precompile \"" + templateName + "\"}}");
         Map<String, Object> hash = new HashMap<String, Object>();
         hash.put("wrapper", amd ? "amd" : "none");
-        Options opts = new Options
-            .Builder(handlebars, PrecompileHelper.NAME, TagType.VAR, nullContext, template)
+        Options opts =
+            new Options.Builder(
+                    handlebars, PrecompileHelper.NAME, TagType.VAR, nullContext, template)
                 .setHash(hash)
                 .build();
 
-        writer.append(PrecompileHelper.INSTANCE.apply(templateName, opts).toString())
+        writer
+            .append(PrecompileHelper.INSTANCE.apply(templateName, opts).toString())
             .append("\n\n");
       }
       // extras
@@ -275,17 +228,19 @@ public class PrecompilePlugin extends HandlebarsPlugin {
    * @param handlebars The handlebars object.
    */
   private void i18n(final Handlebars handlebars) {
-    handlebars.registerHelper(I18nHelper.i18n.name(), new Helper<String>() {
-      @Override
-      public Object apply(final String context, final Options options) throws IOException {
-        return null;
-      }
+    handlebars.registerHelper(
+        I18nHelper.i18n.name(),
+        new Helper<String>() {
+          @Override
+          public Object apply(final String context, final Options options) throws IOException {
+            return null;
+          }
 
-      @Override
-      public String toString() {
-        return I18nHelper.i18n.name() + "-maven-plugin";
-      }
-    });
+          @Override
+          public String toString() {
+            return I18nHelper.i18n.name() + "-maven-plugin";
+          }
+        });
   }
 
   /**
@@ -295,36 +250,46 @@ public class PrecompilePlugin extends HandlebarsPlugin {
    * @param extras Append output here.
    * @param classpath The project classpath.
    */
-  private void i18nJs(final Handlebars handlebars, final List<CharSequence> extras,
-      final URL[] classpath) {
-    handlebars.registerHelper(I18nHelper.i18nJs.name(), new Helper<String>() {
-      @Override
-      public Object apply(final String context, final Options options) throws IOException {
-        StringBuilder output = new StringBuilder();
-        output.append("// i18nJs output:\n");
-        output.append("// register an empty i18nJs helper:\n");
-        output.append(registerHelper(I18nHelper.i18nJs.name(),
-            "I18n.locale = arguments[0] || \"" + Locale.getDefault() + "\";\n"
-            + "return '';", "arguments"));
-        output.append("// redirect i18n helper to i18n.js:\n");
-        output.append(registerHelper(I18nHelper.i18n.name(), "var key = arguments[0],\n"
-            + "  i18nOpts = {},\n"
-            + "  len = arguments.length - 1,"
-            + "  options = arguments[len];\n"
-            + "for(var i = 1; i < len; i++) {\n"
-            + "  i18nOpts['arg' + (i - 1)] = arguments[i];\n"
-            + "}\n"
-            + "i18nOpts.locale = options.hash.locale;\n"
-            + "return I18n.t(key, i18nOpts);"));
-        extras.add(output);
-        return null;
-      }
+  private void i18nJs(
+      final Handlebars handlebars, final List<CharSequence> extras, final URL[] classpath) {
+    handlebars.registerHelper(
+        I18nHelper.i18nJs.name(),
+        new Helper<String>() {
+          @Override
+          public Object apply(final String context, final Options options) throws IOException {
+            StringBuilder output = new StringBuilder();
+            output.append("// i18nJs output:\n");
+            output.append("// register an empty i18nJs helper:\n");
+            output.append(
+                registerHelper(
+                    I18nHelper.i18nJs.name(),
+                    "I18n.locale = arguments[0] || \""
+                        + Locale.getDefault()
+                        + "\";\n"
+                        + "return '';",
+                    "arguments"));
+            output.append("// redirect i18n helper to i18n.js:\n");
+            output.append(
+                registerHelper(
+                    I18nHelper.i18n.name(),
+                    "var key = arguments[0],\n"
+                        + "  i18nOpts = {},\n"
+                        + "  len = arguments.length - 1,"
+                        + "  options = arguments[len];\n"
+                        + "for(var i = 1; i < len; i++) {\n"
+                        + "  i18nOpts['arg' + (i - 1)] = arguments[i];\n"
+                        + "}\n"
+                        + "i18nOpts.locale = options.hash.locale;\n"
+                        + "return I18n.t(key, i18nOpts);"));
+            extras.add(output);
+            return null;
+          }
 
-      @Override
-      public String toString() {
-        return I18nHelper.i18nJs.name() + "-maven-plugin";
-      }
-    });
+          @Override
+          public String toString() {
+            return I18nHelper.i18nJs.name() + "-maven-plugin";
+          }
+        });
   }
 
   /**
@@ -336,8 +301,9 @@ public class PrecompilePlugin extends HandlebarsPlugin {
    * @return JS code.
    */
   private CharSequence registerHelper(final String name, final String body, final String... args) {
-    return String.format("Handlebars.registerHelper('%s', function (%s) {\n%s\n});\n\n", name,
-        join(args, ", "), body);
+    return String.format(
+        "Handlebars.registerHelper('%s', function (%s) {\n%s\n});\n\n",
+        name, join(args, ", "), body);
   }
 
   /**
@@ -359,8 +325,11 @@ public class PrecompilePlugin extends HandlebarsPlugin {
     compiler.disableThreads();
     compiler.initOptions(options);
 
-    Result result = compiler.compile(Collections.<SourceFile> emptyList(),
-        Arrays.asList(SourceFile.fromFile(output.getAbsolutePath())), options);
+    Result result =
+        compiler.compile(
+            Collections.<SourceFile>emptyList(),
+            Arrays.asList(SourceFile.fromFile(output.getAbsolutePath())),
+            options);
     if (result.success) {
       FileUtils.fileWrite(output, compiler.toSource());
     } else {
@@ -412,7 +381,6 @@ public class PrecompilePlugin extends HandlebarsPlugin {
   }
 
   /**
-   *
    * @param template the template filename
    */
   public void addTemplate(final String template) {
@@ -424,19 +392,17 @@ public class PrecompilePlugin extends HandlebarsPlugin {
 
   /**
    * Set the handlebars.js location used it to compile/precompile template to JavaScript.
-   * <p>
-   * Using handlebars.js 2.x:
-   * </p>
+   *
+   * <p>Using handlebars.js 2.x:
+   *
    * <pre>
-   *   Handlebars handlebars = new Handlebars()
-   *      .handlebarsJsFile("handlebars-v2.0.0.js");
+   * Handlebars handlebars = new Handlebars().handlebarsJsFile("handlebars-v2.0.0.js");
    * </pre>
-   * <p>
-   * Using handlebars.js 1.x:
-   * </p>
+   *
+   * <p>Using handlebars.js 1.x:
+   *
    * <pre>
-   *   Handlebars handlebars = new Handlebars()
-   *      .handlebarsJsFile("handlebars-v1.3.0.js");
+   * Handlebars handlebars = new Handlebars().handlebarsJsFile("handlebars-v1.3.0.js");
    * </pre>
    *
    * Default handlebars.js is <code>handlebars-v4.0.4.js</code>.
@@ -446,5 +412,4 @@ public class PrecompilePlugin extends HandlebarsPlugin {
   public void setHandlebarsJsFile(final String handlebarsJsFile) {
     this.handlebarsJsFile = handlebarsJsFile;
   }
-
 }

@@ -1,19 +1,7 @@
-/**
- * Copyright (c) 2012-2015 Edgar Espina
- *
- * This file is part of Handlebars.java.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+/*
+ * Handlebars.java: https://github.com/jknack/handlebars.java
+ * Apache License Version 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Copyright (c) 2012 Edgar Espina
  */
 package com.github.jknack.handlebars.internal;
 
@@ -46,56 +34,38 @@ import com.github.jknack.handlebars.helper.UnlessHelper;
 import com.github.jknack.handlebars.helper.WithHelper;
 
 /**
- * Blocks render blocks of text one or more times, depending on the value of
- * the key in the current context.
- * A section begins with a pound and ends with a slash. That is, {{#person}}
- * begins a "person" section while {{/person}} ends it.
- * The behavior of the block is determined by the value of the key if the block
- * isn't present.
+ * Blocks render blocks of text one or more times, depending on the value of the key in the current
+ * context. A section begins with a pound and ends with a slash. That is, {{#person}} begins a
+ * "person" section while {{/person}} ends it. The behavior of the block is determined by the value
+ * of the key if the block isn't present.
  *
  * @author edgar.espina
  * @since 0.1.0
  */
 class Block extends HelperResolver {
 
-  /**
-   * The body template.
-   */
+  /** The body template. */
   protected Template body;
 
-  /**
-   * The section's name.
-   */
+  /** The section's name. */
   protected final String name;
 
-  /**
-   * True if it's inverted.
-   */
+  /** True if it's inverted. */
   private final boolean inverted;
 
-  /**
-   * Section's description '#' or '^'.
-   */
+  /** Section's description '#' or '^'. */
   private final String type;
 
-  /**
-   * The start delimiter.
-   */
+  /** The start delimiter. */
   private String startDelimiter;
 
-  /**
-   * The end delimiter.
-   */
+  /** The end delimiter. */
   private String endDelimiter;
 
-  /**
-   * Inverse section for if/else clauses.
-   */
+  /** Inverse section for if/else clauses. */
   protected Template inverse = Template.EMPTY;
 
-  /**
-   * The inverse label: 'else' or '^'.
-   */
+  /** The inverse label: 'else' or '^'. */
   private String inverseLabel;
 
   /** Helper. */
@@ -124,9 +94,14 @@ class Block extends HelperResolver {
    * @param hash The hash.
    * @param blockParams The block param names.
    */
-  Block(final Handlebars handlebars, final String name,
-      final boolean inverted, final String type, final List<Param> params,
-      final Map<String, Param> hash, final List<String> blockParams) {
+  Block(
+      final Handlebars handlebars,
+      final String name,
+      final boolean inverted,
+      final String type,
+      final List<Param> params,
+      final Map<String, Param> hash,
+      final List<String> blockParams) {
     super(handlebars);
     this.name = notNull(name, "The name is required.");
     this.path = PathCompiler.compile(name, handlebars.parentScopeResolution());
@@ -139,9 +114,7 @@ class Block extends HelperResolver {
     postInit();
   }
 
-  /**
-   * Make/run any pending or required initialization.
-   */
+  /** Make/run any pending or required initialization. */
   protected void postInit() {
     this.helper = helper(name);
   }
@@ -182,9 +155,14 @@ class Block extends HelperResolver {
         helperName = IfHelper.NAME;
       } else if (it instanceof Lambda) {
         helperName = WithHelper.NAME;
-        template = Lambdas
-            .compile(handlebars, (Lambda<Object, Object>) it, context, template,
-                startDelimiter, endDelimiter);
+        template =
+            Lambdas.compile(
+                handlebars,
+                (Lambda<Object, Object>) it,
+                context,
+                template,
+                startDelimiter,
+                endDelimiter);
       } else {
         helperName = WithHelper.NAME;
         itCtx = Context.newContext(context, it);
@@ -204,8 +182,18 @@ class Block extends HelperResolver {
       it = transform(determineContext(context));
     }
 
-    Options options = new Options(handlebars, helperName, tagType, itCtx, template, inverse,
-        params(itCtx), hash(itCtx), blockParams, writer);
+    Options options =
+        new Options(
+            handlebars,
+            helperName,
+            tagType,
+            itCtx,
+            template,
+            inverse,
+            params(itCtx),
+            hash(itCtx),
+            blockParams,
+            writer);
     options.data(Context.PARAM_SIZE, this.params.size());
 
     Object result = helper.apply(it, options);
@@ -260,7 +248,8 @@ class Block extends HelperResolver {
    */
   public Template inverse(final String inverseLabel, final Template inverse) {
     notNull(inverseLabel, "The inverseLabel can't be null.");
-    isTrue(inverseLabel.equals("^") || inverseLabel.equals("else"),
+    isTrue(
+        inverseLabel.equals("^") || inverseLabel.equals("else"),
         "The inverseLabel must be one of '^' or 'else'. Found: " + inverseLabel);
     this.inverseLabel = inverseLabel;
     this.inverse = notNull(inverse, "The inverse's template is required.");
@@ -341,7 +330,10 @@ class Block extends HelperResolver {
           String elseif = ((Block) inverse).text(true, false);
           buffer.append(elseif);
         } else {
-          buffer.append(startDelimiter).append(inverseLabel).append(endDelimiter)
+          buffer
+              .append(startDelimiter)
+              .append(inverseLabel)
+              .append(endDelimiter)
               .append(inverse.text());
         }
       }

@@ -1,3 +1,8 @@
+/*
+ * Handlebars.java: https://github.com/jknack/handlebars.java
+ * Apache License Version 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Copyright (c) 2012 Edgar Espina
+ */
 package com.github.jknack.handlebars.cache;
 
 import static org.junit.Assert.assertEquals;
@@ -18,11 +23,11 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
-import com.github.jknack.handlebars.HandlebarsException;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.junit.Test;
 
+import com.github.jknack.handlebars.HandlebarsException;
 import com.github.jknack.handlebars.Parser;
 import com.github.jknack.handlebars.Template;
 import com.github.jknack.handlebars.io.ForwardingTemplateSource;
@@ -42,10 +47,11 @@ public class HighConcurrencyTemplateCacheTest {
 
   @Test
   public void get() throws IOException {
-    ConcurrentMap<TemplateSource, Future<Pair<TemplateSource, Template>>> cache = new ConcurrentHashMap<>();
+    ConcurrentMap<TemplateSource, Future<Pair<TemplateSource, Template>>> cache =
+        new ConcurrentHashMap<>();
 
-    TemplateSource source = new URLTemplateSource("/template.hbs", getClass().getResource(
-        "/template.hbs"));
+    TemplateSource source =
+        new URLTemplateSource("/template.hbs", getClass().getResource("/template.hbs"));
 
     Template template = mock(Template.class);
 
@@ -65,18 +71,17 @@ public class HighConcurrencyTemplateCacheTest {
   @SuppressWarnings("unchecked")
   public void interruptThreadOnInterruptedException() throws Exception {
     assertFalse(Thread.currentThread().isInterrupted());
-    ConcurrentMap<TemplateSource, Future<Pair<TemplateSource, Template>>> cache = mock(
-        ConcurrentHashMap.class);
+    ConcurrentMap<TemplateSource, Future<Pair<TemplateSource, Template>>> cache =
+        mock(ConcurrentHashMap.class);
 
-    TemplateSource source = new URLTemplateSource("/template.hbs", getClass().getResource(
-        "/template.hbs"));
+    TemplateSource source =
+        new URLTemplateSource("/template.hbs", getClass().getResource("/template.hbs"));
 
     Future<Pair<TemplateSource, Template>> future = mock(Future.class);
     // 1st try interrupt thread
     when(cache.get(source)).thenReturn(future);
     Pair<TemplateSource, Template> pair = mock(Pair.class);
-    when(future.get()).thenThrow(new InterruptedException())
-            .thenReturn(pair);
+    when(future.get()).thenThrow(new InterruptedException()).thenReturn(pair);
 
     // 2nd success
     Template template = mock(Template.class);
@@ -96,11 +101,11 @@ public class HighConcurrencyTemplateCacheTest {
   @Test(expected = Error.class)
   @SuppressWarnings("unchecked")
   public void errorShouldBeReThrow() throws Exception {
-    ConcurrentMap<TemplateSource, Future<Pair<TemplateSource, Template>>> cache = mock(
-        ConcurrentHashMap.class);
+    ConcurrentMap<TemplateSource, Future<Pair<TemplateSource, Template>>> cache =
+        mock(ConcurrentHashMap.class);
 
-    TemplateSource source = new URLTemplateSource("/template.hbs", getClass().getResource(
-        "/template.hbs"));
+    TemplateSource source =
+        new URLTemplateSource("/template.hbs", getClass().getResource("/template.hbs"));
 
     Future<Pair<TemplateSource, Template>> future = mock(Future.class);
     // 1st try interrupt thread
@@ -127,10 +132,11 @@ public class HighConcurrencyTemplateCacheTest {
 
   @Test
   public void getAndReload() throws IOException, InterruptedException {
-    ConcurrentMap<TemplateSource, Future<Pair<TemplateSource, Template>>> cache = new ConcurrentHashMap<>();
+    ConcurrentMap<TemplateSource, Future<Pair<TemplateSource, Template>>> cache =
+        new ConcurrentHashMap<>();
 
-    TemplateSource source = new URLTemplateSource("/template.hbs", getClass().getResource(
-        "/template.hbs"));
+    TemplateSource source =
+        new URLTemplateSource("/template.hbs", getClass().getResource("/template.hbs"));
 
     Template template = mock(Template.class);
 
@@ -139,24 +145,26 @@ public class HighConcurrencyTemplateCacheTest {
     Parser parser = mock(Parser.class);
     when(parser.parse(same(source))).thenReturn(template);
 
-    TemplateSource reloadSource = new ForwardingTemplateSource(source) {
-      @Override
-      public long lastModified() {
-        return System.currentTimeMillis() * 7;
-      }
-    };
+    TemplateSource reloadSource =
+        new ForwardingTemplateSource(source) {
+          @Override
+          public long lastModified() {
+            return System.currentTimeMillis() * 7;
+          }
+        };
     when(parser.parse(same(reloadSource))).thenReturn(reloadTemplate);
 
     // 1st call, parse must be call it
-    assertEquals(template,
-        new HighConcurrencyTemplateCache(cache).setReload(true).get(source, parser));
+    assertEquals(
+        template, new HighConcurrencyTemplateCache(cache).setReload(true).get(source, parser));
 
     // 2nd call, should return from cache
-    assertEquals(template,
-        new HighConcurrencyTemplateCache(cache).setReload(true).get(source, parser));
+    assertEquals(
+        template, new HighConcurrencyTemplateCache(cache).setReload(true).get(source, parser));
 
     // 3th call, parse must be call it
-    assertEquals(reloadTemplate,
+    assertEquals(
+        reloadTemplate,
         new HighConcurrencyTemplateCache(cache).setReload(true).get(reloadSource, parser));
 
     verify(parser).parse(same(source));
@@ -168,8 +176,8 @@ public class HighConcurrencyTemplateCacheTest {
     TemplateSource source = mock(TemplateSource.class);
 
     @SuppressWarnings("unchecked")
-    ConcurrentMap<TemplateSource, Future<Pair<TemplateSource, Template>>> cache = mock(
-        ConcurrentMap.class);
+    ConcurrentMap<TemplateSource, Future<Pair<TemplateSource, Template>>> cache =
+        mock(ConcurrentMap.class);
     when(cache.remove(source)).thenReturn(null);
 
     new HighConcurrencyTemplateCache(cache).evict(source);
@@ -185,11 +193,12 @@ public class HighConcurrencyTemplateCacheTest {
     Template template = mock(Template.class);
 
     Future<Pair<TemplateSource, Template>> future = mock(Future.class);
-    when(future.get()).thenThrow(new CancellationException())
+    when(future.get())
+        .thenThrow(new CancellationException())
         .thenReturn(ImmutablePair.of(source, template));
 
-    ConcurrentMap<TemplateSource, Future<Pair<TemplateSource, Template>>> cache = mock(
-        ConcurrentMap.class);
+    ConcurrentMap<TemplateSource, Future<Pair<TemplateSource, Template>>> cache =
+        mock(ConcurrentMap.class);
     when(cache.get(any(TemplateSource.class))).thenReturn(future);
     when(cache.remove(any(TemplateSource.class), eq(future))).thenReturn(true);
 
@@ -214,8 +223,8 @@ public class HighConcurrencyTemplateCacheTest {
     Future<Pair<TemplateSource, Template>> future = mock(Future.class);
     when(future.get()).thenThrow(new ExecutionException(new IllegalArgumentException()));
 
-    ConcurrentMap<TemplateSource, Future<Pair<TemplateSource, Template>>> cache = mock(
-        ConcurrentMap.class);
+    ConcurrentMap<TemplateSource, Future<Pair<TemplateSource, Template>>> cache =
+        mock(ConcurrentMap.class);
     when(cache.get(any(TemplateSource.class))).thenReturn(future);
     when(cache.remove(any(TemplateSource.class), eq(future))).thenReturn(true);
 
@@ -241,8 +250,8 @@ public class HighConcurrencyTemplateCacheTest {
     Future<Pair<TemplateSource, Template>> future = mock(Future.class);
     when(future.get()).thenThrow(new ExecutionException(new Error()));
 
-    ConcurrentMap<TemplateSource, Future<Pair<TemplateSource, Template>>> cache = mock(
-        ConcurrentMap.class);
+    ConcurrentMap<TemplateSource, Future<Pair<TemplateSource, Template>>> cache =
+        mock(ConcurrentMap.class);
     when(cache.get(any(TemplateSource.class))).thenReturn(future);
 
     Parser parser = mock(Parser.class);
@@ -267,8 +276,8 @@ public class HighConcurrencyTemplateCacheTest {
     Future<Pair<TemplateSource, Template>> future = mock(Future.class);
     when(future.get()).thenThrow(new ExecutionException(new Exception()));
 
-    ConcurrentMap<TemplateSource, Future<Pair<TemplateSource, Template>>> cache = mock(
-        ConcurrentMap.class);
+    ConcurrentMap<TemplateSource, Future<Pair<TemplateSource, Template>>> cache =
+        mock(ConcurrentMap.class);
     when(cache.get(any(TemplateSource.class))).thenReturn(future);
     when(cache.remove(any(TemplateSource.class), eq(future))).thenReturn(true);
 
@@ -287,8 +296,8 @@ public class HighConcurrencyTemplateCacheTest {
   @Test
   public void clear() throws IOException {
     @SuppressWarnings("unchecked")
-    ConcurrentMap<TemplateSource, Future<Pair<TemplateSource, Template>>> cache = mock(
-        ConcurrentMap.class);
+    ConcurrentMap<TemplateSource, Future<Pair<TemplateSource, Template>>> cache =
+        mock(ConcurrentMap.class);
     cache.clear();
 
     new HighConcurrencyTemplateCache(cache).clear();

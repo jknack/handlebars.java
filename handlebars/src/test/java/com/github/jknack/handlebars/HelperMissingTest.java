@@ -1,3 +1,8 @@
+/*
+ * Handlebars.java: https://github.com/jknack/handlebars.java
+ * Apache License Version 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Copyright (c) 2012 Edgar Espina
+ */
 package com.github.jknack.handlebars;
 
 import java.io.IOException;
@@ -18,22 +23,34 @@ public class HelperMissingTest extends AbstractTest {
 
   @Test
   public void helperMissingName() throws IOException {
-    shouldCompileTo("{{varx 7}}", $, $(HelperRegistry.HELPER_MISSING, new Helper<Object>() {
-      @Override
-      public Object apply(final Object context, final Options options) throws IOException {
-        return options.helperName;
-      }
-    }), "varx");
+    shouldCompileTo(
+        "{{varx 7}}",
+        $,
+        $(
+            HelperRegistry.HELPER_MISSING,
+            new Helper<Object>() {
+              @Override
+              public Object apply(final Object context, final Options options) throws IOException {
+                return options.helperName;
+              }
+            }),
+        "varx");
   }
 
   @Test
   public void helperBlockMissingName() throws IOException {
-    shouldCompileTo("{{#varz 7}}{{/varz}}", $, $(HelperRegistry.HELPER_MISSING, new Helper<Object>() {
-      @Override
-      public Object apply(final Object context, final Options options) throws IOException {
-        return options.helperName;
-      }
-    }), "varz");
+    shouldCompileTo(
+        "{{#varz 7}}{{/varz}}",
+        $,
+        $(
+            HelperRegistry.HELPER_MISSING,
+            new Helper<Object>() {
+              @Override
+              public Object apply(final Object context, final Options options) throws IOException {
+                return options.helperName;
+              }
+            }),
+        "varz");
   }
 
   /**
@@ -58,31 +75,35 @@ public class HelperMissingTest extends AbstractTest {
 
   @Test(expected = HandlebarsException.class)
   public void blockHelperMissingFail() throws IOException {
-    shouldCompileTo("{{#missing x}}This is a mustache fallback{{/missing}}", new Object(),
-        "must fail");
+    shouldCompileTo(
+        "{{#missing x}}This is a mustache fallback{{/missing}}", new Object(), "must fail");
   }
 
   @Test
   public void helperMissingOverride() throws IOException {
-    Hash helpers = $(HelperRegistry.HELPER_MISSING, new Helper<Object>() {
-      @Override
-      public Object apply(final Object context, final Options options)
-          throws IOException {
-        return "empty";
-      }
-    });
+    Hash helpers =
+        $(
+            HelperRegistry.HELPER_MISSING,
+            new Helper<Object>() {
+              @Override
+              public Object apply(final Object context, final Options options) throws IOException {
+                return "empty";
+              }
+            });
     shouldCompileTo("{{missing x}}", new Object(), helpers, "empty");
   }
 
   @Test
   public void blockHelperMissingOverride() throws IOException {
-    Hash helpers = $(HelperRegistry.HELPER_MISSING, new Helper<Object>() {
-      @Override
-      public Object apply(final Object context, final Options options)
-          throws IOException {
-        return options.fn.text();
-      }
-    });
+    Hash helpers =
+        $(
+            HelperRegistry.HELPER_MISSING,
+            new Helper<Object>() {
+              @Override
+              public Object apply(final Object context, final Options options) throws IOException {
+                return options.fn.text();
+              }
+            });
     shouldCompileTo("{{#missing x}}Raw display{{/missing}}", new Object(), helpers, "Raw display");
   }
 }

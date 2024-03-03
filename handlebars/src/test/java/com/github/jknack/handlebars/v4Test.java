@@ -1,3 +1,8 @@
+/*
+ * Handlebars.java: https://github.com/jknack/handlebars.java
+ * Apache License Version 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Copyright (c) 2012 Edgar Espina
+ */
 package com.github.jknack.handlebars;
 
 import static org.junit.Assert.assertEquals;
@@ -17,7 +22,8 @@ public class v4Test {
     }
   }
 
-  public void shouldCompileTo(final String template, final Hash data, final String expected) throws IOException {
+  public void shouldCompileTo(final String template, final Hash data, final String expected)
+      throws IOException {
     Template t = compile(template, data);
     Object hash = data.get("hash");
     String result = t.apply(configureContext(hash));
@@ -28,7 +34,8 @@ public class v4Test {
     return context;
   }
 
-  public void text(final String template, final Hash data, final String expected) throws IOException {
+  public void text(final String template, final Hash data, final String expected)
+      throws IOException {
     assertEquals(expected, compile(template, data).text());
   }
 
@@ -53,13 +60,14 @@ public class v4Test {
         final Object value = entry.getValue();
         final Helper<?> helper;
         if (!(value instanceof Helper)) {
-          helper = new Helper<Object>() {
-            @Override
-            public Object apply(final Object context, final Options options)
-                throws IOException {
-              return value.toString();
-            }
-          };
+          helper =
+              new Helper<Object>() {
+                @Override
+                public Object apply(final Object context, final Options options)
+                    throws IOException {
+                  return value.toString();
+                }
+              };
         } else {
           helper = (Helper<?>) value;
         }
@@ -79,8 +87,7 @@ public class v4Test {
     return t;
   }
 
-  protected void configure(final Handlebars handlebars) {
-  }
+  protected void configure(final Handlebars handlebars) {}
 
   protected Handlebars newHandlebars() {
     return new Handlebars();

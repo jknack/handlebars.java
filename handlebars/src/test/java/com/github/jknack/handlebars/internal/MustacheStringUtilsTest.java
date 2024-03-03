@@ -1,12 +1,15 @@
+/*
+ * Handlebars.java: https://github.com/jknack/handlebars.java
+ * Apache License Version 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Copyright (c) 2012 Edgar Espina
+ */
 package com.github.jknack.handlebars.internal;
 
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
-/**
- * Unit test for {@link MustacheStringUtils}.
- */
+/** Unit test for {@link MustacheStringUtils}. */
 public class MustacheStringUtilsTest {
 
   @Test
@@ -23,12 +26,12 @@ public class MustacheStringUtilsTest {
     testIndexOfFirstNewline(" a\n", null);
     testIndexOfFirstNewline(" \na", 2);
   }
-  
+
   private void testIndexOfFirstNewline(String str, Integer expected) {
     Integer result = MustacheStringUtils.indexOfSecondLine(str);
     assertEquals(expected, result);
-  } 
-  
+  }
+
   @Test
   public void testRemoveLastWhitespaceLine() {
     testRemoveLastWhitespaceLine(null, "");
@@ -47,9 +50,9 @@ public class MustacheStringUtilsTest {
     testRemoveLastWhitespaceLine("\na\nb", "\na\nb");
     testRemoveLastWhitespaceLine("\na\n ", "\na\n");
   }
-  
+
   private void testRemoveLastWhitespaceLine(String str, String expected) {
     String result = MustacheStringUtils.removeLastWhitespaceLine(str);
     assertEquals(expected, result);
-  } 
+  }
 }

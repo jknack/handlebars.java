@@ -1,19 +1,7 @@
-/**
- * Copyright (c) 2012-2015 Edgar Espina
- *
- * This file is part of Handlebars.java.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+/*
+ * Handlebars.java: https://github.com/jknack/handlebars.java
+ * Apache License Version 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Copyright (c) 2012 Edgar Espina
  */
 package com.github.jknack.handlebars.internal;
 
@@ -43,19 +31,13 @@ import com.github.jknack.handlebars.internal.HbsParser.VarContext;
  */
 public class MustacheSpec extends HbsParserBaseListener {
 
-  /**
-   * Tracks if the current line should be treated as stand-alone.
-   */
+  /** Tracks if the current line should be treated as stand-alone. */
   private Boolean standAlone;
 
-  /**
-   * Tracks text tokens for future whitespace removal.
-   */
+  /** Tracks text tokens for future whitespace removal. */
   private List<CommonToken> textTokens = new ArrayList<>();
 
-  /**
-   * Channel for tokens that need their last line removed.
-   */
+  /** Channel for tokens that need their last line removed. */
   public static final int REMOVE_LAST_LINE_CHANNEL = Token.MIN_USER_CHANNEL_VALUE;
 
   @Override

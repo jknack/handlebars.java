@@ -1,3 +1,8 @@
+/*
+ * Handlebars.java: https://github.com/jknack/handlebars.java
+ * Apache License Version 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Copyright (c) 2012 Edgar Espina
+ */
 package com.github.jknack.handlebars.context;
 
 import static org.apache.commons.io.FileUtils.copyURLToFile;
@@ -19,10 +24,9 @@ import org.junit.rules.TemporaryFolder;
 
 public class MultipleClassLoadersMethodValueResolverTest {
 
-  private final static String CLASS_NAME = "TestClass";
+  private static final String CLASS_NAME = "TestClass";
 
-  @Rule
-  public TemporaryFolder temp = new TemporaryFolder();
+  @Rule public TemporaryFolder temp = new TemporaryFolder();
 
   private MethodValueResolver resolver = new MethodValueResolver();
 
@@ -35,13 +39,18 @@ public class MultipleClassLoadersMethodValueResolverTest {
     copyURLToFile(sourceFileResourceUrl, sourceFile);
 
     JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
-    compiler.run(null, null, null, "-d", temp.getRoot().getAbsolutePath(), sourceFile.getAbsolutePath());
+    compiler.run(
+        null, null, null, "-d", temp.getRoot().getAbsolutePath(), sourceFile.getAbsolutePath());
   }
 
   @Test
   public void canResolveMethodsFromTheSameClassLoadedByDistinctClassLoaders() throws Exception {
-    Assert.assertEquals(resolver.resolve(loadTestClassWithDistinctClassLoader().newInstance(), "getField"), "value");
-    Assert.assertEquals(resolver.resolve(loadTestClassWithDistinctClassLoader().newInstance(), "getField"), "value");
+    Assert.assertEquals(
+        resolver.resolve(loadTestClassWithDistinctClassLoader().newInstance(), "getField"),
+        "value");
+    Assert.assertEquals(
+        resolver.resolve(loadTestClassWithDistinctClassLoader().newInstance(), "getField"),
+        "value");
   }
 
   private Class<?> loadTestClassWithDistinctClassLoader() throws Exception {

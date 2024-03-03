@@ -1,11 +1,16 @@
+/*
+ * Handlebars.java: https://github.com/jknack/handlebars.java
+ * Apache License Version 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Copyright (c) 2012 Edgar Espina
+ */
 package com.github.jknack.handlebars;
 
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
 import java.util.Date;
 
-import static org.junit.Assert.assertEquals;
+import org.junit.Test;
 
 public class MultipleFormatterTest extends AbstractTest {
 
@@ -13,27 +18,29 @@ public class MultipleFormatterTest extends AbstractTest {
 
   @Override
   protected void configure(final Handlebars handlebars) {
-    handlebars.with(new Formatter() {
+    handlebars
+        .with(
+            new Formatter() {
 
-      @Override
-      public Object format(final Object value, final Chain chain) {
-        if (value instanceof Date) {
-          return ((Date) value).getTime();
-        }
-        return chain.format(value);
-      }
+              @Override
+              public Object format(final Object value, final Chain chain) {
+                if (value instanceof Date) {
+                  return ((Date) value).getTime();
+                }
+                return chain.format(value);
+              }
+            })
+        .with(
+            new Formatter() {
+              @Override
+              public Object format(final Object value, final Chain chain) {
 
-    }).with(new Formatter() {
-      @Override
-      public Object format(final Object value, final Chain chain) {
-
-        if (value instanceof Integer) {
-          return Integer.toHexString((Integer) value);
-        }
-        return chain.format(value);
-      }
-
-    });
+                if (value instanceof Integer) {
+                  return Integer.toHexString((Integer) value);
+                }
+                return chain.format(value);
+              }
+            });
   }
 
   @Test

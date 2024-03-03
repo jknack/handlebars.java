@@ -1,19 +1,7 @@
-/**
- * Copyright (c) 2012-2015 Edgar Espina
- *
- * This file is part of Handlebars.java.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+/*
+ * Handlebars.java: https://github.com/jknack/handlebars.java
+ * Apache License Version 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Copyright (c) 2012 Edgar Espina
  */
 package com.github.jknack.handlebars;
 
@@ -68,19 +56,21 @@ public final class PathCompiler {
   private static Map<String, List<PathExpression>> cache = new ConcurrentHashMap<>();
 
   /** Split pattern. */
-  private static Pattern pattern = Pattern
-      .compile("((\\[[^\\[\\]]+])|"
-              + "(" + Pattern.quote(PARENT_PATH) + ")|([^" + Pattern.quote(DOT_PATH) + "]+))");
+  private static Pattern pattern =
+      Pattern.compile(
+          "((\\[[^\\[\\]]+])|"
+              + "("
+              + Pattern.quote(PARENT_PATH)
+              + ")|([^"
+              + Pattern.quote(DOT_PATH)
+              + "]+))");
+
+  /** Not allowed. */
+  private PathCompiler() {}
 
   /**
-   * Not allowed.
-   */
-  private PathCompiler() {
-  }
-
-  /**
-   * Split the property name by separator (except within a [] escaped blocked)
-   * and create an array of it. The compiled expression will extend lookup to parent.
+   * Split the property name by separator (except within a [] escaped blocked) and create an array
+   * of it. The compiled expression will extend lookup to parent.
    *
    * @param key The property's name.
    * @return A path representation of the property (array based).
@@ -90,15 +80,15 @@ public final class PathCompiler {
   }
 
   /**
-   * Split the property name by separator (except within a [] escaped blocked)
-   * and create an array of it.
+   * Split the property name by separator (except within a [] escaped blocked) and create an array
+   * of it.
    *
    * @param key The property's name.
    * @param parentScopeResolution False, if we want to restrict lookup to current scope.
    * @return A path representation of the property (array based).
    */
-  public static List<PathExpression> compile(final String key,
-      final boolean parentScopeResolution) {
+  public static List<PathExpression> compile(
+      final String key, final boolean parentScopeResolution) {
     boolean local = !parentScopeResolution;
     String ukey = key + local;
     List<PathExpression> path = cache.get(ukey);
@@ -110,8 +100,8 @@ public final class PathCompiler {
   }
 
   /**
-   * Split the property name by separator (except within a [] escaped blocked)
-   * and create an array of it.
+   * Split the property name by separator (except within a [] escaped blocked) and create an array
+   * of it.
    *
    * @param path The property's path.
    * @param local True, if we want to restrict lookup to current scope.
@@ -169,5 +159,4 @@ public final class PathCompiler {
     }
     return resolvers;
   }
-
 }

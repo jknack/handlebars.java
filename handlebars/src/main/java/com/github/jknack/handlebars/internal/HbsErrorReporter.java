@@ -1,19 +1,7 @@
-/**
- * Copyright (c) 2012-2015 Edgar Espina
- *
- * This file is part of Handlebars.java.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+/*
+ * Handlebars.java: https://github.com/jknack/handlebars.java
+ * Apache License Version 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Copyright (c) 2012 Edgar Espina
  */
 package com.github.jknack.handlebars.internal;
 
@@ -46,9 +34,7 @@ import com.github.jknack.handlebars.HandlebarsException;
  */
 public class HbsErrorReporter implements ANTLRErrorListener {
 
-  /**
-   * A file's name.
-   */
+  /** A file's name. */
   private String filename;
 
   /**
@@ -61,14 +47,17 @@ public class HbsErrorReporter implements ANTLRErrorListener {
   }
 
   @Override
-  public void syntaxError(final Recognizer<?, ?> recognizer, final Object offendingSymbol,
-      final int line, final int charPositionInLine, final String msg,
+  public void syntaxError(
+      final Recognizer<?, ?> recognizer,
+      final Object offendingSymbol,
+      final int line,
+      final int charPositionInLine,
+      final String msg,
       final RecognitionException e) {
     int column = Math.max(1, charPositionInLine);
     CommonToken offendingToken = (CommonToken) offendingSymbol;
     StringBuilder message = new StringBuilder();
-    message.append(filename).append(":").append(line).append(":").append(column)
-        .append(": ");
+    message.append(filename).append(":").append(line).append(":").append(column).append(": ");
     String stacktrace = "";
     int reasonStart = message.length();
     if (offendingToken == null) {
@@ -88,8 +77,9 @@ public class HbsErrorReporter implements ANTLRErrorListener {
     String nextLine = lineAt(lines, line);
     String evidence = prevLine + "\n" + message.substring(evidenceStat) + "\n" + nextLine;
     message.append(stacktrace);
-    HandlebarsError error = new HandlebarsError(filename, line, column, reason
-        .replace("<EOF>", "EOF"), evidence, message.toString());
+    HandlebarsError error =
+        new HandlebarsError(
+            filename, line, column, reason.replace("<EOF>", "EOF"), evidence, message.toString());
     throw new HandlebarsException(error);
   }
 
@@ -115,7 +105,10 @@ public class HbsErrorReporter implements ANTLRErrorListener {
    * @param line The offending's line.
    * @param charPositionInLine The offenfing's column.
    */
-  private void underline(final StringBuilder message, final String[] lines, final int line,
+  private void underline(
+      final StringBuilder message,
+      final String[] lines,
+      final int line,
       final int charPositionInLine) {
     String errorLine = lines[Math.min(line - 1, lines.length - 1)];
     message.append(errorLine).append("\n");
@@ -147,20 +140,30 @@ public class HbsErrorReporter implements ANTLRErrorListener {
   }
 
   @Override
-  public void reportAmbiguity(final Parser recognizer, final DFA dfa, final int startIndex,
-      final int stopIndex, final boolean exact, final BitSet ambigAlts,
-      final ATNConfigSet configs) {
-  }
+  public void reportAmbiguity(
+      final Parser recognizer,
+      final DFA dfa,
+      final int startIndex,
+      final int stopIndex,
+      final boolean exact,
+      final BitSet ambigAlts,
+      final ATNConfigSet configs) {}
 
   @Override
-  public void reportAttemptingFullContext(final Parser recognizer, final DFA dfa,
-      final int startIndex, final int stopIndex, final BitSet conflictingAlts,
-      final ATNConfigSet configs) {
-  }
+  public void reportAttemptingFullContext(
+      final Parser recognizer,
+      final DFA dfa,
+      final int startIndex,
+      final int stopIndex,
+      final BitSet conflictingAlts,
+      final ATNConfigSet configs) {}
 
   @Override
-  public void reportContextSensitivity(final Parser recognizer, final DFA dfa,
-      final int startIndex, final int stopIndex, final int prediction, final ATNConfigSet configs) {
-  }
-
+  public void reportContextSensitivity(
+      final Parser recognizer,
+      final DFA dfa,
+      final int startIndex,
+      final int stopIndex,
+      final int prediction,
+      final ATNConfigSet configs) {}
 }

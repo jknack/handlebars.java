@@ -1,19 +1,7 @@
-/**
- * Copyright (c) 2012-2015 Edgar Espina
- *
- * This file is part of Handlebars.java.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+/*
+ * Handlebars.java: https://github.com/jknack/handlebars.java
+ * Apache License Version 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Copyright (c) 2012 Edgar Espina
  */
 package com.github.jknack.handlebars;
 
@@ -37,17 +25,18 @@ import com.github.jknack.handlebars.internal.path.ThisPath;
 import com.github.jknack.handlebars.io.TemplateSource;
 
 /**
- * Mustache/Handlebars are contextual template engines. This class represent the
- * 'context stack' of a template.
+ * Mustache/Handlebars are contextual template engines. This class represent the 'context stack' of
+ * a template.
+ *
  * <ul>
- * <li>Objects and hashes should be pushed onto the context stack.
- * <li>All elements on the context stack should be accessible.
- * <li>Multiple sections per template should be permitted.
- * <li>Failed context lookups should be considered falsy.
- * <li>Dotted names should be valid for Section tags.
- * <li>Dotted names that cannot be resolved should be considered falsy.
- * <li>Dotted Names - Context Precedence: Dotted names should be resolved against former
- * resolutions.
+ *   <li>Objects and hashes should be pushed onto the context stack.
+ *   <li>All elements on the context stack should be accessible.
+ *   <li>Multiple sections per template should be permitted.
+ *   <li>Failed context lookups should be considered falsy.
+ *   <li>Dotted names should be valid for Section tags.
+ *   <li>Dotted names that cannot be resolved should be considered falsy.
+ *   <li>Dotted Names - Context Precedence: Dotted names should be resolved against former
+ *       resolutions.
  * </ul>
  *
  * @author edgar.espina
@@ -179,9 +168,7 @@ public class Context {
    */
   private static class CompositeValueResolver implements ValueResolver {
 
-    /**
-     * The internal value resolvers.
-     */
+    /** The internal value resolvers. */
     private List<ValueResolver> resolvers;
 
     /**
@@ -237,9 +224,7 @@ public class Context {
    */
   public static final class Builder {
 
-    /**
-     * The context product.
-     */
+    /** The context product. */
     private Context context;
 
     /**
@@ -295,10 +280,10 @@ public class Context {
       notEmpty(resolvers, "At least one value-resolver must be present.");
       boolean mapResolver = Stream.of(resolvers).anyMatch(MapValueResolver.class::isInstance);
       if (!mapResolver) {
-        context.setResolver(new CompositeValueResolver(
-            Stream.concat(Stream.of(resolvers), Stream.of(MapValueResolver.INSTANCE))
-                .collect(Collectors.toList())
-        ));
+        context.setResolver(
+            new CompositeValueResolver(
+                Stream.concat(Stream.of(resolvers), Stream.of(MapValueResolver.INSTANCE))
+                    .collect(Collectors.toList())));
       } else {
         context.setResolver(new CompositeValueResolver(Arrays.asList(resolvers)));
       }
@@ -306,8 +291,8 @@ public class Context {
     }
 
     /**
-     * Add one or more value resolver to the defaults defined by
-     * {@link ValueResolver#defaultValueResolvers()}.
+     * Add one or more value resolver to the defaults defined by {@link
+     * ValueResolver#defaultValueResolvers()}.
      *
      * @param resolvers The value resolvers. Required.
      * @return This builder.
@@ -384,62 +369,39 @@ public class Context {
       }
       return value;
     }
-
   }
 
-  /**
-   * Mark for fail context lookup.
-   */
+  /** Mark for fail context lookup. */
   private static final Object NULL = new Object();
 
-  /**
-   * The qualified name for partials. Internal use.
-   */
+  /** The qualified name for partials. Internal use. */
   public static final String PARTIALS = Context.class.getName() + "#partials";
 
-  /**
-   * Inline partials.
-   */
+  /** Inline partials. */
   public static final String INLINE_PARTIALS = "__inline_partials_";
 
-  /**
-   * The qualified name for partials. Internal use.
-   */
+  /** The qualified name for partials. Internal use. */
   public static final String INVOCATION_STACK = Context.class.getName() + "#invocationStack";
 
-  /**
-   * Number of parameters of a helper. Internal use.
-   */
+  /** Number of parameters of a helper. Internal use. */
   public static final String PARAM_SIZE = Context.class.getName() + "#paramSize";
 
-  /**
-   * Last callee of a partial block. Internal use.
-   */
+  /** Last callee of a partial block. Internal use. */
   public static final String CALLEE = Context.class.getName() + "#callee";
 
-  /**
-   * The parent context. Optional.
-   */
+  /** The parent context. Optional. */
   protected Context parent;
 
-  /**
-   * The target value. Resolved as '.' or 'this' inside templates. Required.
-   */
+  /** The target value. Resolved as '.' or 'this' inside templates. Required. */
   Object model;
 
-  /**
-   * A thread safe storage.
-   */
+  /** A thread safe storage. */
   protected Map<String, Object> data;
 
-  /**
-   * Additional, data can be stored here.
-   */
+  /** Additional, data can be stored here. */
   protected Context extendedContext;
 
-  /**
-   * The value resolver.
-   */
+  /** The value resolver. */
   protected ValueResolver resolver;
 
   /**
@@ -456,8 +418,7 @@ public class Context {
   /**
    * Creates a root context.
    *
-   * @param model The target value. Resolved as '.' or 'this' inside
-   *        templates. Required.
+   * @param model The target value. Resolved as '.' or 'this' inside templates. Required.
    * @return A root context.
    */
   private static Context root(final Object model) {
@@ -480,7 +441,7 @@ public class Context {
    * @param model The model data.
    * @return This context.
    */
-  @SuppressWarnings({"unchecked" })
+  @SuppressWarnings({"unchecked"})
   public Context combine(final String name, final Object model) {
     Map<String, Object> map = (Map<String, Object>) extendedContext.model;
     map.put(name, model);
@@ -493,7 +454,7 @@ public class Context {
    * @param model The model attributes.
    * @return This context.
    */
-  @SuppressWarnings({"unchecked" })
+  @SuppressWarnings({"unchecked"})
   public Context combine(final Map<String, ?> model) {
     Map<String, Object> map = (Map<String, Object>) extendedContext.model;
     map.putAll(model);
@@ -587,15 +548,16 @@ public class Context {
 
   /**
    * Lookup the given key inside the context stack.
+   *
    * <ul>
-   * <li>Objects and hashes should be pushed onto the context stack.
-   * <li>All elements on the context stack should be accessible.
-   * <li>Multiple sections per template should be permitted.
-   * <li>Failed context lookups should be considered falsey.
-   * <li>Dotted names should be valid for Section tags.
-   * <li>Dotted names that cannot be resolved should be considered falsey.
-   * <li>Dotted Names - Context Precedence: Dotted names should be resolved against former
-   * resolutions.
+   *   <li>Objects and hashes should be pushed onto the context stack.
+   *   <li>All elements on the context stack should be accessible.
+   *   <li>Multiple sections per template should be permitted.
+   *   <li>Failed context lookups should be considered falsey.
+   *   <li>Dotted names should be valid for Section tags.
+   *   <li>Dotted names that cannot be resolved should be considered falsey.
+   *   <li>Dotted Names - Context Precedence: Dotted names should be resolved against former
+   *       resolutions.
    * </ul>
    *
    * @param path The object path.
@@ -633,15 +595,16 @@ public class Context {
 
   /**
    * Lookup the given key inside the context stack.
+   *
    * <ul>
-   * <li>Objects and hashes should be pushed onto the context stack.
-   * <li>All elements on the context stack should be accessible.
-   * <li>Multiple sections per template should be permitted.
-   * <li>Failed context lookups should be considered falsey.
-   * <li>Dotted names should be valid for Section tags.
-   * <li>Dotted names that cannot be resolved should be considered falsey.
-   * <li>Dotted Names - Context Precedence: Dotted names should be resolved against former
-   * resolutions.
+   *   <li>Objects and hashes should be pushed onto the context stack.
+   *   <li>All elements on the context stack should be accessible.
+   *   <li>Multiple sections per template should be permitted.
+   *   <li>Failed context lookups should be considered falsey.
+   *   <li>Dotted names should be valid for Section tags.
+   *   <li>Dotted names that cannot be resolved should be considered falsey.
+   *   <li>Dotted Names - Context Precedence: Dotted names should be resolved against former
+   *       resolutions.
    * </ul>
    *
    * @param key The object key.
@@ -653,15 +616,16 @@ public class Context {
 
   /**
    * Lookup the given key inside the context stack.
+   *
    * <ul>
-   * <li>Objects and hashes should be pushed onto the context stack.
-   * <li>All elements on the context stack should be accessible.
-   * <li>Multiple sections per template should be permitted.
-   * <li>Failed context lookups should be considered falsey.
-   * <li>Dotted names should be valid for Section tags.
-   * <li>Dotted names that cannot be resolved should be considered falsey.
-   * <li>Dotted Names - Context Precedence: Dotted names should be resolved against former
-   * resolutions.
+   *   <li>Objects and hashes should be pushed onto the context stack.
+   *   <li>All elements on the context stack should be accessible.
+   *   <li>Multiple sections per template should be permitted.
+   *   <li>Failed context lookups should be considered falsey.
+   *   <li>Dotted names should be valid for Section tags.
+   *   <li>Dotted names that cannot be resolved should be considered falsey.
+   *   <li>Dotted Names - Context Precedence: Dotted names should be resolved against former
+   *       resolutions.
    * </ul>
    *
    * @param key The object key.
@@ -682,9 +646,7 @@ public class Context {
     extendedContext.resolver = resolver;
   }
 
-  /**
-   * Destroy this context by cleaning up instance attributes.
-   */
+  /** Destroy this context by cleaning up instance attributes. */
   public void destroy() {
     model = null;
     if (parent == null) {
@@ -746,8 +708,8 @@ public class Context {
    * @param values A list of values to set in the block param context.
    * @return A new block param context.
    */
-  public static Context newBlockParamContext(final Context parent, final List<String> names,
-      final List<Object> values) {
+  public static Context newBlockParamContext(
+      final Context parent, final List<String> names, final List<Object> values) {
     Map<String, Object> hash = new HashMap<>();
     for (int i = 0; i < Math.min(values.size(), names.size()); i++) {
       hash.put(names.get(i), values.get(i));
@@ -763,8 +725,8 @@ public class Context {
    * @param hash Partial hash.
    * @return A new context.
    */
-  public static Context newPartialContext(final Context ctx, final String scope,
-      final Map<String, Object> hash) {
+  public static Context newPartialContext(
+      final Context ctx, final String scope, final Map<String, Object> hash) {
     return new PartialCtx(ctx, ctx.get(scope), hash);
   }
 
@@ -816,5 +778,4 @@ public class Context {
     ctx.resolver = context.resolver;
     return ctx;
   }
-
 }

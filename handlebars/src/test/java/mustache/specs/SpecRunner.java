@@ -1,19 +1,7 @@
-/**
+/*
+ * Handlebars.java: https://github.com/jknack/handlebars.java
+ * Apache License Version 2.0 http://www.apache.org/licenses/LICENSE-2.0
  * Copyright (c) 2012 Edgar Espina
- *
- * This file is part of Handlebars.java.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
  */
 package mustache.specs;
 
@@ -50,28 +38,23 @@ public class SpecRunner extends Parameterized {
     TestClass testClass = this.getTestClass();
     List<FrameworkMethod> annotatedMethods = testClass.getAnnotatedMethods(Parameters.class);
     FrameworkMethod frameworkMethod = annotatedMethods.get(0);
-    return (Collection<Object[]>)frameworkMethod.invokeExplosively(testClass);
+    return (Collection<Object[]>) frameworkMethod.invokeExplosively(testClass);
   }
 
   private void generateLabelledDescription() throws Exception {
     Description originalDescription = super.getDescription();
-    labelledDescription = Description
-        .createSuiteDescription(originalDescription.getDisplayName());
-    List<Description> childDescriptions = originalDescription
-        .getChildren();
+    labelledDescription = Description.createSuiteDescription(originalDescription.getDisplayName());
+    List<Description> childDescriptions = originalDescription.getChildren();
     int childCount = childDescriptions.size();
     if (childCount != labels.size()) {
-      throw new Exception(
-          "Number of labels and number of parameters must match.");
+      throw new Exception("Number of labels and number of parameters must match.");
     }
 
     for (int i = 0; i < childDescriptions.size(); i++) {
       Description childDescription = childDescriptions.get(i);
       String label = labels.get(i);
-      Description newDescription = Description
-          .createSuiteDescription(label);
-      List<Description> grandChildren = childDescription
-          .getChildren();
+      Description newDescription = Description.createSuiteDescription(label);
+      List<Description> grandChildren = childDescription.getChildren();
       for (Description grandChild : grandChildren) {
         newDescription.addChild(grandChild);
       }

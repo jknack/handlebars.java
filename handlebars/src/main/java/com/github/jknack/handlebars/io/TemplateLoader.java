@@ -1,19 +1,7 @@
-/**
- * Copyright (c) 2012-2015 Edgar Espina
- *
- * This file is part of Handlebars.java.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+/*
+ * Handlebars.java: https://github.com/jknack/handlebars.java
+ * Apache License Version 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Copyright (c) 2012 Edgar Espina
  */
 package com.github.jknack.handlebars.io;
 
@@ -21,17 +9,16 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 
 /**
- * <p>
  * Strategy interface for loading resources from class path, file system, etc.
- * </p>
+ *
  * <h3>Templates prefix and suffix</h3>
- * <p>
- * A <code>TemplateLoader</code> provides two important properties:
- * </p>
+ *
+ * <p>A <code>TemplateLoader</code> provides two important properties:
+ *
  * <ul>
- * <li>prefix: useful for setting a default prefix where templates are stored.</li>
- * <li>suffix: useful for setting a default suffix or file extension for your templates. Default is:
- * <code>'.hbs'</code></li>
+ *   <li>prefix: useful for setting a default prefix where templates are stored.
+ *   <li>suffix: useful for setting a default suffix or file extension for your templates. Default
+ *       is: <code>'.hbs'</code>
  * </ul>
  *
  * @author edgar.espina
@@ -39,14 +26,10 @@ import java.nio.charset.Charset;
  */
 public interface TemplateLoader {
 
-  /**
-   * The default view prefix.
-   */
+  /** The default view prefix. */
   String DEFAULT_PREFIX = "/";
 
-  /**
-   * The default view suffix.
-   */
+  /** The default view suffix. */
   String DEFAULT_SUFFIX = ".hbs";
 
   /**
@@ -79,8 +62,7 @@ public interface TemplateLoader {
   /**
    * Set the prefix that gets prepended to view names when building a URI.
    *
-   * @param prefix The prefix that gets prepended to view names when building a
-   *        URI.
+   * @param prefix The prefix that gets prepended to view names when building a URI.
    */
   void setPrefix(String prefix);
 

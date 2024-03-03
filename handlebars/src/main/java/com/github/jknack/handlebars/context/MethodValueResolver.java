@@ -1,19 +1,7 @@
-/**
- * Copyright (c) 2012-2015 Edgar Espina
- *
- * This file is part of Handlebars.java.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+/*
+ * Handlebars.java: https://github.com/jknack/handlebars.java
+ * Apache License Version 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Copyright (c) 2012 Edgar Espina
  */
 package com.github.jknack.handlebars.context;
 
@@ -25,23 +13,18 @@ import java.util.Set;
 import com.github.jknack.handlebars.ValueResolver;
 
 /**
- * A specialization of {@link MemberValueResolver} with lookup and invocation
- * support for {@link Method}.
- * It matches a public method.
+ * A specialization of {@link MemberValueResolver} with lookup and invocation support for {@link
+ * Method}. It matches a public method.
  *
  * @author edgar.espina
  * @since 0.1.1
  */
 public class MethodValueResolver extends MemberValueResolver<Method> {
 
-  /**
-   * The default instance.
-   */
+  /** The default instance. */
   public static final ValueResolver INSTANCE = new MethodValueResolver();
 
-  /**
-   * Args for getters.
-   */
+  /** Args for getters. */
   private static final Object[] EMPTY_ARGS = new Object[0];
 
   @Override
@@ -61,8 +44,7 @@ public class MethodValueResolver extends MemberValueResolver<Method> {
       }
       throw new IllegalStateException("Execution of '" + member.getName() + "' failed", cause);
     } catch (IllegalAccessException ex) {
-      throw new IllegalStateException(
-          "Could not access method:  '" + member.getName() + "'", ex);
+      throw new IllegalStateException("Could not access method:  '" + member.getName() + "'", ex);
     }
   }
 

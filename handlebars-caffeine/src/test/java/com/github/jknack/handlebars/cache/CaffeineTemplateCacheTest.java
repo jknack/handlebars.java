@@ -1,3 +1,8 @@
+/*
+ * Handlebars.java: https://github.com/jknack/handlebars.java
+ * Apache License Version 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Copyright (c) 2012 Edgar Espina
+ */
 package com.github.jknack.handlebars.cache;
 
 import static org.junit.Assert.assertEquals;
@@ -64,12 +69,11 @@ public class CaffeineTemplateCacheTest {
     Parser parser = mock(Parser.class);
     when(parser.parse(key)).thenReturn(template);
 
-    ArgumentCaptor<Function<TemplateSource, Template>> captor = ArgumentCaptor.forClass(
-        Function.class);
+    ArgumentCaptor<Function<TemplateSource, Template>> captor =
+        ArgumentCaptor.forClass(Function.class);
 
     Cache<TemplateSource, Template> cache = mock(Cache.class);
-    when(cache.get(eq(key), captor.capture()))
-        .thenReturn(template);
+    when(cache.get(eq(key), captor.capture())).thenReturn(template);
 
     CaffeineTemplateCache templateCache = new CaffeineTemplateCache(cache);
 
@@ -87,11 +91,10 @@ public class CaffeineTemplateCacheTest {
     Parser parser = mock(Parser.class);
     when(parser.parse(key)).thenThrow(error);
 
-    ArgumentCaptor<Function<TemplateSource, Template>> captor = ArgumentCaptor.forClass(
-        Function.class);
+    ArgumentCaptor<Function<TemplateSource, Template>> captor =
+        ArgumentCaptor.forClass(Function.class);
 
-    Cache<TemplateSource, Template> cache = Caffeine.newBuilder()
-        .build();
+    Cache<TemplateSource, Template> cache = Caffeine.newBuilder().build();
 
     CaffeineTemplateCache templateCache = new CaffeineTemplateCache(cache);
 
