@@ -26,7 +26,7 @@
   <licenses>
     <license>
       <name>The Apache Software License, Version 2.0</name>
-      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
     </license>
   </licenses>
 
@@ -274,7 +274,48 @@
     </profile>
 
     <profile>
-      <id>git-hooks</id>
+      <id>mustache-specs</id>
+      <activation>
+        <file>
+          <missing>${mustache-specs}</missing>
+        </file>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>exec-maven-plugin</artifactId>
+            <version>3.2.0</version>
+            <executions>
+              <execution>
+                <phase>initialize</phase>
+                <id>mustache-specs</id>
+                <goals>
+                  <goal>exec</goal>
+                </goals>
+              </execution>
+            </executions>
+            <configuration>
+              <executable>git</executable>
+              <arguments>
+                <argument>submodule</argument>
+                <argument>update</argument>
+                <argument>--init</argument>
+                <argument>--recursive</argument>
+              </arguments>
+              <successCodes>
+                <successCode>0</successCode>
+                <!-- git submodule fails in child projects, just ignore the error and continue -->
+                <successCode>1</successCode>
+              </successCodes>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+    <profile>
+      <id>spotless-hook</id>
       <activation>
         <file>
           <exists>${pre-commit-hook}</exists>
@@ -328,36 +369,6 @@
       <id>sonatype</id>
       <build>
         <plugins>
-          <!-- This is a workaround to get submodules working with the maven release plugin -->
-          <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>exec-maven-plugin</artifactId>
-            <version>3.2.0</version>
-            <executions>
-              <execution>
-                <phase>initialize</phase>
-                <id>invoke build</id>
-                <goals>
-                  <goal>exec</goal>
-                </goals>
-              </execution>
-            </executions>
-            <configuration>
-              <executable>git</executable>
-              <arguments>
-                <argument>submodule</argument>
-                <argument>update</argument>
-                <argument>--init</argument>
-                <argument>--recursive</argument>
-              </arguments>
-              <successCodes>
-                <successCode>0</successCode>
-                <!-- git submodule fails in child projects, just ignore the error and continue -->
-                <successCode>1</successCode>
-              </successCodes>
-            </configuration>
-          </plugin>
-
           <!-- Source -->
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
@@ -423,5 +434,6 @@
     <maven.compiler.source>17</maven.compiler.source>
     <maven.compiler.target>17</maven.compiler.target>
     <pre-commit-hook>src${file.separator}etc${file.separator}formatter.sh</pre-commit-hook>
+    <mustache-specs>handlebars${file.separator}src${file.separator}test${file.separator}resources${file.separator}mustache</mustache-specs>
   </properties>
 </project>
