@@ -5,11 +5,11 @@
  */
 package com.github.jknack.handlebars.i290;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.IOException;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.github.jknack.handlebars.AbstractTest;
 

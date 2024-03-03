@@ -5,7 +5,7 @@
  */
 package com.github.jknack.handlebars.issues;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.helper.ConditionalHelpers;

@@ -5,7 +5,9 @@
  */
 package com.github.jknack.handlebars.context;
 
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import org.junit.jupiter.api.Test;
 
 public class MethodValueResolverTest {
 
@@ -19,13 +21,17 @@ public class MethodValueResolverTest {
     }
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test
   public void mvrMustThrowRuntimeExceptions() {
-    new MethodValueResolver().resolve(new ExceptionalBean(), "getRTE");
+    assertThrows(
+        NullPointerException.class,
+        () -> new MethodValueResolver().resolve(new ExceptionalBean(), "getRTE"));
   }
 
-  @Test(expected = IllegalStateException.class)
+  @Test
   public void mvrMustWrapCheckedExceptionAsRuntimeExceptions() {
-    new MethodValueResolver().resolve(new ExceptionalBean(), "getCE");
+    assertThrows(
+        IllegalStateException.class,
+        () -> new MethodValueResolver().resolve(new ExceptionalBean(), "getCE"));
   }
 }

@@ -10,7 +10,7 @@ import static java.util.Arrays.asList;
 import java.io.IOException;
 import java.util.Collections;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class IfBlockTest extends AbstractTest {
 

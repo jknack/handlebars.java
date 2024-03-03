@@ -5,15 +5,14 @@
  */
 package com.github.jknack.handlebars.io;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit test for {@link ClassPathTemplateLoader}.
@@ -44,10 +43,14 @@ public class FileTemplateLoaderTest {
     assertNotNull(source);
   }
 
-  @Test(expected = FileNotFoundException.class)
+  @Test
   public void failLocate() throws IOException {
-    TemplateLoader loader = new FileTemplateLoader(new File("src/test/resources"));
-    loader.sourceAt("notExist");
+    assertThrows(
+        FileNotFoundException.class,
+        () -> {
+          TemplateLoader loader = new FileTemplateLoader(new File("src/test/resources"));
+          loader.sourceAt("notExist");
+        });
   }
 
   @Test

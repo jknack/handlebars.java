@@ -5,9 +5,11 @@
  */
 package com.github.jknack.handlebars;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import java.io.IOException;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class ChainedElseBlockTest extends AbstractTest {
 
@@ -29,10 +31,15 @@ public class ChainedElseBlockTest extends AbstractTest {
         "No people");
   }
 
-  @Test(expected = HandlebarsException.class)
+  @Test
   public void chainedInvertedSectionsWithMismatch() throws IOException {
-    shouldCompileTo(
-        "{{#people}}{{name}}{{else if none}}{{none}}{{/if}}", $("none", "No people"), "No people");
+    assertThrows(
+        HandlebarsException.class,
+        () ->
+            shouldCompileTo(
+                "{{#people}}{{name}}{{else if none}}{{none}}{{/if}}",
+                $("none", "No people"),
+                "No people"));
   }
 
   @Test

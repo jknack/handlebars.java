@@ -5,12 +5,12 @@
  */
 package com.github.jknack.handlebars.js;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.File;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import com.github.jknack.handlebars.AbstractTest;
 import com.github.jknack.handlebars.Context;
@@ -42,7 +42,7 @@ public class JavaScriptHelperTest extends AbstractTest {
     }
   }
 
-  @BeforeClass
+  @BeforeAll
   public static void registerHelpers() throws Exception {
     long start = System.currentTimeMillis();
     handlebars.registerHelpers(

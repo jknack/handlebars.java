@@ -5,12 +5,13 @@
  */
 package com.github.jknack.handlebars;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.IOException;
 
-import org.junit.ComparisonFailure;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.opentest4j.AssertionFailedError;
 
 public class I18NHelperTest extends AbstractTest {
 
@@ -39,9 +40,10 @@ public class I18NHelperTest extends AbstractTest {
             + "a &lt;tag&gt; &#x60;in backticks&#x60; &amp; other entities");
   }
 
-  @Test(expected = HandlebarsException.class)
-  public void missingKeyError() throws IOException {
-    shouldCompileTo("{{i18n \"missing\"}}", null, "error");
+  @Test
+  public void missingKeyError() {
+    assertThrows(
+        HandlebarsException.class, () -> shouldCompileTo("{{i18n \"missing\"}}", null, "error"));
   }
 
   @Test
@@ -49,9 +51,11 @@ public class I18NHelperTest extends AbstractTest {
     shouldCompileTo("{{i18n \"hello\" bundle=\"myMessages\" locale=\"es_AR\"}}", null, "Hola");
   }
 
-  @Test(expected = HandlebarsException.class)
+  @Test
   public void missingBundle() throws IOException {
-    shouldCompileTo("{{i18n \"key\" bundle=\"missing\"}}!", null, "");
+    assertThrows(
+        HandlebarsException.class,
+        () -> shouldCompileTo("{{i18n \"key\" bundle=\"missing\"}}!", null, ""));
   }
 
   @Test
@@ -71,7 +75,7 @@ public class I18NHelperTest extends AbstractTest {
     String result = compile("{{i18nJs \"es_AR\"}}").apply(null);
     try {
       assertEquals(expectedJava17, result);
-    } catch (ComparisonFailure ex) {
+    } catch (AssertionFailedError ex) {
       String expectedJava18 =
           "<script type='text/javascript'>\n"
               + "  /* Spanish (Argentina) */\n"

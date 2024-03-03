@@ -5,9 +5,11 @@
  */
 package com.github.jknack.handlebars.i375;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import java.io.IOException;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.github.jknack.handlebars.AbstractTest;
 import com.github.jknack.handlebars.HandlebarsException;
@@ -155,7 +157,7 @@ public class Issue375 extends AbstractTest {
         "Basic partials output based on current context.");
   }
 
-  @Test(expected = HandlebarsException.class)
+  @Test
   public void dynamicPartialNotFound() throws IOException {
     String string = "Dudes: {{#dudes}}{{> (lookup missing 'name')}}{{/dudes}}";
     String partial = "{{name}} ({{url}}) ";
@@ -166,10 +168,12 @@ public class Issue375 extends AbstractTest {
               $("name", "Yehuda", "url", "http://yehuda"), $("name", "Alan", "url", "http://alan")
             });
 
-    shouldCompileToWithPartials(string, hash, $("Yehuda", partial, "Alan", partial), "");
+    assertThrows(
+        HandlebarsException.class,
+        () -> shouldCompileToWithPartials(string, hash, $("Yehuda", partial, "Alan", partial), ""));
   }
 
-  @Test(expected = HandlebarsException.class)
+  @Test
   public void dynamicPartialNotFound2() throws IOException {
     String string = "Dudes: {{#dudes}}{{> (lookup this 'missing')}}{{/dudes}}";
     String partial = "{{name}} ({{url}}) ";
@@ -180,6 +184,8 @@ public class Issue375 extends AbstractTest {
               $("name", "Yehuda", "url", "http://yehuda"), $("name", "Alan", "url", "http://alan")
             });
 
-    shouldCompileToWithPartials(string, hash, $("Yehuda", partial, "Alan", partial), "");
+    assertThrows(
+        HandlebarsException.class,
+        () -> shouldCompileToWithPartials(string, hash, $("Yehuda", partial, "Alan", partial), ""));
   }
 }

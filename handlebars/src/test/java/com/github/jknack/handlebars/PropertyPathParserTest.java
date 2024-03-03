@@ -6,12 +6,12 @@
 package com.github.jknack.handlebars;
 
 import static org.apache.commons.lang3.StringUtils.join;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Arrays;
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class PropertyPathParserTest {
 

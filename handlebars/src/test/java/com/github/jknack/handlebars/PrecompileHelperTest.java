@@ -5,23 +5,21 @@
  */
 package com.github.jknack.handlebars;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Arrays;
-import java.util.Collection;
 
 import org.apache.commons.io.IOUtils;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
+import org.junit.jupiter.api.Test;
 
 import com.github.jknack.handlebars.io.URLTemplateLoader;
 
-@RunWith(Parameterized.class)
 public class PrecompileHelperTest {
+
+  private interface Wrapper {
+    void accept(String wrapper) throws IOException;
+  }
 
   URLTemplateLoader loader =
       new MapTemplateLoader()
@@ -31,24 +29,21 @@ public class PrecompileHelperTest {
 
   Handlebars handlebars = new Handlebars(loader);
 
-  private String wrapper;
-
-  public PrecompileHelperTest(final String wrapper) {
-    this.wrapper = wrapper;
-  }
-
   @Test
   public void precompile() throws IOException {
-    String js =
-        handlebars
-            .compileInline("{{precompile \"input\" wrapper=\"" + wrapper + "\"}}")
-            .apply("Handlebar.js");
+    withTemplates(
+        wrapper -> {
+          String js =
+              handlebars
+                  .compileInline("{{precompile \"input\" wrapper=\"" + wrapper + "\"}}")
+                  .apply("Handlebar.js");
 
-    InputStream in = getClass().getResourceAsStream("/" + wrapper + ".precompiled.js");
+          InputStream in = getClass().getResourceAsStream("/" + wrapper + ".precompiled.js");
 
-    assertEquals(wrapper, spaceSafe(IOUtils.toString(in)), spaceSafe(js));
+          assertEquals(spaceSafe(IOUtils.toString(in)), spaceSafe(js), wrapper);
 
-    in.close();
+          in.close();
+        });
   }
 
   private String spaceSafe(String value) {
@@ -57,17 +52,22 @@ public class PrecompileHelperTest {
 
   @Test
   public void precompileWithPartial() throws IOException {
-    String js = handlebars.compileInline("{{precompile \"root\"}}").apply("Handlebar.js");
+    withTemplates(
+        wrapper -> {
+          String js = handlebars.compileInline("{{precompile \"root\"}}").apply("Handlebar.js");
 
-    InputStream in = getClass().getResourceAsStream("/partial.precompiled.js");
+          InputStream in = getClass().getResourceAsStream("/partial.precompiled.js");
 
-    assertEquals(spaceSafe(IOUtils.toString(in)), spaceSafe(js));
+          assertEquals(spaceSafe(IOUtils.toString(in)), spaceSafe(js));
 
-    in.close();
+          in.close();
+        });
   }
 
-  @Parameters
-  public static Collection<Object[]> data() {
-    return Arrays.asList(new Object[] {"anonymous"}, new Object[] {"none"}, new Object[] {"amd"});
+  private static void withTemplates(Wrapper consumer) throws IOException {
+    var templates = new String[] {"anonymous", "none", "amd"};
+    for (String template : templates) {
+      consumer.accept(template);
+    }
   }
 }

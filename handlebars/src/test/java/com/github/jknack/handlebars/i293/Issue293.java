@@ -9,22 +9,22 @@ import java.io.IOException;
 import java.util.Locale;
 
 import org.apache.commons.lang3.LocaleUtils;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import com.github.jknack.handlebars.AbstractTest;
 import com.github.jknack.handlebars.helper.I18nHelper;
 
 public class Issue293 extends AbstractTest {
 
-  @Before
+  @BeforeEach
   public void overrideDefaults() {
     I18nHelper.i18n.setDefaultBundle("i293");
     I18nHelper.i18n.setDefaultLocale(LocaleUtils.toLocale("es_AR"));
   }
 
-  @After
+  @AfterEach
   public void defaults() {
     I18nHelper.i18n.setDefaultBundle("messages");
     I18nHelper.i18n.setDefaultLocale(Locale.getDefault());

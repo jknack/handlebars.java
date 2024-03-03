@@ -5,26 +5,27 @@
  */
 package com.github.jknack.handlebars;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import java.io.IOException;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class InfiniteLoopTest {
 
-  @Test(expected = HandlebarsException.class)
+  @Test
   public void self() throws IOException {
-    ;
-    apply("r");
+    assertThrows(HandlebarsException.class, () -> apply("r"));
   }
 
-  @Test(expected = HandlebarsException.class)
+  @Test
   public void level1() throws IOException {
-    apply("r1");
+    assertThrows(HandlebarsException.class, () -> apply("r1"));
   }
 
-  @Test(expected = HandlebarsException.class)
+  @Test
   public void level2() throws IOException {
-    apply("r2");
+    assertThrows(HandlebarsException.class, () -> apply("r2"));
   }
 
   private void apply(final String path) throws IOException {

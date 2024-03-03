@@ -5,12 +5,14 @@
  */
 package com.github.jknack.handlebars.helper;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
+
 import java.io.IOException;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.github.jknack.handlebars.AbstractTest;
 import com.github.jknack.handlebars.Handlebars;
@@ -44,10 +46,10 @@ public class JodaHelperTest extends AbstractTest {
     DateTime dateTime = new DateTime().withDate(1995, 7, 4).withTime(14, 32, 12, 0);
     try {
       shouldCompileTo("{{jodaPatternHelper this \"qwerty\"}}", dateTime, "1995-Jul-4 14:32:12");
-      Assert.fail("Exception should have thrown!");
+      fail("Exception should have thrown!");
     } catch (HandlebarsException e) {
       Throwable t = e.getCause();
-      Assert.assertEquals("Illegal pattern component: q", t.getMessage());
+      assertEquals("Illegal pattern component: q", t.getMessage());
     }
   }
 
@@ -69,7 +71,7 @@ public class JodaHelperTest extends AbstractTest {
       shouldCompileTo("{{jodaStyleHelper this \"QS\"}}", dateTime, "");
     } catch (HandlebarsException e) {
       Throwable t = e.getCause();
-      Assert.assertEquals("Invalid style character: Q", t.getMessage());
+      assertEquals("Invalid style character: Q", t.getMessage());
     }
   }
 

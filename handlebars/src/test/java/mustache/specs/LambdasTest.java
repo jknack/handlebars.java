@@ -6,17 +6,20 @@
 package mustache.specs;
 
 import java.io.IOException;
-import java.util.Collection;
+import java.util.List;
 
-import org.junit.runners.Parameterized.Parameters;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import com.github.jknack.handlebars.Lambda;
 import com.github.jknack.handlebars.Template;
 
 public class LambdasTest extends SpecTest {
 
-  public LambdasTest(final Spec spec) {
-    super(spec);
+  @ParameterizedTest
+  @MethodSource("data")
+  public void lambda(Spec spec) throws IOException {
+    runSpec(spec);
   }
 
   @Override
@@ -131,8 +134,7 @@ public class LambdasTest extends SpecTest {
     return spec;
   }
 
-  @Parameters
-  public static Collection<Object[]> data() throws IOException {
+  public static List<Spec> data() throws IOException {
     return data("~lambdas.yml");
   }
 }

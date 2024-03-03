@@ -6,12 +6,12 @@
 package com.github.jknack.handlebars.io;
 
 import static java.lang.System.out;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.File;
 import java.util.concurrent.TimeUnit;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.google.common.base.Stopwatch;
 

@@ -5,25 +5,23 @@
  */
 package com.github.jknack.handlebars.springmvc;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.IOException;
 import java.util.Locale;
 
-import org.junit.ComparisonFailure;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.opentest4j.AssertionFailedError;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.servlet.View;
 
 import com.github.jknack.handlebars.Handlebars;
 
-@RunWith(SpringJUnit4ClassRunner.class)
+@ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {HandlebarsApp.class})
 public class HandlebarsViewResolverIntegrationTest {
 
@@ -84,31 +82,41 @@ public class HandlebarsViewResolverIntegrationTest {
     }
   }
 
-  @Test(expected = IOException.class)
+  @Test
   public void failToResolve() throws Exception {
+    assertNotNull(viewResolver);
     try {
-      assertNotNull(viewResolver);
-      viewResolver.setFailOnMissingFile(true);
-      viewResolver.resolveViewName("invalidView", Locale.getDefault());
+      assertThrows(
+          IOException.class,
+          () -> {
+            viewResolver.setFailOnMissingFile(true);
+            viewResolver.resolveViewName("invalidView", Locale.getDefault());
+          });
     } finally {
       viewResolver.setFailOnMissingFile(true);
     }
   }
 
-  @Test(expected = IOException.class)
+  @Test
   public void failToResolveParameterized() throws Exception {
     try {
       assertNotNull(parameterizedHandlebarsViewResolver);
-      parameterizedHandlebarsViewResolver.setFailOnMissingFile(true);
-      parameterizedHandlebarsViewResolver.resolveViewName("invalidView", Locale.getDefault());
+      assertThrows(
+          IOException.class,
+          () -> {
+            parameterizedHandlebarsViewResolver.setFailOnMissingFile(true);
+            parameterizedHandlebarsViewResolver.resolveViewName("invalidView", Locale.getDefault());
+          });
     } finally {
       parameterizedHandlebarsViewResolver.setFailOnMissingFile(true);
     }
   }
 
-  @Test(expected = IllegalStateException.class)
+  @Test
   public void getHandlebarsFail() throws Exception {
-    assertNotNull(new HandlebarsViewResolver().getHandlebars());
+    assertThrows(
+        IllegalStateException.class,
+        () -> assertNotNull(new HandlebarsViewResolver().getHandlebars()));
   }
 
   @Test
@@ -161,7 +169,7 @@ public class HandlebarsViewResolverIntegrationTest {
     try {
       // maven classpath
       assertEquals(expected, output);
-    } catch (ComparisonFailure ex) {
+    } catch (AssertionFailedError ex) {
       try {
         // eclipse classpath
         assertEquals(
@@ -174,7 +182,7 @@ public class HandlebarsViewResolverIntegrationTest {
                 + "  };\n"
                 + "</script>\n",
             output);
-      } catch (ComparisonFailure java18) {
+      } catch (AssertionFailedError java18) {
         // java 1.8
         assertEquals(
             "<script type='text/javascript'>\n"

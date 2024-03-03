@@ -5,10 +5,10 @@
  */
 package com.github.jknack.handlebars;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.mock;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.github.jknack.handlebars.cache.TemplateCache;
 import com.github.jknack.handlebars.io.ClassPathTemplateLoader;

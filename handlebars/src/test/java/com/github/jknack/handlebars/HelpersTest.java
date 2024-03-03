@@ -6,21 +6,17 @@
 package com.github.jknack.handlebars;
 
 import java.io.IOException;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.junit.runners.Parameterized.Parameters;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import mustache.specs.Spec;
 import mustache.specs.SpecTest;
 
 public class HelpersTest extends SpecTest {
-
-  public HelpersTest(final Spec spec) {
-    super(spec);
-  }
 
   @Override
   protected HelperRegistry configure(final Handlebars handlebars) {
@@ -98,8 +94,13 @@ public class HelpersTest extends SpecTest {
     return super.configure(handlebars);
   }
 
-  @Parameters
-  public static Collection<Object[]> data() throws IOException {
+  @ParameterizedTest
+  @MethodSource("data")
+  public void helpers(Spec spec) throws IOException {
+    runSpec(spec);
+  }
+
+  public static List<Spec> data() throws IOException {
     return data(HelpersTest.class, "helpers.yml");
   }
 }

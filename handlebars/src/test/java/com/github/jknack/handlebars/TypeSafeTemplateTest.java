@@ -5,15 +5,13 @@
  */
 package com.github.jknack.handlebars;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.StringContains.containsString;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.IOException;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class TypeSafeTemplateTest extends AbstractTest {
 
@@ -95,17 +93,25 @@ public class TypeSafeTemplateTest extends AbstractTest {
     assertFalse(userTemplate.equals(null));
   }
 
-  @Test(expected = UnsupportedOperationException.class)
+  @Test
   public void noHandlerMethod() throws IOException {
-    UserTemplate userTemplate = compile("{{role}}").as(UserTemplate.class);
+    assertThrows(
+        UnsupportedOperationException.class,
+        () -> {
+          UserTemplate userTemplate = compile("{{role}}").as(UserTemplate.class);
 
-    userTemplate.set(6);
+          userTemplate.set(6);
+        });
   }
 
-  @Test(expected = UnsupportedOperationException.class)
+  @Test
   public void noHandlerMethod2() throws IOException {
-    UserTemplate userTemplate = compile("{{role}}").as(UserTemplate.class);
+    assertThrows(
+        UnsupportedOperationException.class,
+        () -> {
+          UserTemplate userTemplate = compile("{{role}}").as(UserTemplate.class);
 
-    userTemplate.set();
+          userTemplate.set();
+        });
   }
 }

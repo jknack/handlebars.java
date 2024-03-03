@@ -7,8 +7,8 @@ package com.github.jknack.handlebars.issues;
 
 import java.io.IOException;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.v4Test;
@@ -18,7 +18,7 @@ public class Issue477b extends v4Test {
   private Hash data = null;
   private String expected = null;
 
-  @Before
+  @BeforeEach
   public void init() {
     template = "{{> dude _greeting=\"Hello\"}}";
     data = $("hash", $("name", "Elliot"), "partials", $("dude", "{{_greeting}} {{name}}!"));

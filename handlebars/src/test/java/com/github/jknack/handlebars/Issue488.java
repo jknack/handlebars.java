@@ -8,21 +8,21 @@ package com.github.jknack.handlebars;
 import java.io.IOException;
 import java.util.Locale;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import com.github.jknack.handlebars.helper.I18nHelper;
 
 public class Issue488 extends AbstractTest {
 
-  @Before
+  @BeforeEach
   public void overrideDefaults() {
     I18nHelper.i18n.setDefaultBundle("i488");
     I18nHelper.i18n.setDefaultLocale(Locale.ENGLISH);
   }
 
-  @After
+  @AfterEach
   public void defaults() {
     I18nHelper.i18n.setDefaultBundle("messages");
     I18nHelper.i18n.setDefaultLocale(Locale.getDefault());

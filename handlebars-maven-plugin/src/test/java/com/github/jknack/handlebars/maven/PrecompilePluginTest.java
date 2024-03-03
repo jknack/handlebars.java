@@ -5,8 +5,8 @@
  */
 package com.github.jknack.handlebars.maven;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -18,7 +18,8 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.util.FileUtils;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import com.google.common.collect.Lists;
 
@@ -102,42 +103,54 @@ public class PrecompilePluginTest {
     assertTrue(!new File("target/no-helpers.js").exists());
   }
 
-  @Test(expected = MojoExecutionException.class)
+  @Test
   public void mustFailOnInvalidInputDirectory() throws Exception {
-    PrecompilePlugin plugin = new PrecompilePlugin();
-    plugin.setPrefix("src/test/resources/missing");
-    plugin.setSuffix(".html");
-    plugin.setOutput("target/no-helpers.js");
-    plugin.setProject(newProject());
+    Assertions.assertThrows(
+        MojoExecutionException.class,
+        () -> {
+          PrecompilePlugin plugin = new PrecompilePlugin();
+          plugin.setPrefix("src/test/resources/missing");
+          plugin.setSuffix(".html");
+          plugin.setOutput("target/no-helpers.js");
+          plugin.setProject(newProject());
 
-    plugin.execute();
+          plugin.execute();
+        });
   }
 
-  @Test(expected = MojoExecutionException.class)
+  @Test
   public void mustFailOnMissingFile() throws Exception {
-    PrecompilePlugin plugin = new PrecompilePlugin();
-    plugin.setPrefix("src/test/resources/ioexception");
-    plugin.setSuffix(".html");
-    plugin.setOutput("target/no-helpers.js");
-    plugin.setProject(newProject());
+    Assertions.assertThrows(
+        MojoExecutionException.class,
+        () -> {
+          PrecompilePlugin plugin = new PrecompilePlugin();
+          plugin.setPrefix("src/test/resources/ioexception");
+          plugin.setSuffix(".html");
+          plugin.setOutput("target/no-helpers.js");
+          plugin.setProject(newProject());
 
-    plugin.execute();
+          plugin.execute();
+        });
   }
 
-  @Test(expected = MojoFailureException.class)
+  @Test
   public void mustFailOnUnExpectedException() throws Exception {
-    MavenProject project = mock(MavenProject.class);
-    when(project.getRuntimeClasspathElements())
-        .thenThrow(new DependencyResolutionRequiredException(null));
+    Assertions.assertThrows(
+        MojoFailureException.class,
+        () -> {
+          MavenProject project = mock(MavenProject.class);
+          when(project.getRuntimeClasspathElements())
+              .thenThrow(new DependencyResolutionRequiredException(null));
 
-    PrecompilePlugin plugin = new PrecompilePlugin();
-    plugin.setPrefix("src/test/resources/no templates");
-    plugin.setSuffix(".html");
-    plugin.setOutput("target/no-helpers.js");
-    plugin.setProject(project);
-    plugin.setHandlebarsJsFile("/handlebars-v4.7.7.js");
+          PrecompilePlugin plugin = new PrecompilePlugin();
+          plugin.setPrefix("src/test/resources/no templates");
+          plugin.setSuffix(".html");
+          plugin.setOutput("target/no-helpers.js");
+          plugin.setProject(project);
+          plugin.setHandlebarsJsFile("/handlebars-v4.7.7.js");
 
-    plugin.execute();
+          plugin.execute();
+        });
   }
 
   @Test
@@ -162,9 +175,9 @@ public class PrecompilePluginTest {
     withRT.execute();
 
     assertTrue(
-        "File with runtime must be larger",
         FileUtils.fileRead("target/without-rt-helpers.js").length()
-            < FileUtils.fileRead("target/with-rt-helpers.js").length());
+            < FileUtils.fileRead("target/with-rt-helpers.js").length(),
+        "File with runtime must be larger");
   }
 
   @Test
@@ -188,9 +201,9 @@ public class PrecompilePluginTest {
     withRT.execute();
 
     assertTrue(
-        "Normal file must be larger than minimized",
         FileUtils.fileRead("target/helpers-normal.js").length()
-            > FileUtils.fileRead("target/helpers.min.js").length());
+            > FileUtils.fileRead("target/helpers.min.js").length(),
+        "Normal file must be larger than minimized");
   }
 
   @Test

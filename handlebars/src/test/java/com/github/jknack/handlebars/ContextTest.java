@@ -5,13 +5,12 @@
  */
 package com.github.jknack.handlebars;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit test for {@link Context}.
@@ -60,9 +59,9 @@ public class ContextTest {
     assertEquals("Handlebars", child.get("name"));
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test
   public void nullParent() {
-    Context.newContext(null, new Object());
+    assertThrows(NullPointerException.class, () -> Context.newContext(null, new Object()));
   }
 
   @Test

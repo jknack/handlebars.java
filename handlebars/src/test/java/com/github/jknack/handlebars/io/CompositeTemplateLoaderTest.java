@@ -5,15 +5,13 @@
  */
 package com.github.jknack.handlebars.io;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Iterator;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.github.jknack.handlebars.Handlebars;
 
@@ -71,14 +69,14 @@ public class CompositeTemplateLoaderTest {
             == 0);
   }
 
-  @Test(expected = UnsupportedOperationException.class)
+  @Test
   public void getPrefix() throws IOException {
-    loader.getPrefix();
+    assertThrows(UnsupportedOperationException.class, () -> loader.getPrefix());
   }
 
-  @Test(expected = UnsupportedOperationException.class)
+  @Test
   public void getSuffix() throws IOException {
-    loader.getSuffix();
+    assertThrows(UnsupportedOperationException.class, () -> loader.getSuffix());
   }
 
   @Test

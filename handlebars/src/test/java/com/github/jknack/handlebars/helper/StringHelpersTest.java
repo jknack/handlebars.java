@@ -22,8 +22,8 @@ import static com.github.jknack.handlebars.helper.StringHelpers.substring;
 import static com.github.jknack.handlebars.helper.StringHelpers.upper;
 import static com.github.jknack.handlebars.helper.StringHelpers.wordWrap;
 import static com.github.jknack.handlebars.helper.StringHelpers.yesno;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -35,7 +35,7 @@ import static org.mockito.Mockito.when;
 import java.io.IOException;
 import java.util.*;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.github.jknack.handlebars.AbstractTest;
 import com.github.jknack.handlebars.Context;

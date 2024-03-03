@@ -5,22 +5,17 @@
  */
 package mustache.specs;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assumptions.abort;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.ComparisonFailure;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.*;
 import org.yaml.snakeyaml.TypeDescription;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
@@ -32,7 +27,6 @@ import com.github.jknack.handlebars.Template;
 import com.github.jknack.handlebars.custom.Blog;
 import com.github.jknack.handlebars.custom.Comment;
 
-@RunWith(SpecRunner.class)
 public abstract class SpecTest {
 
   private static class Report {
@@ -58,26 +52,19 @@ public abstract class SpecTest {
 
   private static long count;
 
-  private Spec spec;
-
-  public SpecTest(final Spec spec) {
-    this.spec = spec;
-  }
-
-  @BeforeClass
+  @BeforeAll
   public static void onStart() {
     start = System.currentTimeMillis();
   }
 
-  @AfterClass
+  @AfterAll
   public static void onFinish() {
     long end = System.currentTimeMillis();
     System.out.printf("Number of executions: %s\n", count);
     System.out.printf("Total Time: %sms\n", end - start);
   }
 
-  @Test
-  public void run() throws HandlebarsException, IOException {
+  public void runSpec(Spec spec) throws HandlebarsException, IOException {
     if (!skip(spec)) {
       run(alter(spec));
     } else {
@@ -85,11 +72,11 @@ public abstract class SpecTest {
       report.header(80);
       report.append("Skipping Test: %s", spec.id());
       report.header(80);
-      throw new SkipTestException(spec.name());
+      abort(spec.name());
     }
   }
 
-  public static Collection<Object[]> data(final String filename) throws IOException {
+  public static List<Spec> data(final String filename) throws IOException {
     return data(SpecTest.class, filename);
   }
 
@@ -98,8 +85,7 @@ public abstract class SpecTest {
   }
 
   @SuppressWarnings("unchecked")
-  public static Collection<Object[]> data(final Class<?> loader, final String filename)
-      throws IOException {
+  public static List<Spec> data(final Class<?> loader, final String filename) throws IOException {
     Constructor constructor = new Constructor();
     constructor.addTypeDescription(new TypeDescription(Blog.class, "!blog"));
     constructor.addTypeDescription(new TypeDescription(Comment.class, "!comment"));
@@ -112,10 +98,10 @@ public abstract class SpecTest {
     Map<String, Object> data = (Map<String, Object>) yaml.load(input);
     List<Map<String, Object>> tests = (List<Map<String, Object>>) data.get("tests");
     int number = 0;
-    Collection<Object[]> dataset = new ArrayList<>();
+    List<Spec> dataset = new ArrayList<>();
     for (Map<String, Object> test : tests) {
       test.put("number", number++);
-      dataset.add(new Object[] {new Spec(test)});
+      dataset.add(new Spec(test));
     }
     return dataset;
   }
@@ -162,9 +148,9 @@ public abstract class SpecTest {
       report.append(output);
     } catch (HandlebarsException ex) {
       Handlebars.error(ex.getMessage());
-    } catch (ComparisonFailure ex) {
+    } catch (Exception ex) {
       report.append("FOUND:");
-      report.append(ex.getActual());
+      report.append(ex.getMessage());
       throw ex;
     } finally {
       report.append("TOTAL    : %sms", total);
@@ -178,11 +164,5 @@ public abstract class SpecTest {
 
   protected HelperRegistry configure(final Handlebars handlebars) {
     return handlebars;
-  }
-
-  @Before
-  public void initJUnit() throws IOException {
-    // Init junit classloader. This reduce the time reported during execution.
-    new Handlebars();
   }
 }

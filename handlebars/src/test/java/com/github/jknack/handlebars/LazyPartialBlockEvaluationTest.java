@@ -5,11 +5,12 @@
  */
 package com.github.jknack.handlebars;
 
-import static junit.framework.TestCase.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.IOException;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class LazyPartialBlockEvaluationTest extends AbstractTest {
   @Override
@@ -35,16 +36,19 @@ public class LazyPartialBlockEvaluationTest extends AbstractTest {
                 "myMoreNestedPartial",
                 myMoreNestedPartial));
     String result = t.apply(null);
-    assertEquals("'CAIhelloIBD' should === '" + result + "': ", "CAIhelloIBD", result);
+    assertEquals("CAIhelloIBD", result, "'CAIhelloIBD' should === '" + result + "': ");
   }
 
-  @Test(expected = HandlebarsException.class)
+  @Test
   public void shouldNotDefineInlinePartialsInPartialBlockCall() throws IOException {
-    // myPartial should not be defined and thus throw a handlebars exception
-    shouldCompileToWithPartials(
-        "{{#> dude}}{{#*inline \"myPartial\"}}success{{/inline}}{{/dude}}",
-        $,
-        $("dude", "{{> myPartial }}"),
-        "");
+    assertThrows(
+        HandlebarsException.class,
+        () ->
+            // myPartial should not be defined and thus throw a handlebars exception
+            shouldCompileToWithPartials(
+                "{{#> dude}}{{#*inline \"myPartial\"}}success{{/inline}}{{/dude}}",
+                $,
+                $("dude", "{{> myPartial }}"),
+                ""));
   }
 }

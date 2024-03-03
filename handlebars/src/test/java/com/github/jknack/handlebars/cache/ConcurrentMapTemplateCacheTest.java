@@ -5,7 +5,8 @@
  */
 package com.github.jknack.handlebars.cache;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.same;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -16,7 +17,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 import org.apache.commons.lang3.tuple.Pair;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.github.jknack.handlebars.Parser;
 import com.github.jknack.handlebars.Template;
@@ -31,9 +32,9 @@ public class ConcurrentMapTemplateCacheTest {
     new ConcurrentMapTemplateCache();
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test
   public void creationWithNullCacheMustFail() throws IOException {
-    new ConcurrentMapTemplateCache(null);
+    assertThrows(NullPointerException.class, () -> new ConcurrentMapTemplateCache(null));
   }
 
   @Test

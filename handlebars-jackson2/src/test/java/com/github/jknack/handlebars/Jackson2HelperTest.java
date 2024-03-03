@@ -12,7 +12,8 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -107,20 +108,24 @@ public class Jackson2HelperTest {
         equalsToStringIgnoringWindowsNewLine("{\"title\":\"First Post\"}"));
   }
 
-  @Test(expected = HandlebarsException.class)
+  @Test
   public void jsonViewNotFound() throws IOException {
-    Handlebars handlebars = new Handlebars();
+    Assertions.assertThrows(
+        HandlebarsException.class,
+        () -> {
+          Handlebars handlebars = new Handlebars();
 
-    ObjectMapper mapper = new ObjectMapper();
-    mapper.configure(MapperFeature.DEFAULT_VIEW_INCLUSION, false);
+          ObjectMapper mapper = new ObjectMapper();
+          mapper.configure(MapperFeature.DEFAULT_VIEW_INCLUSION, false);
 
-    handlebars.registerHelper("@json", new Jackson2Helper(mapper));
+          handlebars.registerHelper("@json", new Jackson2Helper(mapper));
 
-    Template template = handlebars.compileInline("{{@json this view=\"missing.ViewClass\"}}");
+          Template template = handlebars.compileInline("{{@json this view=\"missing.ViewClass\"}}");
 
-    assertThat(
-        template.apply(new Blog("First Post", "...")),
-        equalsToStringIgnoringWindowsNewLine("{\"title\":\"First Post\"}"));
+          assertThat(
+              template.apply(new Blog("First Post", "...")),
+              equalsToStringIgnoringWindowsNewLine("{\"title\":\"First Post\"}"));
+        });
   }
 
   @Test

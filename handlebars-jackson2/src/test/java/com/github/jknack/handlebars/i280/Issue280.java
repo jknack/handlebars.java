@@ -5,7 +5,7 @@
  */
 package com.github.jknack.handlebars.i280;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;

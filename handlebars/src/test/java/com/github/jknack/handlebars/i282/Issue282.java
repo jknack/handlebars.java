@@ -5,9 +5,11 @@
  */
 package com.github.jknack.handlebars.i282;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import java.io.IOException;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.github.jknack.handlebars.AbstractTest;
 import com.github.jknack.handlebars.HandlebarsException;
@@ -16,7 +18,7 @@ import com.github.jknack.handlebars.Options;
 
 public class Issue282 extends AbstractTest {
 
-  @Test(expected = HandlebarsException.class)
+  @Test
   public void missingSubexpression() throws Exception {
     Hash helpers =
         $(
@@ -27,7 +29,8 @@ public class Issue282 extends AbstractTest {
                 return context.toString();
               }
             });
-    shouldCompileTo("{{vowels (a)}}", $, helpers, "");
+    assertThrows(
+        HandlebarsException.class, () -> shouldCompileTo("{{vowels (a)}}", $, helpers, ""));
   }
 
   @Test

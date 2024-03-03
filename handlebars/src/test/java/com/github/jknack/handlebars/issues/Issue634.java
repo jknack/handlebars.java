@@ -5,10 +5,10 @@
  */
 package com.github.jknack.handlebars.issues;
 
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.github.jknack.handlebars.HandlebarsException;
 import com.github.jknack.handlebars.v4Test;

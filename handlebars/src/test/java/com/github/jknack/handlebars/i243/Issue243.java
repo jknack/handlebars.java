@@ -7,7 +7,7 @@ package com.github.jknack.handlebars.i243;
 
 import java.io.IOException;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.github.jknack.handlebars.AbstractTest;
 import com.github.jknack.handlebars.Handlebars;

@@ -5,11 +5,12 @@
  */
 package com.github.jknack.handlebars;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.IOException;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class MissingValueResolverTest {
 
@@ -32,7 +33,7 @@ public class MissingValueResolverTest {
     assertEquals("(none)", handlebars.compileInline("{{missingVar}}").apply(hash));
   }
 
-  @Test(expected = HandlebarsException.class)
+  @Test
   public void throwExceptionOnMissingValue() throws IOException {
     final Object hash = new Object();
     Handlebars handlebars =
@@ -46,6 +47,7 @@ public class MissingValueResolverTest {
                   }
                 });
 
-    handlebars.compileInline("{{missingVar}}").apply(hash);
+    assertThrows(
+        HandlebarsException.class, () -> handlebars.compileInline("{{missingVar}}").apply(hash));
   }
 }

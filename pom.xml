@@ -122,11 +122,23 @@
         <scope>test</scope>
       </dependency>
 
+      <!-- Test dependencies -->
       <dependency>
-        <groupId>junit</groupId>
-        <artifactId>junit</artifactId>
-        <scope>test</scope>
-        <version>4.13.2</version>
+        <groupId>org.junit.jupiter</groupId>
+        <artifactId>junit-jupiter-api</artifactId>
+        <version>${junit.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.junit.jupiter</groupId>
+        <artifactId>junit-jupiter-params</artifactId>
+        <version>${junit.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.junit.jupiter</groupId>
+        <artifactId>junit-jupiter-engine</artifactId>
+        <version>${junit.version}</version>
       </dependency>
 
       <dependency>
@@ -435,5 +447,6 @@
     <maven.compiler.target>17</maven.compiler.target>
     <pre-commit-hook>src${file.separator}etc${file.separator}formatter.sh</pre-commit-hook>
     <mustache-specs>handlebars${file.separator}src${file.separator}test${file.separator}resources${file.separator}mustache</mustache-specs>
+    <junit.version>5.10.2</junit.version>
   </properties>
 </project>

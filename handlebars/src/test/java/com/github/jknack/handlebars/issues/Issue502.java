@@ -5,7 +5,7 @@
  */
 package com.github.jknack.handlebars.issues;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -14,7 +14,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.github.jknack.handlebars.Handlebars;
 

@@ -5,11 +5,12 @@
  */
 package com.github.jknack.handlebars;
 
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.IOException;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Demostrate error reporting. It isn't a test.
@@ -60,109 +61,109 @@ public class ParsingErrorTest extends AbstractTest {
           "idx4",
           "{{list.[}}");
 
-  @Test(expected = HandlebarsException.class)
+  @Test
   public void correctPath() throws IOException {
-    parse("inbox/inbox");
+    assertThrows(HandlebarsException.class, () -> parse("inbox/inbox"));
   }
 
-  @Test(expected = HandlebarsException.class)
+  @Test
   public void missingPartial() throws IOException {
-    parse("default");
+    assertThrows(HandlebarsException.class, () -> parse("default"));
   }
 
-  @Test(expected = HandlebarsException.class)
+  @Test
   public void invalidChar() throws IOException {
-    parse("invalidChar");
+    assertThrows(HandlebarsException.class, () -> parse("invalidChar"));
   }
 
-  @Test(expected = HandlebarsException.class)
+  @Test
   public void level1() throws IOException {
-    parse("root");
+    assertThrows(HandlebarsException.class, () -> parse("root"));
   }
 
-  @Test(expected = HandlebarsException.class)
+  @Test
   public void level2() throws IOException {
-    parse("deep");
+    assertThrows(HandlebarsException.class, () -> parse("deep"));
   }
 
-  @Test(expected = HandlebarsException.class)
+  @Test
   public void block() throws IOException {
-    parse("block");
+    assertThrows(HandlebarsException.class, () -> parse("block"));
   }
 
-  @Test(expected = HandlebarsException.class)
+  @Test
   public void unbalancedDelim() throws IOException {
-    parse("unbalancedDelim");
+    assertThrows(HandlebarsException.class, () -> parse("unbalancedDelim"));
   }
 
-  @Test(expected = HandlebarsException.class)
+  @Test
   public void delim() throws IOException {
-    parse("delim");
+    assertThrows(HandlebarsException.class, () -> parse("delim"));
   }
 
-  @Test(expected = HandlebarsException.class)
+  @Test
   public void paramOutOfOrder() throws IOException {
-    parse("paramOrder");
+    assertThrows(HandlebarsException.class, () -> parse("paramOrder"));
   }
 
-  @Test(expected = HandlebarsException.class)
+  @Test
   public void iblock() throws IOException {
-    parse("iblock");
+    assertThrows(HandlebarsException.class, () -> parse("iblock"));
   }
 
-  @Test(expected = HandlebarsException.class)
+  @Test
   public void tvar() throws IOException {
-    parse("{{{tvar");
+    assertThrows(HandlebarsException.class, () -> parse("{{{tvar"));
   }
 
-  @Test(expected = HandlebarsException.class)
+  @Test
   public void tvarDelim() throws IOException {
-    parse("{{=** **=}}**{tvar");
+    assertThrows(HandlebarsException.class, () -> parse("{{=** **=}}**{tvar"));
   }
 
-  @Test(expected = HandlebarsException.class)
+  @Test
   public void ampvar() throws IOException {
-    parse("{{&tvar");
+    assertThrows(HandlebarsException.class, () -> parse("{{&tvar"));
   }
 
-  @Test(expected = HandlebarsException.class)
+  @Test
   public void ampvarDelim() throws IOException {
-    parse("{{=** **=}}**&tvar");
+    assertThrows(HandlebarsException.class, () -> parse("{{=** **=}}**&tvar"));
   }
 
-  @Test(expected = HandlebarsException.class)
+  @Test
   public void missingId() throws IOException {
-    parse("{{is");
+    assertThrows(HandlebarsException.class, () -> parse("{{is"));
   }
 
-  @Test(expected = HandlebarsException.class)
+  @Test
   public void partialName() throws IOException {
-    parse("partialName");
+    assertThrows(HandlebarsException.class, () -> parse("partialName"));
   }
 
-  @Test(expected = HandlebarsException.class)
+  @Test
   public void partialName2() throws IOException {
-    parse("partialName2");
+    assertThrows(HandlebarsException.class, () -> parse("partialName2"));
   }
 
-  @Test(expected = HandlebarsException.class)
+  @Test
   public void idx1() throws IOException {
-    parse("idx1");
+    assertThrows(HandlebarsException.class, () -> parse("idx1"));
   }
 
-  @Test(expected = HandlebarsException.class)
+  @Test
   public void idx2() throws IOException {
-    parse("idx2");
+    assertThrows(HandlebarsException.class, () -> parse("idx2"));
   }
 
-  @Test(expected = HandlebarsException.class)
+  @Test
   public void idx3() throws IOException {
-    parse("idx3");
+    assertThrows(HandlebarsException.class, () -> parse("idx3"));
   }
 
-  @Test(expected = HandlebarsException.class)
+  @Test
   public void idx4() throws IOException {
-    parse("idx4");
+    assertThrows(HandlebarsException.class, () -> parse("idx4"));
   }
 
   private void parse(final String candidate) throws IOException {

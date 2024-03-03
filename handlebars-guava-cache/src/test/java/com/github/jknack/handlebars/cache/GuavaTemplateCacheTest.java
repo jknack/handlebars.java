@@ -5,7 +5,7 @@
  */
 package com.github.jknack.handlebars.cache;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.same;
@@ -17,7 +17,8 @@ import java.io.IOException;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import com.github.jknack.handlebars.HandlebarsException;
 import com.github.jknack.handlebars.Parser;
@@ -108,50 +109,63 @@ public class GuavaTemplateCacheTest {
   }
 
   @SuppressWarnings("unchecked")
-  @Test(expected = IllegalStateException.class)
+  @Test
   public void executionExceptionWithRuntimeException() throws IOException, ExecutionException {
-    TemplateSource source = mock(TemplateSource.class);
+    Assertions.assertThrows(
+        IllegalStateException.class,
+        () -> {
+          TemplateSource source = mock(TemplateSource.class);
 
-    Parser parser = mock(Parser.class);
+          Parser parser = mock(Parser.class);
 
-    Cache<TemplateSource, Template> cache = mock(Cache.class);
-    when(cache.get(eq(source), any(Callable.class)))
-        .thenThrow(new ExecutionException(new IllegalStateException()));
+          Cache<TemplateSource, Template> cache = mock(Cache.class);
+          when(cache.get(eq(source), any(Callable.class)))
+              .thenThrow(new ExecutionException(new IllegalStateException()));
 
-    new GuavaTemplateCache(cache).get(source, parser);
+          new GuavaTemplateCache(cache).get(source, parser);
 
-    verify(cache).get(eq(source), any(Callable.class));
+          verify(cache).get(eq(source), any(Callable.class));
+        });
   }
 
   @SuppressWarnings("unchecked")
-  @Test(expected = Error.class)
+  @Test
   public void executionExceptionWithError() throws IOException, ExecutionException {
-    TemplateSource source = mock(TemplateSource.class);
+    Assertions.assertThrows(
+        Error.class,
+        () -> {
+          TemplateSource source = mock(TemplateSource.class);
 
-    Parser parser = mock(Parser.class);
+          Parser parser = mock(Parser.class);
 
-    Cache<TemplateSource, Template> cache = mock(Cache.class);
-    when(cache.get(eq(source), any(Callable.class))).thenThrow(new ExecutionException(new Error()));
+          Cache<TemplateSource, Template> cache = mock(Cache.class);
+          when(cache.get(eq(source), any(Callable.class)))
+              .thenThrow(new ExecutionException(new Error()));
 
-    new GuavaTemplateCache(cache).get(source, parser);
+          new GuavaTemplateCache(cache).get(source, parser);
 
-    verify(cache).get(eq(source), any(Callable.class));
+          verify(cache).get(eq(source), any(Callable.class));
+        });
   }
 
   @SuppressWarnings("unchecked")
-  @Test(expected = HandlebarsException.class)
+  @Test
   public void executionExceptionWithCheckedException() throws IOException, ExecutionException {
-    TemplateSource source = mock(TemplateSource.class);
+    Assertions.assertThrows(
+        HandlebarsException.class,
+        () -> {
+          TemplateSource source = mock(TemplateSource.class);
 
-    Parser parser = mock(Parser.class);
+          Parser parser = mock(Parser.class);
 
-    Cache<TemplateSource, Template> cache = mock(Cache.class);
-    when(cache.get(eq(source), any(Callable.class)))
-        .thenThrow(new ExecutionException(new IOException()));
+          Cache<TemplateSource, Template> cache = mock(Cache.class);
+          when(cache.get(eq(source), any(Callable.class)))
+              .thenThrow(new ExecutionException(new IOException()));
 
-    new GuavaTemplateCache(cache).get(source, parser);
+          new GuavaTemplateCache(cache).get(source, parser);
 
-    verify(cache).get(eq(source), any(Callable.class));
+          verify(cache).get(eq(source), any(Callable.class));
+        });
   }
 
   private TemplateSource source(final String filename) throws IOException {

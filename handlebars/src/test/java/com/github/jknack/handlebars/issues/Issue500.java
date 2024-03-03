@@ -8,8 +8,8 @@ package com.github.jknack.handlebars.issues;
 import java.io.IOException;
 import java.util.Arrays;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.v4Test;
@@ -29,7 +29,7 @@ public class Issue500 extends v4Test {
               + "return newArr;\n"
               + "});");
     } catch (Exception ex) {
-      Assert.fail(ex.getMessage());
+      Assertions.fail(ex.getMessage());
     }
   }
 

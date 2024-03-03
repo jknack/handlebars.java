@@ -5,9 +5,10 @@
  */
 package com.github.jknack.handlebars.internal;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.github.jknack.handlebars.Handlebars;
 
@@ -29,8 +30,8 @@ public class TextTest {
     assertEquals("abc", new Text(new Handlebars(), "abc").text());
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test
   public void newTextFail() {
-    new Text(new Handlebars(), null);
+    assertThrows(NullPointerException.class, () -> new Text(new Handlebars(), null));
   }
 }

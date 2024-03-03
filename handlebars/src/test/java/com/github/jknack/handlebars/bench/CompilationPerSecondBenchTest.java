@@ -5,14 +5,15 @@
  */
 package com.github.jknack.handlebars.bench;
 
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
+
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.Assume;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.MapTemplateLoader;
@@ -21,9 +22,9 @@ import com.github.jknack.handlebars.internal.Files;
 
 public class CompilationPerSecondBenchTest {
 
-  @Before
+  @BeforeEach
   public void setup() {
-    Assume.assumeTrue(Boolean.valueOf(System.getProperty("run.bench")));
+    assumeTrue(Boolean.valueOf(System.getProperty("run.bench")));
   }
 
   @Test

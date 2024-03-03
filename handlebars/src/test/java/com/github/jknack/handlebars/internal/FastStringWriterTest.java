@@ -5,13 +5,14 @@
  */
 package com.github.jknack.handlebars.internal;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.IOException;
 import java.io.Writer;
 
 import org.apache.commons.io.IOUtils;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class FastStringWriterTest {
 
@@ -55,11 +56,15 @@ public class FastStringWriterTest {
     IOUtils.closeQuietly(writer);
   }
 
-  @Test(expected = IndexOutOfBoundsException.class)
+  @Test
   public void writeCharArrayWithBadOffsetAndLength() throws IOException {
-    Writer writer = new FastStringWriter();
-    writer.write(new char[] {'h', 'e', 'l', 'l', 'o'}, -1, 3);
-    IOUtils.closeQuietly(writer);
+    assertThrows(
+        IndexOutOfBoundsException.class,
+        () -> {
+          Writer writer = new FastStringWriter();
+          writer.write(new char[] {'h', 'e', 'l', 'l', 'o'}, -1, 3);
+          IOUtils.closeQuietly(writer);
+        });
   }
 
   @Test

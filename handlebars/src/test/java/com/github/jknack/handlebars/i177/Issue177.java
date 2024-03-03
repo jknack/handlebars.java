@@ -11,8 +11,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import com.github.jknack.handlebars.AbstractTest;
 
@@ -63,7 +63,7 @@ public class Issue177 extends AbstractTest {
   // model map
   Map<String, Object> modelMap;
 
-  @Before
+  @BeforeEach
   public void before() {
     // model map
     modelMap = new HashMap<>();

@@ -5,7 +5,7 @@
  */
 package com.github.jknack.handlebars;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.IOException;
 import java.util.LinkedHashMap;
@@ -117,7 +117,7 @@ public class AbstractTest {
       throws IOException {
     Template t = compile(template, helpers, partials);
     String result = t.apply(configureContext(context));
-    assertEquals("'" + expected + "' should === '" + result + "': " + message, expected, result);
+    assertEquals(expected, result, "'" + expected + "' should === '" + result + "': " + message);
   }
 
   protected Object configureContext(final Object context) {

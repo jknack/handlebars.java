@@ -5,13 +5,13 @@
  */
 package handlebarsjs.spec;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.IOException;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.github.jknack.handlebars.AbstractTest;
 import com.github.jknack.handlebars.Context;
@@ -201,7 +201,7 @@ public class BlockHelperMissingTest extends AbstractTest {
             });
     Template template = compile(string, helpers);
     String result = template.apply($("bar", $("baz", "hello world")));
-    assertEquals("data variables are inherited downstream", "hello world", result);
+    assertEquals("hello world", result, "data variables are inherited downstream");
   }
 
   @Test
@@ -219,7 +219,7 @@ public class BlockHelperMissingTest extends AbstractTest {
             });
     Template template = compile(string, helpers, partials);
     String result = template.apply(Context.newContext($("noun", "cat")).data("adjective", "happy"));
-    assertEquals("Data output by helper inside partial", "happy cat", result);
+    assertEquals("happy cat", result, "Data output by helper inside partial");
   }
 
   @Test
@@ -333,7 +333,7 @@ public class BlockHelperMissingTest extends AbstractTest {
                 .data("adjective", "happy")
                 .data("accessData", "#win"));
 
-    assertEquals("Overriden data output by helper", "sad world?", result);
+    assertEquals("sad world?", result, "Overriden data output by helper");
   }
 
   @Test
@@ -364,7 +364,7 @@ public class BlockHelperMissingTest extends AbstractTest {
                 .data("adjective", "happy")
                 .data("accessData", "#win"));
 
-    assertEquals("Overriden data output by helper", "sad world?", result);
+    assertEquals("sad world?", result, "Overriden data output by helper");
   }
 
   @Test

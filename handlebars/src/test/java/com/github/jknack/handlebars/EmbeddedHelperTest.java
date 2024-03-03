@@ -7,7 +7,7 @@ package com.github.jknack.handlebars;
 
 import java.io.IOException;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class EmbeddedHelperTest extends AbstractTest {
 

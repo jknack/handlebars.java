@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.github.jknack.handlebars.v4Test;
 

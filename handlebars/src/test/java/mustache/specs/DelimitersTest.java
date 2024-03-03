@@ -6,18 +6,20 @@
 package mustache.specs;
 
 import java.io.IOException;
-import java.util.Collection;
+import java.util.List;
 
-import org.junit.runners.Parameterized.Parameters;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
 public class DelimitersTest extends SpecTest {
 
-  public DelimitersTest(final Spec spec) {
-    super(spec);
+  @ParameterizedTest
+  @MethodSource("data")
+  public void delimiters(Spec spec) throws IOException {
+    runSpec(spec);
   }
 
-  @Parameters
-  public static Collection<Object[]> data() throws IOException {
+  public static List<Spec> data() throws IOException {
     return data("delimiters.yml");
   }
 }

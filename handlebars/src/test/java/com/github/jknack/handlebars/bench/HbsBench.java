@@ -5,13 +5,14 @@
  */
 package com.github.jknack.handlebars.bench;
 
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
+
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.Assume;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import com.github.jknack.handlebars.Handlebars.SafeString;
 import com.github.jknack.handlebars.Helper;
@@ -26,9 +27,9 @@ public class HbsBench {
 
   private Template template;
 
-  @Before
+  @BeforeEach
   public void setup() throws IOException {
-    Assume.assumeTrue(Boolean.valueOf(System.getProperty("run.bench")));
+    assumeTrue(Boolean.valueOf(System.getProperty("run.bench")));
 
     template =
         new com.github.jknack.handlebars.Handlebars(new ClassPathTemplateLoader("/", ".html"))

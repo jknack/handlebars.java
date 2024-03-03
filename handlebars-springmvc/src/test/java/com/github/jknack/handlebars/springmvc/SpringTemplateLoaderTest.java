@@ -5,11 +5,12 @@
  */
 package com.github.jknack.handlebars.springmvc;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.IOException;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.core.io.DefaultResourceLoader;
 
 import com.github.jknack.handlebars.io.TemplateSource;
@@ -25,8 +26,10 @@ public class SpringTemplateLoaderTest {
     assertNotNull(source);
   }
 
-  @Test(expected = IOException.class)
+  @Test
   public void fileNotFound() throws IOException {
-    new SpringTemplateLoader(new DefaultResourceLoader()).sourceAt("missingFile");
+    assertThrows(
+        IOException.class,
+        () -> new SpringTemplateLoader(new DefaultResourceLoader()).sourceAt("missingFile"));
   }
 }

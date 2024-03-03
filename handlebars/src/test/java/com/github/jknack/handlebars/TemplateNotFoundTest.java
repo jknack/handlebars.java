@@ -5,22 +5,31 @@
  */
 package com.github.jknack.handlebars;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import org.junit.Test;
+import java.io.FileNotFoundException;
+
+import org.junit.jupiter.api.Test;
 
 public class TemplateNotFoundTest {
 
-  @Test(expected = FileNotFoundException.class)
-  public void templateNotFound() throws IOException {
-    Handlebars handlebars = new Handlebars();
-    handlebars.compile("template.hbs");
+  @Test
+  public void templateNotFound() {
+    assertThrows(
+        FileNotFoundException.class,
+        () -> {
+          Handlebars handlebars = new Handlebars();
+          handlebars.compile("template.hbs");
+        });
   }
 
-  @Test(expected = HandlebarsException.class)
-  public void partialNotFound() throws IOException {
-    Handlebars handlebars = new Handlebars();
-    handlebars.compileInline("{{> text}}").apply(null);
+  @Test
+  public void partialNotFound() {
+    assertThrows(
+        HandlebarsException.class,
+        () -> {
+          Handlebars handlebars = new Handlebars();
+          handlebars.compileInline("{{> text}}").apply(null);
+        });
   }
 }

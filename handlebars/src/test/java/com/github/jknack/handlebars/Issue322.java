@@ -5,11 +5,12 @@
  */
 package com.github.jknack.handlebars;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.IOException;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class Issue322 extends AbstractTest {
 
@@ -38,11 +39,14 @@ public class Issue322 extends AbstractTest {
         compile("Hi {{var}}!").toJavaScript());
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void notFound() throws IOException {
-    new Handlebars()
-        .handlebarsJsFile("/handlebars-not-found.js")
-        .compileInline("Hi {{var}}!")
-        .toJavaScript();
+    assertThrows(
+        IllegalArgumentException.class,
+        () ->
+            new Handlebars()
+                .handlebarsJsFile("/handlebars-not-found.js")
+                .compileInline("Hi {{var}}!")
+                .toJavaScript());
   }
 }

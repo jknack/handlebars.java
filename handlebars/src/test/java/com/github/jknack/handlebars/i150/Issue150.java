@@ -5,7 +5,9 @@
  */
 package com.github.jknack.handlebars.i150;
 
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import org.junit.jupiter.api.Test;
 
 import com.github.jknack.handlebars.AbstractTest;
 import com.github.jknack.handlebars.HandlebarsException;
@@ -22,9 +24,11 @@ public class Issue150 extends AbstractTest {
     shouldCompileTo("{{foo.[0]}}", $("foo", new Object[] {"bar"}), "bar");
   }
 
-  @Test(expected = HandlebarsException.class)
+  @Test
   public void invalidBracketSyntax() throws Exception {
-    shouldCompileTo("{{foo[0]}}", $("foo", new Object[] {"bar"}), "bar");
+    assertThrows(
+        HandlebarsException.class,
+        () -> shouldCompileTo("{{foo[0]}}", $("foo", new Object[] {"bar"}), "bar"));
   }
 
   @Test

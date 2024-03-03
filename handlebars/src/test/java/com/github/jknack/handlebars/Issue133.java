@@ -8,7 +8,7 @@ package com.github.jknack.handlebars;
 import java.io.IOException;
 
 import org.apache.commons.lang3.StringUtils;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class Issue133 extends AbstractTest {
 

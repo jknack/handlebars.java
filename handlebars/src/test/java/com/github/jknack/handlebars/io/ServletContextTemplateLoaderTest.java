@@ -5,7 +5,8 @@
  */
 package com.github.jknack.handlebars.io;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -17,7 +18,7 @@ import java.io.IOException;
 
 import javax.servlet.ServletContext;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class ServletContextTemplateLoaderTest {
   @Test
@@ -57,15 +58,20 @@ public class ServletContextTemplateLoaderTest {
     verify(servletContext).getResource(anyString());
   }
 
-  @Test(expected = FileNotFoundException.class)
+  @Test
   public void fileNotFound() throws IOException {
-    ServletContext servletContext = mock(ServletContext.class);
-    expectGetResource(servletContext, "src/test/resources");
+    assertThrows(
+        FileNotFoundException.class,
+        () -> {
+          ServletContext servletContext = mock(ServletContext.class);
+          expectGetResource(servletContext, "src/test/resources");
 
-    TemplateSource source = new ServletContextTemplateLoader(servletContext).sourceAt("notExist");
-    assertNotNull(source);
+          TemplateSource source =
+              new ServletContextTemplateLoader(servletContext).sourceAt("notExist");
+          assertNotNull(source);
 
-    verify(servletContext).getResource(anyString());
+          verify(servletContext).getResource(anyString());
+        });
   }
 
   @Test

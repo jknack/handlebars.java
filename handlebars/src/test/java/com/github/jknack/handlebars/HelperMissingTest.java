@@ -5,9 +5,11 @@
  */
 package com.github.jknack.handlebars;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import java.io.IOException;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class HelperMissingTest extends AbstractTest {
 
@@ -68,15 +70,22 @@ public class HelperMissingTest extends AbstractTest {
    *
    * @throws IOException
    */
-  @Test(expected = HandlebarsException.class)
-  public void helperMissingFail() throws IOException {
-    shouldCompileTo("{{missing x}}", new Object(), "must fail");
+  @Test
+  public void helperMissingFail() {
+    assertThrows(
+        HandlebarsException.class,
+        () -> shouldCompileTo("{{missing x}}", new Object(), "must fail"));
   }
 
-  @Test(expected = HandlebarsException.class)
-  public void blockHelperMissingFail() throws IOException {
-    shouldCompileTo(
-        "{{#missing x}}This is a mustache fallback{{/missing}}", new Object(), "must fail");
+  @Test
+  public void blockHelperMissingFail() {
+    assertThrows(
+        HandlebarsException.class,
+        () ->
+            shouldCompileTo(
+                "{{#missing x}}This is a mustache fallback{{/missing}}",
+                new Object(),
+                "must fail"));
   }
 
   @Test

@@ -5,9 +5,11 @@
  */
 package handlebarsjs.spec;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import java.io.IOException;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.github.jknack.handlebars.AbstractTest;
 import com.github.jknack.handlebars.HandlebarsException;
@@ -44,9 +46,10 @@ public class StringLiteralParametersTest extends AbstractTest {
         "template with a simple String literal");
   }
 
-  @Test(expected = HandlebarsException.class)
+  @Test
   public void usingQuoteInTheMiddleOfParameterRaisesAnError() throws IOException {
-    shouldCompileTo("Message: {{hello wo\"rld\"}}", $, null);
+    assertThrows(
+        HandlebarsException.class, () -> shouldCompileTo("Message: {{hello wo\"rld\"}}", $, null));
   }
 
   @Test

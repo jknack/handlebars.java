@@ -5,11 +5,12 @@
  */
 package com.github.jknack.handlebars;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.IOException;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class InlinePartialsTest extends AbstractTest {
 
@@ -35,12 +36,15 @@ public class InlinePartialsTest extends AbstractTest {
         "success");
   }
 
-  @Test(expected = HandlebarsException.class)
+  @Test
   public void shouldDefineInlinePartialsForBlockErr() throws IOException {
-    shouldCompileTo(
-        "{{#with .}}{{#*inline \"myPartial\"}}success{{/inline}}{{/with}}{{> myPartial}}",
-        $,
-        "success");
+    assertThrows(
+        HandlebarsException.class,
+        () ->
+            shouldCompileTo(
+                "{{#with .}}{{#*inline \"myPartial\"}}success{{/inline}}{{/with}}{{> myPartial}}",
+                $,
+                "success"));
   }
 
   @Test

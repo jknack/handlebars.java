@@ -6,11 +6,10 @@
 package mustache.specs;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 
-import org.junit.runners.Parameterized.Parameters;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.HelperRegistry;
@@ -23,10 +22,6 @@ import com.github.jknack.handlebars.TemplateNotFoundTest;
  *   <li>1. Failed Lookup. This tests look for a partial named: 'text', the partial isn't defined
  *       and cannot be loaded. The spec says it should default to an empty string. Handlebars.java
  *       throw an exception if a template cannot be loaed. See {@link TemplateNotFoundTest}.
- *   <li>6. Standalone Line Endings. See {@link PartialsNoSpecTest}.
- *   <li>7. Standalone Without Previous Line. See {@link PartialsNoSpecTest}.
- *   <li>8. Standalone Without Newline. See {@link PartialsNoSpecTest}.
- *   <li>9. Standalone Indentation. See {@link PartialsNoSpecTest}.
  * </ul>
  *
  * @author edgar.espina
@@ -34,14 +29,9 @@ import com.github.jknack.handlebars.TemplateNotFoundTest;
  */
 public class PartialsTest extends SpecTest {
 
-  public PartialsTest(final Spec spec) {
-    super(spec);
-  }
-
   @Override
   protected boolean skip(final Spec spec) {
-    List<Integer> skip = Arrays.asList(1);
-    return skip.contains(spec.number());
+    return spec.number() == 1;
   }
 
   @Override
@@ -50,8 +40,13 @@ public class PartialsTest extends SpecTest {
     return super.configure(handlebars);
   }
 
-  @Parameters
-  public static Collection<Object[]> data() throws IOException {
+  @ParameterizedTest
+  @MethodSource("data")
+  public void partials(Spec spec) throws IOException {
+    runSpec(spec);
+  }
+
+  public static List<Spec> data() throws IOException {
     return data("partials.yml");
   }
 }

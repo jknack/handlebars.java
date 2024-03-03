@@ -5,9 +5,7 @@
  */
 package com.github.jknack.handlebars.cache;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.same;
@@ -25,7 +23,7 @@ import java.util.concurrent.Future;
 
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.github.jknack.handlebars.HandlebarsException;
 import com.github.jknack.handlebars.Parser;
@@ -40,9 +38,9 @@ public class HighConcurrencyTemplateCacheTest {
     new HighConcurrencyTemplateCache();
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test
   public void creationWithNullCacheMustFail() throws IOException {
-    new HighConcurrencyTemplateCache(null);
+    assertThrows(NullPointerException.class, () -> new HighConcurrencyTemplateCache(null));
   }
 
   @Test
@@ -98,36 +96,40 @@ public class HighConcurrencyTemplateCacheTest {
     verify(pair).getValue();
   }
 
-  @Test(expected = Error.class)
+  @Test
   @SuppressWarnings("unchecked")
   public void errorShouldBeReThrow() throws Exception {
-    ConcurrentMap<TemplateSource, Future<Pair<TemplateSource, Template>>> cache =
-        mock(ConcurrentHashMap.class);
+    assertThrows(
+        Error.class,
+        () -> {
+          ConcurrentMap<TemplateSource, Future<Pair<TemplateSource, Template>>> cache =
+              mock(ConcurrentHashMap.class);
 
-    TemplateSource source =
-        new URLTemplateSource("/template.hbs", getClass().getResource("/template.hbs"));
+          TemplateSource source =
+              new URLTemplateSource("/template.hbs", getClass().getResource("/template.hbs"));
 
-    Future<Pair<TemplateSource, Template>> future = mock(Future.class);
-    // 1st try interrupt thread
-    when(cache.get(source)).thenReturn(future);
-    when(future.get()).thenThrow(new Error());
+          Future<Pair<TemplateSource, Template>> future = mock(Future.class);
+          // 1st try interrupt thread
+          when(cache.get(source)).thenReturn(future);
+          when(future.get()).thenThrow(new Error());
 
-    // 2nd success
-    Template template = mock(Template.class);
-    Pair<TemplateSource, Template> pair = mock(Pair.class);
-    when(pair.getLeft()).thenReturn(source);
-    when(pair.getValue()).thenReturn(template);
-    when(future.get()).thenReturn(pair);
+          // 2nd success
+          Template template = mock(Template.class);
+          Pair<TemplateSource, Template> pair = mock(Pair.class);
+          when(pair.getLeft()).thenReturn(source);
+          when(pair.getValue()).thenReturn(template);
+          when(future.get()).thenReturn(pair);
 
-    Parser parser = mock(Parser.class);
+          Parser parser = mock(Parser.class);
 
-    // 1st call, parse must be call it
-    assertEquals(template, new HighConcurrencyTemplateCache(cache).get(source, parser));
+          // 1st call, parse must be call it
+          assertEquals(template, new HighConcurrencyTemplateCache(cache).get(source, parser));
 
-    verify(cache, times(2)).get(source);
-    verify(future, times(3)).get();
-    verify(pair).getLeft();
-    verify(pair).getValue();
+          verify(cache, times(2)).get(source);
+          verify(future, times(3)).get();
+          verify(pair).getLeft();
+          verify(pair).getValue();
+        });
   }
 
   @Test
@@ -212,85 +214,97 @@ public class HighConcurrencyTemplateCacheTest {
     verify(cache).remove(any(TemplateSource.class), eq(future));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   @SuppressWarnings("unchecked")
   public void runtimeException() throws IOException, InterruptedException, ExecutionException {
-    TemplateSource source = mock(TemplateSource.class);
-    when(source.lastModified()).thenReturn(615L);
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> {
+          TemplateSource source = mock(TemplateSource.class);
+          when(source.lastModified()).thenReturn(615L);
 
-    Template template = mock(Template.class);
+          Template template = mock(Template.class);
 
-    Future<Pair<TemplateSource, Template>> future = mock(Future.class);
-    when(future.get()).thenThrow(new ExecutionException(new IllegalArgumentException()));
+          Future<Pair<TemplateSource, Template>> future = mock(Future.class);
+          when(future.get()).thenThrow(new ExecutionException(new IllegalArgumentException()));
 
-    ConcurrentMap<TemplateSource, Future<Pair<TemplateSource, Template>>> cache =
-        mock(ConcurrentMap.class);
-    when(cache.get(any(TemplateSource.class))).thenReturn(future);
-    when(cache.remove(any(TemplateSource.class), eq(future))).thenReturn(true);
+          ConcurrentMap<TemplateSource, Future<Pair<TemplateSource, Template>>> cache =
+              mock(ConcurrentMap.class);
+          when(cache.get(any(TemplateSource.class))).thenReturn(future);
+          when(cache.remove(any(TemplateSource.class), eq(future))).thenReturn(true);
 
-    Parser parser = mock(Parser.class);
+          Parser parser = mock(Parser.class);
 
-    Template result = new HighConcurrencyTemplateCache(cache).get(source, parser);
-    assertEquals(template, result);
+          Template result = new HighConcurrencyTemplateCache(cache).get(source, parser);
+          assertEquals(template, result);
 
-    verify(source, times(3)).lastModified();
-    verify(future).get();
-    verify(cache).get(any(TemplateSource.class));
-    verify(cache).remove(any(TemplateSource.class), eq(future));
+          verify(source, times(3)).lastModified();
+          verify(future).get();
+          verify(cache).get(any(TemplateSource.class));
+          verify(cache).remove(any(TemplateSource.class), eq(future));
+        });
   }
 
-  @Test(expected = Error.class)
+  @Test
   @SuppressWarnings("unchecked")
   public void errorException() throws IOException, InterruptedException, ExecutionException {
-    TemplateSource source = mock(TemplateSource.class);
-    when(source.lastModified()).thenReturn(615L);
+    assertThrows(
+        Error.class,
+        () -> {
+          TemplateSource source = mock(TemplateSource.class);
+          when(source.lastModified()).thenReturn(615L);
 
-    Template template = mock(Template.class);
+          Template template = mock(Template.class);
 
-    Future<Pair<TemplateSource, Template>> future = mock(Future.class);
-    when(future.get()).thenThrow(new ExecutionException(new Error()));
+          Future<Pair<TemplateSource, Template>> future = mock(Future.class);
+          when(future.get()).thenThrow(new ExecutionException(new Error()));
 
-    ConcurrentMap<TemplateSource, Future<Pair<TemplateSource, Template>>> cache =
-        mock(ConcurrentMap.class);
-    when(cache.get(any(TemplateSource.class))).thenReturn(future);
+          ConcurrentMap<TemplateSource, Future<Pair<TemplateSource, Template>>> cache =
+              mock(ConcurrentMap.class);
+          when(cache.get(any(TemplateSource.class))).thenReturn(future);
 
-    Parser parser = mock(Parser.class);
+          Parser parser = mock(Parser.class);
 
-    Template result = new HighConcurrencyTemplateCache(cache).get(source, parser);
-    assertEquals(template, result);
+          Template result = new HighConcurrencyTemplateCache(cache).get(source, parser);
+          assertEquals(template, result);
 
-    verify(source, times(3)).lastModified();
-    verify(future).get();
-    verify(cache).get(any(TemplateSource.class));
+          verify(source, times(3)).lastModified();
+          verify(future).get();
+          verify(cache).get(any(TemplateSource.class));
+        });
   }
 
-  @Test(expected = HandlebarsException.class)
+  @Test
   @SuppressWarnings("unchecked")
   public void hbsException() throws IOException, InterruptedException, ExecutionException {
-    TemplateSource source = mock(TemplateSource.class);
-    when(source.filename()).thenReturn("filename");
-    when(source.lastModified()).thenReturn(615L);
+    assertThrows(
+        HandlebarsException.class,
+        () -> {
+          TemplateSource source = mock(TemplateSource.class);
+          when(source.filename()).thenReturn("filename");
+          when(source.lastModified()).thenReturn(615L);
 
-    Template template = mock(Template.class);
+          Template template = mock(Template.class);
 
-    Future<Pair<TemplateSource, Template>> future = mock(Future.class);
-    when(future.get()).thenThrow(new ExecutionException(new Exception()));
+          Future<Pair<TemplateSource, Template>> future = mock(Future.class);
+          when(future.get()).thenThrow(new ExecutionException(new Exception()));
 
-    ConcurrentMap<TemplateSource, Future<Pair<TemplateSource, Template>>> cache =
-        mock(ConcurrentMap.class);
-    when(cache.get(any(TemplateSource.class))).thenReturn(future);
-    when(cache.remove(any(TemplateSource.class), eq(future))).thenReturn(true);
+          ConcurrentMap<TemplateSource, Future<Pair<TemplateSource, Template>>> cache =
+              mock(ConcurrentMap.class);
+          when(cache.get(any(TemplateSource.class))).thenReturn(future);
+          when(cache.remove(any(TemplateSource.class), eq(future))).thenReturn(true);
 
-    Parser parser = mock(Parser.class);
+          Parser parser = mock(Parser.class);
 
-    Template result = new HighConcurrencyTemplateCache(cache).get(source, parser);
-    assertEquals(template, result);
+          Template result = new HighConcurrencyTemplateCache(cache).get(source, parser);
+          assertEquals(template, result);
 
-    verify(source).filename();
-    verify(source).lastModified();
-    verify(future).get();
-    verify(cache).get(any(TemplateSource.class));
-    verify(cache).remove(any(TemplateSource.class), eq(future));
+          verify(source).filename();
+          verify(source).lastModified();
+          verify(future).get();
+          verify(cache).get(any(TemplateSource.class));
+          verify(cache).remove(any(TemplateSource.class), eq(future));
+        });
   }
 
   @Test

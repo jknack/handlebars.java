@@ -5,9 +5,11 @@
  */
 package com.github.jknack.handlebars.i410;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import java.io.IOException;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.github.jknack.handlebars.AbstractTest;
 import com.github.jknack.handlebars.Handlebars;
@@ -40,8 +42,8 @@ public class Issue410 extends AbstractTest {
     shouldCompileTo("{{msg1 'p' 1 2 3}}", $, "p123");
   }
 
-  @Test(expected = HandlebarsException.class)
+  @Test
   public void shouldNotThrowArrayIndexOutOfBoundsExceptionErr() throws IOException {
-    shouldCompileTo("{{msgerr 'p'}}", $, "p123");
+    assertThrows(HandlebarsException.class, () -> shouldCompileTo("{{msgerr 'p'}}", $, "p123"));
   }
 }

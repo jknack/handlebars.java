@@ -5,9 +5,11 @@
  */
 package com.github.jknack.handlebars.i408;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import java.io.IOException;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.github.jknack.handlebars.AbstractTest;
 import com.github.jknack.handlebars.HandlebarsException;
@@ -39,9 +41,12 @@ public class Issue408 extends AbstractTest {
         "{{#car}}\n" + " Car Price: {{carPrice}}\n" + "{{/car}}", new Car(false, null), "");
   }
 
-  @Test(expected = HandlebarsException.class)
+  @Test
   public void shouldThrowNPE() throws IOException {
-    shouldCompileTo(
-        "{{#car}}\n" + " Car Price: {{carPrice}}\n" + "{{/car}}", new Car(true, null), "");
+    assertThrows(
+        HandlebarsException.class,
+        () ->
+            shouldCompileTo(
+                "{{#car}}\n" + " Car Price: {{carPrice}}\n" + "{{/car}}", new Car(true, null), ""));
   }
 }

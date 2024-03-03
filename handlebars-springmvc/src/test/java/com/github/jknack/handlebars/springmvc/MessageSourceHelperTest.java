@@ -5,7 +5,8 @@
  */
 package com.github.jknack.handlebars.springmvc;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
@@ -16,7 +17,7 @@ import java.io.IOException;
 import java.util.Locale;
 import java.util.Map;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.context.MessageSource;
 
 import com.github.jknack.handlebars.Context;
@@ -26,9 +27,9 @@ import com.github.jknack.handlebars.TagType;
 import com.github.jknack.handlebars.Template;
 
 public class MessageSourceHelperTest {
-  @Test(expected = NullPointerException.class)
+  @Test
   public void nullMessageSource() {
-    new MessageSourceHelper(null);
+    assertThrows(NullPointerException.class, () -> new MessageSourceHelper(null));
   }
 
   @Test

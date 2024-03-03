@@ -5,9 +5,11 @@
  */
 package com.github.jknack.handlebars;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import java.io.IOException;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Demostrate error reporting. It isn't a test.
@@ -30,29 +32,29 @@ public class HelperErrorTest extends AbstractTest {
           "notfound",
           "\n{{notfound hash=x}}");
 
-  @Test(expected = HandlebarsException.class)
+  @Test
   public void block() throws IOException {
-    parse("helper");
+    assertThrows(HandlebarsException.class, () -> parse("helper"));
   }
 
-  @Test(expected = HandlebarsException.class)
+  @Test
   public void notfound() throws IOException {
-    parse("notfound");
+    assertThrows(HandlebarsException.class, () -> parse("notfound"));
   }
 
-  @Test(expected = HandlebarsException.class)
+  @Test
   public void notfoundblock() throws IOException {
-    parse("notfoundblock");
+    assertThrows(HandlebarsException.class, () -> parse("notfoundblock"));
   }
 
-  @Test(expected = HandlebarsException.class)
+  @Test
   public void basic() throws IOException {
-    parse("basic");
+    assertThrows(HandlebarsException.class, () -> parse("basic"));
   }
 
-  @Test(expected = HandlebarsException.class)
+  @Test
   public void embedded() throws IOException {
-    parse("embedded");
+    assertThrows(HandlebarsException.class, () -> parse("embedded"));
   }
 
   private Object parse(final String uri) throws IOException {

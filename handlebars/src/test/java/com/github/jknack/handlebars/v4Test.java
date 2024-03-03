@@ -5,7 +5,7 @@
  */
 package com.github.jknack.handlebars;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.IOException;
 import java.util.LinkedHashMap;
@@ -27,7 +27,7 @@ public class v4Test {
     Template t = compile(template, data);
     Object hash = data.get("hash");
     String result = t.apply(configureContext(hash));
-    assertEquals("'" + expected + "' should === '" + result + "': ", expected, result);
+    assertEquals(expected, result, "'" + expected + "' should === '" + result + "': ");
   }
 
   protected Object configureContext(final Object context) {

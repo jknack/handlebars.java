@@ -5,19 +5,17 @@
  */
 package com.github.jknack.handlebars;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.stream.Stream;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import com.github.jknack.handlebars.Handlebars.Utils;
 
@@ -26,44 +24,37 @@ import com.github.jknack.handlebars.Handlebars.Utils;
  *
  * @author edgar.espina
  */
-@RunWith(Parameterized.class)
 public class FalsyValueTest {
 
-  /** The value under testing. */
-  private Object value;
-
-  public FalsyValueTest(final Object value) {
-    this.value = value;
-  }
-
-  @Test
-  public void falsy() {
+  @ParameterizedTest
+  @MethodSource("data")
+  public void falsy(Object value) {
     assertEquals(true, Handlebars.Utils.isEmpty(value));
   }
 
-  @Parameters
-  public static Collection<Object[]> data() {
-    return Arrays.asList(
-        new Object[] {null},
-        new Object[] {false},
-        new Object[] {""},
-        new Object[] {Boolean.FALSE},
-        new Object[] {0},
-        new Object[] {(short) 0},
-        new Object[] {0L},
-        new Object[] {0F},
-        new Object[] {0D},
-        new Object[] {BigInteger.ZERO},
-        new Object[] {BigDecimal.ZERO},
-        new Object[] {Collections.emptyList()},
-        new Object[] {new Object[0]},
-        // Custom Iterable
-        new Object[] {
-          new Iterable<Object>() {
-            @Override
-            public Iterator<Object> iterator() {
-              return Collections.emptyList().iterator();
-            }
+  @Test
+  public void emptyArray() {
+    assertEquals(true, Handlebars.Utils.isEmpty(new Object[0]));
+  }
+
+  public static Stream<Object> data() {
+    return Stream.of(
+        null,
+        false,
+        "",
+        Boolean.FALSE,
+        0,
+        (short) 0,
+        0L,
+        0F,
+        0D,
+        BigInteger.ZERO,
+        BigDecimal.ZERO,
+        Collections.emptyList(),
+        new Iterable<Object>() {
+          @Override
+          public Iterator<Object> iterator() {
+            return Collections.emptyList().iterator();
           }
         });
   }
