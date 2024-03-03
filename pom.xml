@@ -107,13 +107,6 @@
         <version>${jackson2-version}</version>
       </dependency>
 
-      <!-- Markdown -->
-      <dependency>
-        <groupId>org.pegdown</groupId>
-        <artifactId>pegdown</artifactId>
-        <version>1.6.0</version>
-      </dependency>
-
       <!-- Test dependencies -->
       <dependency>
         <groupId>ch.qos.logback</groupId>
