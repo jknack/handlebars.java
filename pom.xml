@@ -21,6 +21,7 @@
     <module>handlebars-caffeine</module>
     <module>handlebars-maven-plugin</module>
     <module>handlebars-maven-plugin-tests</module>
+    <module>handlebars-tests</module>
   </modules>
 
   <licenses>
@@ -171,6 +172,7 @@
         <configuration>
           <!-- set default locale of the test JVM to en_US because some tests expect e.g. the dollar sign as currency symbol -->
           <argLine>-Duser.language=en -Duser.country=US</argLine>
+          <useModulePath>false</useModulePath>
           <includes>
             <include>**/*Test.java</include>
             <include>**/Issue*.java</include>
@@ -412,6 +414,65 @@
         </plugins>
       </build>
     </profile>
+
+    <profile>
+      <id>module-info.shade</id>
+      <activation>
+        <file>
+          <exists>src${file.separator}etc${file.separator}module-info.activator</exists>
+        </file>
+      </activation>
+      <properties>
+        <module-info.shade>${project.build.directory}${file.separator}module-info.shade</module-info.shade>
+      </properties>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <version>${maven-antrun-plugin.version}</version>
+            <executions>
+              <execution>
+                <id>module-info.shade</id>
+                <phase>process-resources</phase>
+                <configuration>
+                  <target>
+                    <property name="input" value="src${file.separator}main${file.separator}java${file.separator}module-info.java" />
+                    <copy file="${input}" tofile="${module-info.shade}"/>
+                    <replaceregexp file="${module-info.shade}" match="(// SHADED:).*" flags="s"  replace="}" />
+                  </target>
+                </configuration>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+
+          <plugin>
+            <groupId>org.moditect</groupId>
+            <artifactId>moditect-maven-plugin</artifactId>
+            <version>1.1.0</version>
+            <executions>
+              <execution>
+                <id>add-module-infos</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>add-module-info</goal>
+                </goals>
+                <configuration>
+                  <overwriteExistingFiles>true</overwriteExistingFiles>
+                  <failOnWarning>false</failOnWarning>
+                  <module>
+                    <moduleInfoFile>${module-info.shade}</moduleInfoFile>
+                  </module>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
   </profiles>
 
   <prerequisites>
@@ -431,6 +492,7 @@
     <timestamp>${maven.build.timestamp}</timestamp>
     <maven.compiler.source>17</maven.compiler.source>
     <maven.compiler.target>17</maven.compiler.target>
+    <maven.compiler.release>17</maven.compiler.release>
     <pre-commit-hook>src${file.separator}etc${file.separator}formatter.sh</pre-commit-hook>
     <mustache-specs>handlebars${file.separator}src${file.separator}test${file.separator}resources${file.separator}mustache</mustache-specs>
     <junit.version>5.10.2</junit.version>
