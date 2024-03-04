@@ -239,12 +239,6 @@
           <autoReleaseAfterClose>true</autoReleaseAfterClose>
         </configuration>
       </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-deploy-plugin</artifactId>
-        <version>3.1.1</version>
-      </plugin>
-
     </plugins>
   </build>
 
@@ -427,9 +421,10 @@
   <properties>
     <!-- Encoding UTF-8 -->
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <jackson2-version>2.14.0-rc2</jackson2-version>
+    <jackson2-version>2.16.1</jackson2-version>
     <spring.version>6.0.0</spring.version>
     <jacoco.version>0.8.11</jacoco.version>
+    <antlr-version>4.13.1</antlr-version>
     <maven.build.timestamp.format>yyyy-MM-dd HH:mm:ssa</maven.build.timestamp.format>
     <maven-antrun-plugin.version>3.1.0</maven-antrun-plugin.version>
     <timestamp>${maven.build.timestamp}</timestamp>

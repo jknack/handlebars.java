@@ -10,7 +10,6 @@
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
-  <groupId>com.github.jknack</groupId>
   <artifactId>handlebars</artifactId>
 
   <name>Handlebars</name>
@@ -240,7 +239,6 @@
   </dependencies>
 
   <properties>
-    <antlr-version>4.13.1</antlr-version>
     <nashorn.version>15.4</nashorn.version>
   </properties>
 
@@ -259,7 +257,6 @@
                 <include>**/Hbs*.java</include>
                 <include>**/Issue*.java</include>
               </includes>
-              <argLine>-Xmx1024m -XX:MaxPermSize=256m</argLine>
               <systemPropertyVariables>
                 <!-- JaCoCo runtime must know where to dump coverage: -->
                 <jacoco-agent.destfile>target${file.separator}jacoco.exec</jacoco-agent.destfile>
