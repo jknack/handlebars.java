@@ -8,7 +8,6 @@
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
-  <groupId>com.github.jknack</groupId>
   <artifactId>handlebars-maven-plugin-tests</artifactId>
   <packaging>war</packaging>
 
@@ -39,12 +38,6 @@
             </configuration>
           </execution>
         </executions>
-      </plugin>
-
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-war-plugin</artifactId>
-        <version>3.3.2</version>
       </plugin>
 
       <!-- Deploy plugin -->

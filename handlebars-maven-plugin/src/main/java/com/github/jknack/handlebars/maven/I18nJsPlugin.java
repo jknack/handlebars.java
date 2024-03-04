@@ -12,13 +12,7 @@ import java.io.File;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.ResourceBundle;
-import java.util.Set;
+import java.util.*;
 
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
@@ -31,7 +25,6 @@ import com.github.jknack.handlebars.Options;
 import com.github.jknack.handlebars.TagType;
 import com.github.jknack.handlebars.Template;
 import com.github.jknack.handlebars.helper.I18nHelper;
-import edu.emory.mathcs.backport.java.util.Collections;
 
 /**
  * Convert {@link ResourceBundle} to JavaScript using the I18n.js API.

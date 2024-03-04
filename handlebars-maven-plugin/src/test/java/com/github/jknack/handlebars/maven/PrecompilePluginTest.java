@@ -7,8 +7,7 @@ package com.github.jknack.handlebars.maven;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -222,7 +221,7 @@ public class PrecompilePluginTest {
 
   private MavenProject newProject(final String... classpath)
       throws DependencyResolutionRequiredException {
-    MavenProject project = mock(MavenProject.class);
+    MavenProject project = spy(new MavenProject());
     when(project.getRuntimeClasspathElements()).thenReturn(Lists.newArrayList(classpath));
     return project;
   }
