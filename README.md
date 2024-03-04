@@ -27,7 +27,8 @@ Handlebars provides the power necessary to let you build semantic templates effe
 
 # Requirements
 
-- Handlebars 4.3+ requires Java 8 or higher.
+- Handlebars 4.4+ requires Java 17 or higher.
+- Handlebars 4.3+ requires Java 8 or higher (NOT MAINTAINED).
 
 
 # Getting Started
@@ -61,9 +62,9 @@ Hello {{this}}!
 ```
 
 ```java
-Handlebars handlebars = new Handlebars();
+var handlebars = new Handlebars();
 
-Template template = handlebars.compile("mytemplate");
+var template = handlebars.compile("mytemplate");
 
 System.out.println(template.apply("Handlebars.java"));
 ```
@@ -885,57 +886,16 @@ escapeHTML: True, if the JSON content contains HTML chars and you need to escape
 
 pretty: True, if the JSON content must be formatted. Default is: false.
 
-## Jackson 2.x
+## Jackson
 
 Maven:
 ```xml
  <dependency>
    <groupId>com.github.jknack</groupId>
-   <artifactId>handlebars-jackson2</artifactId>
+   <artifactId>handlebars-jackson</artifactId>
    <version>${handlebars-version}</version>
  </dependency>
 ```
-
-Same as Jackson1.x, except for the name of the helper: ```Jackson2Helper```
-
-## Markdown
-
-Maven:
-```xml
- <dependency>
-   <groupId>com.github.jknack</groupId>
-   <artifactId>handlebars-markdown</artifactId>
-   <version>${handlebars-version}</version>
- </dependency>
-```
-Usage:
-
-```java
- handlebars.registerHelper("md", new MarkdownHelper());
-```
-```
- {{md context}}
-```
-context: An object or null. Required.
-
-## Humanize
-
-Maven:
-```xml
- <dependency>
-   <groupId>com.github.jknack</groupId>
-   <artifactId>handlebars-humanize</artifactId>
-   <version>${handlebars-version}</version>
- </dependency>
-```
-Usage:
-
-```java
- // Register all the humanize helpers.
- HumanizeHelper.register(handlebars);
-```
-
-See the JavaDoc of the [HumanizeHelper] (https://github.com/jknack/handlebars.java/blob/master/handlebars-humanize/src/main/java/com/github/jknack/handlebars/HumanizeHelper.java) for more information.
 
 ## SpringMVC
 
@@ -1063,7 +1023,6 @@ Hello {{#child}}{{this.value}}{{/child}}
  * [Handlebars.js](http://handlebarsjs.com/)
  * [Try Handlebars.js](http://tryhandlebarsjs.com/)
  * [Mustache](http://mustache.github.io/)
- * [Humanize](https://github.com/mfornos/humanize)
  * [ANTLRv4](http://www.antlr.org/)
 
 ## Author

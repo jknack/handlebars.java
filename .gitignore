@@ -25,3 +25,4 @@ jacoco.exec
 
 out
 tmp
+tmp/spotless
