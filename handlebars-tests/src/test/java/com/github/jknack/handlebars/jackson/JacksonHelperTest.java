@@ -3,7 +3,7 @@
  * Apache License Version 2.0 http://www.apache.org/licenses/LICENSE-2.0
  * Copyright (c) 2012 Edgar Espina
  */
-package com.github.jknack.handlebars;
+package com.github.jknack.handlebars.jackson;
 
 import static com.github.jknack.handlebars.IgnoreWindowsLineMatcher.equalsToStringIgnoringWindowsNewLine;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -17,20 +17,23 @@ import org.junit.jupiter.api.Test;
 
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.jknack.handlebars.Blog.Views.Public;
+import com.github.jknack.handlebars.Handlebars;
+import com.github.jknack.handlebars.HandlebarsException;
+import com.github.jknack.handlebars.Template;
+import com.github.jknack.handlebars.jackson.Blog.Views.Public;
 
 /**
- * Unit test for {@link Jackson2Helper}.
+ * Unit test for {@link JacksonHelper}.
  *
  * @author edgar.espina
  * @since 0.1.0
  */
-public class Jackson2HelperTest {
+public class JacksonHelperTest {
 
   @Test
   public void toJSON() throws IOException {
     Handlebars handlebars = new Handlebars();
-    handlebars.registerHelper("@json", Jackson2Helper.INSTANCE);
+    handlebars.registerHelper("@json", JacksonHelper.INSTANCE);
 
     Template template = handlebars.compileInline("{{@json this}}");
 
@@ -43,7 +46,7 @@ public class Jackson2HelperTest {
   @Test
   public void toPrettyJSON() throws IOException {
     Handlebars handlebars = new Handlebars();
-    handlebars.registerHelper("@json", Jackson2Helper.INSTANCE);
+    handlebars.registerHelper("@json", JacksonHelper.INSTANCE);
 
     Template template = handlebars.compileInline("{{@json this pretty=true}}");
 
@@ -61,11 +64,11 @@ public class Jackson2HelperTest {
   public void toJSONViewInclusive() throws IOException {
     Handlebars handlebars = new Handlebars();
 
-    handlebars.registerHelper("@json", Jackson2Helper.INSTANCE);
+    handlebars.registerHelper("@json", JacksonHelper.INSTANCE);
 
     Template template =
         handlebars.compileInline(
-            "{{@json this view=\"com.github.jknack.handlebars.Blog$Views$Public\"}}");
+            "{{@json this view=\"com.github.jknack.handlebars.jackson.Blog$Views$Public\"}}");
 
     assertThat(
         template.apply(new Blog("First Post", "...")),
@@ -80,11 +83,11 @@ public class Jackson2HelperTest {
     ObjectMapper mapper = new ObjectMapper();
     mapper.configure(MapperFeature.DEFAULT_VIEW_INCLUSION, false);
 
-    handlebars.registerHelper("@json", new Jackson2Helper(mapper));
+    handlebars.registerHelper("@json", new JacksonHelper(mapper));
 
     Template template =
         handlebars.compileInline(
-            "{{@json this view=\"com.github.jknack.handlebars.Blog$Views$Public\"}}");
+            "{{@json this view=\"com.github.jknack.handlebars.jackson.Blog$Views$Public\"}}");
 
     assertThat(
         template.apply(new Blog("First Post", "...")),
@@ -98,8 +101,7 @@ public class Jackson2HelperTest {
     ObjectMapper mapper = new ObjectMapper();
     mapper.configure(MapperFeature.DEFAULT_VIEW_INCLUSION, false);
 
-    handlebars.registerHelper(
-        "@json", new Jackson2Helper(mapper).viewAlias("myView", Public.class));
+    handlebars.registerHelper("@json", new JacksonHelper(mapper).viewAlias("myView", Public.class));
 
     Template template = handlebars.compileInline("{{@json this view=\"myView\"}}");
 
@@ -118,7 +120,7 @@ public class Jackson2HelperTest {
           ObjectMapper mapper = new ObjectMapper();
           mapper.configure(MapperFeature.DEFAULT_VIEW_INCLUSION, false);
 
-          handlebars.registerHelper("@json", new Jackson2Helper(mapper));
+          handlebars.registerHelper("@json", new JacksonHelper(mapper));
 
           Template template = handlebars.compileInline("{{@json this view=\"missing.ViewClass\"}}");
 
@@ -131,7 +133,7 @@ public class Jackson2HelperTest {
   @Test
   public void escapeHtml() throws IOException {
     Handlebars handlebars = new Handlebars();
-    handlebars.registerHelper("@json", Jackson2Helper.INSTANCE);
+    handlebars.registerHelper("@json", JacksonHelper.INSTANCE);
 
     Map<String, String> model = new HashMap<String, String>();
     model.put("script", "<script text=\"text/javascript\"></script>");

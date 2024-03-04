@@ -3,11 +3,10 @@
  * Apache License Version 2.0 http://www.apache.org/licenses/LICENSE-2.0
  * Copyright (c) 2012 Edgar Espina
  */
-package com.github.jknack.handlebars;
+package com.github.jknack.handlebars.jackson;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -20,7 +19,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -30,6 +31,9 @@ import com.fasterxml.jackson.databind.node.DecimalNode;
 import com.fasterxml.jackson.databind.node.LongNode;
 import com.fasterxml.jackson.databind.node.NullNode;
 import com.fasterxml.jackson.databind.node.POJONode;
+import com.github.jknack.handlebars.Context;
+import com.github.jknack.handlebars.Handlebars;
+import com.github.jknack.handlebars.ValueResolver;
 import com.github.jknack.handlebars.context.MapValueResolver;
 
 public class JsonNodeValueResolverTest {
@@ -55,7 +59,8 @@ public class JsonNodeValueResolverTest {
 
   @Test
   public void nullMustBeResolvedToUnresolved() {
-    assertEquals(ValueResolver.UNRESOLVED, JsonNodeValueResolver.INSTANCE.resolve(null, "nothing"));
+    Assertions.assertEquals(
+        ValueResolver.UNRESOLVED, JsonNodeValueResolver.INSTANCE.resolve(null, "nothing"));
   }
 
   @Test
@@ -63,11 +68,11 @@ public class JsonNodeValueResolverTest {
     String name = "binary";
     byte[] result = new byte[] {1};
 
-    JsonNode node = mock(JsonNode.class);
+    JsonNode node = Mockito.mock(JsonNode.class);
     BinaryNode value = BinaryNode.valueOf(result);
     when(node.get(name)).thenReturn(value);
 
-    assertEquals(result, JsonNodeValueResolver.INSTANCE.resolve(node, name));
+    Assertions.assertEquals(result, JsonNodeValueResolver.INSTANCE.resolve(node, name));
 
     verify(node).get(name);
   }
@@ -77,11 +82,11 @@ public class JsonNodeValueResolverTest {
     String name = "null";
     Object result = ValueResolver.UNRESOLVED;
 
-    JsonNode node = mock(JsonNode.class);
+    JsonNode node = Mockito.mock(JsonNode.class);
     NullNode value = NullNode.instance;
     when(node.get(name)).thenReturn(value);
 
-    assertEquals(result, JsonNodeValueResolver.INSTANCE.resolve(node, name));
+    Assertions.assertEquals(result, JsonNodeValueResolver.INSTANCE.resolve(node, name));
 
     verify(node).get(name);
   }
@@ -91,11 +96,11 @@ public class JsonNodeValueResolverTest {
     String name = "bigInt";
     BigInteger result = BigInteger.ONE;
 
-    JsonNode node = mock(JsonNode.class);
+    JsonNode node = Mockito.mock(JsonNode.class);
     JsonNode value = BigIntegerNode.valueOf(result);
     when(node.get(name)).thenReturn(value);
 
-    assertEquals(result, JsonNodeValueResolver.INSTANCE.resolve(node, name));
+    Assertions.assertEquals(result, JsonNodeValueResolver.INSTANCE.resolve(node, name));
 
     verify(node).get(name);
   }
@@ -105,11 +110,11 @@ public class JsonNodeValueResolverTest {
     String name = "decimal";
     BigDecimal result = BigDecimal.TEN;
 
-    JsonNode node = mock(JsonNode.class);
+    JsonNode node = Mockito.mock(JsonNode.class);
     JsonNode value = DecimalNode.valueOf(result);
     when(node.get(name)).thenReturn(value);
 
-    assertEquals(result, JsonNodeValueResolver.INSTANCE.resolve(node, name));
+    Assertions.assertEquals(result, JsonNodeValueResolver.INSTANCE.resolve(node, name));
 
     verify(node).get(name);
   }
@@ -119,11 +124,11 @@ public class JsonNodeValueResolverTest {
     String name = "long";
     Long result = 678L;
 
-    JsonNode node = mock(JsonNode.class);
+    JsonNode node = Mockito.mock(JsonNode.class);
     JsonNode value = LongNode.valueOf(result);
     when(node.get(name)).thenReturn(value);
 
-    assertEquals(result, JsonNodeValueResolver.INSTANCE.resolve(node, name));
+    Assertions.assertEquals(result, JsonNodeValueResolver.INSTANCE.resolve(node, name));
 
     verify(node).get(name);
   }
@@ -133,11 +138,11 @@ public class JsonNodeValueResolverTest {
     String name = "pojo";
     Object result = new Object();
 
-    JsonNode node = mock(JsonNode.class);
+    JsonNode node = Mockito.mock(JsonNode.class);
     JsonNode value = new POJONode(result);
     when(node.get(name)).thenReturn(value);
 
-    assertEquals(result, JsonNodeValueResolver.INSTANCE.resolve(node, name));
+    Assertions.assertEquals(result, JsonNodeValueResolver.INSTANCE.resolve(node, name));
 
     verify(node).get(name);
   }
@@ -150,7 +155,8 @@ public class JsonNodeValueResolverTest {
     root.put("double", 3.14d);
     root.put("bool", true);
 
-    assertEquals(root.entrySet(), JsonNodeValueResolver.INSTANCE.propertySet(node(root)));
+    Assertions.assertEquals(
+        root.entrySet(), JsonNodeValueResolver.INSTANCE.propertySet(node(root)));
   }
 
   @Test

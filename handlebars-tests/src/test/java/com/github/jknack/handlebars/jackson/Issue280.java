@@ -3,7 +3,7 @@
  * Apache License Version 2.0 http://www.apache.org/licenses/LICENSE-2.0
  * Copyright (c) 2012 Edgar Espina
  */
-package com.github.jknack.handlebars.i280;
+package com.github.jknack.handlebars.jackson;
 
 import org.junit.jupiter.api.Test;
 
@@ -11,7 +11,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.jknack.handlebars.AbstractTest;
 import com.github.jknack.handlebars.Context;
-import com.github.jknack.handlebars.JsonNodeValueResolver;
 
 public class Issue280 extends AbstractTest {
 

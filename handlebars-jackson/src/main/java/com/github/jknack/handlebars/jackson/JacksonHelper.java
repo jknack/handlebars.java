@@ -3,7 +3,7 @@
  * Apache License Version 2.0 http://www.apache.org/licenses/LICENSE-2.0
  * Copyright (c) 2012 Edgar Espina
  */
-package com.github.jknack.handlebars;
+package com.github.jknack.handlebars.jackson;
 
 import static java.util.Objects.requireNonNull;
 
@@ -18,6 +18,9 @@ import com.fasterxml.jackson.core.io.CharacterEscapes;
 import com.fasterxml.jackson.core.io.SegmentedStringWriter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
+import com.github.jknack.handlebars.Handlebars;
+import com.github.jknack.handlebars.Helper;
+import com.github.jknack.handlebars.Options;
 
 /**
  * A Jackson 2.x helper.
@@ -69,7 +72,7 @@ import com.fasterxml.jackson.databind.ObjectWriter;
  * @author edgar.espina
  * @since 0.4.0
  */
-public class Jackson2Helper implements Helper<Object> {
+public class JacksonHelper implements Helper<Object> {
 
   /**
    * Escape HTML chars from JSON content. See
@@ -106,8 +109,8 @@ public class Jackson2Helper implements Helper<Object> {
     }
   }
 
-  /** A singleton version of {@link Jackson2Helper}. */
-  public static final Helper<Object> INSTANCE = new Jackson2Helper();
+  /** A singleton version of {@link JacksonHelper}. */
+  public static final Helper<Object> INSTANCE = new JacksonHelper();
 
   /** The JSON parser. */
   private final ObjectMapper mapper;
@@ -116,16 +119,16 @@ public class Jackson2Helper implements Helper<Object> {
   private final Map<String, Class<?>> alias = new HashMap<String, Class<?>>();
 
   /**
-   * Creates a new {@link Jackson2Helper}.
+   * Creates a new {@link JacksonHelper}.
    *
    * @param objectMapper The object's mapper. Required.
    */
-  public Jackson2Helper(final ObjectMapper objectMapper) {
+  public JacksonHelper(final ObjectMapper objectMapper) {
     mapper = requireNonNull(objectMapper, "The object mapper is required.");
   }
 
-  /** Creates a new {@link Jackson2Helper}. */
-  private Jackson2Helper() {
+  /** Creates a new {@link JacksonHelper}. */
+  private JacksonHelper() {
     this(new ObjectMapper());
   }
 
@@ -189,7 +192,7 @@ public class Jackson2Helper implements Helper<Object> {
    * @param viewClass The view class. Required.
    * @return This helper.
    */
-  public Jackson2Helper viewAlias(final String alias, final Class<?> viewClass) {
+  public JacksonHelper viewAlias(final String alias, final Class<?> viewClass) {
     this.alias.put(
         requireNonNull(alias, "A view alias is required."),
         requireNonNull(viewClass, "A view class is required."));

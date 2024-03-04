@@ -16,7 +16,7 @@
     <module>handlebars</module>
     <module>handlebars-helpers</module>
     <module>handlebars-springmvc</module>
-    <module>handlebars-jackson2</module>
+    <module>handlebars-jackson</module>
     <module>handlebars-guava-cache</module>
     <module>handlebars-caffeine</module>
     <module>handlebars-maven-plugin</module>

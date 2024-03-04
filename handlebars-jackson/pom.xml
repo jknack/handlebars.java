@@ -8,7 +8,7 @@
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
-  <artifactId>handlebars-jackson2</artifactId>
+  <artifactId>handlebars-jackson</artifactId>
 
   <name>JSON Jackson helpers</name>
 
