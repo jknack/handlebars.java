@@ -21,7 +21,7 @@
     <module>handlebars-caffeine</module>
     <module>handlebars-maven-plugin</module>
     <module>handlebars-maven-plugin-tests</module>
-    <module>handlebars-tests</module>
+    <module>tests</module>
   </modules>
 
   <licenses>
