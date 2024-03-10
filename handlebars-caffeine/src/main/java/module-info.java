@@ -1,3 +1,4 @@
+/** handlebars caffeine. */
 module com.github.jknack.handlebars.caffeine {
   exports com.github.jknack.handlebars.caffeine;
 

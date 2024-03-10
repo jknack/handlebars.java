@@ -1,3 +1,4 @@
+/** handlebars module. */
 module com.github.jknack.handlebars {
   exports com.github.jknack.handlebars;
   exports com.github.jknack.handlebars.io;

@@ -1,3 +1,4 @@
+/** handlebars helpers. */
 module com.github.jknack.handlebars.helper.ext {
   exports com.github.jknack.handlebars.helper.ext;
 

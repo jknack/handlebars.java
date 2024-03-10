@@ -1,3 +1,4 @@
+/** handlebars springmvc. */
 module com.github.jknack.handlebars.springmvc {
   exports com.github.jknack.handlebars.springmvc;
 

@@ -1,3 +1,4 @@
+/** handlebars jackson. */
 module com.github.jknack.handlebars.jackson {
   exports com.github.jknack.handlebars.jackson;
 

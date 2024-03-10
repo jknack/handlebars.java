@@ -1,3 +1,4 @@
+/** handlebars guava-cache. */
 module com.github.jknack.handlebars.guava {
   exports com.github.jknack.handlebars.guava;
 
