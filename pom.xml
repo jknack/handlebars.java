@@ -89,7 +89,7 @@
       <dependency>
         <groupId>org.slf4j</groupId>
         <artifactId>slf4j-api</artifactId>
-        <version>2.0.12</version>
+        <version>2.0.13</version>
       </dependency>
 
       <!-- Servlet API -->
@@ -111,7 +111,7 @@
       <dependency>
         <groupId>ch.qos.logback</groupId>
         <artifactId>logback-classic</artifactId>
-        <version>1.5.3</version>
+        <version>1.5.5</version>
       </dependency>
 
       <dependency>
@@ -161,7 +161,7 @@
 
       <plugin>
         <artifactId>maven-jar-plugin</artifactId>
-        <version>3.3.0</version>
+        <version>3.4.0</version>
       </plugin>
 
       <!-- Javadoc -->
@@ -378,7 +378,7 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-source-plugin</artifactId>
-            <version>3.3.0</version>
+            <version>3.3.1</version>
             <executions>
               <execution>
                 <id>attach-sources</id>
@@ -393,7 +393,7 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-gpg-plugin</artifactId>
-            <version>3.2.1</version>
+            <version>3.2.3</version>
             <executions>
               <execution>
                 <id>sign-artifacts</id>
@@ -464,7 +464,7 @@
           <plugin>
             <groupId>org.moditect</groupId>
             <artifactId>moditect-maven-plugin</artifactId>
-            <version>1.2.0.Final</version>
+            <version>1.2.1.Final</version>
             <executions>
               <execution>
                 <id>add-module-infos</id>
@@ -495,8 +495,8 @@
     <!-- Encoding UTF-8 -->
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <jackson2-version>2.17.0</jackson2-version>
-    <spring.version>6.1.5</spring.version>
-    <jacoco.version>0.8.11</jacoco.version>
+    <spring.version>6.1.6</spring.version>
+    <jacoco.version>0.8.12</jacoco.version>
     <antlr-version>4.13.1</antlr-version>
     <mockito.version>5.11.0</mockito.version>
     <maven.build.timestamp.format>yyyy-MM-dd HH:mm:ssa</maven.build.timestamp.format>
