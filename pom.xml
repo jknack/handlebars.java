@@ -351,7 +351,7 @@
           <plugin>
             <groupId>com.rudikershaw.gitbuildhook</groupId>
             <artifactId>git-build-hook-maven-plugin</artifactId>
-            <version>3.4.1</version>
+            <version>3.5.0</version>
             <configuration>
               <installHooks>
                 <pre-commit>${pre-commit-hook}</pre-commit>
@@ -494,7 +494,7 @@
   <properties>
     <!-- Encoding UTF-8 -->
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <jackson2-version>2.17.0</jackson2-version>
+    <jackson2-version>2.17.1</jackson2-version>
     <spring.version>6.1.6</spring.version>
     <jacoco.version>0.8.12</jacoco.version>
     <antlr-version>4.13.1</antlr-version>
