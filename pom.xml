@@ -168,7 +168,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
-        <version>3.6.3</version>
+        <version>3.7.0</version>
         <configuration>
           <excludePackageNames>com.github.jknack.handlebars.internal.*</excludePackageNames>
           <show>public</show>
@@ -290,7 +290,7 @@
           <plugin>
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>exec-maven-plugin</artifactId>
-            <version>3.2.0</version>
+            <version>3.3.0</version>
             <executions>
               <execution>
                 <phase>initialize</phase>
@@ -415,7 +415,7 @@
           <plugin>
             <groupId>org.sonatype.plugins</groupId>
             <artifactId>nexus-staging-maven-plugin</artifactId>
-            <version>1.6.13</version>
+            <version>1.7.0</version>
             <extensions>true</extensions>
             <configuration>
               <serverId>ossrh</serverId>
@@ -495,7 +495,7 @@
     <!-- Encoding UTF-8 -->
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <jackson2-version>2.17.1</jackson2-version>
-    <spring.version>6.1.7</spring.version>
+    <spring.version>6.1.8</spring.version>
     <jacoco.version>0.8.12</jacoco.version>
     <antlr-version>4.13.1</antlr-version>
     <mockito.version>5.12.0</mockito.version>
