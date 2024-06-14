@@ -223,7 +223,17 @@ public class Handlebars implements HelperRegistry {
 
     static int javaVersion() {
       String version = System.getProperty("java.specification.version").trim();
-      return Integer.parseInt(version.replace(VERSION_PREFIX, ""));
+      try {
+        return Integer.parseInt(version.replace(VERSION_PREFIX, ""));
+      } catch (NumberFormatException ex) {
+        // a workaround for Android apps where the [java.specification.version] property is set to 0.9
+        // https://developer.android.com/reference/java/lang/System#getProperties()
+        if (version.equals("0.9")) {
+          return 8;
+        } else {
+          throw ex;
+        }
+      }
     }
 
     /**
