@@ -24,7 +24,7 @@
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
-      <version>33.2.1-jre</version>
+      <version>33.3.0-jre</version>
     </dependency>
 
     <!-- Test dependencies -->
@@ -60,7 +60,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
-        <version>3.3.0</version>
+        <version>3.4.0</version>
         <configuration>
           <!-- set default locale of the test JVM to en_US because some tests expect e.g. the dollar sign as currency symbol -->
           <argLine>-Duser.language=en -Duser.country=US</argLine>
