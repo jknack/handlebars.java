@@ -64,7 +64,7 @@
       <dependency>
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-lang3</artifactId>
-        <version>3.14.0</version>
+        <version>3.17.0</version>
       </dependency>
 
       <dependency>
@@ -89,7 +89,7 @@
       <dependency>
         <groupId>org.slf4j</groupId>
         <artifactId>slf4j-api</artifactId>
-        <version>2.0.13</version>
+        <version>2.0.16</version>
       </dependency>
 
       <!-- Servlet API -->
@@ -111,7 +111,7 @@
       <dependency>
         <groupId>ch.qos.logback</groupId>
         <artifactId>logback-classic</artifactId>
-        <version>1.5.6</version>
+        <version>1.5.8</version>
       </dependency>
 
       <dependency>
@@ -135,13 +135,13 @@
       <dependency>
         <groupId>org.yaml</groupId>
         <artifactId>snakeyaml</artifactId>
-        <version>2.2</version>
+        <version>2.3</version>
       </dependency>
 
       <dependency>
         <groupId>org.hamcrest</groupId>
         <artifactId>hamcrest</artifactId>
-        <version>2.2</version>
+        <version>3.0</version>
       </dependency>
 
       <dependency>
@@ -168,7 +168,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
-        <version>3.7.0</version>
+        <version>3.10.0</version>
         <configuration>
           <excludePackageNames>com.github.jknack.handlebars.internal.*</excludePackageNames>
           <show>public</show>
@@ -189,7 +189,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
-        <version>3.3.0</version>
+        <version>3.5.0</version>
         <configuration>
           <!-- set default locale of the test JVM to en_US because some tests expect e.g. the dollar sign as currency symbol -->
           <argLine>-Duser.language=en -Duser.country=US</argLine>
@@ -260,7 +260,7 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-surefire-plugin</artifactId>
-            <version>3.3.0</version>
+            <version>3.5.0</version>
             <inherited>false</inherited>
             <configuration>
               <includes>
@@ -290,7 +290,7 @@
           <plugin>
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>exec-maven-plugin</artifactId>
-            <version>3.3.0</version>
+            <version>3.4.1</version>
             <executions>
               <execution>
                 <phase>initialize</phase>
@@ -393,7 +393,7 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-gpg-plugin</artifactId>
-            <version>3.2.4</version>
+            <version>3.2.5</version>
             <executions>
               <execution>
                 <id>sign-artifacts</id>
@@ -494,11 +494,11 @@
   <properties>
     <!-- Encoding UTF-8 -->
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <jackson2-version>2.17.1</jackson2-version>
-    <spring.version>6.1.10</spring.version>
+    <jackson2-version>2.17.2</jackson2-version>
+    <spring.version>6.1.12</spring.version>
     <jacoco.version>0.8.12</jacoco.version>
-    <antlr-version>4.13.1</antlr-version>
-    <mockito.version>5.12.0</mockito.version>
+    <antlr-version>4.13.2</antlr-version>
+    <mockito.version>5.13.0</mockito.version>
     <maven.build.timestamp.format>yyyy-MM-dd HH:mm:ssa</maven.build.timestamp.format>
     <maven-antrun-plugin.version>3.1.0</maven-antrun-plugin.version>
     <timestamp>${maven.build.timestamp}</timestamp>
@@ -508,6 +508,6 @@
     <maven.javadoc.failOnError>false</maven.javadoc.failOnError>
     <pre-commit-hook>src${file.separator}etc${file.separator}formatter.sh</pre-commit-hook>
     <mustache-specs>handlebars${file.separator}src${file.separator}test${file.separator}resources${file.separator}mustache</mustache-specs>
-    <junit.version>5.10.3</junit.version>
+    <junit.version>5.11.0</junit.version>
   </properties>
 </project>
