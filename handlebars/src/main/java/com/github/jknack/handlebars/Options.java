@@ -670,7 +670,7 @@ public class Options {
    * @return False if its argument is false, null or empty list/array (a "falsy" value).
    */
   public boolean isFalsy(final Object value) {
-    return Handlebars.Utils.isEmpty(value);
+    return Handlebars.Utils.isEmpty(value, (Boolean) this.hash.getOrDefault("includeZero", false));
   }
 
   /**

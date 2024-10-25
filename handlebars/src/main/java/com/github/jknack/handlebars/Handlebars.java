@@ -179,6 +179,21 @@ public class Handlebars implements HelperRegistry {
      */
     @SuppressWarnings("rawtypes")
     public static boolean isEmpty(final Object value) {
+      return isEmpty(value, false);
+    }
+
+    /**
+     * Evaluate the given object and return true is the object is considered empty. Nulls, empty
+     * list or array and false values are considered empty. If includeZero is false, zero values are
+     * considered empty.
+     *
+     * @param value The object value.
+     * @param includeZero If true, zero values are considered empty.
+     * @return Return true is the object is considered empty. Nulls, empty list or array and false
+     *     values are considered empty.
+     */
+    @SuppressWarnings("rawtypes")
+    public static boolean isEmpty(final Object value, Boolean includeZero) {
       if (value == null) {
         return true;
       }
@@ -197,7 +212,7 @@ public class Handlebars implements HelperRegistry {
       if (value.getClass().isArray()) {
         return Array.getLength(value) == 0;
       }
-      if (value instanceof Number) {
+      if (!includeZero && value instanceof Number) {
         return ((Number) value).doubleValue() == 0;
       }
       return false;
