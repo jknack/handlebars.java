@@ -6,6 +6,7 @@
 package com.github.jknack.handlebars;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.util.LinkedHashMap;
@@ -29,6 +30,17 @@ public class v4Test {
     String result = t.apply(configureContext(hash));
     assertEquals(expected, result, "'" + expected + "' should === '" + result + "': ");
   }
+
+  public void hashShouldCompileTo(final String template, final Hash data, final String[] expected)
+      throws IOException {
+    Template t = compile(template, data);
+    Object hash = data.get("hash");
+    String result = t.apply(configureContext(hash));
+    assertTrue(
+      java.util.Arrays.asList(expected).contains(result),
+      "Result '" + result + "' does not match any of the expected values: " + java.util.Arrays.toString(expected)
+    );
+}
 
   protected Object configureContext(final Object context) {
     return context;
