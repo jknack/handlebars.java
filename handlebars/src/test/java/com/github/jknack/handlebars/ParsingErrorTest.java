@@ -59,7 +59,9 @@ public class ParsingErrorTest extends AbstractTest {
           "idx3",
           "{{list.[]}}",
           "idx4",
-          "{{list.[}}");
+          "{{list.[}}",
+          "multipleElse",
+          "{{#if true}} b1 {{else}} b2 {{else}} b3 {{/if}}");
 
   @Test
   public void correctPath() throws IOException {
@@ -164,6 +166,11 @@ public class ParsingErrorTest extends AbstractTest {
   @Test
   public void idx4() throws IOException {
     assertThrows(HandlebarsException.class, () -> parse("idx4"));
+  }
+
+  @Test
+  public void multipleElse() throws IOException {
+    assertThrows(HandlebarsException.class, () -> parse("multipleElse"));
   }
 
   private void parse(final String candidate) throws IOException {

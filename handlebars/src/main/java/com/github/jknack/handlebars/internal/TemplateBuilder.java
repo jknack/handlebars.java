@@ -240,53 +240,53 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
     }
     // else
     Block elseroot = block;
-    for (ElseBlockContext elseBlock : ctx.elseBlock()) {
-      ElseStmtContext elseStmt = elseBlock.elseStmt();
-      if (elseStmt != null) {
-        // basic else
-        Template unless = visitBody(elseStmt.unlessBody);
-        if (unless != null) {
-          String inverseLabel = elseStmt.inverseToken.getText();
-          if (inverseLabel.startsWith(startDelim)) {
-            inverseLabel = inverseLabel.substring(startDelim.length());
-          }
-          if (inverseLabel.endsWith("~")) {
-            inverseLabel = inverseLabel.substring(0, inverseLabel.length() - 1);
-          }
-          elseroot.inverse(inverseLabel, unless);
-        }
-      } else {
-        // else chain
-        ElseStmtChainContext elseStmtChain = elseBlock.elseStmtChain();
-        SexprContext elseexpr = elseStmtChain.sexpr();
-        Token elsenameStart = elseexpr.QID().getSymbol();
-        String elsename = elsenameStart.getText();
-        String type = elseStmtChain.inverseToken.getText();
-        if (type.equals("else")) {
-          type = "else ";
-        }
-        Block elseblock =
-            new Block(
-                handlebars,
-                elsename,
-                false,
-                type,
-                params(elseexpr.param()),
-                hash(elseexpr.hash()),
-                blockParams(elseStmtChain.blockParams()));
-        elseblock.filename(source.filename());
-        elseblock.position(elsenameStart.getLine(), elsenameStart.getCharPositionInLine());
-        elseblock.startDelimiter(startDelim);
-        elseblock.endDelimiter(elseStmtChain.END().getText());
-        Template elsebody = visitBody(elseStmtChain.unlessBody);
-        elseblock.body(elsebody);
+    ElseBlockContext elseBlock = ctx.elseBlock();
+    ElseStmtContext elseStmt = elseBlock.elseStmt();
+    List<ElseStmtChainContext> elseStmtChain = elseBlock.elseStmtChain();
+    for (ElseStmtChainContext elseStmtChainContext : elseStmtChain) {
+      // else if chain
+      SexprContext elseexpr = elseStmtChainContext.sexpr();
+      Token elsenameStart = elseexpr.QID().getSymbol();
+      String elsename = elsenameStart.getText();
+      String type = elseStmtChainContext.inverseToken.getText();
+      if (type.equals("else")) {
+        type = "else ";
+      }
+      Block elseblock =
+          new Block(
+              handlebars,
+              elsename,
+              false,
+              type,
+              params(elseexpr.param()),
+              hash(elseexpr.hash()),
+              blockParams(elseStmtChainContext.blockParams()));
+      elseblock.filename(source.filename());
+      elseblock.position(elsenameStart.getLine(), elsenameStart.getCharPositionInLine());
+      elseblock.startDelimiter(startDelim);
+      elseblock.endDelimiter(elseStmtChainContext.END().getText());
+      Template elsebody = visitBody(elseStmtChainContext.unlessBody);
+      elseblock.body(elsebody);
 
-        String inverseLabel = elseStmtChain.inverseToken.getText();
+      String inverseLabel = elseStmtChainContext.inverseToken.getText();
+      if (inverseLabel.startsWith(startDelim)) {
+        inverseLabel = inverseLabel.substring(startDelim.length());
+      }
+      elseroot.inverse(inverseLabel, elseblock);
+      elseroot = elseblock;
+    }
+    if (elseStmt != null) {
+      // basic else
+      Template unless = visitBody(elseStmt.unlessBody);
+      if (unless != null) {
+        String inverseLabel = elseStmt.inverseToken.getText();
         if (inverseLabel.startsWith(startDelim)) {
           inverseLabel = inverseLabel.substring(startDelim.length());
         }
-        elseroot.inverse(inverseLabel, elseblock);
-        elseroot = elseblock;
+        if (inverseLabel.endsWith("~")) {
+          inverseLabel = inverseLabel.substring(0, inverseLabel.length() - 1);
+        }
+        elseroot.inverse(inverseLabel, unless);
       }
     }
     hasTag(true);
