@@ -74,7 +74,7 @@ block
   :
     startToken = START_BLOCK DECORATOR? sexpr blockParams? END
     thenBody=body
-    elseBlock*
+    elseBlock
     END_BLOCK nameEnd=QID END
   ;
 
@@ -97,8 +97,8 @@ sexpr
 
 elseBlock
   :
-    elseStmt
-  | elseStmtChain
+    elseStmtChain*
+    elseStmt?
   ;
 
 elseStmt
