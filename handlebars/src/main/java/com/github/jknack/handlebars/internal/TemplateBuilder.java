@@ -697,7 +697,7 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
             list.add(candidate);
             prev = candidate;
           } else {
-            ((Text) prev).append(((Text) candidate).textWithoutEscapeChar());
+            ((Text) prev).append(((Text) candidate));
           }
         } else {
           list.add(candidate);

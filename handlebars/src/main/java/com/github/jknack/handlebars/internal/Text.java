@@ -34,10 +34,10 @@ class Text extends BaseTemplate {
   /**
    * The plain text. Required.
    */
-  private StringBuilder text;
+  private final StringBuilder text;
 
   /** The escape's char or empty. */
-  private String escapeChar;
+  private final String escapeChar;
 
   /**
    * Creates a new {@link Text}.
@@ -67,27 +67,21 @@ class Text extends BaseTemplate {
     return escapeChar + text.toString();
   }
 
-  /**
-   * @return Same as {@link #text()} without the escape char.
-   */
-  public char[] textWithoutEscapeChar() {
-    return text.toString().toCharArray();
-  }
-
   @Override
   protected void merge(final Context scope, final Writer writer) throws IOException {
     writer.write(text.toString());
   }
 
   /**
-   * Append text.
+   * Merges the content of the given {@link Text} instance into this instance.
    *
-   * @param text The text to append.
-   * @return This object.
+   * @param other the {@link Text} instance to merge with this instance;
+   *               if null or contains no text, no action is taken
    */
-  public Text append(final char[] text) {
-    this.text.append(text);
-    return this;
-  }
+   public void append(final Text other) {
+     if (other != null && other.text != null) {
+       this.text.append(other.text);
+     }
+   }
 
 }
