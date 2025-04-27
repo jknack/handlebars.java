@@ -3,7 +3,7 @@ handlebars-helpers
 
 A collection of Handlebars.java helpers, donated by the community.
 
-[assign](https://github.com/jknack/handlebars.java/blob/master/handlebars-helpers/src/main/java/com/github/jknack/handlebars/helper/AssignHelper.java)
+[assign](https://github.com/iterable/handlebars.java/blob/master/handlebars-helpers/src/main/java/com/github/jknack/handlebars/helper/AssignHelper.java)
 ======
 create auxiliary/temprary variables. Example:
 
@@ -12,7 +12,7 @@ create auxiliary/temprary variables. Example:
 <span class="benefit-title"> {{i18n benefitsTitle}} </span>
 ```
 
-[isEven, isOdd & stripes](https://github.com/jknack/handlebars.java/blob/master/handlebars-helpers/src/main/java/com/github/jknack/handlebars/helper/NumberHelper.java)
+[isEven, isOdd & stripes](https://github.com/iterable/handlebars.java/blob/master/handlebars-helpers/src/main/java/com/github/jknack/handlebars/helper/NumberHelper.java)
 ======
 commons functions for numbers
 

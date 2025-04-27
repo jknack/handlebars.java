@@ -243,7 +243,7 @@ public enum StringHelpers implements Helper<Object> {
   /**
    * Returns a new <code>CharSequence</code> that is a subsequence of this sequence.
    * The subsequence starts with the <code>char</code> value at the specified index and
-   * ends with the <code>char</code> value at index <tt>end - 1</tt>
+   * ends with the <code>char</code> value at index <code>end - 1</code>
    * Argument: start offset
    *           end offset
    * For example:

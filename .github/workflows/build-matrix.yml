@@ -8,19 +8,21 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        java_version: [1.8, 11, 15, 17]
+        java_version: [11, 17]
         os: [ubuntu-latest, windows-latest, macOS-latest]
 
     steps:
       - name: Checkout
-        uses: actions/checkout@50fbc622fc4ef5163becd7fab6573eac35f8462e
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
       - name: Mustache Specs
         run: |
           git submodule update --init --recursive
       - name: Set up JDK ${{ matrix.java_version }}
-        uses: actions/setup-java@b6e674f4b717d7b0ae3baee0fbe79f498905dfde
+        uses: actions/setup-java@c5195efecf7bdfc987ee8bae7a71cb8b11521c00
         with:
           java-version: ${{ matrix.java_version }}
+          distribution: "temurin"
+          cache: maven
       - name: Install
         run: mvn clean install -DskipTests --batch-mode --no-transfer-progress
         env:

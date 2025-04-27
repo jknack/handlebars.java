@@ -24,3 +24,8 @@ pom.xml.versionsBackup
 jacoco.exec
 
 out
+
+# VSCode
+.vscode
+
+.git-versioned-pom.xml

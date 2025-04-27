@@ -1,16 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
-  <groupId>com.github.jknack</groupId>
+  <groupId>com.iterable</groupId>
   <artifactId>handlebars.java</artifactId>
-  <version>5.0.0-SNAPSHOT</version>
+  <version>0.0.0-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <name>Handlebars.java</name>
   <description>Logic-less and semantic templates with Java</description>
 
-  <url>https://github.com/jknack/handlebars.java</url>
+  <url>https://github.com/iterable/handlebars.java</url>
 
   <modules>
     <module>handlebars</module>
@@ -182,7 +184,8 @@
         <artifactId>maven-surefire-plugin</artifactId>
         <version>2.22.2</version>
         <configuration>
-          <!-- set default locale of the test JVM to en_US because some tests expect e.g. the dollar sign as currency symbol -->
+          <!-- set default locale of the test JVM to en_US because some tests expect e.g. the dollar
+          sign as currency symbol -->
           <argLine>-Duser.language=en -Duser.country=US</argLine>
           <includes>
             <include>**/*Test.java</include>
@@ -214,7 +217,8 @@
           <consoleOutput>true</consoleOutput>
           <configLocation>src/etc/checkstyle.xml</configLocation>
           <failsOnError>true</failsOnError>
-          <excludes>**/HbsServer*,**/HbsLexer*,**/HbsParserVisitor*,**/HbsParserBaseVisitor*,**/HbsParser*</excludes>
+          <excludes>
+            **/HbsServer*,**/HbsLexer*,**/HbsParserVisitor*,**/HbsParserBaseVisitor*,**/HbsParser*</excludes>
         </configuration>
         <executions>
           <execution>

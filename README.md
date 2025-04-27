@@ -1,6 +1,6 @@
 [![Become a Patreon](https://img.shields.io/badge/patreon-donate-orange.svg)](https://patreon.com/edgarespina)
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.jknack/handlebars/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.jknack/handlebars)
-[![javadoc](https://javadoc.io/badge/com.github.jknack/handlebars.svg)](https://javadoc.io/doc/com.github.jknack/handlebars)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.iterable/handlebars/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.iterable/handlebars)
+[![javadoc](https://javadoc.io/badge/com.iterable/handlebars.svg)](https://javadoc.io/doc/com.iterable/handlebars)
 
 Handlebars.java
 ===============
@@ -33,15 +33,15 @@ Handlebars provides the power necessary to let you build semantic templates effe
 # Getting Started
  In general, the syntax of **Handlebars** templates is a superset of [Mustache](https://mustache.github.io) templates. For basic syntax, check out the [Mustache manpage](https://mustache.github.io).
  
- The [Handlebars.java blog](https://jknack.github.io/handlebars.java) is a good place for getting started too. Javadoc is available at [javadoc.io](https://javadoc.io/doc/com.github.jknack/handlebars).
+ The [Handlebars.java blog](https://jknack.github.io/handlebars.java) is a good place for getting started too. Javadoc is available at [javadoc.io](https://javadoc.io/doc/com.iterable/handlebars).
 
 ## Maven
-#### Stable version: [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.jknack/handlebars/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.jknack/handlebars)
+#### Stable version: [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.iterable/handlebars/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.iterable/handlebars)
 
 
 ```xml
   <dependency>
-    <groupId>com.github.jknack</groupId>
+    <groupId>com.iterable</groupId>
     <artifactId>handlebars</artifactId>
     <version>${handlebars-version}</version>
   </dependency>
@@ -51,7 +51,7 @@ Handlebars provides the power necessary to let you build semantic templates effe
 Templates are loaded using the ```TemplateLoader``` class. Handlebars.java provides three implementations of a ```TemplateLoader```:
  * ClassPathTemplateLoader (default)
  * FileTemplateLoader
- * SpringTemplateLoader (see the [handlebars-springmvc](https://github.com/jknack/handlebars.java/tree/master/handlebars-springmvc) module)
+ * SpringTemplateLoader (see the [handlebars-springmvc](https://github.com/iterable/handlebars.java/tree/master/handlebars-springmvc) module)
 
 This example loads ```mytemplate.hbs``` from the root of the classpath:
 
@@ -112,7 +112,7 @@ Download from Maven Central:
 Maven:
 ```xml
 <dependency>
-  <groupId>com.github.jknack</groupId>
+  <groupId>com.iterable</groupId>
   <artifactId>handlebars-proto</artifactId>
   <version>${current-version}</version>
 </dependency>
@@ -274,7 +274,7 @@ context: A template name. Required.
 
 wrapper: One of "anonymous", "amd" or "none". Default is: "anonymous" 
 
-There is a [maven plugin](https://github.com/jknack/handlebars.java/tree/master/handlebars-maven-plugin) available too.
+There is a [maven plugin](https://github.com/iterable/handlebars.java/tree/master/handlebars-maven-plugin) available too.
 
 ### embedded
  The embedded helper allow you to "embedded" a handlebars template inside a ```<script>``` HTML tag:
@@ -378,12 +378,12 @@ The generated code looks like this:
 Finally, it converts message patterns like: ```Hi {0}``` into ```Hi {{arg0}}```. This make possible for the [I18n](https://github.com/fnando/i18n-js) JS library to interpolate variables.
 
 ### string helpers
- Functions like abbreviate, capitalize, join, dateFormat, yesno, etc., are available from [StringHelpers](https://github.com/jknack/handlebars.java/blob/master/handlebars/src/main/java/com/github/jknack/handlebars/helper/StringHelpers.java).
+ Functions like abbreviate, capitalize, join, dateFormat, yesno, etc., are available from [StringHelpers](https://github.com/iterable/handlebars.java/blob/master/handlebars/src/main/java/com/github/jknack/handlebars/helper/StringHelpers.java).
  
 > NOTE: You need to register string helpers (they are not added by default)
 
 ### conditional helpers
- Functions like eq, neq, lt, gt, and, or, not, etc., are available from [ConditionalHelpers](https://github.com/jknack/handlebars.java/blob/master/handlebars/src/main/java/com/github/jknack/handlebars/helper/ConditionalHelpers.java).
+ Functions like eq, neq, lt, gt, and, or, not, etc., are available from [ConditionalHelpers](https://github.com/iterable/handlebars.java/blob/master/handlebars/src/main/java/com/github/jknack/handlebars/helper/ConditionalHelpers.java).
  
 > NOTE: You need to register conditional helpers (they are not added by default)
 
@@ -711,7 +711,7 @@ Context context = Context
   .build();
 ```
 
-Available in [Jackson 1.x](https://github.com/jknack/handlebars.java/tree/master/handlebars-json) and [Jackson 2.x](https://github.com/jknack/handlebars.java/tree/master/handlebars-jackson2) modules.
+Available in [Jackson 1.x](https://github.com/iterable/handlebars.java/tree/master/handlebars-json) and [Jackson 2.x](https://github.com/iterable/handlebars.java/tree/master/handlebars-jackson2) modules.
 
 #### Using multiples value resolvers
 
@@ -776,7 +776,7 @@ This cache implementation eliminates the window created by ```ConcurrentMapTempl
 It follows the patterns described in [Java Concurrency in Practice](http://www.amazon.com/Java-Concurrency-Practice-Brian-Goetz/dp/0321349601) and ensures that a template will be compiled just once regardless of the number of threads.
 
 
-3. ```GuavaTemplateCache```: a template cache implementation built on top of [Google Guava](https://code.google.com/p/guava-libraries/wiki/CachesExplained). Available in [handlebars-guava-cache module](https://github.com/jknack/handlebars.java/tree/master/handlebars-guava-cache)
+3. ```GuavaTemplateCache```: a template cache implementation built on top of [Google Guava](https://code.google.com/p/guava-libraries/wiki/CachesExplained). Available in [handlebars-guava-cache module](https://github.com/iterable/handlebars.java/tree/master/handlebars-guava-cache)
 
 You can configure Handlebars.java to use a cache by:
 
@@ -786,7 +786,7 @@ Handlebars hbs = new Handlebars()
 ```
 
 ### Using a MissingValueResolver (@deprecated)
-NOTE: MissingValueResolver is available in ```<= 1.3.0```. For ```> 1.3.0``` use [Helper Missing](https://github.com/jknack/handlebars.java#helper-missing).
+NOTE: MissingValueResolver is available in ```<= 1.3.0```. For ```> 1.3.0``` use [Helper Missing](https://github.com/iterable/handlebars.java#helper-missing).
 
  A ```MissingValueResolver``` let you use default values for ```{{variable}}``` expressions resolved to ```null```.
  
@@ -853,7 +853,7 @@ Hello edgar!
 Maven:
 ```xml
  <dependency>
-   <groupId>com.github.jknack</groupId>
+   <groupId>com.iterable</groupId>
    <artifactId>handlebars-json</artifactId>
    <version>${handlebars-version}</version>
  </dependency>
@@ -890,7 +890,7 @@ pretty: True, if the JSON content must be formatted. Default is: false.
 Maven:
 ```xml
  <dependency>
-   <groupId>com.github.jknack</groupId>
+   <groupId>com.iterable</groupId>
    <artifactId>handlebars-jackson2</artifactId>
    <version>${handlebars-version}</version>
  </dependency>
@@ -903,7 +903,7 @@ Same as Jackson1.x, except for the name of the helper: ```Jackson2Helper```
 Maven:
 ```xml
  <dependency>
-   <groupId>com.github.jknack</groupId>
+   <groupId>com.iterable</groupId>
    <artifactId>handlebars-markdown</artifactId>
    <version>${handlebars-version}</version>
  </dependency>
@@ -923,7 +923,7 @@ context: An object or null. Required.
 Maven:
 ```xml
  <dependency>
-   <groupId>com.github.jknack</groupId>
+   <groupId>com.iterable</groupId>
    <artifactId>handlebars-humanize</artifactId>
    <version>${handlebars-version}</version>
  </dependency>
@@ -935,14 +935,14 @@ Usage:
  HumanizeHelper.register(handlebars);
 ```
 
-See the JavaDoc of the [HumanizeHelper] (https://github.com/jknack/handlebars.java/blob/master/handlebars-humanize/src/main/java/com/github/jknack/handlebars/HumanizeHelper.java) for more information.
+See the JavaDoc of the [HumanizeHelper] (https://github.com/iterable/handlebars.java/blob/master/handlebars-humanize/src/main/java/com/github/jknack/handlebars/HumanizeHelper.java) for more information.
 
 ## SpringMVC
 
 Maven:
 ```xml
  <dependency>
-   <groupId>com.github.jknack</groupId>
+   <groupId>com.iterable</groupId>
    <artifactId>handlebars-springmvc</artifactId>
    <version>${handlebars-version}</version>
  </dependency>
@@ -967,7 +967,7 @@ where:
 * arg:  the message's argument. Optional.
 * default: the default's message. Optional.
 
-Checkout the [HandlebarsViewResolver](https://github.com/jknack/handlebars.java/blob/master/handlebars-springmvc/src/main/java/com/github/jknack/handlebars/springmvc/HandlebarsViewResolver.java).
+Checkout the [HandlebarsViewResolver](https://github.com/iterable/handlebars.java/blob/master/handlebars-springmvc/src/main/java/com/github/jknack/handlebars/springmvc/HandlebarsViewResolver.java).
 
 # Performance
 
@@ -1027,11 +1027,11 @@ Hello {{#child}}{{this.value}}{{/child}}
 ## Status
 ### Mustache 1.0 Compliant
  * Passes the 123 tests from the [Mustache Spec](https://github.com/mustache/spec).
- * Tests can be found here [comments.yml](https://github.com/jknack/handlebars.java/blob/master/handlebars/src/test/java/specs/CommentsTest.java), [delimiters.yml](https://github.com/jknack/handlebars.java/blob/master/handlebars/src/test/java/specs/DelimitersTest.java), [interpolation.yml](https://github.com/jknack/handlebars.java/blob/master/handlebars/src/test/java/specs/InterpolationTest.java), [inverted.yml](https://github.com/jknack/handlebars.java/blob/master/handlebars/src/test/java/specs/InvertedTest.java), [lambdas.yml](https://github.com/jknack/handlebars.java/blob/master/handlebars/src/test/java/specs/LambdasTest.java), [partials.yml](https://github.com/jknack/handlebars.java/blob/master/handlebars/src/test/java/specs/PartialsTest.java), [sections.yml](https://github.com/jknack/handlebars.java/blob/master/handlebars/src/test/java/specs/SectionsTest.java)
+ * Tests can be found here [comments.yml](https://github.com/iterable/handlebars.java/blob/master/handlebars/src/test/java/specs/CommentsTest.java), [delimiters.yml](https://github.com/iterable/handlebars.java/blob/master/handlebars/src/test/java/specs/DelimitersTest.java), [interpolation.yml](https://github.com/iterable/handlebars.java/blob/master/handlebars/src/test/java/specs/InterpolationTest.java), [inverted.yml](https://github.com/iterable/handlebars.java/blob/master/handlebars/src/test/java/specs/InvertedTest.java), [lambdas.yml](https://github.com/iterable/handlebars.java/blob/master/handlebars/src/test/java/specs/LambdasTest.java), [partials.yml](https://github.com/iterable/handlebars.java/blob/master/handlebars/src/test/java/specs/PartialsTest.java), [sections.yml](https://github.com/iterable/handlebars.java/blob/master/handlebars/src/test/java/specs/SectionsTest.java)
 
 ### Handlebars.js Compliant
   * Passes all the [Handlebars.js tests](https://github.com/wycats/handlebars.js/blob/master/spec/qunit_spec.js)
-  * Tests can be found here [basic context](https://github.com/jknack/handlebars.java/blob/master/handlebars/src/test/java/hbs/js/BasicContextTest.java), [string literals](https://github.com/jknack/handlebars.java/blob/master/handlebars/src/test/java/hbs/js/StringLiteralParametersTest.java), [inverted sections](https://github.com/jknack/handlebars.java/blob/master/handlebars/src/test/java/hbs/js/InvertedSectionTest.java), [blocks](https://github.com/jknack/handlebars.java/blob/master/handlebars/src/test/java/hbs/js/BlockTest.java), [block helper missing](https://github.com/jknack/handlebars.java/blob/master/handlebars/src/test/java/hbs/js/BlockHelperMissingTest.java), [helper hash](https://github.com/jknack/handlebars.java/blob/master/handlebars/src/test/java/hbs/js/HelperHashTest.java), [partials](https://github.com/jknack/handlebars.java/blob/master/handlebars/src/test/java/hbs/js/PartialsTest.java)
+  * Tests can be found here [basic context](https://github.com/iterable/handlebars.java/blob/master/handlebars/src/test/java/hbs/js/BasicContextTest.java), [string literals](https://github.com/iterable/handlebars.java/blob/master/handlebars/src/test/java/hbs/js/StringLiteralParametersTest.java), [inverted sections](https://github.com/iterable/handlebars.java/blob/master/handlebars/src/test/java/hbs/js/InvertedSectionTest.java), [blocks](https://github.com/iterable/handlebars.java/blob/master/handlebars/src/test/java/hbs/js/BlockTest.java), [block helper missing](https://github.com/iterable/handlebars.java/blob/master/handlebars/src/test/java/hbs/js/BlockHelperMissingTest.java), [helper hash](https://github.com/iterable/handlebars.java/blob/master/handlebars/src/test/java/hbs/js/HelperHashTest.java), [partials](https://github.com/iterable/handlebars.java/blob/master/handlebars/src/test/java/hbs/js/PartialsTest.java)
   
 ## Dependencies
 
@@ -1044,8 +1044,8 @@ Hello {{#child}}{{this.value}}{{/child}}
 ## Want to contribute?
 * Fork the project on Github.
 * Wondering what to work on? See task/bug list and pick up something you would like to work on.
-* Do you want to donate one or more helpers? See [handlebars=helpers](https://github.com/jknack/handlebars.java/tree/master/handlebars-helpers) a repository for community's helpers.
-* Create an issue or fix one from [issues list](https://github.com/jknack/handlebars.java/issues).
+* Do you want to donate one or more helpers? See [handlebars=helpers](https://github.com/iterable/handlebars.java/tree/master/handlebars-helpers) a repository for community's helpers.
+* Create an issue or fix one from [issues list](https://github.com/iterable/handlebars.java/issues).
 * If you know the answer to a question posted to our [mailing list](https://groups.google.com/forum/#!forum/handlebarsjava) - don't hesitate to write a reply.
 * Share your ideas or ask questions on [mailing list](https://groups.google.com/forum/#!forum/handlebarsjava) - don't hesitate to write a reply - that helps us improve javadocs/FAQ.
 * If you miss a particular feature - browse or ask on the [mailing list](https://groups.google.com/forum/#!forum/handlebarsjava) - don't hesitate to write a reply, show us some sample code and describe the problem.
@@ -1056,7 +1056,7 @@ Hello {{#child}}{{this.value}}{{/child}}
 ## Help and Support
  [Help and discussion](https://groups.google.com/forum/#!forum/handlebarsjava)
 
- [Bugs, Issues and Features](https://github.com/jknack/handlebars.java/issues)
+ [Bugs, Issues and Features](https://github.com/iterable/handlebars.java/issues)
 
 
 ## Related Projects
