@@ -569,34 +569,36 @@ public enum StringHelpers implements Helper<Object> {
    * Usage:
    *
    * <pre>
-   *    {{numberFormat number ["format"] [locale=default]}}
+   *    {{numberFormat number ["format"] [format="format"] [locale="locale"]
+   *        [groupingUsed=true|false] [maximumFractionDigits=...]
+   *        [maximumIntegerDigits=...] [minimumFractionDigits=...]
+   *        [minimumIntegerDigits=...] [parseIntegerOnly=true|false]
+   *        [roundingMode="HALF_UP"]}}
    * </pre>
    *
-   * Format parameters is one of:
+   * Format parameters can be:
    *
    * <ul>
-   *   <li>"integer": the integer number format
-   *   <li>"percent": the percent number format
-   *   <li>"currency": the decimal number format
-   *   <li>"pattern": a decimal pattern.
+   *   <li>"integer": formats the number as an integer
+   *   <li>"percent": formats the number as a percentage
+   *   <li>"currency": formats the number as currency
+   *   <li>"pattern": a {@link java.text.DecimalFormat} pattern, e.g. "#,###.00"
    * </ul>
    *
-   * Otherwise, the default formatter will be used.
+   * If not specified, the default number format will be used.
+   * The format option can be specified either as a positional parameter or as a named hash parameter.
    *
-   * <p>More options:
+   * <p>Additional options:
    *
    * <ul>
-   *   <li>groupingUsed: Set whether or not grouping will be used in this format.
-   *   <li>maximumFractionDigits: Sets the maximum number of digits allowed in the fraction portion
-   *       of a number.
-   *   <li>maximumIntegerDigits: Sets the maximum number of digits allowed in the integer portion of
-   *       a number
-   *   <li>minimumFractionDigits: Sets the minimum number of digits allowed in the fraction portion
-   *       of a number
-   *   <li>minimumIntegerDigits: Sets the minimum number of digits allowed in the integer portion of
-   *       a number.
-   *   <li>parseIntegerOnly: Sets whether or not numbers should be parsed as integers only.
-   *   <li>roundingMode: Sets the {@link java.math.RoundingMode} used in this NumberFormat.
+   *   <li><strong>locale</strong>: the locale to use, e.g. "en_US" or "fr". Defaults to the system locale.
+   *   <li><strong>groupingUsed</strong>: whether grouping (e.g. thousands separators) should be used.
+   *   <li><strong>maximumFractionDigits</strong>: maximum number of digits in the fractional part.
+   *   <li><strong>maximumIntegerDigits</strong>: maximum number of digits in the integer part.
+   *   <li><strong>minimumFractionDigits</strong>: minimum number of digits in the fractional part.
+   *   <li><strong>minimumIntegerDigits</strong>: minimum number of digits in the integer part.
+   *   <li><strong>parseIntegerOnly</strong>: whether numbers should be parsed as integers only.
+   *   <li><strong>roundingMode</strong>: the {@link java.math.RoundingMode} to apply, e.g. "HALF_UP".
    * </ul>
    *
    * @see NumberFormat
@@ -663,22 +665,30 @@ public enum StringHelpers implements Helper<Object> {
      * @return The number format to use.
      */
     private NumberFormat build(final Options options) {
-      if (options.params.length == 0) {
-        return NumberStyle.DEFAULT.numberFormat(Locale.getDefault());
-      }
-      isTrue(
-          options.params[0] instanceof String, "found '%s', expected 'string'", options.params[0]);
-      String format = options.param(0);
-      String localeStr = options.param(1, Locale.getDefault().toString());
-      Locale locale = LocaleUtils.toLocale(localeStr);
+      final String format = getFormatArgument(options);
+      final Locale locale = getLocaleArgument(options);
       try {
-        NumberStyle style = NumberStyle.valueOf(format.toUpperCase().trim());
+        NumberStyle style = NumberStyle.valueOf(format);
         return style.numberFormat(locale);
-      } catch (ArrayIndexOutOfBoundsException ex) {
-        return NumberStyle.DEFAULT.numberFormat(locale);
       } catch (IllegalArgumentException ex) {
         return new DecimalFormat(format, new DecimalFormatSymbols(locale));
       }
+    }
+
+    private String getFormatArgument(final Options options) {
+      final String stringifiedFormat = options.param(0, options.hash("format"));
+      if (stringifiedFormat == null || stringifiedFormat.isBlank()) {
+        return NumberStyle.DEFAULT.name();
+      }
+      return stringifiedFormat.toUpperCase().trim();
+    }
+
+    private Locale getLocaleArgument(final Options options) {
+      final String stringifiedLocale = options.param(1, options.hash("locale"));
+      if (stringifiedLocale != null && !stringifiedLocale.isBlank()) {
+        return LocaleUtils.toLocale(stringifiedLocale);
+      }
+      return Locale.getDefault();
     }
   },
 
