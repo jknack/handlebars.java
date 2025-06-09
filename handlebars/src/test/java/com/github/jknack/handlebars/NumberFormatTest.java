@@ -72,11 +72,27 @@ public class NumberFormatTest extends AbstractTest {
     shouldCompileTo("{{numberFormat this \"" + pattern + "\" \"fr\"}}", number, expected);
   }
 
-  public static Date date(final int day, final int month, final int year) {
-    Calendar calendar = Calendar.getInstance();
-    calendar.set(Calendar.DATE, day);
-    calendar.set(Calendar.MONTH, month - 1);
-    calendar.set(Calendar.YEAR, year);
-    return calendar.getTime();
+  @Test
+  public void namedFormat() throws IOException {
+    final Number number = Math.PI;
+    final Locale defaultLocale = Locale.getDefault();
+    final String expected = NumberFormat
+            .getPercentInstance(defaultLocale)
+            .format(number);
+
+    shouldCompileTo("{{numberFormat this format=\"percent\"}}", number, expected);
+  }
+
+  @Test
+  public void namedBrLocale() throws IOException {
+    final Number number = Math.PI;
+    final String pattern = "currency";
+    final Locale portuguese = Locale.forLanguageTag("pt-BR");
+
+    final String expected = NumberFormat
+            .getCurrencyInstance(portuguese)
+            .format(number);
+
+    shouldCompileTo("{{numberFormat this \"" + pattern + "\" locale=\"pt-BR\"}}", number, expected);
   }
 }
