@@ -21,6 +21,7 @@ jobs:
         uses: actions/setup-java@v3
         with:
           java-version: ${{ matrix.java_version }}
+          distribution: 'temurin'
       - name: Install
         run: mvn clean install -DskipTests --batch-mode --no-transfer-progress
       - name: Build
