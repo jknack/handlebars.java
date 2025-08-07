@@ -5,6 +5,9 @@
  */
 package com.github.jknack.handlebars.internal.path;
 
+import java.util.List;
+import java.util.Set;
+
 import com.github.jknack.handlebars.Context;
 import com.github.jknack.handlebars.PathExpression;
 import com.github.jknack.handlebars.ValueResolver;
@@ -17,6 +20,9 @@ import com.github.jknack.handlebars.ValueResolver;
  * @since 4.0.1
  */
 public class DataPath implements PathExpression {
+
+  /** First and last are special in 21. */
+  private static final Set<String> FIXED = Set.of("@last", "@first");
 
   /** Property name. */
   private String name;
@@ -40,8 +46,15 @@ public class DataPath implements PathExpression {
     // with @
     Object value = resolver.resolve(data, name);
     if (value == null) {
-      // without @
-      value = resolver.resolve(data, nameWithoutAtSymbol);
+      if (data instanceof List) {
+        if (!FIXED.contains(name)) {
+          // without @
+          value = resolver.resolve(data, nameWithoutAtSymbol);
+        }
+      } else {
+        // without @
+        value = resolver.resolve(data, nameWithoutAtSymbol);
+      }
     }
     return chain.next(resolver, context, value);
   }
