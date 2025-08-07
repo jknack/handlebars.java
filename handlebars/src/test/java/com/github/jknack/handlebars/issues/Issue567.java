@@ -15,9 +15,20 @@ public class Issue567 extends v4Test {
 
   @Test
   public void shouldKeepContextOnBlockParameter() throws Exception {
-    shouldCompileTo(
+    String[] expected = new String[] {
+      "  context is {v=a, k=0}  context is {v=b, k=1}  context is {v=c, k=2}",
+      "  context is {v=a, k=0}  context is {v=b, k=1}  context is {k=2, v=c}",
+      "  context is {v=a, k=0}  context is {k=1, v=b}  context is {v=c, k=2}",
+      "  context is {v=a, k=0}  context is {k=1, v=b}  context is {k=2, v=c}",
+      "  context is {k=0, v=a}  context is {v=b, k=1}  context is {v=c, k=2}",
+      "  context is {k=0, v=a}  context is {v=b, k=1}  context is {k=2, v=c}",
+      "  context is {k=0, v=a}  context is {k=1, v=b}  context is {v=c, k=2}",
+      "  context is {k=0, v=a}  context is {k=1, v=b}  context is {k=2, v=c}"
+    };
+  
+    hashShouldCompileTo(
         "{{#each foo as |v k|}}" + "  context is {{{.}}}" + "{{/each}}",
         $("hash", $("foo", Arrays.asList("a", "b", "c"))),
-        "  context is {v=a, k=0}  context is {v=b, k=1}  context is {v=c, k=2}");
+        expected);
   }
 }
