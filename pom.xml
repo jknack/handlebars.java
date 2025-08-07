@@ -135,7 +135,7 @@
       <dependency>
         <groupId>org.hamcrest</groupId>
         <artifactId>hamcrest</artifactId>
-        <version>2.2</version>
+        <version>3.0</version>
       </dependency>
 
       <dependency>
@@ -492,7 +492,7 @@
     <spring.version>6.2.9</spring.version>
     <jacoco.version>0.8.12</jacoco.version>
     <antlr-version>4.13.1</antlr-version>
-    <mockito.version>5.12.0</mockito.version>
+    <mockito.version>5.18.0</mockito.version>
     <maven.build.timestamp.format>yyyy-MM-dd HH:mm:ssa</maven.build.timestamp.format>
     <maven-antrun-plugin.version>3.1.0</maven-antrun-plugin.version>
     <timestamp>${maven.build.timestamp}</timestamp>
