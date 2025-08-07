@@ -157,18 +157,6 @@ public class Handlebars implements HelperRegistry {
    */
   public static class Utils {
 
-    /** Java 14. */
-    private static final int JAVA_14 = 14;
-
-    /** Current Java version: 8, 11, 15, etc. */
-    public static final int javaVersion = javaVersion();
-
-    /** True when running on Java 14 or higher. */
-    public static final boolean javaVersion14 = javaVersion() >= JAVA_14;
-
-    /** Prefix for Java version: 1.8 (mostly). */
-    private static final String VERSION_PREFIX = "1.";
-
     /**
      * Evaluate the given object and return true is the object is considered empty. Nulls, empty
      * list or array and false values are considered empty.
@@ -219,11 +207,6 @@ public class Handlebars implements HelperRegistry {
      */
     public static CharSequence escapeExpression(final CharSequence input) {
       return EscapingStrategy.DEF.escape(input);
-    }
-
-    static int javaVersion() {
-      String version = System.getProperty("java.specification.version").trim();
-      return Integer.parseInt(version.replace(VERSION_PREFIX, ""));
     }
 
     /**

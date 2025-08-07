@@ -14,7 +14,6 @@ import java.io.IOException;
 import java.io.Writer;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
-import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -241,31 +240,12 @@ abstract class BaseTemplate implements Template {
               final Object proxy,
               final Object... args)
               throws Throwable {
-            if (Handlebars.Utils.javaVersion14) {
-              MethodType methodType =
-                  MethodType.methodType(method.getReturnType(), method.getParameterTypes());
-              return MethodHandles.lookup()
-                  .findSpecial(lookupClass, method.getName(), methodType, lookupClass)
-                  .bindTo(proxy)
-                  .invokeWithArguments(args);
-            } else {
-              // Jumping through these hoops is needed because calling unreflectSpecial
-              // requires
-              // that the lookup instance have private access to the special caller. None of
-              // the
-              // static factory methods for Lookup will give us an instance with the access
-              // modes
-              // we need, so we work around it by calling the private constructor via
-              // reflection.
-              Constructor<MethodHandles.Lookup> constructor =
-                  MethodHandles.Lookup.class.getDeclaredConstructor(Class.class, int.class);
-              constructor.setAccessible(true);
-              return constructor
-                  .newInstance(lookupClass, -1 /* trusted */)
-                  .unreflectSpecial(method, lookupClass)
-                  .bindTo(proxy)
-                  .invokeWithArguments(args);
-            }
+            MethodType methodType =
+                MethodType.methodType(method.getReturnType(), method.getParameterTypes());
+            return MethodHandles.lookup()
+                .findSpecial(lookupClass, method.getName(), methodType, lookupClass)
+                .bindTo(proxy)
+                .invokeWithArguments(args);
           }
 
           @Override

@@ -10,7 +10,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.Map.Entry;
-import java.util.function.Predicate;
 
 import org.yaml.snakeyaml.Yaml;
 
@@ -187,11 +186,5 @@ public class AbstractTest {
       model.$((String) attributes[i], attributes[i + 1]);
     }
     return model;
-  }
-
-  public void withJava(Predicate<Integer> predicate, Task task) throws IOException {
-    if (predicate.test(Handlebars.Utils.javaVersion)) {
-      task.run();
-    }
   }
 }
