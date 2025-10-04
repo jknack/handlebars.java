@@ -26,6 +26,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.Token;
 import org.apache.commons.lang3.StringUtils;
 
 import com.github.jknack.handlebars.Context;
@@ -58,6 +60,18 @@ abstract class BaseTemplate implements Template {
 
   /** A pre-compiled JavaScript function. */
   private String javaScript;
+
+  /**
+   * Token stream for lossless source reconstruction. Optional - if null, falls back to text()
+   * reconstruction.
+   */
+  protected CommonTokenStream tokenStream;
+
+  /** Start token index in the token stream (inclusive). */
+  protected int startTokenIndex = -1;
+
+  /** End token index in the token stream (inclusive). */
+  protected int endTokenIndex = -1;
 
   /**
    * Creates a new {@link BaseTemplate}.
@@ -192,6 +206,57 @@ abstract class BaseTemplate implements Template {
     this.line = line;
     this.column = column;
     return this;
+  }
+
+  /**
+   * Set the token stream for lossless source reconstruction.
+   *
+   * @param tokenStream The token stream.
+   * @return This template.
+   */
+  public BaseTemplate tokenStream(final CommonTokenStream tokenStream) {
+    this.tokenStream = tokenStream;
+    return this;
+  }
+
+  /**
+   * Set the token span (start and end indices) for lossless source reconstruction.
+   *
+   * @param startTokenIndex The start token index (inclusive).
+   * @param endTokenIndex The end token index (inclusive).
+   * @return This template.
+   */
+  public BaseTemplate tokenSpan(final int startTokenIndex, final int endTokenIndex) {
+    this.startTokenIndex = startTokenIndex;
+    this.endTokenIndex = endTokenIndex;
+    return this;
+  }
+
+  /**
+   * Get the exact original source text for this template, including all whitespace. This provides
+   * lossless source reconstruction using the whitespace preserved on channel 1.
+   *
+   * <p>If token information is not available (for templates created without token spans), this
+   * falls back to the reconstructed text() method.
+   *
+   * @return The exact original source text, or reconstructed text if token info unavailable.
+   * @since 4.6.0
+   */
+  public String getSourceText() {
+    if (tokenStream != null && startTokenIndex >= 0 && endTokenIndex >= 0) {
+      // Extract text from ALL tokens (all channels) to get exact original source
+      // This includes whitespace tokens on channel 1
+      StringBuilder text = new StringBuilder();
+      for (int i = startTokenIndex; i <= endTokenIndex; i++) {
+        Token token = tokenStream.get(i);
+        if (token != null) {
+          text.append(token.getText());
+        }
+      }
+      return text.toString();
+    }
+    // Fallback to reconstructed text if token information not available
+    return text();
   }
 
   @Override

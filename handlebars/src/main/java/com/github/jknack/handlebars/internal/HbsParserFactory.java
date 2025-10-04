@@ -86,7 +86,7 @@ public class HbsParserFactory implements ParserFactory {
 
         /** Build the AST. */
         TemplateBuilder builder =
-            new TemplateBuilder(handlebars, source) {
+            new TemplateBuilder(handlebars, source, (CommonTokenStream) parser.getTokenStream()) {
               @Override
               protected void reportError(
                   final CommonToken offendingToken,

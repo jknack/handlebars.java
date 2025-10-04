@@ -98,6 +98,9 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
   /** The template source. Required. */
   private TemplateSource source;
 
+  /** The token stream for lossless source reconstruction. Optional. */
+  private org.antlr.v4.runtime.CommonTokenStream tokenStream;
+
   /** Flag to track dead spaces and lines. */
   private Boolean hasTag;
 
@@ -122,6 +125,22 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
   TemplateBuilder(final Handlebars handlebars, final TemplateSource source) {
     this.handlebars = notNull(handlebars, "The handlebars can't be null.");
     this.source = notNull(source, "The template source is required.");
+  }
+
+  /**
+   * Creates a new {@link TemplateBuilder} with token stream for lossless source reconstruction.
+   *
+   * @param handlebars A handlebars object. required.
+   * @param source The template source. required.
+   * @param tokenStream The token stream. optional.
+   */
+  TemplateBuilder(
+      final Handlebars handlebars,
+      final TemplateSource source,
+      final org.antlr.v4.runtime.CommonTokenStream tokenStream) {
+    this.handlebars = notNull(handlebars, "The handlebars can't be null.");
+    this.source = notNull(source, "The template source is required.");
+    this.tokenStream = tokenStream;
   }
 
   @Override
@@ -342,14 +361,16 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
   public Template visitVar(final VarContext ctx) {
     hasTag(false);
     SexprContext sexpr = ctx.sexpr();
-    return newVar(
+    return newVarWithTokens(
         sexpr.QID().getSymbol(),
         TagType.VAR,
         params(sexpr.param()),
         hash(sexpr.hash()),
         ctx.start.getText(),
         ctx.stop.getText(),
-        ctx.DECORATOR() != null);
+        ctx.DECORATOR() != null,
+        ctx.start,
+        ctx.stop);
   }
 
   @Override
@@ -365,28 +386,32 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
   public Template visitTvar(final TvarContext ctx) {
     hasTag(false);
     SexprContext sexpr = ctx.sexpr();
-    return newVar(
+    return newVarWithTokens(
         sexpr.QID().getSymbol(),
         TagType.TRIPLE_VAR,
         params(sexpr.param()),
         hash(sexpr.hash()),
         ctx.start.getText(),
         ctx.stop.getText(),
-        false);
+        false,
+        ctx.start,
+        ctx.stop);
   }
 
   @Override
   public Template visitAmpvar(final AmpvarContext ctx) {
     hasTag(false);
     SexprContext sexpr = ctx.sexpr();
-    return newVar(
+    return newVarWithTokens(
         sexpr.QID().getSymbol(),
         TagType.AMP_VAR,
         params(sexpr.param()),
         hash(sexpr.hash()),
         ctx.start.getText(),
         ctx.stop.getText(),
-        false);
+        false,
+        ctx.start,
+        ctx.stop);
   }
 
   /**
@@ -473,6 +498,37 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
         .endDelimiter(endDelimiter)
         .filename(source.filename())
         .position(name.getLine(), name.getCharPositionInLine());
+    return var;
+  }
+
+  /**
+   * Build a new {@link Variable} with token span for lossless source reconstruction.
+   *
+   * @param name The var's name.
+   * @param varType The var's type.
+   * @param params The var params.
+   * @param hash The var hash.
+   * @param startDelimiter The current start delimiter.
+   * @param endDelimiter The current end delimiter.
+   * @param decorator True, for var decorators.
+   * @param startToken The start token.
+   * @param stopToken The stop token.
+   * @return A new {@link Variable}.
+   */
+  private Variable newVarWithTokens(
+      final Token name,
+      final TagType varType,
+      final List<Param> params,
+      final Map<String, Param> hash,
+      final String startDelimiter,
+      final String endDelimiter,
+      final boolean decorator,
+      final Token startToken,
+      final Token stopToken) {
+    Variable var = newVar(name, varType, params, hash, startDelimiter, endDelimiter, decorator);
+    if (tokenStream != null && startToken != null && stopToken != null) {
+      var.tokenStream(tokenStream).tokenSpan(startToken.getTokenIndex(), stopToken.getTokenIndex());
+    }
     return var;
   }
 
