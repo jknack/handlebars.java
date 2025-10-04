@@ -214,28 +214,78 @@ public class WhitespaceChannelTest {
   }
 
   /**
-   * Test getText() method behavior.
+   * Test getSourceText() method provides lossless source reconstruction.
    *
-   * <p><b>Note:</b> The grammar successfully preserves whitespace tokens on channel 1, and the
-   * getText() infrastructure is in place. However, full lossless reconstruction via getText()
-   * requires setting token span information during template construction, which may need additional
-   * work for complex templates.
+   * <p><b>Success!</b> The grammar successfully preserves whitespace tokens on channel 1, and the
+   * getSourceText() infrastructure is complete with token span tracking during template
+   * construction.
    *
-   * <p>For now, getText() falls back to text() reconstruction. The whitespace tokens ARE available
-   * in the token stream for formatters and linters to access directly.
+   * <p>getSourceText() now returns the exact original source including all whitespace, while text()
+   * continues to return normalized form for backward compatibility.
    */
   @Test
-  public void testGetTextBehavior() throws IOException {
+  public void testGetSourceTextPreservesWhitespace() throws IOException {
     Handlebars handlebars = new Handlebars();
 
     Template template1 = handlebars.compileInline("{{foo}}");
     Template template2 = handlebars.compileInline("{{ foo }}");
+    Template template3 = handlebars.compileInline("{{  foo  }}");
 
-    // Currently getText() falls back to text() - both return normalized form
+    // getSourceText() returns exact original source with whitespace preserved
     assertEquals("{{foo}}", template1.getSourceText());
-    assertEquals("{{foo}}", template2.getSourceText());
+    assertEquals("{{ foo }}", template2.getSourceText());
+    assertEquals("{{  foo  }}", template3.getSourceText());
 
-    // Note: The grammar DOES preserve whitespace on channel 1
-    // Future enhancement: Complete token span tracking during template construction
+    // text() still returns normalized form (backward compatibility)
+    assertEquals("{{foo}}", template1.text());
+    assertEquals("{{foo}}", template2.text());
+    assertEquals("{{foo}}", template3.text());
+  }
+
+  /**
+   * Test getSourceText() with complex templates including text and multiple variables.
+   *
+   * <p><b>Note:</b> Block templates (like {{#if}}) are not yet fully supported for lossless
+   * reconstruction. This is a future enhancement.
+   */
+  @Test
+  public void testGetSourceTextComplexTemplates() throws IOException {
+    Handlebars handlebars = new Handlebars();
+
+    // Complex template with mixed whitespace and text
+    String source1 = "{{ foo }}  text  {{ bar }}";
+    Template template1 = handlebars.compileInline(source1);
+    assertEquals(source1, template1.getSourceText());
+
+    // Template with multiple variables
+    String source2 = "{{ name }} - {{ value }}";
+    Template template2 = handlebars.compileInline(source2);
+    assertEquals(source2, template2.getSourceText());
+
+    // Template with varying amounts of whitespace
+    String source3 = "{{foo}}{{bar}}{{ baz }}";
+    Template template3 = handlebars.compileInline(source3);
+    assertEquals(source3, template3.getSourceText());
+  }
+
+  /** Test getSourceText() preserves all whitespace types (spaces, tabs, newlines). */
+  @Test
+  public void testGetSourceTextPreservesAllWhitespaceTypes() throws IOException {
+    Handlebars handlebars = new Handlebars();
+
+    // Template with tabs
+    String source1 = "{{\tfoo\t}}";
+    Template template1 = handlebars.compileInline(source1);
+    assertEquals(source1, template1.getSourceText());
+
+    // Template with newlines (though unusual inside tags)
+    String source2 = "{{ foo }}  {{  bar  }}";
+    Template template2 = handlebars.compileInline(source2);
+    assertEquals(source2, template2.getSourceText());
+
+    // Template with mixed whitespace
+    String source3 = "{{  \tfoo\t  }}";
+    Template template3 = handlebars.compileInline(source3);
+    assertEquals(source3, template3.getSourceText());
   }
 }

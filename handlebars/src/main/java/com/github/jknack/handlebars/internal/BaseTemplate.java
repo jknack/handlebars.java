@@ -27,7 +27,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.antlr.v4.runtime.CommonTokenStream;
-import org.antlr.v4.runtime.Token;
 import org.apache.commons.lang3.StringUtils;
 
 import com.github.jknack.handlebars.Context;
@@ -244,16 +243,10 @@ abstract class BaseTemplate implements Template {
    */
   public String getSourceText() {
     if (tokenStream != null && startTokenIndex >= 0 && endTokenIndex >= 0) {
-      // Extract text from ALL tokens (all channels) to get exact original source
+      // Use TokenStream.getText() to get exact original source including all channels
       // This includes whitespace tokens on channel 1
-      StringBuilder text = new StringBuilder();
-      for (int i = startTokenIndex; i <= endTokenIndex; i++) {
-        Token token = tokenStream.get(i);
-        if (token != null) {
-          text.append(token.getText());
-        }
-      }
-      return text.toString();
+      return tokenStream.getText(
+          org.antlr.v4.runtime.misc.Interval.of(startTokenIndex, endTokenIndex));
     }
     // Fallback to reconstructed text if token information not available
     return text();

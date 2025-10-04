@@ -633,6 +633,20 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
   @Override
   public Template visitTemplate(final TemplateContext ctx) {
     Template template = visitBody(ctx.body());
+
+    // Set token span for lossless source reconstruction
+    if (tokenStream != null && template instanceof BaseTemplate) {
+      BaseTemplate baseTemplate = (BaseTemplate) template;
+      // Use the body's start and stop tokens for the entire template
+      Token startToken = ctx.body().start;
+      Token stopToken = ctx.body().stop;
+      if (startToken != null && stopToken != null) {
+        baseTemplate
+            .tokenStream(tokenStream)
+            .tokenSpan(startToken.getTokenIndex(), stopToken.getTokenIndex());
+      }
+    }
+
     if (!handlebars.infiniteLoops() && template instanceof BaseTemplate) {
       template = infiniteLoop(source, (BaseTemplate) template);
     }
@@ -830,6 +844,11 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
           prev = candidate;
         }
       }
+    }
+
+    // Set token span for lossless source reconstruction
+    if (tokenStream != null && ctx.start != null && ctx.stop != null) {
+      list.tokenStream(tokenStream).tokenSpan(ctx.start.getTokenIndex(), ctx.stop.getTokenIndex());
     }
 
     return list;
