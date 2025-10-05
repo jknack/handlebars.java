@@ -287,6 +287,17 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
       Template elsebody = visitBody(elseStmtChainContext.unlessBody);
       elseblock.body(elsebody);
 
+      // Set token span for lossless source reconstruction (else if blocks)
+      if (tokenStream != null
+          && elseStmtChainContext.start != null
+          && elseStmtChainContext.stop != null) {
+        elseblock
+            .tokenStream(tokenStream)
+            .tokenSpan(
+                elseStmtChainContext.start.getTokenIndex(),
+                elseStmtChainContext.stop.getTokenIndex());
+      }
+
       String inverseLabel = elseStmtChainContext.inverseToken.getText();
       if (inverseLabel.startsWith(startDelim)) {
         inverseLabel = inverseLabel.substring(startDelim.length());
@@ -314,6 +325,12 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
       paramStack.removeLast();
     }
     level -= 1;
+
+    // Set token span for lossless source reconstruction
+    if (tokenStream != null && ctx.start != null && ctx.stop != null) {
+      block.tokenStream(tokenStream).tokenSpan(ctx.start.getTokenIndex(), ctx.stop.getTokenIndex());
+    }
+
     return block;
   }
 
@@ -354,6 +371,12 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
     }
     hasTag(true);
     level -= 1;
+
+    // Set token span for lossless source reconstruction
+    if (tokenStream != null && ctx.start != null && ctx.stop != null) {
+      block.tokenStream(tokenStream).tokenSpan(ctx.start.getTokenIndex(), ctx.stop.getTokenIndex());
+    }
+
     return block;
   }
 
@@ -718,6 +741,16 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
             .filename(source.filename())
             .position(info.token.getLine(), info.token.getCharPositionInLine());
 
+    // Set token span for lossless source reconstruction
+    if (tokenStream != null
+        && partial instanceof BaseTemplate
+        && ctx.start != null
+        && ctx.stop != null) {
+      ((BaseTemplate) partial)
+          .tokenStream(tokenStream)
+          .tokenSpan(ctx.start.getTokenIndex(), ctx.stop.getTokenIndex());
+    }
+
     return partial;
   }
 
@@ -747,6 +780,16 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
             .indent(indent)
             .filename(source.filename())
             .position(info.token.getLine(), info.token.getCharPositionInLine());
+
+    // Set token span for lossless source reconstruction
+    if (tokenStream != null
+        && partial instanceof BaseTemplate
+        && ctx.start != null
+        && ctx.stop != null) {
+      ((BaseTemplate) partial)
+          .tokenStream(tokenStream)
+          .tokenSpan(ctx.start.getTokenIndex(), ctx.stop.getTokenIndex());
+    }
 
     return partial;
   }
