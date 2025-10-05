@@ -97,6 +97,15 @@ class TemplateList extends BaseTemplate implements Iterable<Template> {
   }
 
   @Override
+  public String getSourceText() {
+    StringBuilder buffer = new StringBuilder();
+    for (Template node : nodes) {
+      buffer.append(node.getSourceText());
+    }
+    return buffer.toString();
+  }
+
+  @Override
   public Iterator<Template> iterator() {
     return nodes.iterator();
   }

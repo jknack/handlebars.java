@@ -98,6 +98,9 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
   /** The template source. Required. */
   private TemplateSource source;
 
+  /** The token stream for lossless source reconstruction. Optional. */
+  private org.antlr.v4.runtime.CommonTokenStream tokenStream;
+
   /** Flag to track dead spaces and lines. */
   private Boolean hasTag;
 
@@ -122,6 +125,22 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
   TemplateBuilder(final Handlebars handlebars, final TemplateSource source) {
     this.handlebars = notNull(handlebars, "The handlebars can't be null.");
     this.source = notNull(source, "The template source is required.");
+  }
+
+  /**
+   * Creates a new {@link TemplateBuilder} with token stream for lossless source reconstruction.
+   *
+   * @param handlebars A handlebars object. required.
+   * @param source The template source. required.
+   * @param tokenStream The token stream. optional.
+   */
+  TemplateBuilder(
+      final Handlebars handlebars,
+      final TemplateSource source,
+      final org.antlr.v4.runtime.CommonTokenStream tokenStream) {
+    this.handlebars = notNull(handlebars, "The handlebars can't be null.");
+    this.source = notNull(source, "The template source is required.");
+    this.tokenStream = tokenStream;
   }
 
   @Override
@@ -268,6 +287,17 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
       Template elsebody = visitBody(elseStmtChainContext.unlessBody);
       elseblock.body(elsebody);
 
+      // Set token span for lossless source reconstruction (else if blocks)
+      if (tokenStream != null
+          && elseStmtChainContext.start != null
+          && elseStmtChainContext.stop != null) {
+        elseblock
+            .tokenStream(tokenStream)
+            .tokenSpan(
+                elseStmtChainContext.start.getTokenIndex(),
+                elseStmtChainContext.stop.getTokenIndex());
+      }
+
       String inverseLabel = elseStmtChainContext.inverseToken.getText();
       if (inverseLabel.startsWith(startDelim)) {
         inverseLabel = inverseLabel.substring(startDelim.length());
@@ -295,6 +325,12 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
       paramStack.removeLast();
     }
     level -= 1;
+
+    // Set token span for lossless source reconstruction
+    if (tokenStream != null && ctx.start != null && ctx.stop != null) {
+      block.tokenStream(tokenStream).tokenSpan(ctx.start.getTokenIndex(), ctx.stop.getTokenIndex());
+    }
+
     return block;
   }
 
@@ -335,6 +371,12 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
     }
     hasTag(true);
     level -= 1;
+
+    // Set token span for lossless source reconstruction
+    if (tokenStream != null && ctx.start != null && ctx.stop != null) {
+      block.tokenStream(tokenStream).tokenSpan(ctx.start.getTokenIndex(), ctx.stop.getTokenIndex());
+    }
+
     return block;
   }
 
@@ -342,14 +384,16 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
   public Template visitVar(final VarContext ctx) {
     hasTag(false);
     SexprContext sexpr = ctx.sexpr();
-    return newVar(
+    return newVarWithTokens(
         sexpr.QID().getSymbol(),
         TagType.VAR,
         params(sexpr.param()),
         hash(sexpr.hash()),
         ctx.start.getText(),
         ctx.stop.getText(),
-        ctx.DECORATOR() != null);
+        ctx.DECORATOR() != null,
+        ctx.start,
+        ctx.stop);
   }
 
   @Override
@@ -365,28 +409,32 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
   public Template visitTvar(final TvarContext ctx) {
     hasTag(false);
     SexprContext sexpr = ctx.sexpr();
-    return newVar(
+    return newVarWithTokens(
         sexpr.QID().getSymbol(),
         TagType.TRIPLE_VAR,
         params(sexpr.param()),
         hash(sexpr.hash()),
         ctx.start.getText(),
         ctx.stop.getText(),
-        false);
+        false,
+        ctx.start,
+        ctx.stop);
   }
 
   @Override
   public Template visitAmpvar(final AmpvarContext ctx) {
     hasTag(false);
     SexprContext sexpr = ctx.sexpr();
-    return newVar(
+    return newVarWithTokens(
         sexpr.QID().getSymbol(),
         TagType.AMP_VAR,
         params(sexpr.param()),
         hash(sexpr.hash()),
         ctx.start.getText(),
         ctx.stop.getText(),
-        false);
+        false,
+        ctx.start,
+        ctx.stop);
   }
 
   /**
@@ -473,6 +521,37 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
         .endDelimiter(endDelimiter)
         .filename(source.filename())
         .position(name.getLine(), name.getCharPositionInLine());
+    return var;
+  }
+
+  /**
+   * Build a new {@link Variable} with token span for lossless source reconstruction.
+   *
+   * @param name The var's name.
+   * @param varType The var's type.
+   * @param params The var params.
+   * @param hash The var hash.
+   * @param startDelimiter The current start delimiter.
+   * @param endDelimiter The current end delimiter.
+   * @param decorator True, for var decorators.
+   * @param startToken The start token.
+   * @param stopToken The stop token.
+   * @return A new {@link Variable}.
+   */
+  private Variable newVarWithTokens(
+      final Token name,
+      final TagType varType,
+      final List<Param> params,
+      final Map<String, Param> hash,
+      final String startDelimiter,
+      final String endDelimiter,
+      final boolean decorator,
+      final Token startToken,
+      final Token stopToken) {
+    Variable var = newVar(name, varType, params, hash, startDelimiter, endDelimiter, decorator);
+    if (tokenStream != null && startToken != null && stopToken != null) {
+      var.tokenStream(tokenStream).tokenSpan(startToken.getTokenIndex(), stopToken.getTokenIndex());
+    }
     return var;
   }
 
@@ -577,6 +656,20 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
   @Override
   public Template visitTemplate(final TemplateContext ctx) {
     Template template = visitBody(ctx.body());
+
+    // Set token span for lossless source reconstruction
+    if (tokenStream != null && template instanceof BaseTemplate) {
+      BaseTemplate baseTemplate = (BaseTemplate) template;
+      // Use the body's start and stop tokens for the entire template
+      Token startToken = ctx.body().start;
+      Token stopToken = ctx.body().stop;
+      if (startToken != null && stopToken != null) {
+        baseTemplate
+            .tokenStream(tokenStream)
+            .tokenSpan(startToken.getTokenIndex(), stopToken.getTokenIndex());
+      }
+    }
+
     if (!handlebars.infiniteLoops() && template instanceof BaseTemplate) {
       template = infiniteLoop(source, (BaseTemplate) template);
     }
@@ -648,6 +741,16 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
             .filename(source.filename())
             .position(info.token.getLine(), info.token.getCharPositionInLine());
 
+    // Set token span for lossless source reconstruction
+    if (tokenStream != null
+        && partial instanceof BaseTemplate
+        && ctx.start != null
+        && ctx.stop != null) {
+      ((BaseTemplate) partial)
+          .tokenStream(tokenStream)
+          .tokenSpan(ctx.start.getTokenIndex(), ctx.stop.getTokenIndex());
+    }
+
     return partial;
   }
 
@@ -677,6 +780,16 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
             .indent(indent)
             .filename(source.filename())
             .position(info.token.getLine(), info.token.getCharPositionInLine());
+
+    // Set token span for lossless source reconstruction
+    if (tokenStream != null
+        && partial instanceof BaseTemplate
+        && ctx.start != null
+        && ctx.stop != null) {
+      ((BaseTemplate) partial)
+          .tokenStream(tokenStream)
+          .tokenSpan(ctx.start.getTokenIndex(), ctx.stop.getTokenIndex());
+    }
 
     return partial;
   }
@@ -774,6 +887,11 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
           prev = candidate;
         }
       }
+    }
+
+    // Set token span for lossless source reconstruction
+    if (tokenStream != null && ctx.start != null && ctx.stop != null) {
+      list.tokenStream(tokenStream).tokenSpan(ctx.start.getTokenIndex(), ctx.stop.getTokenIndex());
     }
 
     return list;

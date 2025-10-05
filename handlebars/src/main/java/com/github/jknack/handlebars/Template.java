@@ -135,6 +135,20 @@ public interface Template {
   String text();
 
   /**
+   * Provide the exact original source text including all whitespace. This method provides lossless
+   * source reconstruction by using whitespace preserved on hidden channels during parsing.
+   *
+   * <p>If token information is not available (for templates created without token streams), this
+   * method falls back to {@link #text()}.
+   *
+   * @return The exact original source text, or reconstructed text if token info unavailable.
+   * @since 4.6.0
+   */
+  default String getSourceText() {
+    return text();
+  }
+
+  /**
    * Convert this template to JavaScript template (a.k.a precompiled template). Compilation is done
    * by handlebars.js and a JS Engine (usually Rhino).
    *
