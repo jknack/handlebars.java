@@ -32,7 +32,7 @@ jobs:
       matrix:
         include:
           - language: java
-            build-mode: autobuild # This mode only analyzes Java. Set this to 'autobuild' or 'manual' to analyze Kotlin too.
+            build-mode: manual # This mode only analyzes Java. Set this to 'autobuild' or 'manual' to analyze Kotlin too.
 
     steps:
       - name: Checkout repository
