@@ -46,9 +46,15 @@ jobs:
 
       # Initializes the CodeQL tools for scanning.
 
-      # Automatically attempts to build Java (Maven/Gradle)
-      - name: Autobuild
-        uses: github/codeql-action/autobuild@v3
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          java-version: '11' # Specify the JDK version your project needs
+          distribution: 'temurin'
+          cache: maven
 
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v3
@@ -71,11 +77,7 @@ jobs:
       - if: matrix.build-mode == 'manual'
         shell: bash
         run: |
-          echo 'If you are using a "manual" build mode for one or more of the' \
-            'languages you are analyzing, replace this with the commands to build' \
-            'your code, for example:'
-          echo '  make bootstrap'
-          echo '  make release'
+          mvn -B clean install -DskipTests
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v3
