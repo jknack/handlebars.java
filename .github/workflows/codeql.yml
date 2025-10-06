@@ -31,20 +31,9 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - language: actions
-            build-mode: none
           - language: java
             build-mode: manual # This mode only analyzes Java. Set this to 'autobuild' or 'manual' to analyze Kotlin too.
-          - language: javascript-typescript
-            build-mode: autobuild
-        # CodeQL supports the following values keywords for 'language': 'actions', 'c-cpp', 'csharp', 'go', 'java-kotlin', 'javascript-typescript', 'python', 'ruby', 'rust', 'swift'
-        # Use `c-cpp` to analyze code written in C, C++ or both
-        # Use 'java-kotlin' to analyze code written in Java, Kotlin or both
-        # Use 'javascript-typescript' to analyze code written in JavaScript, TypeScript or both
-        # To learn more about changing the languages that are analyzed or customizing the build mode for your analysis,
-        # see https://docs.github.com/en/code-security/code-scanning/creating-an-advanced-setup-for-code-scanning/customizing-your-advanced-setup-for-code-scanning.
-        # If you are analyzing a compiled language, you can modify the 'build-mode' for that language to customize how
-        # your codebase is analyzed, see https://docs.github.com/en/code-security/code-scanning/creating-an-advanced-setup-for-code-scanning/codeql-code-scanning-for-compiled-languages
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -64,10 +53,10 @@ jobs:
       - name: Mustache Specs
         run: |
           git submodule update --init --recursive
-      - name: Set up JDK ${{ matrix.java_version }}
+      - name: Set up JDK 11
         uses: actions/setup-java@c5195efecf7bdfc987ee8bae7a71cb8b11521c00
         with:
-          java-version: ${{ matrix.java_version }}
+          java-version: 11
           distribution: "temurin"
           cache: maven
       - name: Install
@@ -134,18 +123,9 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - language: actions
-            build-mode: none
           - language: javascript-typescript
             build-mode: manual
-        # CodeQL supports the following values keywords for 'language': 'actions', 'c-cpp', 'csharp', 'go', 'java-kotlin', 'javascript-typescript', 'python', 'ruby', 'rust', 'swift'
-        # Use `c-cpp` to analyze code written in C, C++ or both
-        # Use 'java-kotlin' to analyze code written in Java, Kotlin or both
-        # Use 'javascript-typescript' to analyze code written in JavaScript, TypeScript or both
-        # To learn more about changing the languages that are analyzed or customizing the build mode for your analysis,
-        # see https://docs.github.com/en/code-security/code-scanning/creating-an-advanced-setup-for-code-scanning/customizing-your-advanced-setup-for-code-scanning.
-        # If you are analyzing a compiled language, you can modify the 'build-mode' for that language to customize how
-        # your codebase is analyzed, see https://docs.github.com/en/code-security/code-scanning/creating-an-advanced-setup-for-code-scanning/codeql-code-scanning-for-compiled-languages
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -165,10 +145,10 @@ jobs:
       - name: Mustache Specs
         run: |
           git submodule update --init --recursive
-      - name: Set up JDK ${{ matrix.javascript_version }}
+      - name: Set up JDK 11
         uses: actions/setup-java@c5195efecf7bdfc987ee8bae7a71cb8b11521c00
         with:
-          java-version: ${{ matrix.javascript_version }}
+          java-version: 11
           distribution: "temurin"
           cache: maven
       - name: Install
