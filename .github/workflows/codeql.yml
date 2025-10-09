@@ -8,7 +8,7 @@ on:
 
 
 jobs:
-  analyze:
+  analyze-java:
     name: Analyze Java
     # Runner size impacts CodeQL analysis time. To learn more, please see:
     #   - https://gh.io/recommended-hardware-resources-for-running-codeql
@@ -85,7 +85,7 @@ jobs:
           category: "/language:${{matrix.language}}"
 
 
-  analyze2:
+  analyze-js:
     name: Analyze Javascript
     runs-on: ubuntu-latest
     permissions:
