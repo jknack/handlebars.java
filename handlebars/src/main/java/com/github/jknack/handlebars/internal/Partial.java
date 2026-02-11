@@ -203,6 +203,43 @@ class Partial extends HelperResolver {
           }
         }
       }
+
+      // Check if preserveParentContext mode is enabled for pure parent path navigation:
+      // Supports: this, .., ../.. (does not support mixed paths like ../foo/bar or hash arguments)
+      if (handlebars.preserveParentContext()
+          && ("this".equals(this.scontext) || this.scontext.startsWith(".."))) {
+
+        if ("this".equals(this.scontext)) {
+          // Use current context directly, don't create new context
+          template.apply(context, writer);
+          return;
+        }
+
+        // Handle .. and ../.. paths
+        Context currentContext = context;
+        String remainingContext = this.scontext;
+
+        // Navigate up the parent chain for each ../ encountered
+        while (remainingContext.startsWith("../") && currentContext != null) {
+          currentContext = currentContext.parent();
+          remainingContext = remainingContext.substring(3);
+        }
+
+        if ("".equals(remainingContext) && currentContext != null) {
+          // "../" or "../../" etc. - use the navigated context
+          template.apply(currentContext, writer);
+          return;
+        }
+
+        if ("..".equals(remainingContext) && currentContext != null
+            && currentContext.parent() != null) {
+          // Single ".." - navigate to parent
+          template.apply(currentContext.parent(), writer);
+          return;
+        }
+      }
+
+      // Traditional mode: create new PartialCtx (default behavior for backward compatibility)
       context.data(Context.CALLEE, this);
       Map<String, Object> hash = hash(context);
       // HACK: hide/override local attribute with parent version (if any)
