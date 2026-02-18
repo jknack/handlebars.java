@@ -205,7 +205,8 @@ class Partial extends HelperResolver {
       }
 
       // Check if preserveParentContext mode is enabled for pure parent path navigation:
-      // Supports: this, .., ../.. (does not support mixed paths like ../foo/bar or hash arguments)
+      // Supports: this, .., ../.., ../../xxx, ../../xxx/yyy (nested property paths)
+      // Uses PathCompiler to resolve property paths like ../../target/nested/value
       if (handlebars.preserveParentContext()
           && ("this".equals(this.scontext) || this.scontext.startsWith(".."))) {
 

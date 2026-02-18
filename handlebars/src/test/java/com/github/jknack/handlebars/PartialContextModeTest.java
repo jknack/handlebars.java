@@ -8,6 +8,8 @@ package com.github.jknack.handlebars;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 
@@ -418,6 +420,103 @@ public class PartialContextModeTest extends AbstractTest {
       String result = template.apply(child);
 
       assertEquals("Child-Root", result);
+    }
+
+    /**
+     * Test rendering with nested property path in context parameter.
+     *
+     * <p>When preserveParentContext is enabled and using explicit context chain,
+     * {{> partial ../../target/nested/value}} should:
+     * <ol>
+     *   <li>Navigate up two context levels (via ../..)</li>
+     *   <li>Access 'target.nested.value' property path at that level</li>
+     *   <li>Render the partial with that value as context</li>
+     * </ol>
+     *
+     * <p>This tests the new nested property path resolution feature using PathCompiler.
+     * Note: This test manually creates the context chain to ensure proper parent-child relationships.
+     */
+    @Test
+    public void testRender_PreserveMode_NestedPropertyPath() throws IOException {
+      Handlebars hbs = new Handlebars().preserveParentContext(true);
+      MapTemplateLoader loader = new MapTemplateLoader();
+      loader.define("value", "{{this}}");  // Partial renders current context value
+      hbs.with(loader);
+
+      // Create a proper context chain: root -> level1 -> level2
+      // root.target.nested.value = "NESTED_VALUE"
+      Map<String, Object> nested = $("value", "NESTED_VALUE");
+      Map<String, Object> target = new HashMap<>();
+      target.put("nested", nested);
+
+      // Build context chain: create root first, then children
+      // When template is applied to level2, parent() navigates up to level1, then root
+      Context root = Context.newContext($("name", "root", "target", target));
+      Context level1 = Context.newContext(root, $("name", "level1"));
+      Context level2 = Context.newContext(level1, $("name", "level2"));
+
+      // Template: "{{> value ../../target/nested/value}}"
+      // - ../../ navigates up 2 levels to root
+      // - target/nested/value resolves to root.target.nested.value
+      // - partial "value" renders {{this}} which should render "NESTED_VALUE"
+      Template template = hbs.compileInline("{{> value ../../target/nested/value}}");
+      String result = template.apply(level2);
+
+      assertEquals("NESTED_VALUE", result);
+    }
+
+    /**
+     * Test rendering with single-level property path in context parameter.
+     *
+     * <p>Tests the basic case of accessing a single property after parent navigation.
+     */
+    @Test
+    public void testRender_PreserveMode_SinglePropertyPath() throws IOException {
+      Handlebars hbs = new Handlebars().preserveParentContext(true);
+      MapTemplateLoader loader = new MapTemplateLoader();
+      loader.define("value", "{{this}}");
+      hbs.with(loader);
+
+      // Create context chain: parent -> child
+      // parent.targetValue = "TARGET"
+      Context parent = Context.newContext($("name", "parent", "targetValue", "TARGET"));
+      Context child = Context.newContext(parent, $("name", "child"));
+
+      // Template: "{{> value ../targetValue}}"
+      // - .. navigates up 1 level to parent
+      // - targetValue resolves to parent.targetValue
+      Template template = hbs.compileInline("{{> value ../targetValue}}");
+      String result = template.apply(child);
+
+      assertEquals("TARGET", result);
+    }
+
+    /**
+     * Test that partial with nested property path handles missing properties gracefully.
+     *
+     * <p>When a property in the path doesn't exist, the behavior should be consistent
+     * with Handlebars' standard missing property handling (renders empty string).
+     */
+    @Test
+    public void testRender_PreserveMode_NestedPropertyPath_MissingProperty() throws IOException {
+      Handlebars hbs = new Handlebars().preserveParentContext(true);
+      MapTemplateLoader loader = new MapTemplateLoader();
+      loader.define("value", "{{this}}");
+      hbs.with(loader);
+
+      // Create context chain: parent -> child
+      // Neither parent nor child has the target property
+      Context parent = Context.newContext($("name", "parent"));
+      Context child = Context.newContext(parent, $("name", "child"));
+
+      // Template: "{{> value ../missingProperty}}"
+      // - .. navigates up 1 level to parent
+      // - missingProperty resolves to null (not found)
+      Template template = hbs.compileInline("{{> value ../missingProperty}}");
+      String result = template.apply(child);
+
+      // When property is missing, should render empty string
+      assertEquals("", result);
     }
   }
 }
