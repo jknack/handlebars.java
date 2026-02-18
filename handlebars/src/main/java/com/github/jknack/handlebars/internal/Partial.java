@@ -237,6 +237,28 @@ class Partial extends HelperResolver {
           template.apply(currentContext.parent(), writer);
           return;
         }
+
+        // Handle paths like ../../xxx or ../../xxx/yyy
+        // Navigate to the specified child from the navigated parent context
+        // Use Handlebars' built-in path resolution mechanism via context.get()
+        if (currentContext != null && !"".equals(remainingContext)) {
+          // Compile the remaining path (e.g., "xxx" or "xxx/yyy") using PathCompiler
+          // This leverages Handlebars' existing value resolution mechanism
+          List<PathExpression> compiledPath = PathCompiler.compile(remainingContext);
+          Object resolvedValue = currentContext.get(compiledPath);
+
+          // Create a new context with the resolved value as the model
+          // This preserves the parent-child relationship correctly
+          Context targetContext = Context.newContext(currentContext, resolvedValue);
+
+          // Apply template with the resolved context
+          context.data(Context.CALLEE, this);
+          Map<String, Object> hash = hash(context);
+          override(context, hash, OVERRIDE_PROPERTIES);
+          template.apply(targetContext, writer);
+          context.data(Context.CALLEE, callee);
+          return;
+        }
       }
 
       // Traditional mode: create new PartialCtx (default behavior for backward compatibility)
