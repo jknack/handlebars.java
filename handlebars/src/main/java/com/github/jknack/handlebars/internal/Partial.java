@@ -203,6 +203,67 @@ class Partial extends HelperResolver {
           }
         }
       }
+
+      // Check if preserveParentContext mode is enabled for pure parent path navigation:
+      // Supports: this, .., ../.., ../../xxx, ../../xxx/yyy (nested property paths)
+      // Uses PathCompiler to resolve property paths like ../../target/nested/value
+      if (handlebars.preserveParentContext()
+          && ("this".equals(this.scontext) || this.scontext.startsWith(".."))) {
+
+        if ("this".equals(this.scontext)) {
+          // Use current context directly, don't create new context
+          template.apply(context, writer);
+          return;
+        }
+
+        // Handle .. and ../.. paths
+        Context currentContext = context;
+        String remainingContext = this.scontext;
+
+        // Navigate up the parent chain for each ../ encountered
+        while (remainingContext.startsWith("../") && currentContext != null) {
+          currentContext = currentContext.parent();
+          remainingContext = remainingContext.substring(3);
+        }
+
+        if ("".equals(remainingContext) && currentContext != null) {
+          // "../" or "../../" etc. - use the navigated context
+          template.apply(currentContext, writer);
+          return;
+        }
+
+        if ("..".equals(remainingContext) && currentContext != null
+            && currentContext.parent() != null) {
+          // Single ".." - navigate to parent
+          template.apply(currentContext.parent(), writer);
+          return;
+        }
+
+        // Handle paths like ../../xxx or ../../xxx/yyy
+        // After navigating up parent chain, remaining path is resolved using PathCompiler
+        // Example: "../../target/nested/value" -> navigate up 2 levels, resolve "target/nested/value"
+        if (currentContext != null && !"".equals(remainingContext)) {
+          // Compile the remaining path (e.g., "xxx" or "xxx/yyy") using PathCompiler
+          // This leverages Handlebars' existing value resolution mechanism
+          List<PathExpression> compiledPath = PathCompiler.compile(remainingContext);
+          Object resolvedValue = currentContext.get(compiledPath);
+
+          // Create a new context with the resolved value as the model
+          // This preserves the parent-child relationship correctly
+          // If resolvedValue is null, the template will render empty string (Handlebars standard behavior)
+          Context targetContext = Context.newContext(currentContext, resolvedValue);
+
+          // Apply template with the resolved context
+          context.data(Context.CALLEE, this);
+          Map<String, Object> hash = hash(context);
+          override(context, hash, OVERRIDE_PROPERTIES);
+          template.apply(targetContext, writer);
+          context.data(Context.CALLEE, callee);
+          return;
+        }
+      }
+
+      // Traditional mode: create new PartialCtx (default behavior for backward compatibility)
       context.data(Context.CALLEE, this);
       Map<String, Object> hash = hash(context);
       // HACK: hide/override local attribute with parent version (if any)

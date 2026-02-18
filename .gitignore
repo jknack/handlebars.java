@@ -26,3 +26,9 @@ jacoco.exec
 out
 tmp
 tmp/spotless
+.claude.json
+.claudeingore
+.vscode/
+CLAUDE.md
+logs/
+

@@ -846,6 +846,27 @@ Hello edgar!
  The Mustache Spec has some rules for removing spaces and new lines. This feature is disabled by default.
  You can turn this on by setting the: ```Handlebars.prettyPrint(true)```.
 
+### Preserve Parent Context in Partials
+ By default, Handlebars.java creates a new partial context when invoking a partial, which means the `{{..}}` operator in a partial references the partial call site rather than the original parent scope.
+
+ You can change this behavior by setting: ```Handlebars.preserveParentContext(true)```.
+
+ When enabled, partials like `{{> partial this}}` or `{{> partial ..}}` will preserve the parent context chain, allowing `{{..}}` inside partials to reference the original parent scope.
+
+ Example:
+
+```java
+Handlebars handlebars = new Handlebars().preserveParentContext(true);
+```
+
+ When `preserveParentContext` is enabled:
+ * `{{> partial}}` uses the current context directly
+ * `{{> partial this}}` uses the current context directly
+ * `{{> partial ..}}` navigates up one parent level
+ * `{{> partial ../..}}` navigates up multiple parent levels
+
+ Default is: `false` (for backward compatibility).
+
 
 # Modules
 
