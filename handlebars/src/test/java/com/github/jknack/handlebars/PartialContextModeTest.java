@@ -518,5 +518,60 @@ public class PartialContextModeTest extends AbstractTest {
       // When property is missing, should render empty string
       assertEquals("", result);
     }
+
+    /**
+     * Test rendering with path containing trailing slash.
+     *
+     * <p>Edge case test to ensure PathCompiler handles trailing slash gracefully.
+     * The path "../../foo/" should navigate up parent levels and attempt to resolve "foo/".
+     */
+    @Test
+    public void testRender_PreserveMode_TrailingSlash() throws IOException {
+      Handlebars hbs = new Handlebars().preserveParentContext(true);
+      MapTemplateLoader loader = new MapTemplateLoader();
+      loader.define("value", "{{this}}");
+      hbs.with(loader);
+
+      // Create context chain: parent -> child
+      // parent.foo = "FOO_VALUE"
+      Context parent = Context.newContext($("name", "parent", "foo", "FOO_VALUE"));
+      Context child = Context.newContext(parent, $("name", "child"));
+
+      // Template: "{{> value ../foo/}}"
+      // - .. navigates up 1 level to parent
+      // - foo/ attempts to resolve with trailing slash
+      Template template = hbs.compileInline("{{> value ../foo/}}");
+      String result = template.apply(child);
+
+      // PathCompiler should handle trailing slash and resolve the property
+      assertEquals("FOO_VALUE", result);
+    }
+
+    /**
+     * Test navigation beyond available parent levels.
+     *
+     * <p>Edge case test to ensure graceful handling when navigating up more levels
+     * than available in the context chain.
+     */
+    @Test
+    public void testRender_PreserveMode_NavigationBeyondParents() throws IOException {
+      Handlebars hbs = new Handlebars().preserveParentContext(true);
+      MapTemplateLoader loader = new MapTemplateLoader();
+      loader.define("value", "{{this}}");
+      hbs.with(loader);
+
+      // Create context chain with only 2 levels: child -> parent
+      Context parent = Context.newContext($("name", "parent", "value", "PARENT_VALUE"));
+      Context child = Context.newContext(parent, $("name", "child"));
+
+      // Template: "{{> value ../../../value}}"
+      // - Attempts to navigate up 3 levels but only 2 are available
+      // - Should gracefully handle by navigating to root (null parent stops navigation)
+      Template template = hbs.compileInline("{{> value ../../../value}}");
+      String result = template.apply(child);
+
+      // When navigation exceeds parent chain, should render empty string gracefully
+      assertEquals("", result);
+    }
   }
 }

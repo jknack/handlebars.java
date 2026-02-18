@@ -240,8 +240,8 @@ class Partial extends HelperResolver {
         }
 
         // Handle paths like ../../xxx or ../../xxx/yyy
-        // Navigate to the specified child from the navigated parent context
-        // Use Handlebars' built-in path resolution mechanism via context.get()
+        // After navigating up parent chain, remaining path is resolved using PathCompiler
+        // Example: "../../target/nested/value" -> navigate up 2 levels, resolve "target/nested/value"
         if (currentContext != null && !"".equals(remainingContext)) {
           // Compile the remaining path (e.g., "xxx" or "xxx/yyy") using PathCompiler
           // This leverages Handlebars' existing value resolution mechanism
@@ -250,6 +250,7 @@ class Partial extends HelperResolver {
 
           // Create a new context with the resolved value as the model
           // This preserves the parent-child relationship correctly
+          // If resolvedValue is null, the template will render empty string (Handlebars standard behavior)
           Context targetContext = Context.newContext(currentContext, resolvedValue);
 
           // Apply template with the resolved context
