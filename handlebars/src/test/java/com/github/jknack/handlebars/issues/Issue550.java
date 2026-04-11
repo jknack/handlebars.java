@@ -25,7 +25,7 @@ public class Issue550 extends v4Test {
                 "<div>{{text}}</div>")),
         "define('foo.hbs', ['handlebars'], function(Handlebars) {\n"
             + "  var template ="
-            + " Handlebars.template({\"1\":function(container,depth0,helpers,partials,data) {\n"
+            + " Handlebars.template({\"0\":function(container,depth0,helpers,partials,data) {\n"
             + "    var stack1, lookupProperty = container.lookupProperty || function(parent,"
             + " propertyName) {\n"
             + "        if (Object.prototype.hasOwnProperty.call(parent, propertyName)) {\n"
@@ -52,7 +52,7 @@ public class Issue550 extends v4Test {
             + "  return \"<div>Some repeated pattern \"\n"
             + "    + ((stack1 = lookupProperty(helpers,\"each\").call(depth0 != null ? depth0 :"
             + " (container.nullContext || {}),(depth0 != null ? lookupProperty(depth0,\"listItem\")"
-            + " : depth0),{\"name\":\"each\",\"hash\":{},\"fn\":container.program(1, data,"
+            + " : depth0),{\"name\":\"each\",\"hash\":{},\"fn\":container.program(0, data,"
             + " 0),\"inverse\":container.noop,\"data\":data,\"loc\":{\"start\":{\"line\":1,\"column\":27},\"end\":{\"line\":1,\"column\":65}}}))"
             + " != null ? stack1 : \"\")\n"
             + "    + \" </div>\";\n"

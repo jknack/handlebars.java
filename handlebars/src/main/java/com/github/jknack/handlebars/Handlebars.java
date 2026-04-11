@@ -324,7 +324,7 @@ public class Handlebars implements HelperRegistry {
   private String endDelimiter = DELIM_END;
 
   /** Location of the handlebars.js file. */
-  private String handlebarsJsFile = "/handlebars-v4.7.7.js";
+  private String handlebarsJsFile = "/handlebars-v4.7.9.js";
 
   /** List of formatters. */
   private List<Formatter> formatters = new ArrayList<>();
@@ -1450,7 +1450,11 @@ public class Handlebars implements HelperRegistry {
 
         this.engine = new ScriptEngineManager().getEngineByName("nashorn");
 
-        Throwing.run(() -> engine.eval(Files.read(this.handlebarsJsFile, charset)));
+        Throwing.run(() -> {
+          //polyfill globalThis as it is used in handlebars 4.7.9 and is not supported by nashorn
+          engine.eval("var globalThis = this;");
+          engine.eval(Files.read(this.handlebarsJsFile, charset));
+        });
       }
       return this.engine;
     }
