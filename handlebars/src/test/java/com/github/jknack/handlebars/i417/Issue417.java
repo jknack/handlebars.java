@@ -39,7 +39,7 @@ public class Issue417 extends AbstractTest {
             + "    + \"!\";\n"
             + "},\"useData\":true}",
         new Handlebars()
-            .handlebarsJsFile("/handlebars-v4.7.7.js")
+            .handlebarsJsFile("/handlebars-v4.7.9.js")
             .compileInline("Hi {{var}}!")
             .toJavaScript());
   }
