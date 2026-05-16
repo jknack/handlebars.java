@@ -701,7 +701,7 @@ public class Options {
     if (context != null) {
       return context;
     }
-    return Context.newContext(null);
+    return Context.newBuilder(null).childFirstResolution(handlebars.childFirstResolution()).build();
   }
 
   /**

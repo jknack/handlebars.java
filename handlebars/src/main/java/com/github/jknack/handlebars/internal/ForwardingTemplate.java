@@ -147,9 +147,16 @@ class ForwardingTemplate implements Template {
    * @param candidate The candidate object.
    * @return A context.
    */
-  private static Context wrap(final Object candidate) {
+  private Context wrap(final Object candidate) {
     if (candidate instanceof Context) {
       return (Context) candidate;
+    }
+    // Try to get childFirstResolution from the wrapped template if it's a BaseTemplate
+    if (template instanceof BaseTemplate) {
+      BaseTemplate baseTemplate = (BaseTemplate) template;
+      return Context.newBuilder(candidate)
+          .childFirstResolution(baseTemplate.handlebars.childFirstResolution())
+          .build();
     }
     return Context.newContext(candidate);
   }
@@ -160,9 +167,16 @@ class ForwardingTemplate implements Template {
    * @param candidate The candidate object.
    * @return A context.
    */
-  private static Context wrap(final Context candidate) {
+  private Context wrap(final Context candidate) {
     if (candidate != null) {
       return candidate;
+    }
+    // Try to get childFirstResolution from the wrapped template if it's a BaseTemplate
+    if (template instanceof BaseTemplate) {
+      BaseTemplate baseTemplate = (BaseTemplate) template;
+      return Context.newBuilder(null)
+          .childFirstResolution(baseTemplate.handlebars.childFirstResolution())
+          .build();
     }
     return Context.newContext(null);
   }

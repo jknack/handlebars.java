@@ -66,6 +66,7 @@ public class Context {
       this.parent = parent;
       this.data = parent.data;
       this.resolver = parent.resolver;
+      this.childFirstResolution = parent.childFirstResolution;
     }
 
     @Override
@@ -84,7 +85,13 @@ public class Context {
 
     @Override
     protected Context newChildContext(final Object model) {
-      return new ParentFirst(model);
+      if (childFirstResolution) {
+        // Child-first
+        return new Context(model);
+      } else {
+        // Parent-first: default behavior
+        return new ParentFirst(model);
+      }
     }
   }
 
@@ -116,7 +123,13 @@ public class Context {
 
     @Override
     protected Context newChildContext(final Object model) {
-      return new ParentFirst(model);
+      if (childFirstResolution) {
+        // Child-first
+        return new Context(model);
+      } else {
+        // Parent-first: default behavior
+        return new ParentFirst(model);
+      }
     }
   }
 
@@ -143,6 +156,7 @@ public class Context {
       this.parent = parent;
       this.data = parent.data;
       this.resolver = parent.resolver;
+      this.childFirstResolution = parent.childFirstResolution;
     }
 
     @Override
@@ -307,6 +321,17 @@ public class Context {
     }
 
     /**
+     * Set whether child context is preferred over parent context when resolving variables.
+     *
+     * @param childFirstResolution True for child-first resolution, false for parent-first.
+     * @return This builder.
+     */
+    public Builder childFirstResolution(final boolean childFirstResolution) {
+      context.childFirstResolution = childFirstResolution;
+      return this;
+    }
+
+    /**
      * Build a context stack.
      *
      * @return A new context stack.
@@ -403,6 +428,12 @@ public class Context {
 
   /** The value resolver. */
   protected ValueResolver resolver;
+
+  /**
+   * If true, child context is preferred over parent context when resolving variables. This flag
+   * controls whether BlockParam and ParentFirst create ParentFirst children.
+   */
+  protected boolean childFirstResolution;
 
   /**
    * Creates a new context.
@@ -752,6 +783,7 @@ public class Context {
     child.setResolver(this.resolver);
     child.parent = this;
     child.data = this.data;
+    child.childFirstResolution = this.childFirstResolution;
     return child;
   }
 
@@ -776,6 +808,7 @@ public class Context {
     Context ctx = Context.newContext(model);
     ctx.data = context.data;
     ctx.resolver = context.resolver;
+    ctx.childFirstResolution = context.childFirstResolution;
     return ctx;
   }
 }

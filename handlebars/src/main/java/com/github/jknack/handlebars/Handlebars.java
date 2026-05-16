@@ -336,6 +336,20 @@ public class Handlebars implements HelperRegistry {
   private boolean parentScopeResolution = true;
 
   /**
+   * If true, child context fields will be preferred over parent context fields when resolving
+   * variables. This affects contexts created by helpers like {{#with}}, {{#each}}, etc.
+   *
+   * <p>When false (default), contexts use parent-first resolution where parent fields can shadow
+   * child fields. This is the behavior of handlebars.js with block parameters.
+   *
+   * <p>When true, contexts use child-first resolution where child fields are checked before parent
+   * fields. This is more intuitive for Mustache-style templates.
+   *
+   * <p>Default is: false for backward compatibility.
+   */
+  private boolean childFirstResolution = false;
+
+  /**
    * If true partial blocks will be evaluated to allow side effects by defining inline blocks within
    * the partials blocks. Attention: This feature slows down the performance severly if your
    * templates use deeply nested partial blocks. Handlebars works *much* faster if this feature is
@@ -1238,6 +1252,33 @@ public class Handlebars implements HelperRegistry {
    */
   public Handlebars parentScopeResolution(final boolean parentScopeResolution) {
     setParentScopeResolution(parentScopeResolution);
+    return this;
+  }
+
+  /**
+   * @return True if child context is preferred over parent context when resolving variables.
+   */
+  public boolean childFirstResolution() {
+    return childFirstResolution;
+  }
+
+  /**
+   * If true, child context fields will be preferred over parent context fields.
+   *
+   * @param childFirstResolution True for child-first resolution, false for parent-first.
+   */
+  public void setChildFirstResolution(final boolean childFirstResolution) {
+    this.childFirstResolution = childFirstResolution;
+  }
+
+  /**
+   * If true, child context fields will be preferred over parent context fields.
+   *
+   * @param childFirstResolution True for child-first resolution, false for parent-first.
+   * @return This handlebars object.
+   */
+  public Handlebars childFirstResolution(final boolean childFirstResolution) {
+    setChildFirstResolution(childFirstResolution);
     return this;
   }
 

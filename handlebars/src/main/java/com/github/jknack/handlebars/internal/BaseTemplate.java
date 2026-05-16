@@ -121,11 +121,13 @@ abstract class BaseTemplate implements Template {
    * @param candidate The candidate object.
    * @return A context.
    */
-  private static Context wrap(final Object candidate) {
+  private Context wrap(final Object candidate) {
     if (candidate instanceof Context) {
       return (Context) candidate;
     }
-    return Context.newContext(candidate);
+    return Context.newBuilder(candidate)
+        .childFirstResolution(handlebars.childFirstResolution())
+        .build();
   }
 
   /**
@@ -218,7 +220,7 @@ abstract class BaseTemplate implements Template {
    * @param template The target template.
    * @return A new {@link TypeSafeTemplate}.
    */
-  private static Object newTypeSafeTemplate(final Class<?> rootType, final Template template) {
+  private Object newTypeSafeTemplate(final Class<?> rootType, final Template template) {
     return Proxy.newProxyInstance(
         rootType.getClassLoader(),
         new Class[] {rootType},
@@ -275,7 +277,11 @@ abstract class BaseTemplate implements Template {
             }
 
             if ("apply".equals(methodName)) {
-              Context context = Context.newBuilder(args[0]).combine(attributes).build();
+              Context context =
+                  Context.newBuilder(args[0])
+                      .combine(attributes)
+                      .childFirstResolution(handlebars.childFirstResolution())
+                      .build();
               attributes.clear();
               if (args.length == 2) {
                 template.apply(context, (Writer) args[1]);
