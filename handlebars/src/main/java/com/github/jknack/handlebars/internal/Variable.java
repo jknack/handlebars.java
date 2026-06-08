@@ -67,9 +67,6 @@ class Variable extends HelperResolver {
   /** Block params. */
   private static final List<String> BPARAMS = Collections.emptyList();
 
-  /** True, when no param/hash. */
-  private boolean noArg;
-
   /** Empty var. */
   private Template emptyVar;
 
@@ -98,7 +95,6 @@ class Variable extends HelperResolver {
     this.escapingStrategy =
         type == TagType.VAR ? handlebars.getEscapingStrategy() : EscapingStrategy.NOOP;
     this.formatter = handlebars.getFormatter();
-    this.noArg = params.size() == 0 && hash.size() == 0;
     postInit();
   }
 
@@ -135,8 +131,9 @@ class Variable extends HelperResolver {
    */
   @SuppressWarnings("unchecked")
   public Object value(final Context scope, final Writer writer) throws IOException {
-    boolean blockParam = scope.isBlockParams() && noArg;
-    if (helper != null && !blockParam) {
+    boolean blockParam = scope.isBlockParams();
+    Object value = scope.get(path);
+    if (helper != null && (!blockParam || (path.size() == 1 && value == null))) {
       Options options =
           new Options(
               handlebars,
@@ -152,7 +149,6 @@ class Variable extends HelperResolver {
       options.data(Context.PARAM_SIZE, this.params.size());
       return helper.apply(determineContext(scope), options);
     } else {
-      Object value = scope.get(path);
       if (value == null) {
         if (missing != null) {
           Options options =
