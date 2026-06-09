@@ -5,7 +5,6 @@
  */
 package com.github.jknack.handlebars.i1163;
 
-import java.awt.*;
 import java.io.IOException;
 import java.util.List;
 

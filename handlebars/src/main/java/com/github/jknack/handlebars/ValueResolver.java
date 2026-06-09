@@ -57,8 +57,7 @@ public interface ValueResolver {
   /**
    * Default value resolvers. Including:
    *
-   * <p>- {@link MapValueResolver} - {@link JavaBeanValueResolver} - {@link MethodValueResolver}. On
-   * Java 14 or higher.
+   * <p>- {@link MapValueResolver} - {@link JavaBeanValueResolver} - {@link MethodValueResolver}.
    *
    * @return Immutable list of value resolvers.
    */
