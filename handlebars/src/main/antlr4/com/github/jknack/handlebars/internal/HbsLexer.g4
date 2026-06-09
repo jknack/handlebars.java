@@ -9,6 +9,8 @@ lexer grammar HbsLexer;
 
   boolean whiteSpaceControl;
 
+  public static final int WHITESPACE_CHANNEL = 1;
+
   public HbsLexer(CharStream input, String start, String end) {
     this(input);
     this.start = start;
@@ -374,5 +376,5 @@ RP
   ;
 
 WS
- : [ \t\r\n] -> skip
+ : [ \t\r\n] -> channel(1)
  ;

@@ -112,6 +112,11 @@ class ForwardingTemplate implements Template {
   }
 
   @Override
+  public String getSourceText() {
+    return template.getSourceText();
+  }
+
+  @Override
   public String toJavaScript() {
     return template.toJavaScript();
   }
