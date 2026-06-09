@@ -366,6 +366,26 @@ public class Handlebars implements HelperRegistry {
    */
   private boolean preEvaluatePartialBlocks = true;
 
+  /**
+   * If true, preserves the parent context when invoking partials without creating a new PartialCtx.
+   * This allows {{..}} in partials to reference the original parent scope.
+   *
+   * <p>When enabled:
+   * <ul>
+   *   <li>{{> partial}} uses the current context directly</li>
+   *   <li>{{> partial this}} uses the current context directly</li>
+   *   <li>{{> partial ..}} navigates up one parent level</li>
+   *   <li>{{> partial ../..}} navigates up multiple parent levels</li>
+   * </ul>
+   *
+   * <p>When disabled (default): Creates a new PartialCtx for each partial (traditional behavior).
+   *
+   * <p>Default: false (for backward compatibility)
+   *
+   * @since 4.6.0
+   */
+  private boolean preserveParentContext = false;
+
   /** Standard charset. */
   private Charset charset = StandardCharsets.UTF_8;
 
@@ -1297,6 +1317,39 @@ public class Handlebars implements HelperRegistry {
    */
   public Handlebars preEvaluatePartialBlocks(final boolean preEvaluatePartialBlocks) {
     setPreEvaluatePartialBlocks(preEvaluatePartialBlocks);
+    return this;
+  }
+
+  /**
+   * Get the preserve parent context flag.
+   *
+   * @return True if parent context is preserved, false otherwise.
+   */
+  public boolean preserveParentContext() {
+    return preserveParentContext;
+  }
+
+  /**
+   * Set the preserve parent context flag.
+   *
+   * @param preserveParentContext True to preserve parent context, false to use traditional behavior.
+   */
+  public void setPreserveParentContext(final boolean preserveParentContext) {
+    this.preserveParentContext = preserveParentContext;
+  }
+
+  /**
+   * Set the preserve parent context flag.
+   *
+   * <p>When enabled, partials like {{> partial this}} or {{> partial ..}} will preserve the parent
+   * context chain, allowing {{..}} inside partials to reference the original parent scope instead of
+   * the partial call site.
+   *
+   * @param preserveParentContext True to preserve parent context, false to use traditional behavior.
+   * @return This handlebars object.
+   */
+  public Handlebars preserveParentContext(final boolean preserveParentContext) {
+    setPreserveParentContext(preserveParentContext);
     return this;
   }
 
