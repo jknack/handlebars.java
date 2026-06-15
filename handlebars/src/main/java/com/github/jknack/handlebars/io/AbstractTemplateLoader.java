@@ -5,11 +5,11 @@
  */
 package com.github.jknack.handlebars.io;
 
-import static org.apache.commons.lang3.StringUtils.defaultString;
 import static org.apache.commons.lang3.Validate.notNull;
 
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.util.Objects;
 
 /**
  * Strategy interface for loading resources from class path, file system, etc.
@@ -56,7 +56,7 @@ public abstract class AbstractTemplateLoader implements TemplateLoader {
    * @return A location without '/' at the beginning.
    */
   protected String normalize(final String location) {
-    if (location.toString().startsWith("/")) {
+    if (location.startsWith("/")) {
       return location.substring(1);
     }
     return location;
@@ -80,7 +80,7 @@ public abstract class AbstractTemplateLoader implements TemplateLoader {
    * @param suffix The suffix that gets appended to view names when building a URI.
    */
   public void setSuffix(final String suffix) {
-    this.suffix = defaultString(suffix, "");
+    this.suffix = Objects.toString(suffix, "");
   }
 
   @Override

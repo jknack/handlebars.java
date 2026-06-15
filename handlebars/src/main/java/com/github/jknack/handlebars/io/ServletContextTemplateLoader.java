@@ -35,6 +35,8 @@ public class ServletContextTemplateLoader extends URLTemplateLoader {
     this.servletContext = notNull(servletContext, "The servlet context is required.");
     setPrefix(prefix);
     setSuffix(suffix);
+
+    validatePrefixSuffix();
   }
 
   /**
@@ -58,6 +60,6 @@ public class ServletContextTemplateLoader extends URLTemplateLoader {
 
   @Override
   protected URL getResource(final String location) throws IOException {
-    return servletContext.getResource(location);
+    return servletContext.getResource(classpathResource(location));
   }
 }

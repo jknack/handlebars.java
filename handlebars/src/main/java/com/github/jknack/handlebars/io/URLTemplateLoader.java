@@ -10,6 +10,7 @@ import static org.apache.commons.lang3.Validate.notEmpty;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Paths;
 
 /**
  * Strategy interface for loading resources (i.e class path or file system resources)
@@ -64,4 +65,38 @@ public abstract class URLTemplateLoader extends AbstractTemplateLoader {
    * @throws IOException If the url can't be resolved.
    */
   protected abstract URL getResource(String location) throws IOException;
+
+  /**
+   * Make sure it is a safe path.
+   *
+   * @param location Location to validate.
+   * @return Safe path.
+   */
+  protected final String classpathResource(String location) {
+    // Convert the separator back to '/' because ClassLoader expects forward slashes,
+    // even if Paths.get() runs on a Windows host.
+    String resolvedPath =
+        Paths.get(location).normalize().toString().replace(java.io.File.separatorChar, '/');
+
+    // Ensure the leading slash is preserved if the original location had it
+    if (location.startsWith("/") && !resolvedPath.startsWith("/")) {
+      resolvedPath = "/" + resolvedPath;
+    }
+
+    // Enforce the logical boundary
+    String prefix = getPrefix();
+    if (!prefix.equals("/") && !resolvedPath.startsWith(prefix)) {
+      throw new IllegalArgumentException(
+          "Path traversal attempt detected. Resolved path escapes base prefix: " + location);
+    }
+    return resolvedPath;
+  }
+
+  protected void validatePrefixSuffix() {
+    if ("/".equals(getPrefix()) && (getSuffix() == null || getSuffix().isEmpty())) {
+      throw new IllegalArgumentException(
+          "Serving the root classpath ('/') with an empty suffix allows arbitrary classpath"
+              + " resource exposure.");
+    }
+  }
 }

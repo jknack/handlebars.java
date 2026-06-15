@@ -66,7 +66,22 @@ public class FileTemplateLoader extends URLTemplateLoader {
 
   @Override
   protected URL getResource(final String location) throws IOException {
-    File file = new File(location);
+    File file = new File(location).getCanonicalFile();
+    File basedir = new File(getPrefix()).getCanonicalFile();
+
+    String canonicalFilePath = file.getPath();
+    String canonicalBasePath = basedir.getPath();
+
+    // Enforce the directory boundary to prevent partial matches
+    if (!canonicalBasePath.endsWith(File.separator)) {
+      canonicalBasePath += File.separator;
+    }
+
+    if (!canonicalFilePath.startsWith(canonicalBasePath)) {
+      throw new IllegalArgumentException(
+          "Path traversal attempt detected. Resolved path escapes base directory: " + location);
+    }
+
     return file.exists() ? file.toURI().toURL() : null;
   }
 }
