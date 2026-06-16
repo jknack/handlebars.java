@@ -16,7 +16,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.antlr.v4.runtime.CommonToken;
+import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
+import org.antlr.v4.runtime.misc.Interval;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
 import org.apache.commons.lang3.StringUtils;
@@ -154,7 +156,8 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
             "{{",
             params(sexpr.param()),
             hash(sexpr.hash()),
-            Collections.emptyList());
+            Collections.emptyList(),
+            source(ctx));
 
     if (block.paramSize > 0) {
       paramStack.addLast(block.params.get(0).toString());
@@ -181,6 +184,13 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
 
     level -= 1;
     return block;
+  }
+
+  private String source(ParserRuleContext ctx) {
+    var start = ctx.getStart();
+    var stop = ctx.getStop();
+    var tokens = start.getInputStream();
+    return tokens.getText(Interval.of(start.getStartIndex(), stop.getStopIndex()));
   }
 
   @Override
@@ -211,7 +221,8 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
               params(sexpr.param()),
               hash(sexpr.hash()),
               blockParams(ctx.blockParams()),
-              level == 1);
+              level == 1,
+              source(ctx));
     } else {
       block =
           new Block(
@@ -221,7 +232,8 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
               "#",
               params(sexpr.param()),
               hash(sexpr.hash()),
-              blockParams(ctx.blockParams()));
+              blockParams(ctx.blockParams()),
+              source(ctx));
     }
     if (block.paramSize > 0) {
       paramStack.addLast(block.params.get(0).toString());
@@ -260,7 +272,8 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
               type,
               params(elseexpr.param()),
               hash(elseexpr.hash()),
-              blockParams(elseStmtChainContext.blockParams()));
+              blockParams(elseStmtChainContext.blockParams()),
+              source(elseStmtChainContext));
       elseblock.filename(source.filename());
       elseblock.position(elsenameStart.getLine(), elsenameStart.getCharPositionInLine());
       elseblock.startDelimiter(startDelim);
@@ -322,7 +335,8 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
             "^",
             Collections.emptyList(),
             Collections.emptyMap(),
-            blockParams(ctx.blockParams()));
+            blockParams(ctx.blockParams()),
+            source(ctx));
     block.filename(source.filename());
     block.position(nameStart.getLine(), nameStart.getCharPositionInLine());
     String startDelim = ctx.start.getText();
@@ -343,6 +357,7 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
     hasTag(false);
     SexprContext sexpr = ctx.sexpr();
     return newVar(
+        ctx,
         sexpr.QID().getSymbol(),
         TagType.VAR,
         params(sexpr.param()),
@@ -366,6 +381,7 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
     hasTag(false);
     SexprContext sexpr = ctx.sexpr();
     return newVar(
+        ctx,
         sexpr.QID().getSymbol(),
         TagType.TRIPLE_VAR,
         params(sexpr.param()),
@@ -380,6 +396,7 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
     hasTag(false);
     SexprContext sexpr = ctx.sexpr();
     return newVar(
+        ctx,
         sexpr.QID().getSymbol(),
         TagType.AMP_VAR,
         params(sexpr.param()),
@@ -402,6 +419,7 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
    * @return A new {@link Variable}.
    */
   private Variable newVar(
+      final ParserRuleContext ctx,
       final Token name,
       final TagType varType,
       final List<Param> params,
@@ -467,8 +485,9 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
     }
     Variable var =
         decorator
-            ? new VarDecorator(handlebars, varName, TagType.STAR_VAR, params, hash, level == 0)
-            : new Variable(handlebars, varName, varType, params, hash);
+            ? new VarDecorator(
+                handlebars, varName, TagType.STAR_VAR, params, hash, level == 0, source(ctx))
+            : new Variable(handlebars, varName, varType, params, hash, source(ctx));
     var.startDelimiter(startDelimiter)
         .endDelimiter(endDelimiter)
         .filename(source.filename())
@@ -541,6 +560,7 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
     SexprContext sexpr = ctx.sexpr();
     return new VarParam(
         newVar(
+            ctx,
             sexpr.QID().getSymbol(),
             TagType.SUB_EXPRESSION,
             params(sexpr.param()),
@@ -641,7 +661,7 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
 
     String startDelim = ctx.start.getText();
     Template partial =
-        new Partial(handlebars, info.path, info.context, info.hash)
+        new Partial(handlebars, info.path, info.context, info.hash, source(ctx))
             .startDelimiter(startDelim.substring(0, startDelim.length() - 1))
             .endDelimiter(ctx.stop.getText())
             .indent(indent)
@@ -669,7 +689,7 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
 
     String startDelim = ctx.start.getText();
     Template partial =
-        new Partial(handlebars, info.path, info.context, info.hash)
+        new Partial(handlebars, info.path, info.context, info.hash, source(ctx))
             .setDecorate(true)
             .setPartial(fn)
             .startDelimiter(startDelim.substring(0, startDelim.length() - 1))
@@ -725,6 +745,7 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
     TerminalNode qid = sexpr.QID();
     Template expression =
         newVar(
+            ctx,
             qid.getSymbol(),
             TagType.SUB_EXPRESSION,
             params(sexpr.param()),

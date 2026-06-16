@@ -48,8 +48,9 @@ public class VarDecorator extends Variable {
       final TagType type,
       final List<Param> params,
       final Map<String, Param> hash,
-      final boolean root) {
-    super(handlebars, name, type, params, hash);
+      final boolean root,
+      final String source) {
+    super(handlebars, name, type, params, hash, source);
     this.root = root;
   }
 

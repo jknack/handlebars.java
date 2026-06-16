@@ -83,6 +83,8 @@ class Block extends HelperResolver {
   /** True, if this block has decorators. */
   private boolean decorate;
 
+  private final String source;
+
   /**
    * Creates a new {@link Block}.
    *
@@ -101,7 +103,8 @@ class Block extends HelperResolver {
       final String type,
       final List<Param> params,
       final Map<String, Param> hash,
-      final List<String> blockParams) {
+      final List<String> blockParams,
+      final String source) {
     super(handlebars);
     this.name = notNull(name, "The name is required.");
     this.path = PathCompiler.compile(name, handlebars.parentScopeResolution());
@@ -111,6 +114,7 @@ class Block extends HelperResolver {
     hash(hash);
     this.blockParams = blockParams;
     this.tagType = TagType.SECTION;
+    this.source = source;
     postInit();
   }
 
@@ -298,56 +302,7 @@ class Block extends HelperResolver {
 
   @Override
   public String text() {
-    return text(true, true);
-  }
-
-  /**
-   * Build a text version of this block.
-   *
-   * @param complete True if the inner block should be added.
-   * @param close If we must close the block.
-   * @return A string version of this block.
-   */
-  private String text(final boolean complete, final boolean close) {
-    StringBuilder buffer = new StringBuilder();
-    buffer.append(startDelimiter).append(type).append(name);
-    String params = paramsToString(this.params);
-    if (params.length() > 0) {
-      buffer.append(" ").append(params);
-    }
-    String hash = hashToString();
-    if (hash.length() > 0) {
-      buffer.append(" ").append(hash);
-    }
-    if (blockParams.size() > 0) {
-      buffer.append(" as |").append(paramsToString(this.blockParams)).append("|");
-    }
-    buffer.append(endDelimiter);
-    if (complete) {
-      buffer.append(body == null ? "" : body.text());
-      if (inverse != EMPTY) {
-        if (inverse instanceof Block) {
-          String elseif = ((Block) inverse).text(true, false);
-          buffer.append(elseif);
-        } else {
-          buffer
-              .append(startDelimiter)
-              .append(inverseLabel)
-              .append(endDelimiter)
-              .append(inverse.text());
-        }
-      }
-    } else {
-      buffer.append("\n...\n");
-    }
-    if (close) {
-      buffer.append(startDelimiter);
-      if (type.equals("{{")) {
-        buffer.append("{{");
-      }
-      buffer.append('/').append(name).append(endDelimiter);
-    }
-    return buffer.toString();
+    return source;
   }
 
   /**

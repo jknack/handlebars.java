@@ -70,6 +70,8 @@ class Partial extends HelperResolver {
   /** Used to clear context after partial block got executed. See #655. */
   private boolean decorate;
 
+  private String source;
+
   /**
    * Creates a new {@link Partial}.
    *
@@ -82,13 +84,15 @@ class Partial extends HelperResolver {
       final Handlebars handlebars,
       final Template path,
       final String context,
-      final Map<String, Param> hash) {
+      final Map<String, Param> hash,
+      final String source) {
     super(handlebars);
     this.path = notNull(path, "The path is required.");
     this.context = context;
     this.scontext = context == null ? "this" : context;
     this.hash(hash);
     this.loader = handlebars.getLoader();
+    this.source = source;
   }
 
   @Override
@@ -340,32 +344,7 @@ class Partial extends HelperResolver {
 
   @Override
   public String text() {
-    String path = this.path.text();
-    StringBuilder buffer = new StringBuilder(startDelimiter).append('>').append(path);
-
-    if (context != null) {
-      buffer.append(' ').append(context);
-    }
-    String params = paramsToString(this.params);
-    if (params.length() > 0) {
-      buffer.append(" ").append(params);
-    }
-    String hash = hashToString();
-    if (hash.length() > 0) {
-      buffer.append(" ").append(hash);
-    }
-
-    buffer.append(endDelimiter);
-
-    if (this.partial != null) {
-      buffer
-          .append(this.partial.text())
-          .append(startDelimiter, 0, startDelimiter.length() - 1)
-          .append("/")
-          .append(path)
-          .append(endDelimiter);
-    }
-    return buffer.toString();
+    return source;
   }
 
   /**

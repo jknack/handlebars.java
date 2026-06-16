@@ -49,8 +49,9 @@ public class BlockDecorator extends Block {
       final List<Param> params,
       final Map<String, Param> hash,
       final List<String> blockParams,
-      final boolean root) {
-    super(handlebars, name, inverted, "#*", params, hash, blockParams);
+      final boolean root,
+      final String source) {
+    super(handlebars, name, inverted, "#*", params, hash, blockParams, source);
     this.root = root;
     this.tagType = TagType.START_SECTION;
   }

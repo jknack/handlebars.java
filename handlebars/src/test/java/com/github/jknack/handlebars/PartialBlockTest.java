@@ -16,10 +16,10 @@ public class PartialBlockTest extends AbstractTest {
   @Test
   public void text() throws IOException {
     assertEquals(
-        "{{#>dude}}{{#*inline \"myPartial\"}}success{{/inline}}{{/dude}}",
+        "{{#> dude}}{{#*inline \"myPartial\"}}success{{/inline}}{{/dude}}",
         compile("{{#> dude}}{{#*inline \"myPartial\"}}success{{/inline}}{{/dude}}").text());
 
-    assertEquals("{{#>dude}}success{{/dude}}", compile("{{#> dude}}success{{/dude}}").text());
+    assertEquals("{{#> dude}}success{{/dude}}", compile("{{#> dude}}success{{/dude}}").text());
   }
 
   @Test

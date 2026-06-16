@@ -20,7 +20,7 @@ public class Issue664 extends AbstractTest {
   @Test
   public void windowsNewlineShouldNotCauseErrors() throws IOException {
     assertEquals(
-        "{{#if value}}true{{else}}false{{/if}}",
+        "{{#if\r\nvalue}}true{{else}}false{{/if}}",
         compile("{{#if\r\nvalue}}true{{else}}false{{/if}}").text());
   }
 }

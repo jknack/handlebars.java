@@ -89,8 +89,8 @@ class TemplateList extends BaseTemplate implements Iterable<Template> {
 
   @Override
   public String text() {
-    StringBuilder buffer = new StringBuilder();
-    for (Template node : nodes) {
+    var buffer = new StringBuilder();
+    for (var node : nodes) {
       buffer.append(node.text());
     }
     return buffer.toString();

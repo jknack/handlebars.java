@@ -95,7 +95,7 @@ public class InlinePartialsTest extends AbstractTest {
   @Test
   public void inlinePartialText() throws IOException {
     assertEquals(
-        "{{#*inline \"myPartial\"}}success{{/inline}}{{>myPartial}}",
+        "{{#*inline \"myPartial\"}}success{{/inline}}{{> myPartial}}",
         compile("{{#*inline \"myPartial\"}}success{{/inline}}{{> myPartial}}").text());
   }
 }

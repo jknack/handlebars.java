@@ -31,12 +31,12 @@ public class RawTextTest extends AbstractTest {
 
   @Test
   public void varAmp() throws IOException {
-    assertEquals("hello {{&var}}!", compile("hello {{& var}}!").text());
+    assertEquals("hello {{& var}}!", compile("hello {{& var}}!").text());
   }
 
   @Test
   public void var3() throws IOException {
-    assertEquals("hello {{{var}}}!", compile("hello {{{ var }}}!").text());
+    assertEquals("hello {{{ var }}}!", compile("hello {{{ var }}}!").text());
   }
 
   @Test

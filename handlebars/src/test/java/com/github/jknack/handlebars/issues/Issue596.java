@@ -16,6 +16,6 @@ public class Issue596 extends v4Test {
   @Test
   public void shouldSupportNoneCharSequenceReturnsTypeFromHelperClass() throws Exception {
     String text = compile("{{> partial root=this name=\"Han\"}}").text();
-    assertEquals("{{>partial root=this name=\"Han\"}}", text);
+    assertEquals("{{> partial root=this name=\"Han\"}}", text);
   }
 }

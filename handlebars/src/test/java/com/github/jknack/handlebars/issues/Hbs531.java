@@ -34,7 +34,7 @@ public class Hbs531 extends v4Test {
         " Developer - John Foe<br />  Analyst - James Doe<br /> ");
 
     assertEquals(
-        "{{#each this}} {{>(lookup profession 'name') this.person}}<br /> {{/each}}",
+        "{{#each this}} {{> (lookup profession 'name') this.person}}<br /> {{/each}}",
         compile("{{#each this}} {{> (lookup profession 'name') this.person}}<br /> {{/each}}")
             .text());
   }
