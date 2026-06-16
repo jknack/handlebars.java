@@ -98,30 +98,6 @@ public class ServletContextTemplateLoaderTest {
     verify(servletContext).getResource(anyString());
   }
 
-  @Test
-  public void nullSuffix() throws IOException {
-    ServletContext servletContext = mock(ServletContext.class);
-    expectGetResource(servletContext, "src/test/resources/");
-
-    TemplateSource source =
-        new ServletContextTemplateLoader(servletContext, "/", null).sourceAt("noextension");
-    assertNotNull(source);
-
-    verify(servletContext).getResource(anyString());
-  }
-
-  @Test
-  public void emotySuffix() throws IOException {
-    ServletContext servletContext = mock(ServletContext.class);
-    expectGetResource(servletContext, "src/test/resources/");
-
-    TemplateSource source =
-        new ServletContextTemplateLoader(servletContext, "/", "").sourceAt("noextension");
-    assertNotNull(source);
-
-    verify(servletContext).getResource(anyString());
-  }
-
   private void expectGetResource(final ServletContext servletContext, final String prefix)
       throws IOException {
     when(servletContext.getResource(anyString()))

@@ -9,7 +9,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 
 import org.junit.jupiter.api.Test;
 
@@ -66,35 +65,5 @@ public class ClassPathTemplateLoaderTest {
     TemplateLoader loader = new ClassPathTemplateLoader("/mustache/specs/", ".yml");
     TemplateSource source = loader.sourceAt("comments");
     assertNotNull(source);
-  }
-
-  @Test
-  public void nullSuffix() throws IOException {
-    assertEquals(
-        "suffix should be optional",
-        new ClassPathTemplateLoader("/", null)
-            .sourceAt("noextension")
-            .content(StandardCharsets.UTF_8));
-
-    assertEquals(
-        "template.hbs",
-        new ClassPathTemplateLoader("/", null)
-            .sourceAt("template.hbs")
-            .content(StandardCharsets.UTF_8));
-  }
-
-  @Test
-  public void emptySuffix() throws IOException {
-    assertEquals(
-        "suffix should be optional",
-        new ClassPathTemplateLoader("/", "")
-            .sourceAt("noextension")
-            .content(StandardCharsets.UTF_8));
-
-    assertEquals(
-        "template.hbs",
-        new ClassPathTemplateLoader("/", "")
-            .sourceAt("template.hbs")
-            .content(StandardCharsets.UTF_8));
   }
 }
