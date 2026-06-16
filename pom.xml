@@ -111,12 +111,18 @@
       <dependency>
         <groupId>ch.qos.logback</groupId>
         <artifactId>logback-classic</artifactId>
-        <version>1.5.32</version>
+        <version>1.5.34</version>
       </dependency>
 
       <dependency>
         <groupId>org.junit.jupiter</groupId>
         <artifactId>junit-jupiter-params</artifactId>
+        <version>${junit.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.junit.platform</groupId>
+        <artifactId>junit-platform-suite-api</artifactId>
         <version>${junit.version}</version>
       </dependency>
 
@@ -486,7 +492,7 @@
   <properties>
     <!-- Encoding UTF-8 -->
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <jackson2-version>2.21.3</jackson2-version>
+    <jackson2-version>2.22.0</jackson2-version>
     <spring.version>6.2.9</spring.version>
     <jacoco.version>0.8.12</jacoco.version>
     <antlr-version>4.13.2</antlr-version>
@@ -500,6 +506,6 @@
     <maven.javadoc.failOnError>false</maven.javadoc.failOnError>
     <pre-commit-hook>src${file.separator}etc${file.separator}formatter.sh</pre-commit-hook>
     <mustache-specs>handlebars${file.separator}src${file.separator}test${file.separator}resources${file.separator}mustache</mustache-specs>
-    <junit.version>5.13.4</junit.version>
+    <junit.version>6.1.0</junit.version>
   </properties>
 </project>

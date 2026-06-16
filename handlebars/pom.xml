@@ -201,8 +201,7 @@
 
     <dependency>
       <groupId>org.junit.platform</groupId>
-      <artifactId>junit-platform-suite</artifactId>
-      <version>1.13.4</version>
+      <artifactId>junit-platform-suite-api</artifactId>
       <scope>test</scope>
     </dependency>
 
