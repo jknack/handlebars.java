@@ -727,7 +727,12 @@ public class Context {
    */
   public static Context newPartialContext(
       final Context ctx, final String scope, final Map<String, Object> hash) {
-    return new PartialCtx(ctx, ctx.get(scope), hash);
+    var currentModel = ctx.model;
+    var scopedModel = ctx.get(scope);
+    // don't introduce a new scope, when there is no need
+    var parent = currentModel == scopedModel ? ctx.parent : ctx;
+    // make sure parent is never null
+    return new PartialCtx(parent == null ? ctx : parent, scopedModel, hash);
   }
 
   /**
