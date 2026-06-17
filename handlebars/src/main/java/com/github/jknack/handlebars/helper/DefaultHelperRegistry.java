@@ -27,7 +27,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,6 +36,7 @@ import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Helper;
 import com.github.jknack.handlebars.HelperRegistry;
 import com.github.jknack.handlebars.internal.Files;
+import com.github.jknack.handlebars.internal.ScriptEngineFactory;
 import com.github.jknack.handlebars.internal.Throwing;
 
 /**
@@ -175,7 +175,9 @@ public class DefaultHelperRegistry implements HelperRegistry {
     notNull(filename, "The filename is required.");
     notEmpty(source, "The source is required.");
     ScriptEngine engine = engine();
-    Throwing.run(() -> engine.eval(adaptES6Literals(source)));
+    String adaptedSource =
+        ScriptEngineFactory.isNashorn(engine) ? adaptES6Literals(source) : source;
+    Throwing.run(() -> engine.eval(adaptedSource));
     return this;
   }
 
@@ -276,12 +278,12 @@ public class DefaultHelperRegistry implements HelperRegistry {
   }
 
   /**
-   * @return Nashorn engine.
+   * @return A JavaScript engine (GraalJS or Nashorn, whichever is available).
    */
   private ScriptEngine engine() {
     synchronized (this) {
       if (this.engine == null) {
-        this.engine = new ScriptEngineManager().getEngineByName("nashorn");
+        this.engine = ScriptEngineFactory.create();
 
         this.engine.put("Handlebars_java", this);
 
