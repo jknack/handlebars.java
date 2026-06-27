@@ -1,0 +1,21 @@
+/*
+ * Handlebars.java: https://github.com/jknack/handlebars.java
+ * Apache License Version 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Copyright (c) 2012 Edgar Espina
+ */
+package com.github.jknack.handlebars.i1182;
+
+import java.io.IOException;
+
+import org.junit.jupiter.api.Test;
+
+import com.github.jknack.handlebars.AbstractTest;
+
+public class Issue1182 extends AbstractTest {
+
+  @Test
+  public void shouldPropagatePartialParameterDown() throws IOException {
+    var partials = $("testParamPage", "{{> parameters}}", "parameters", "{{param}}");
+    shouldCompileToWithPartials("{{> testParamPage param=\"hello\"}}", $, partials, "hello");
+  }
+}
