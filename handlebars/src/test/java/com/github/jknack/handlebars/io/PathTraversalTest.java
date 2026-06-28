@@ -57,8 +57,9 @@ public class PathTraversalTest {
     // Configure the loader with an empty suffix
     FileTemplateLoader loader = new FileTemplateLoader(baseDir.toFile(), "");
 
-    // Attempt to traverse up and access the exact file
-    String traversalPath = "../../../../../../../../../.." + sensitiveConfig.toAbsolutePath();
+    // Calculate a valid relative traversal path from baseDir to sensitiveConfig
+    // and ensure we use standard forward slashes for the test payload.
+    String traversalPath = baseDir.relativize(sensitiveConfig).toString().replace('\\', '/');
 
     IllegalArgumentException exception =
         assertThrows(
@@ -84,10 +85,10 @@ public class PathTraversalTest {
   public void shouldBlockDirectoryTraversalEscapingBaseDir() {
     FileTemplateLoader loader = new FileTemplateLoader(baseDir.toFile(), ".hbs");
 
-    // Attempt to traverse up and access the secret file
+    // Calculate the valid relative traversal path from baseDir to secretFile
+    // and strip the .hbs extension as the loader will automatically append it.
     String traversalPath =
-        "../../../../../../../../../.."
-            + secretFile.toAbsolutePath().toString().replace(".hbs", "");
+        baseDir.relativize(secretFile).toString().replace('\\', '/').replace(".hbs", "");
 
     IllegalArgumentException exception =
         assertThrows(
