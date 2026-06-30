@@ -163,16 +163,23 @@ public class HandlebarsViewResolver extends AbstractTemplateViewResolver
   protected AbstractUrlBasedView configure(final HandlebarsView view) throws IOException {
     String url = view.getUrl();
     // Remove prefix & suffix.
-    url = url.substring(getPrefix().length(), url.length() - getSuffix().length());
+    String strippedUrl = url.substring(getPrefix().length(), url.length() - getSuffix().length());
+
+    // Strict web-layer rejection: View names from controllers should never contain
+    // protocols, fragments, or traversal sequences.
+    if (strippedUrl.contains(":") || strippedUrl.contains("#") || strippedUrl.contains("..")) {
+      throw new IllegalArgumentException("Unsafe Spring MVC view name detected: " + strippedUrl);
+    }
+
     // Compile the template.
     try {
-      view.setTemplate(handlebars.compile(url));
+      view.setTemplate(handlebars.compile(strippedUrl));
       view.setValueResolver(valueResolvers.toArray(new ValueResolver[0]));
     } catch (IOException ex) {
       if (failOnMissingFile) {
         throw ex;
       }
-      logger.debug("File not found: " + url);
+      logger.debug("File not found: " + strippedUrl);
     }
     return view;
   }
