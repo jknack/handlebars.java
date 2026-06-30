@@ -6,7 +6,6 @@
 package com.github.jknack.handlebars.springmvc;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -75,14 +74,15 @@ public class SpringTemplateLoaderTest {
     URL maliciousUrl = new URL("file:///etc/passwd#.hbs");
     when(mockResource.getURL()).thenReturn(maliciousUrl);
 
-    // We must mock the exact string that the template loader will ask Spring for
-    when(resourceLoader.getResource(anyString())).thenReturn(mockResource);
+    // Mock the exact valid string Handlebars will request after prefix/suffix append
+    when(resourceLoader.getResource("classpath:/templates/hack.hbs")).thenReturn(mockResource);
 
     IllegalArgumentException exception =
         assertThrows(
             IllegalArgumentException.class,
             () -> {
-              templateLoader.sourceAt("classpath:/templates/hack#.hbs");
+              // Pass a clean string to bypass OS-level Paths.get() restrictions
+              templateLoader.sourceAt("hack");
             });
 
     assertTrue(exception.getMessage().contains("Template URL must not contain a fragment"));
@@ -97,13 +97,15 @@ public class SpringTemplateLoaderTest {
     URL maliciousUrl = new URL("file:///etc/passwd?.hbs");
     when(mockResource.getURL()).thenReturn(maliciousUrl);
 
-    when(resourceLoader.getResource(anyString())).thenReturn(mockResource);
+    // Mock the exact valid string Handlebars will request after prefix/suffix append
+    when(resourceLoader.getResource("classpath:/templates/hack.hbs")).thenReturn(mockResource);
 
     IllegalArgumentException exception =
         assertThrows(
             IllegalArgumentException.class,
             () -> {
-              templateLoader.sourceAt("classpath:/templates/hack?.hbs");
+              // Pass a clean string to bypass OS-level Paths.get() restrictions
+              templateLoader.sourceAt("hack");
             });
 
     assertTrue(exception.getMessage().contains("Template URL must not contain a query"));
