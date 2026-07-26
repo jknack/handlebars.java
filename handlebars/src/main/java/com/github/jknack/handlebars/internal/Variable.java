@@ -135,9 +135,16 @@ class Variable extends HelperResolver {
    */
   @SuppressWarnings("unchecked")
   public Object value(final Context scope, final Writer writer) throws IOException {
-    boolean blockParam = scope.isBlockParams();
-    Object value = scope.get(path);
-    if (helper != null && (!blockParam || (path.size() == 1 && value == null))) {
+    if (scope.isBlockParams() && path.size() == 1) {
+      // we are against a block parameter, only simple name are supported (size=1)
+      var blockValue = scope.get(path);
+      // block parameter takes precedence over helper name, if it is there return it
+      if (blockValue != null) {
+        return blockValue;
+      }
+    }
+    // helper with or without arguments always win against property value.
+    if (helper != null) {
       Options options =
           new Options(
               handlebars,
@@ -153,6 +160,7 @@ class Variable extends HelperResolver {
       options.data(Context.PARAM_SIZE, this.params.size());
       return helper.apply(determineContext(scope), options);
     } else {
+      Object value = scope.get(path);
       if (value == null) {
         if (missing != null) {
           Options options =
