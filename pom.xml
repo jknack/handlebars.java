@@ -111,7 +111,7 @@
       <dependency>
         <groupId>ch.qos.logback</groupId>
         <artifactId>logback-classic</artifactId>
-        <version>1.5.34</version>
+        <version>1.6.1</version>
       </dependency>
 
       <dependency>
@@ -492,7 +492,7 @@
   <properties>
     <!-- Encoding UTF-8 -->
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <jackson2-version>2.22.0</jackson2-version>
+    <jackson2-version>2.22.1</jackson2-version>
     <spring.version>6.2.9</spring.version>
     <jacoco.version>0.8.12</jacoco.version>
     <antlr-version>4.13.2</antlr-version>
@@ -506,6 +506,6 @@
     <maven.javadoc.failOnError>false</maven.javadoc.failOnError>
     <pre-commit-hook>src${file.separator}etc${file.separator}formatter.sh</pre-commit-hook>
     <mustache-specs>handlebars${file.separator}src${file.separator}test${file.separator}resources${file.separator}mustache</mustache-specs>
-    <junit.version>6.1.0</junit.version>
+    <junit.version>6.1.2</junit.version>
   </properties>
 </project>
