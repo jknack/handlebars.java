@@ -36,3 +36,136 @@ jobs:
           CENTRAL_USERNAME: ${{ secrets.CENTRAL_USERNAME }}
           CENTRAL_TOKEN: ${{ secrets.CENTRAL_TOKEN }}
           MAVEN_GPG_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
+
+  update-release-notes:
+    name: Update GitHub Release Notes
+    needs: release
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      issues: write # Required to update/close milestones
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Generate and Update Release Notes
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          CURRENT_TAG=${{ github.ref_name }}
+          VERSION_NUM=${CURRENT_TAG#v}
+
+          # Calculate previous tag using version sorting
+          git fetch --tags --force
+          PREV_TAG=$(git tag --sort=-v:refname | grep -A 1 "^${CURRENT_TAG}$" | tail -n 1)
+
+          # Fetch milestone ID for the link
+          MILESTONE_ID=$(gh api repos/${{ github.repository }}/milestones -q ".[] | select(.title==\"$VERSION_NUM\") | .number")
+
+          # 1. Fetch BREAKING changes
+          gh issue list \
+            --repo ${{ github.repository }} \
+            --search "milestone:\"$VERSION_NUM\" label:break-change" \
+            --state all \
+            --limit 100 \
+            --json title,number \
+            --jq '.[] | "- \(.title) #\(.number)"' > breaking_issues.md
+
+          # 2. Fetch NEW features
+          gh issue list \
+            --repo ${{ github.repository }} \
+            --search "milestone:\"$VERSION_NUM\" label:feature -label:break-change" \
+            --state all \
+            --limit 100 \
+            --json title,number \
+            --jq '.[] | "- \(.title) #\(.number)"' > new_issues.md
+
+          # 3. Fetch DEPRECATED changes
+          gh issue list \
+            --repo ${{ github.repository }} \
+            --search "milestone:\"$VERSION_NUM\" label:deprecated -label:break-change" \
+            --state all \
+            --limit 100 \
+            --json title,number \
+            --jq '.[] | "- \(.title) #\(.number)"' > deprecated_issues.md
+
+          # 4. Fetch OTHER changes
+          gh issue list \
+            --repo ${{ github.repository }} \
+            --search "milestone:\"$VERSION_NUM\" -label:feature -label:break-change -label:deprecated -label:dependencies" \
+            --state all \
+            --limit 100 \
+            --json title,number \
+            --jq '.[] | "- \(.title) #\(.number)"' > other_issues.md
+
+          # 5. Initialize the changelog file
+          > changelog.md
+
+          # 6. Conditionally add "Breaking Changes"
+          if [ -s breaking_issues.md ]; then
+            echo "## ⚠️ Breaking Changes" >> changelog.md
+            echo "" >> changelog.md
+            cat breaking_issues.md >> changelog.md
+            echo "" >> changelog.md
+          fi
+
+          # 7. Conditionally add "What's New"
+          if [ -s new_issues.md ]; then
+            echo "## 🚀 What's New" >> changelog.md
+            echo "" >> changelog.md
+            cat new_issues.md >> changelog.md
+            echo "" >> changelog.md
+          fi
+
+          # 8. Conditionally add "Other Changes"
+          if [ -s other_issues.md ]; then
+            echo "## 🛠️ Changes" >> changelog.md
+            echo "" >> changelog.md
+            cat other_issues.md >> changelog.md
+            echo "" >> changelog.md
+          fi
+
+          # 9. Conditionally add "Deprecated"
+          if [ -s deprecated_issues.md ]; then
+            echo "## 🗑️ Deprecated" >> changelog.md
+            echo "" >> changelog.md
+            cat deprecated_issues.md >> changelog.md
+            echo "" >> changelog.md
+          fi
+
+          # 10. Build the rest of the changelog (Links & Resources only)
+          cat << EOF >> changelog.md
+          ## 🔗 Links & Resources
+          - [$CURRENT_TAG](https://github.com/jooby-project/jooby/tree/$CURRENT_TAG)
+          - [Closed Issues](https://github.com/jooby-project/jooby/milestone/$MILESTONE_ID?closed=1)
+          - [Changelog](https://github.com/jooby-project/jooby/compare/$PREV_TAG...$CURRENT_TAG)
+          - [Dependency Updates](https://github.com/jooby-project/jooby/pulls?q=is%3Apr+label%3Adependencies+is%3Aclosed+milestone%3A$VERSION_NUM)
+          EOF
+
+          # Overwrite the existing release notes
+          gh release edit $CURRENT_TAG --notes-file changelog.md
+
+      - name: Close Milestone
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          CURRENT_TAG=${{ github.ref_name }}
+          VERSION_NUM=${CURRENT_TAG#v}
+
+          # Fetch the ID of the milestone only if it is currently open
+          MILESTONE_ID=$(gh api repos/${{ github.repository }}/milestones -q ".[] | select(.title==\"$VERSION_NUM\" and .state==\"open\") | .number")
+
+          if [ -n "$MILESTONE_ID" ]; then
+            echo "Closing milestone $VERSION_NUM (ID: $MILESTONE_ID)..."
+            gh api \
+              --method PATCH \
+              -H "Accept: application/vnd.github+json" \
+              repos/${{ github.repository }}/milestones/$MILESTONE_ID \
+              -f state='closed'
+            echo "Milestone closed successfully."
+          else
+            echo "No open milestone found matching version $VERSION_NUM. Skipping."
+          fi
