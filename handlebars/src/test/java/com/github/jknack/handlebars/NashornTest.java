@@ -13,11 +13,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
 import javax.script.SimpleBindings;
 
 import org.junit.jupiter.api.Test;
 
+import com.github.jknack.handlebars.internal.ScriptEngineFactory;
 import com.github.jknack.handlebars.js.JavaScriptHelperTest;
 
 public class NashornTest {
@@ -45,13 +45,13 @@ public class NashornTest {
   @Test
   public void bootstrap() throws Exception {
     Handlebars hbs = new Handlebars();
-    ScriptEngine nashorn = new ScriptEngineManager().getEngineByName("nashorn");
+    ScriptEngine engine = ScriptEngineFactory.create();
     SimpleBindings bindings = new SimpleBindings();
     bindings.put("Handlebars_java", hbs);
-    nashorn.eval(
+    engine.eval(
         new FileReader(Paths.get("src/main/resources/helpers.nashorn.js").toFile()), bindings);
 
-    nashorn.eval(
+    engine.eval(
         new FileReader(
             Paths.get("src/test/resources/com/github/jknack/handlebars/js/helpers.js").toFile()),
         bindings);
