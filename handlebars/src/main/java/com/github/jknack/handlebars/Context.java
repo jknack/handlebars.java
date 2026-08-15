@@ -740,7 +740,11 @@ public class Context {
       finalHash = new HashMap<>(((PartialCtx) ctx).hash);
       finalHash.putAll(hash);
     } else {
-      finalHash = hash;
+      finalHash = new HashMap<>(hash);
+      if (ctx.extendedContext != null && ctx.extendedContext.model instanceof Map localVariables) {
+        // propagate iteration variables down
+        finalHash.putAll(localVariables);
+      }
     }
     return new PartialCtx(parent, scopedModel, finalHash);
   }
