@@ -17,6 +17,7 @@
     <module>handlebars-helpers</module>
     <module>handlebars-springmvc</module>
     <module>handlebars-jackson</module>
+    <module>handlebars-jackson3</module>
     <module>handlebars-guava-cache</module>
     <module>handlebars-caffeine</module>
     <module>handlebars-maven-plugin</module>
@@ -105,6 +106,13 @@
         <groupId>com.fasterxml.jackson.core</groupId>
         <artifactId>jackson-databind</artifactId>
         <version>${jackson2-version}</version>
+      </dependency>
+
+      <!-- Jackson 3.x -->
+      <dependency>
+        <groupId>tools.jackson.core</groupId>
+        <artifactId>jackson-databind</artifactId>
+        <version>${jackson3-version}</version>
       </dependency>
 
       <!-- Test dependencies -->
@@ -493,6 +501,7 @@
     <!-- Encoding UTF-8 -->
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <jackson2-version>2.22.1</jackson2-version>
+    <jackson3-version>3.2.1</jackson3-version>
     <spring.version>6.2.9</spring.version>
     <jacoco.version>0.8.12</jacoco.version>
     <antlr-version>4.13.2</antlr-version>
