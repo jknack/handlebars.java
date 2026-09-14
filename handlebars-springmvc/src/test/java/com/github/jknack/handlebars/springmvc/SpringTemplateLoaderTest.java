@@ -11,6 +11,8 @@ import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -51,7 +53,16 @@ public class SpringTemplateLoaderTest {
 
   @Test
   public void shouldEnforceLogicalBoundaryAgainstTraversal() throws IOException {
-    // The attacker only injects the traversal sequence, not the prefix.
+    Resource mockResource = mock(Resource.class);
+    when(mockResource.exists()).thenReturn(true);
+    when(mockResource.isFile()).thenReturn(false);
+
+    URL maliciousUrl = new URL("file:///application.properties.hbs");
+    when(mockResource.getURL()).thenReturn(maliciousUrl);
+
+    when(resourceLoader.getResource("classpath:/templates/../../application.properties.hbs"))
+        .thenReturn(mockResource);
+
     String maliciousPath = "../../application.properties";
 
     IllegalArgumentException exception =
@@ -62,7 +73,7 @@ public class SpringTemplateLoaderTest {
               templateLoader.sourceAt(maliciousPath);
             });
 
-    assertTrue(exception.getMessage().contains("escapes Spring base prefix"));
+    assertTrue(exception.getMessage().contains("escapes Spring base"));
   }
 
   @Test
@@ -119,5 +130,55 @@ public class SpringTemplateLoaderTest {
 
     // Prefix + Input + Suffix
     assertEquals("classpath:/templates/file:/etc/passwd.hbs", resolved);
+  }
+
+  @Test
+  public void shouldBlockPercentEncodedPathTraversal() throws IOException {
+    Path root = Files.createTempDirectory("handlebars-test");
+    Path templates = Files.createDirectory(root.resolve("templates"));
+
+    // Create a target file outside the template directory
+    Files.writeString(root.resolve("secret.hbs"), "VULNERABLE");
+
+    SpringTemplateLoader loader = new SpringTemplateLoader(new DefaultResourceLoader());
+
+    // Use an OS-agnostic absolute URI format to prevent Windows backslash parsing issues
+    loader.setPrefix(templates.toUri().toString());
+    loader.setSuffix(".hbs");
+
+    IllegalArgumentException exception =
+        assertThrows(IllegalArgumentException.class, () -> loader.sourceAt("%2e%2e/secret"));
+
+    assertTrue(exception.getMessage().contains("escapes Spring base"));
+  }
+
+  @Test
+  public void shouldBlockPartialDirectoryMatch() throws IOException {
+    Path root = Files.createTempDirectory("handlebars-test");
+    Path templates = Files.createDirectory(root.resolve("templates"));
+    Path templatesSecret = Files.createDirectory(root.resolve("templates-secret"));
+
+    Files.writeString(templatesSecret.resolve("secret.hbs"), "VULNERABLE");
+
+    SpringTemplateLoader loader = new SpringTemplateLoader(new DefaultResourceLoader());
+
+    // Convert to URI, but explicitly strip the trailing slash to test the partial match
+    // vulnerability
+    String prefixUri = templates.toUri().toString();
+    if (prefixUri.endsWith("/")) {
+      prefixUri = prefixUri.substring(0, prefixUri.length() - 1);
+    }
+
+    loader.setPrefix(prefixUri);
+    loader.setSuffix(".hbs");
+
+    // Use "../" to back out of the Handlebars-enforced slash, traversing into the sibling
+    // directory.
+    // Handlebars resolves this to: .../templates/../templates-secret/secret.hbs
+    IllegalArgumentException exception =
+        assertThrows(
+            IllegalArgumentException.class, () -> loader.sourceAt("../templates-secret/secret"));
+
+    assertTrue(exception.getMessage().contains("escapes Spring base"));
   }
 }

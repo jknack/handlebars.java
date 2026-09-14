@@ -85,9 +85,14 @@ public abstract class URLTemplateLoader extends AbstractTemplateLoader {
 
     // Enforce the logical boundary
     String prefix = getPrefix();
-    if (!prefix.equals("/") && !resolvedPath.startsWith(prefix)) {
-      throw new IllegalArgumentException(
-          "Path traversal attempt detected. Resolved path escapes base prefix: " + location);
+    if (!prefix.equals("/")) {
+      if (!prefix.endsWith("/")) {
+        prefix += "/"; // Enforce directory boundary to prevent partial match
+      }
+      if (!resolvedPath.startsWith(prefix)) {
+        throw new IllegalArgumentException(
+            "Path traversal attempt detected. Resolved path escapes base prefix: " + location);
+      }
     }
     return resolvedPath;
   }

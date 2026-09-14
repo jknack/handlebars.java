@@ -7,8 +7,12 @@ package com.github.jknack.handlebars.springmvc;
 
 import static java.util.Objects.requireNonNull;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Paths;
 
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.Resource;
@@ -54,46 +58,60 @@ public class SpringTemplateLoader extends URLTemplateLoader {
 
   @Override
   protected URL getResource(final String location) throws IOException {
-    // 1. Logical Bounds Check (Parity with d177cdee)
-    // Spring locations often contain protocols (classpath:). We must strip it to normalize the
-    // path.
-    String pathPart = location;
-    int protocolIndex = location.indexOf(":");
-    if (protocolIndex != -1) {
-      pathPart = location.substring(protocolIndex + 1);
-    }
-
-    String resolvedPath =
-        java.nio.file.Paths.get(pathPart)
-            .normalize()
-            .toString()
-            .replace(java.io.File.separatorChar, '/');
-    if (pathPart.startsWith("/") && !resolvedPath.startsWith("/")) {
-      resolvedPath = "/" + resolvedPath;
-    }
-
-    // Extract the raw path from the configured prefix
-    String prefixPath = getPrefix();
-    int prefixProtocolIndex = prefixPath.indexOf(":");
-    if (prefixProtocolIndex != -1) {
-      prefixPath = prefixPath.substring(prefixProtocolIndex + 1);
-    }
-
-    // Enforce the boundary
-    if (!prefixPath.equals("/") && !resolvedPath.startsWith(prefixPath)) {
-      throw new IllegalArgumentException(
-          "Path traversal attempt detected. Resolved path escapes Spring base prefix: " + location);
-    }
-
-    // 2. Delegate to Spring
     Resource resource = loader.getResource(location);
     if (!resource.exists()) {
       return null;
     }
 
-    // 3. Post-resolution URL Component Validation (Fragment/Query injection)
     URL url = resource.getURL();
     validateNoUnsafeUrlComponents(url);
+
+    // Delegate to native canonical files if the Spring resource is on disk
+    if (resource.isFile()) {
+      File file = resource.getFile().getCanonicalFile();
+      String prefixPath = getPrefix();
+      int protocolIndex = prefixPath.indexOf(":");
+      if (protocolIndex != -1) {
+        prefixPath = prefixPath.substring(protocolIndex + 1);
+      }
+
+      File basedir = new File(prefixPath).getCanonicalFile();
+      String canonicalFilePath = file.getPath();
+      String canonicalBasePath = basedir.getPath();
+
+      if (!canonicalBasePath.endsWith(File.separator)) {
+        canonicalBasePath += File.separator;
+      }
+
+      if (!canonicalFilePath.startsWith(canonicalBasePath)) {
+        throw new IllegalArgumentException(
+            "Path traversal attempt detected. Resolved path escapes Spring base directory: "
+                + location);
+      }
+    } else {
+      // Fallback containment for Classpath/URL resources
+      String decodedPath = URLDecoder.decode(url.getPath(), StandardCharsets.UTF_8);
+      String resolvedPath =
+          Paths.get(decodedPath).normalize().toString().replace(File.separatorChar, '/');
+
+      String prefixPath = getPrefix();
+      int protocolIndex = prefixPath.indexOf(":");
+      if (protocolIndex != -1) {
+        prefixPath = prefixPath.substring(protocolIndex + 1);
+      }
+
+      String normalizedPrefix =
+          Paths.get(prefixPath).normalize().toString().replace(File.separatorChar, '/');
+      if (!normalizedPrefix.endsWith("/")) {
+        normalizedPrefix += "/";
+      }
+
+      if (!normalizedPrefix.equals("/") && !resolvedPath.startsWith(normalizedPrefix)) {
+        throw new IllegalArgumentException(
+            "Path traversal attempt detected. Resolved path escapes Spring base prefix: "
+                + location);
+      }
+    }
 
     return url;
   }
