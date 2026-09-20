@@ -333,8 +333,8 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
             name,
             true,
             "^",
-            Collections.emptyList(),
-            Collections.emptyMap(),
+            params(sexpr.param()),
+            hash(sexpr.hash()),
             blockParams(ctx.blockParams()),
             source(ctx));
     block.filename(source.filename());
