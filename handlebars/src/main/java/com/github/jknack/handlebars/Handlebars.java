@@ -27,7 +27,6 @@ import java.util.Set;
 
 import javax.script.Bindings;
 import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
 
 import org.slf4j.Logger;
 
@@ -38,6 +37,7 @@ import com.github.jknack.handlebars.helper.I18nHelper;
 import com.github.jknack.handlebars.internal.Files;
 import com.github.jknack.handlebars.internal.FormatterChain;
 import com.github.jknack.handlebars.internal.HbsParserFactory;
+import com.github.jknack.handlebars.internal.ScriptEngineFactory;
 import com.github.jknack.handlebars.internal.Throwing;
 import com.github.jknack.handlebars.io.ClassPathTemplateLoader;
 import com.github.jknack.handlebars.io.CompositeTemplateLoader;
@@ -1442,19 +1442,21 @@ public class Handlebars implements HelperRegistry {
   }
 
   /**
-   * @return Nashorn engine.
+   * @return A JavaScript engine (GraalJS or Nashorn, whichever is available).
    */
   private ScriptEngine engine() {
     synchronized (this) {
       if (this.engine == null) {
 
-        this.engine = new ScriptEngineManager().getEngineByName("nashorn");
+        this.engine = ScriptEngineFactory.create();
 
-        Throwing.run(() -> {
-          //polyfill globalThis as it is used in handlebars 4.7.9 and is not supported by nashorn
-          engine.eval("var globalThis = this;");
-          engine.eval(Files.read(this.handlebarsJsFile, charset));
-        });
+        Throwing.run(
+            () -> {
+              if (ScriptEngineFactory.isNashorn(engine)) {
+                engine.eval("var globalThis = this;");
+              }
+              engine.eval(Files.read(this.handlebarsJsFile, charset));
+            });
       }
       return this.engine;
     }
