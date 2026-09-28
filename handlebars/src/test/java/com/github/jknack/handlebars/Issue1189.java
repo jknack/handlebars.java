@@ -9,7 +9,7 @@ import java.io.IOException;
 
 import org.junit.jupiter.api.Test;
 
-public class UnlessBlockHelperArgsTest extends AbstractTest {
+public class Issue1189 extends AbstractTest {
 
   /**
    * A standalone inverted section ({@code {{^helper args}}...{{/helper}}}) invoking a custom block
