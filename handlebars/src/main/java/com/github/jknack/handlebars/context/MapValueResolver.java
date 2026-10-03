@@ -35,7 +35,7 @@ public enum MapValueResolver implements ValueResolver {
         EnumMap emap = (EnumMap) context;
         if (emap.size() > 0) {
           Enum first = (Enum) emap.keySet().iterator().next();
-          Enum key = Enum.valueOf(first.getClass(), name);
+          Enum key = Enum.valueOf(first.getDeclaringClass(), name);
           value = emap.get(key);
         }
       }
