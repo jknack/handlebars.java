@@ -423,6 +423,12 @@ public enum ConditionalHelpers implements Helper<Object> {
     boolean value = Objects.equals(a, b);
     if (!value) {
       if (a instanceof Number && b instanceof Number) {
+        if (a.getClass() == b.getClass()
+            && a instanceof Comparable
+            && !(a instanceof Double)
+            && !(a instanceof Float)) {
+          return cmp(a, b) == 0;
+        }
         // int vs double: 2 vs 2.0
         return ((Number) a).doubleValue() == ((Number) b).doubleValue();
       }
