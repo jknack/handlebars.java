@@ -100,10 +100,11 @@ abstract class BaseTemplate implements Template {
     } catch (Exception ex) {
       String evidence = toString();
       String reason = ex.toString();
-      String message = filename + ":" + line + ":" + column + ": " + reason + "\n";
+      int errorColumn = Math.max(1, column);
+      String message = filename + ":" + line + ":" + errorColumn + ": " + reason + "\n";
       message += "    " + join(split(evidence, "\n"), "\n    ");
       HandlebarsError error =
-          new HandlebarsError(filename, line, column, reason, evidence, message);
+          new HandlebarsError(filename, line, errorColumn, reason, evidence, message);
       HandlebarsException hex = new HandlebarsException(error, ex);
       // Override the stack-trace
       hex.setStackTrace(ex.getStackTrace());
