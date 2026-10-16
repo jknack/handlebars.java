@@ -10,6 +10,7 @@ import static org.apache.commons.lang3.Validate.notNull;
 import static org.apache.commons.lang3.Validate.validIndex;
 
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -170,7 +171,13 @@ public enum StringHelpers implements Helper<Object> {
         return prefix + StringUtils.join((Iterator) context, (String) separator) + suffix;
       }
       if (context.getClass().isArray()) {
-        return prefix + StringUtils.join((Object[]) context, (String) separator) + suffix;
+        // arrays of primitives (int[], long[], ...) cannot be cast to Object[]
+        int length = Array.getLength(context);
+        Object[] items = new Object[length];
+        for (int i = 0; i < length; i++) {
+          items[i] = Array.get(context, i);
+        }
+        return prefix + StringUtils.join(items, (String) separator) + suffix;
       }
       // join everything as single values
       Object[] values = new Object[options.params.length];

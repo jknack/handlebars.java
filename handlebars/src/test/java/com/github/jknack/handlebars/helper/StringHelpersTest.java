@@ -169,6 +169,12 @@ public class StringHelpersTest extends AbstractTest {
   }
 
   @Test
+  public void joinPrimitiveArray() throws IOException {
+    shouldCompileTo(
+        "{{{join this \", \"}}}", new int[] {6, 7, 8}, $("join", StringHelpers.join), "6, 7, 8");
+  }
+
+  @Test
   public void joinValues() throws IOException {
     shouldCompileTo(
         "{{{join \"6\" 7 n8 \"-\"}}}", $("n8", 8), $("join", StringHelpers.join), "6-7-8");
