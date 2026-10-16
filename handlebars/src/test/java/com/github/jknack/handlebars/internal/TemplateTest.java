@@ -6,8 +6,13 @@
 package com.github.jknack.handlebars.internal;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import java.io.FilterWriter;
 import java.io.IOException;
+import java.io.StringWriter;
+import java.io.Writer;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -17,6 +22,7 @@ import org.junit.jupiter.api.Test;
 
 import com.github.jknack.handlebars.AbstractTest;
 import com.github.jknack.handlebars.Handlebars;
+import com.github.jknack.handlebars.HandlebarsException;
 import com.github.jknack.handlebars.TagType;
 import com.github.jknack.handlebars.Template;
 
@@ -27,6 +33,25 @@ import com.github.jknack.handlebars.Template;
  * @since 1.3.1
  */
 public class TemplateTest extends AbstractTest {
+
+  @Test
+  public void preservesWriterFailureAtStartOfLine() throws IOException {
+    IOException failure = new IOException("Unable to write template output");
+    Writer writer =
+        new FilterWriter(new StringWriter()) {
+          @Override
+          public void write(String text, int offset, int length) throws IOException {
+            throw failure;
+          }
+        };
+    Template template = newHandlebars().compileInline("Hello {{user}}.");
+
+    HandlebarsException error =
+        assertThrows(HandlebarsException.class, () -> template.apply("", writer));
+
+    assertSame(failure, error.getCause());
+    assertEquals(1, error.getError().column);
+  }
 
   @Test
   public void simpleVarTests() throws IOException {
