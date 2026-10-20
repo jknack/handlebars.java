@@ -69,13 +69,7 @@ public class SpringTemplateLoader extends URLTemplateLoader {
     // Delegate to native canonical files if the Spring resource is on disk
     if (resource.isFile()) {
       File file = resource.getFile().getCanonicalFile();
-      String prefixPath = getPrefix();
-      int protocolIndex = prefixPath.indexOf(":");
-      if (protocolIndex != -1) {
-        prefixPath = prefixPath.substring(protocolIndex + 1);
-      }
-
-      File basedir = new File(prefixPath).getCanonicalFile();
+      File basedir = resolveBaseDirectory();
       String canonicalFilePath = file.getPath();
       String canonicalBasePath = basedir.getPath();
 
@@ -91,6 +85,15 @@ public class SpringTemplateLoader extends URLTemplateLoader {
     } else {
       // Fallback containment for Classpath/URL resources
       String decodedPath = URLDecoder.decode(url.getPath(), StandardCharsets.UTF_8);
+
+      // Archive URLs embed the archive location before a '!' separator, e.g.
+      // jar:file:/app.jar!/entry or nested:/app.jar/!BOOT-INF/classes/!/entry.
+      // Only the innermost entry path lives in the template namespace.
+      int entrySeparator = decodedPath.lastIndexOf('!');
+      if (entrySeparator != -1) {
+        decodedPath = decodedPath.substring(entrySeparator + 1);
+      }
+
       String resolvedPath =
           Paths.get(decodedPath).normalize().toString().replace(File.separatorChar, '/');
 
@@ -106,7 +109,7 @@ public class SpringTemplateLoader extends URLTemplateLoader {
         normalizedPrefix += "/";
       }
 
-      if (!normalizedPrefix.equals("/") && !resolvedPath.startsWith(normalizedPrefix)) {
+      if (!normalizedPrefix.equals("/") && !resolvedPath.contains(normalizedPrefix)) {
         throw new IllegalArgumentException(
             "Path traversal attempt detected. Resolved path escapes Spring base prefix: "
                 + location);
@@ -114,6 +117,29 @@ public class SpringTemplateLoader extends URLTemplateLoader {
     }
 
     return url;
+  }
+
+  /**
+   * Resolves the configured prefix to a real directory so file resources can be
+   * checked against it. A classpath: prefix resolves through the resource
+   * loader to the actual classpath directory (e.g. target/classes/templates),
+   * unlike a literal strip which would point at the filesystem root.
+   *
+   * @return The canonical base directory for the configured prefix.
+   * @throws IOException If the prefix resource cannot be resolved.
+   */
+  private File resolveBaseDirectory() throws IOException {
+    Resource base = loader.getResource(getPrefix());
+    if (base != null && base.isFile()) {
+      return base.getFile().getCanonicalFile();
+    }
+
+    String prefixPath = getPrefix();
+    int protocolIndex = prefixPath.indexOf(":");
+    if (protocolIndex != -1) {
+      prefixPath = prefixPath.substring(protocolIndex + 1);
+    }
+    return new File(prefixPath).getCanonicalFile();
   }
 
   /**
