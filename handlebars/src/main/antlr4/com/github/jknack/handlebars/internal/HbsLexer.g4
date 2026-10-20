@@ -334,6 +334,8 @@ ID
   :
   ID_START ID_SUFFIX*
   | ID_ESCAPE ID_SUFFIX*
+  // digit-leading identifiers such as 24Hr, which handlebars.js accepts
+  | [0-9]+ ID_START ID_SUFFIX*
  ;
 
 fragment
