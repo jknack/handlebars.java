@@ -113,10 +113,13 @@ jobs:
             --json title,number \
             --jq '.[] | "- \(.title) #\(.number)"' > unlinked_prs.md
           
-          # 6. Initialize the changelog file
+          # 6. Merge generic changes and standalone PRs into one file
+          cat other_issues.md unlinked_prs.md > merged_changes.md
+          
+          # 7. Initialize the changelog file
           > changelog.md
           
-          # 7. Conditionally add "Breaking Changes"
+          # 8. Conditionally add "Breaking Changes"
           if [ -s breaking_issues.md ]; then
             echo "## ⚠️ Breaking Changes" >> changelog.md
             echo "" >> changelog.md
@@ -124,7 +127,7 @@ jobs:
             echo "" >> changelog.md
           fi
           
-          # 8. Conditionally add "What's New"
+          # 9. Conditionally add "What's New"
           if [ -s new_issues.md ]; then
             echo "## 🚀 What's New" >> changelog.md
             echo "" >> changelog.md
@@ -132,19 +135,11 @@ jobs:
             echo "" >> changelog.md
           fi
           
-          # 9. Conditionally add "Other Changes"
-          if [ -s other_issues.md ]; then
+          # 10. Conditionally add "Changes & Pull Requests"
+          if [ -s merged_changes.md ]; then
             echo "## 🛠️ Changes" >> changelog.md
             echo "" >> changelog.md
-            cat other_issues.md >> changelog.md
-            echo "" >> changelog.md
-          fi
-          
-          # 10. Conditionally add "Standalone Pull Requests"
-          if [ -s unlinked_prs.md ]; then
-            echo "## 💻 Pull Requests" >> changelog.md
-            echo "" >> changelog.md
-            cat unlinked_prs.md >> changelog.md
+            cat merged_changes.md >> changelog.md
             echo "" >> changelog.md
           fi
           
