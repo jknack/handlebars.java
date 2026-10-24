@@ -52,6 +52,29 @@ public class SpringTemplateLoaderTest {
   }
 
   @Test
+  public void classpathPrefixResolvesExplodedResource() throws IOException {
+    SpringTemplateLoader loader = new SpringTemplateLoader(new DefaultResourceLoader());
+    loader.setPrefix("classpath:/templates/");
+    loader.setSuffix(".hbs");
+
+    assertNotNull(loader.sourceAt("hello"));
+  }
+
+  @Test
+  public void classpathPrefixAcceptsJarEntryUrls() throws IOException {
+    Resource mockResource = mock(Resource.class);
+    when(mockResource.exists()).thenReturn(true);
+    when(mockResource.isFile()).thenReturn(false);
+
+    URL jarUrl = new URL("jar:file:/application.jar!/templates/hello.hbs");
+    when(mockResource.getURL()).thenReturn(jarUrl);
+
+    when(resourceLoader.getResource("classpath:/templates/hello.hbs")).thenReturn(mockResource);
+
+    assertNotNull(templateLoader.sourceAt("hello"));
+  }
+
+  @Test
   public void shouldEnforceLogicalBoundaryAgainstTraversal() throws IOException {
     Resource mockResource = mock(Resource.class);
     when(mockResource.exists()).thenReturn(true);
