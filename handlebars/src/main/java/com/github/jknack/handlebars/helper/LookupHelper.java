@@ -36,7 +36,7 @@ public class LookupHelper implements Helper<Object> {
     if (context == null) {
       return null;
     }
-    if (options.params.length <= 0) {
+    if (options.params.length <= 0 || options.param(0) == null) {
       return context;
     }
     Context ctx = Context.newBuilder(options.context, context).build();
