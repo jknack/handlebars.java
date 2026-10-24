@@ -1450,11 +1450,13 @@ public class Handlebars implements HelperRegistry {
 
         this.engine = new ScriptEngineManager().getEngineByName("nashorn");
 
-        Throwing.run(() -> {
-          //polyfill globalThis as it is used since handlebars 4.7.9 and is not supported by nashorn
-          engine.eval("var globalThis = this;");
-          engine.eval(Files.read(this.handlebarsJsFile, charset));
-        });
+        Throwing.run(
+            () -> {
+              // polyfill globalThis as it is used since handlebars 4.7.9 and is not supported by
+              // nashorn
+              engine.eval("var globalThis = this;");
+              engine.eval(Files.read(this.handlebarsJsFile, charset));
+            });
       }
       return this.engine;
     }

@@ -5,5 +5,4 @@
  */
 package com.github.jknack.handlebars.jackson;
 
-public record Comment(String author, String comment) {
-}
+public record Comment(String author, String comment) {}

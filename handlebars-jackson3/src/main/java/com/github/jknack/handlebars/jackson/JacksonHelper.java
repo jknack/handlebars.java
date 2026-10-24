@@ -5,6 +5,11 @@
  */
 package com.github.jknack.handlebars.jackson;
 
+import static java.util.Objects.requireNonNull;
+
+import java.util.HashMap;
+import java.util.Map;
+
 import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Helper;
 import com.github.jknack.handlebars.Options;
@@ -13,11 +18,6 @@ import tools.jackson.core.io.CharacterEscapes;
 import tools.jackson.databind.ObjectMapper;
 import tools.jackson.databind.ObjectWriter;
 import tools.jackson.databind.json.JsonMapper;
-
-import java.util.HashMap;
-import java.util.Map;
-
-import static java.util.Objects.requireNonNull;
 
 /**
  * A Jackson 3.x helper.
@@ -138,25 +138,21 @@ public class JacksonHelper implements Helper<Object> {
     final String viewName = options.hash("view", "");
     try {
       final Class<?> viewClass = alias.get(viewName);
-      final ObjectWriter viewWriter = Handlebars.Utils.isEmpty(viewName)
+      final ObjectWriter viewWriter =
+          Handlebars.Utils.isEmpty(viewName)
               ? mapper.writer()
-              : mapper.writerWithView(viewClass != null
-                                      ? viewClass
-                                      : getClass().getClassLoader().loadClass(viewName));
+              : mapper.writerWithView(
+                  viewClass != null ? viewClass : getClass().getClassLoader().loadClass(viewName));
 
       final boolean escapeHtml = options.hash("escapeHTML", false);
       final boolean pretty = options.hash("pretty", false);
 
-      final ObjectWriter writer = pretty
-              ? viewWriter.withDefaultPrettyPrinter()
-              : viewWriter;
+      final ObjectWriter writer = pretty ? viewWriter.withDefaultPrettyPrinter() : viewWriter;
 
-      final ObjectWriter configuredWriter = escapeHtml
-              ? writer.with(new HtmlEscapes())
-              : writer;
+      final ObjectWriter configuredWriter = escapeHtml ? writer.with(new HtmlEscapes()) : writer;
 
       return new Handlebars.SafeString(configuredWriter.writeValueAsString(context));
-    } catch (ClassNotFoundException|NoClassDefFoundError ex) {
+    } catch (ClassNotFoundException | NoClassDefFoundError ex) {
       throw new IllegalArgumentException(viewName, ex);
     }
   }

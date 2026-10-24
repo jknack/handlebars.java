@@ -5,11 +5,11 @@
  */
 package com.github.jknack.handlebars.jackson;
 
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import com.fasterxml.jackson.annotation.JsonView;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.fasterxml.jackson.annotation.JsonView;
 
 @JsonPropertyOrder({"title", "body", "comments"})
 public class Blog {

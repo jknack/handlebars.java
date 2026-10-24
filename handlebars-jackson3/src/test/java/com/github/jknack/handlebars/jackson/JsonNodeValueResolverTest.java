@@ -5,20 +5,11 @@
  */
 package com.github.jknack.handlebars.jackson;
 
-import com.github.jknack.handlebars.Context;
-import com.github.jknack.handlebars.Handlebars;
-import com.github.jknack.handlebars.ValueResolver;
-import com.github.jknack.handlebars.context.MapValueResolver;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-import tools.jackson.databind.JsonNode;
-import tools.jackson.databind.json.JsonMapper;
-import tools.jackson.databind.node.BigIntegerNode;
-import tools.jackson.databind.node.BinaryNode;
-import tools.jackson.databind.node.DecimalNode;
-import tools.jackson.databind.node.LongNode;
-import tools.jackson.databind.node.NullNode;
-import tools.jackson.databind.node.POJONode;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -29,11 +20,21 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+
+import com.github.jknack.handlebars.Context;
+import com.github.jknack.handlebars.Handlebars;
+import com.github.jknack.handlebars.ValueResolver;
+import com.github.jknack.handlebars.context.MapValueResolver;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.json.JsonMapper;
+import tools.jackson.databind.node.BigIntegerNode;
+import tools.jackson.databind.node.BinaryNode;
+import tools.jackson.databind.node.DecimalNode;
+import tools.jackson.databind.node.LongNode;
+import tools.jackson.databind.node.NullNode;
+import tools.jackson.databind.node.POJONode;
 
 class JsonNodeValueResolverTest {
 

@@ -37,10 +37,12 @@ public class v4Test {
     Object hash = data.get("hash");
     String result = t.apply(configureContext(hash));
     assertTrue(
-      java.util.Arrays.asList(expected).contains(result),
-      "Result '" + result + "' does not match any of the expected values: " + java.util.Arrays.toString(expected)
-    );
-}
+        java.util.Arrays.asList(expected).contains(result),
+        "Result '"
+            + result
+            + "' does not match any of the expected values: "
+            + java.util.Arrays.toString(expected));
+  }
 
   protected Object configureContext(final Object context) {
     return context;

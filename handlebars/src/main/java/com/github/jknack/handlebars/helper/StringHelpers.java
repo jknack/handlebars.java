@@ -592,20 +592,23 @@ public enum StringHelpers implements Helper<Object> {
    *   <li>"pattern": a {@link java.text.DecimalFormat} pattern, e.g. "#,###.00"
    * </ul>
    *
-   * If not specified, the default number format will be used.
-   * The format option can be specified either as a positional parameter or as a named hash parameter.
+   * If not specified, the default number format will be used. The format option can be specified
+   * either as a positional parameter or as a named hash parameter.
    *
    * <p>Additional options:
    *
    * <ul>
-   *   <li><strong>locale</strong>: the locale to use, e.g. "en_US" or "fr". Defaults to the system locale.
-   *   <li><strong>groupingUsed</strong>: whether grouping (e.g. thousands separators) should be used.
+   *   <li><strong>locale</strong>: the locale to use, e.g. "en_US" or "fr". Defaults to the system
+   *       locale.
+   *   <li><strong>groupingUsed</strong>: whether grouping (e.g. thousands separators) should be
+   *       used.
    *   <li><strong>maximumFractionDigits</strong>: maximum number of digits in the fractional part.
    *   <li><strong>maximumIntegerDigits</strong>: maximum number of digits in the integer part.
    *   <li><strong>minimumFractionDigits</strong>: minimum number of digits in the fractional part.
    *   <li><strong>minimumIntegerDigits</strong>: minimum number of digits in the integer part.
    *   <li><strong>parseIntegerOnly</strong>: whether numbers should be parsed as integers only.
-   *   <li><strong>roundingMode</strong>: the {@link java.math.RoundingMode} to apply, e.g. "HALF_UP".
+   *   <li><strong>roundingMode</strong>: the {@link java.math.RoundingMode} to apply, e.g.
+   *       "HALF_UP".
    * </ul>
    *
    * @see NumberFormat

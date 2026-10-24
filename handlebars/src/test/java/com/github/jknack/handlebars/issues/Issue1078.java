@@ -23,15 +23,11 @@ public class Issue1078 extends v4Test {
 
   @Test
   public void shouldResolveDigitLeadingIdentifiersInBlocks() throws IOException {
-    shouldCompileTo(
-        "{{#if 24Hr}}yes{{/if}}", $("hash", $("24Hr", true)), "yes");
+    shouldCompileTo("{{#if 24Hr}}yes{{/if}}", $("hash", $("24Hr", true)), "yes");
   }
 
   @Test
   public void shouldStillParseNumericLiteralsAsParameters() throws IOException {
-    shouldCompileTo(
-        "{{foo 24}} {{foo 24.5}}",
-        $("helpers", $("foo", "ok")),
-        "ok ok");
+    shouldCompileTo("{{foo 24}} {{foo 24.5}}", $("helpers", $("foo", "ok")), "ok ok");
   }
 }

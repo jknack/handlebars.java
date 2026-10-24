@@ -61,8 +61,8 @@ class Text extends BaseTemplate {
   /**
    * Merges the content of the given {@link Text} instance into this instance.
    *
-   * @param other the {@link Text} instance to merge with this instance;
-   *               if null or contains no text, no action is taken
+   * @param other the {@link Text} instance to merge with this instance; if null or contains no
+   *     text, no action is taken
    */
   public void append(final Text other) {
     if (other != null && other.text != null) {

@@ -9,8 +9,6 @@ import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.Locale;
 
 import org.junit.jupiter.api.Test;
@@ -76,9 +74,7 @@ public class NumberFormatTest extends AbstractTest {
   public void namedFormat() throws IOException {
     final Number number = Math.PI;
     final Locale defaultLocale = Locale.getDefault();
-    final String expected = NumberFormat
-            .getPercentInstance(defaultLocale)
-            .format(number);
+    final String expected = NumberFormat.getPercentInstance(defaultLocale).format(number);
 
     shouldCompileTo("{{numberFormat this format=\"percent\"}}", number, expected);
   }
@@ -89,9 +85,7 @@ public class NumberFormatTest extends AbstractTest {
     final String pattern = "currency";
     final Locale portuguese = Locale.forLanguageTag("pt-BR");
 
-    final String expected = NumberFormat
-            .getCurrencyInstance(portuguese)
-            .format(number);
+    final String expected = NumberFormat.getCurrencyInstance(portuguese).format(number);
 
     shouldCompileTo("{{numberFormat this \"" + pattern + "\" locale=\"pt-BR\"}}", number, expected);
   }

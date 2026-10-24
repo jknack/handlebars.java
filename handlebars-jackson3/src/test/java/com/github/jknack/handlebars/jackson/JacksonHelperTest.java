@@ -5,23 +5,24 @@
  */
 package com.github.jknack.handlebars.jackson;
 
-import com.github.jknack.handlebars.Handlebars;
-import com.github.jknack.handlebars.HandlebarsException;
-import com.github.jknack.handlebars.Template;
-import com.github.jknack.handlebars.jackson.Blog.Views.Public;
-import org.hamcrest.Description;
-import org.hamcrest.TypeSafeMatcher;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-import tools.jackson.databind.ObjectMapper;
-import tools.jackson.databind.json.JsonMapper;
+import static com.github.jknack.handlebars.jackson.JacksonHelperTest.IgnoreWindowsLineMatcher.equalsToStringIgnoringWindowsNewLine;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.github.jknack.handlebars.jackson.JacksonHelperTest.IgnoreWindowsLineMatcher.equalsToStringIgnoringWindowsNewLine;
-import static org.hamcrest.MatcherAssert.assertThat;
+import org.hamcrest.Description;
+import org.hamcrest.TypeSafeMatcher;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+
+import com.github.jknack.handlebars.Handlebars;
+import com.github.jknack.handlebars.HandlebarsException;
+import com.github.jknack.handlebars.Template;
+import com.github.jknack.handlebars.jackson.Blog.Views.Public;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
 /**
  * Unit test for {@link JacksonHelper}.
@@ -55,11 +56,12 @@ class JacksonHelperTest {
         template.apply(new Blog("First Post", "...")),
         equalsToStringIgnoringWindowsNewLine(
             """
-                {
-                  "title" : "First Post",
-                  "body" : "...",
-                  "comments" : [ ]
-                }"""));
+            {
+              "title" : "First Post",
+              "body" : "...",
+              "comments" : [ ]
+            }\
+            """));
   }
 
   @Test
@@ -151,10 +153,10 @@ class JacksonHelperTest {
     @Override
     public void describeTo(Description description) {
       description
-              .appendText("a string ")
-              .appendText("ignoring \\r")
-              .appendText(" ")
-              .appendValue(value);
+          .appendText("a string ")
+          .appendText("ignoring \\r")
+          .appendText(" ")
+          .appendValue(value);
     }
   }
 }
