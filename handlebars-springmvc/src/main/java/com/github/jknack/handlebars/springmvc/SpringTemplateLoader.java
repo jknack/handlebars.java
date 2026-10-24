@@ -86,9 +86,7 @@ public class SpringTemplateLoader extends URLTemplateLoader {
       // Fallback containment for Classpath/URL resources
       String decodedPath = URLDecoder.decode(url.getPath(), StandardCharsets.UTF_8);
 
-      // Archive URLs embed the archive location before a '!' separator, e.g.
-      // jar:file:/app.jar!/entry or nested:/app.jar/!BOOT-INF/classes/!/entry.
-      // Only the innermost entry path lives in the template namespace.
+      // Archive URLs embed the archive location before a '!' separator
       int entrySeparator = decodedPath.lastIndexOf('!');
       if (entrySeparator != -1) {
         decodedPath = decodedPath.substring(entrySeparator + 1);
@@ -96,6 +94,11 @@ public class SpringTemplateLoader extends URLTemplateLoader {
 
       String resolvedPath =
           Paths.get(decodedPath).normalize().toString().replace(File.separatorChar, '/');
+
+      // Ensure absolute logical path for accurate startsWith comparison
+      if (!resolvedPath.startsWith("/")) {
+        resolvedPath = "/" + resolvedPath;
+      }
 
       String prefixPath = getPrefix();
       int protocolIndex = prefixPath.indexOf(":");
@@ -105,11 +108,17 @@ public class SpringTemplateLoader extends URLTemplateLoader {
 
       String normalizedPrefix =
           Paths.get(prefixPath).normalize().toString().replace(File.separatorChar, '/');
+
+      // Ensure prefix is absolute and ends with a trailing slash
+      if (!normalizedPrefix.startsWith("/")) {
+        normalizedPrefix = "/" + normalizedPrefix;
+      }
       if (!normalizedPrefix.endsWith("/")) {
         normalizedPrefix += "/";
       }
 
-      if (!normalizedPrefix.equals("/") && !resolvedPath.contains(normalizedPrefix)) {
+      // Ensure resolved path starts with the normalized prefix to prevent middle-of-path bypasses
+      if (!normalizedPrefix.equals("/") && !resolvedPath.startsWith(normalizedPrefix)) {
         throw new IllegalArgumentException(
             "Path traversal attempt detected. Resolved path escapes Spring base prefix: "
                 + location);
@@ -120,10 +129,10 @@ public class SpringTemplateLoader extends URLTemplateLoader {
   }
 
   /**
-   * Resolves the configured prefix to a real directory so file resources can be
-   * checked against it. A classpath: prefix resolves through the resource
-   * loader to the actual classpath directory (e.g. target/classes/templates),
-   * unlike a literal strip which would point at the filesystem root.
+   * Resolves the configured prefix to a real directory so file resources can be checked against it.
+   * A classpath: prefix resolves through the resource loader to the actual classpath directory
+   * (e.g. target/classes/templates), unlike a literal strip which would point at the filesystem
+   * root.
    *
    * @return The canonical base directory for the configured prefix.
    * @throws IOException If the prefix resource cannot be resolved.

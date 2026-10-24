@@ -75,6 +75,32 @@ public class SpringTemplateLoaderTest {
   }
 
   @Test
+  public void shouldBlockContainsBypassInClasspath() throws IOException {
+    Resource mockResource = mock(Resource.class);
+    when(mockResource.exists()).thenReturn(true);
+    when(mockResource.isFile()).thenReturn(false);
+
+    // Simulate an attacker traversing out, but targeting a file inside another directory
+    // that happens to include the prefix string ("/templates/") in its path.
+    URL maliciousUrl = new URL("jar:file:/app.jar!/com/myapp/secret/templates/keys.hbs");
+    when(mockResource.getURL()).thenReturn(maliciousUrl);
+
+    // Spring resolves the traversal logically before Handlebars gets it
+    when(resourceLoader.getResource(
+            "classpath:/templates/../../com/myapp/secret/templates/keys.hbs"))
+        .thenReturn(mockResource);
+
+    IllegalArgumentException exception =
+        assertThrows(
+            IllegalArgumentException.class,
+            () -> {
+              templateLoader.sourceAt("../../com/myapp/secret/templates/keys");
+            });
+
+    assertTrue(exception.getMessage().contains("escapes Spring base prefix"));
+  }
+
+  @Test
   public void shouldEnforceLogicalBoundaryAgainstTraversal() throws IOException {
     Resource mockResource = mock(Resource.class);
     when(mockResource.exists()).thenReturn(true);
