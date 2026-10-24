@@ -49,12 +49,12 @@
 
   <distributionManagement>
     <snapshotRepository>
-      <id>central</id>
+      <id>ossrh</id>
       <name>Maven Central Snapshots</name>
       <url>https://central.sonatype.com/repository/maven-snapshots/</url>
     </snapshotRepository>
     <repository>
-      <id>central</id>
+      <id>ossrh</id>
       <name>Maven Central Release Repository</name>
       <url>https://ossrh-staging-api.central.sonatype.com/service/local/</url>
     </repository>
@@ -62,6 +62,24 @@
 
   <dependencyManagement>
     <dependencies>
+      <dependency>
+        <groupId>org.ow2.asm</groupId>
+        <artifactId>asm</artifactId>
+        <version>${asm.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.ow2.asm</groupId>
+        <artifactId>asm-tree</artifactId>
+        <version>${asm.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.ow2.asm</groupId>
+        <artifactId>asm-util</artifactId>
+        <version>${asm.version}</version>
+      </dependency>
+
       <dependency>
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-lang3</artifactId>
@@ -222,7 +240,7 @@
       <plugin>
         <groupId>com.diffplug.spotless</groupId>
         <artifactId>spotless-maven-plugin</artifactId>
-        <version>2.46.1</version>
+        <version>3.10.4</version>
         <configuration>
           <upToDateChecking>
             <enabled>true</enabled>
@@ -493,19 +511,16 @@
     </profile>
   </profiles>
 
-  <prerequisites>
-    <maven>3.0</maven>
-  </prerequisites>
-
   <properties>
     <!-- Encoding UTF-8 -->
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <jackson2-version>2.22.2</jackson2-version>
-    <jackson3-version>3.2.2</jackson3-version>
+    <jackson2-version>2.22.4</jackson2-version>
+    <jackson3-version>3.2.4</jackson3-version>
     <spring.version>6.2.9</spring.version>
     <jacoco.version>0.8.12</jacoco.version>
     <antlr-version>4.13.2</antlr-version>
-    <mockito.version>5.23.0</mockito.version>
+    <asm.version>9.11.1</asm.version>
+    <mockito.version>5.24.0</mockito.version>
     <maven.build.timestamp.format>yyyy-MM-dd HH:mm:ssa</maven.build.timestamp.format>
     <maven-antrun-plugin.version>3.1.0</maven-antrun-plugin.version>
     <timestamp>${maven.build.timestamp}</timestamp>

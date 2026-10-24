@@ -243,7 +243,7 @@
   </dependencies>
 
   <properties>
-    <nashorn.version>15.4</nashorn.version>
+    <nashorn.version>15.7</nashorn.version>
   </properties>
 
   <profiles>
