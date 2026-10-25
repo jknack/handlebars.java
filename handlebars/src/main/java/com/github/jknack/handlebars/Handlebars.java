@@ -1452,7 +1452,7 @@ public class Handlebars implements HelperRegistry {
 
         Throwing.run(
             () -> {
-              // polyfill globalThis as it is used since handlebars 4.7.9 and is not supported by
+              // polyfill globalThis as it is used since handlebars 4.7.x and is not supported by
               // nashorn
               engine.eval("var globalThis = this;");
               engine.eval(Files.read(this.handlebarsJsFile, charset));
