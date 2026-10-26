@@ -194,7 +194,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
-        <version>3.11.2</version>
+        <version>3.12.0</version>
         <configuration>
           <excludePackageNames>com.github.jknack.handlebars.internal.*</excludePackageNames>
           <show>public</show>
@@ -215,7 +215,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
-        <version>3.5.3</version>
+        <version>3.6.1</version>
         <configuration>
           <!-- set default locale of the test JVM to en_US because some tests expect e.g. the dollar sign as currency symbol -->
           <argLine>-Duser.language=en -Duser.country=US</argLine>
@@ -286,7 +286,7 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-surefire-plugin</artifactId>
-            <version>3.3.0</version>
+            <version>3.6.1</version>
             <inherited>false</inherited>
             <configuration>
               <includes>
@@ -316,7 +316,7 @@
           <plugin>
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>exec-maven-plugin</artifactId>
-            <version>3.5.1</version>
+            <version>3.6.4</version>
             <executions>
               <execution>
                 <phase>initialize</phase>
@@ -377,7 +377,7 @@
           <plugin>
             <groupId>com.rudikershaw.gitbuildhook</groupId>
             <artifactId>git-build-hook-maven-plugin</artifactId>
-            <version>3.5.0</version>
+            <version>3.6.0</version>
             <configuration>
               <installHooks>
                 <pre-commit>${pre-commit-hook}</pre-commit>
@@ -404,7 +404,7 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-source-plugin</artifactId>
-            <version>3.3.1</version>
+            <version>3.4.0</version>
             <executions>
               <execution>
                 <id>attach-sources</id>
@@ -419,7 +419,7 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-gpg-plugin</artifactId>
-            <version>3.2.4</version>
+            <version>3.2.8</version>
             <executions>
               <execution>
                 <id>sign-artifacts</id>
@@ -488,7 +488,7 @@
           <plugin>
             <groupId>org.moditect</groupId>
             <artifactId>moditect-maven-plugin</artifactId>
-            <version>1.2.2.Final</version>
+            <version>1.3.0.Final</version>
             <executions>
               <execution>
                 <id>add-module-infos</id>
@@ -516,13 +516,13 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <jackson2-version>2.22.4</jackson2-version>
     <jackson3-version>3.2.4</jackson3-version>
-    <spring.version>6.2.9</spring.version>
-    <jacoco.version>0.8.12</jacoco.version>
+    <spring.version>7.0.10</spring.version>
+    <jacoco.version>0.8.15</jacoco.version>
     <antlr-version>4.13.2</antlr-version>
     <asm.version>9.11.1</asm.version>
     <mockito.version>5.24.0</mockito.version>
     <maven.build.timestamp.format>yyyy-MM-dd HH:mm:ssa</maven.build.timestamp.format>
-    <maven-antrun-plugin.version>3.1.0</maven-antrun-plugin.version>
+    <maven-antrun-plugin.version>3.2.0</maven-antrun-plugin.version>
     <timestamp>${maven.build.timestamp}</timestamp>
     <maven.compiler.source>17</maven.compiler.source>
     <maven.compiler.target>17</maven.compiler.target>
