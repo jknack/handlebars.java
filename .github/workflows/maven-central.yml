@@ -10,10 +10,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Set up JDK 17
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           java-version: 17
           distribution: 'temurin'
@@ -23,7 +23,7 @@ jobs:
         run: mvn clean install -DskipTests -q
 
       - name: Set up Maven Central
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with: # running setup-java again overwrites the settings.xml
           java-version: 17
           distribution: 'temurin'
@@ -47,7 +47,7 @@ jobs:
     permissions:
       contents: write
       issues: write # Required to update/close milestones
-      pull-requests: read # Required for 'gh pr list'
+      pull-requests: read # Required to fetch PR JSON data
 
     steps:
       - uses: actions/checkout@v4
@@ -105,21 +105,41 @@ jobs:
             --json title,number \
             --jq '.[] | "- \(.title) #\(.number)"' > other_issues.md
           
-          # 5. Fetch UNLINKED Pull Requests (Merged PRs not fixing an issue)
+          # 5. Fetch all issue numbers in this milestone to use as a filter
+          CURRENT_ISSUES_JSON=$(gh issue list \
+            --repo ${{ github.repository }} \
+            --search "milestone:\"$VERSION_NUM\"" \
+            --state all \
+            --limit 1000 \
+            --json number \
+            --jq '[.[].number]')
+          
+          if [ -z "$CURRENT_ISSUES_JSON" ]; then
+            CURRENT_ISSUES_JSON="[]"
+          fi
+          
+          # 6. Fetch Pull Requests and filter out those that close CURRENT issues
           gh pr list \
             --repo ${{ github.repository }} \
-            --search "milestone:\"$VERSION_NUM\" is:merged -linked:issue -author:app/dependabot -label:dependencies" \
+            --search "milestone:\"$VERSION_NUM\" is:merged -author:app/dependabot -label:dependencies" \
             --limit 100 \
-            --json title,number \
-            --jq '.[] | "- \(.title) #\(.number)"' > unlinked_prs.md
+            --json title,number,closingIssuesReferences > all_prs.json
           
-          # 6. Merge generic changes and standalone PRs into one file
+          jq -r --argjson current_issues "$CURRENT_ISSUES_JSON" '
+            .[] | 
+            select(
+              ([.closingIssuesReferences[]?.number] - $current_issues | length) == ([.closingIssuesReferences[]?.number] | length)
+            ) | 
+            "- \(.title) #\(.number)"
+          ' all_prs.json > unlinked_prs.md
+          
+          # 7. Merge generic changes and standalone PRs into one file
           cat other_issues.md unlinked_prs.md > merged_changes.md
           
-          # 7. Initialize the changelog file
+          # 8. Initialize the changelog file
           > changelog.md
           
-          # 8. Conditionally add "Breaking Changes"
+          # 9. Conditionally add "Breaking Changes"
           if [ -s breaking_issues.md ]; then
             echo "## ⚠️ Breaking Changes" >> changelog.md
             echo "" >> changelog.md
@@ -127,7 +147,7 @@ jobs:
             echo "" >> changelog.md
           fi
           
-          # 9. Conditionally add "What's New"
+          # 10. Conditionally add "What's New"
           if [ -s new_issues.md ]; then
             echo "## 🚀 What's New" >> changelog.md
             echo "" >> changelog.md
@@ -135,7 +155,7 @@ jobs:
             echo "" >> changelog.md
           fi
           
-          # 10. Conditionally add "Changes & Pull Requests"
+          # 11. Conditionally add "Changes & Pull Requests"
           if [ -s merged_changes.md ]; then
             echo "## 🛠️ Changes" >> changelog.md
             echo "" >> changelog.md
@@ -143,7 +163,7 @@ jobs:
             echo "" >> changelog.md
           fi
           
-          # 11. Conditionally add "Deprecated"
+          # 12. Conditionally add "Deprecated"
           if [ -s deprecated_issues.md ]; then
             echo "## 🗑️ Deprecated" >> changelog.md
             echo "" >> changelog.md
@@ -151,7 +171,7 @@ jobs:
             echo "" >> changelog.md
           fi
           
-          # 12. Build the rest of the changelog (Links & Resources only)
+          # 13. Build the rest of the changelog (Links & Resources only)
           cat << EOF >> changelog.md
           ## 🔗 Links & Resources
           - [$CURRENT_TAG](https://github.com/${{ github.repository }}/tree/$CURRENT_TAG)
@@ -172,10 +192,10 @@ jobs:
         run: |
           CURRENT_TAG=${{ github.ref_name }}
           VERSION_NUM=${CURRENT_TAG#v}
-
+          
           # Fetch the ID of the milestone only if it is currently open
           MILESTONE_ID=$(gh api repos/${{ github.repository }}/milestones -q ".[] | select(.title==\"$VERSION_NUM\" and .state==\"open\") | .number")
-
+          
           if [ -n "$MILESTONE_ID" ]; then
             echo "Closing milestone $VERSION_NUM (ID: $MILESTONE_ID)..."
             gh api \
