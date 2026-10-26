@@ -11,6 +11,7 @@ import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import java.net.URL;
+import java.net.URLClassLoader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
@@ -75,21 +76,9 @@ public class SpringTemplateLoaderTest {
   }
 
   @Test
-  public void shouldBlockContainsBypassInClasspath() throws IOException {
-    Resource mockResource = mock(Resource.class);
-    when(mockResource.exists()).thenReturn(true);
-    when(mockResource.isFile()).thenReturn(false);
-
-    // Simulate an attacker traversing out, but targeting a file inside another directory
-    // that happens to include the prefix string ("/templates/") in its path.
-    URL maliciousUrl = new URL("jar:file:/app.jar!/com/myapp/secret/templates/keys.hbs");
-    when(mockResource.getURL()).thenReturn(maliciousUrl);
-
-    // Spring resolves the traversal logically before Handlebars gets it
-    when(resourceLoader.getResource(
-            "classpath:/templates/../../com/myapp/secret/templates/keys.hbs"))
-        .thenReturn(mockResource);
-
+  public void shouldBlockContainsBypassInClasspath() {
+    // The logical check happens before resource resolution, so we don't need mock behavior.
+    // It catches the traversal on the logical string level immediately.
     IllegalArgumentException exception =
         assertThrows(
             IllegalArgumentException.class,
@@ -97,32 +86,21 @@ public class SpringTemplateLoaderTest {
               templateLoader.sourceAt("../../com/myapp/secret/templates/keys");
             });
 
-    assertTrue(exception.getMessage().contains("escapes Spring base prefix"));
+    assertTrue(exception.getMessage().contains("Logical path escapes classpath prefix"));
   }
 
   @Test
-  public void shouldEnforceLogicalBoundaryAgainstTraversal() throws IOException {
-    Resource mockResource = mock(Resource.class);
-    when(mockResource.exists()).thenReturn(true);
-    when(mockResource.isFile()).thenReturn(false);
-
-    URL maliciousUrl = new URL("file:///application.properties.hbs");
-    when(mockResource.getURL()).thenReturn(maliciousUrl);
-
-    when(resourceLoader.getResource("classpath:/templates/../../application.properties.hbs"))
-        .thenReturn(mockResource);
-
-    String maliciousPath = "../../application.properties";
-
+  public void shouldEnforceLogicalBoundaryAgainstTraversal() {
+    // The logical check happens before resource resolution, so we don't need mock behavior.
+    // It catches the traversal on the logical string level immediately.
     IllegalArgumentException exception =
         assertThrows(
             IllegalArgumentException.class,
             () -> {
-              // sourceAt triggers resolve() and then getResource()
-              templateLoader.sourceAt(maliciousPath);
+              templateLoader.sourceAt("../../application.properties");
             });
 
-    assertTrue(exception.getMessage().contains("escapes Spring base"));
+    assertTrue(exception.getMessage().contains("Logical path escapes classpath prefix"));
   }
 
   @Test
@@ -223,11 +201,40 @@ public class SpringTemplateLoaderTest {
 
     // Use "../" to back out of the Handlebars-enforced slash, traversing into the sibling
     // directory.
-    // Handlebars resolves this to: .../templates/../templates-secret/secret.hbs
     IllegalArgumentException exception =
         assertThrows(
             IllegalArgumentException.class, () -> loader.sourceAt("../templates-secret/secret"));
 
     assertTrue(exception.getMessage().contains("escapes Spring base"));
+  }
+
+  @Test
+  public void shouldResolveTemplatesAcrossMultiModuleClasspath() throws IOException {
+    Path root = Files.createTempDirectory("handlebars-multimodule");
+
+    // Simulate Module A (e.g., target/classes/)
+    Path moduleA = Files.createDirectory(root.resolve("moduleA"));
+    Path templatesA = Files.createDirectory(moduleA.resolve("templates"));
+    Files.writeString(templatesA.resolve("template-a.hbs"), "Template A");
+
+    // Simulate Module B (e.g., target/test-classes/ or a sibling module)
+    Path moduleB = Files.createDirectory(root.resolve("moduleB"));
+    Path templatesB = Files.createDirectory(moduleB.resolve("templates"));
+    Files.writeString(templatesB.resolve("template-b.hbs"), "Template B");
+
+    // Create a ClassLoader containing both roots
+    URLClassLoader classLoader =
+        new URLClassLoader(
+            new URL[] {moduleA.toUri().toURL(), moduleB.toUri().toURL()},
+            getClass().getClassLoader());
+
+    // Use Spring's DefaultResourceLoader backed by our multi-root classloader
+    SpringTemplateLoader loader = new SpringTemplateLoader(new DefaultResourceLoader(classLoader));
+    loader.setPrefix("classpath:/templates/");
+    loader.setSuffix(".hbs");
+
+    // The loader should find templates in both roots flawlessly without canonical file mismatches
+    assertNotNull(loader.sourceAt("template-a"));
+    assertNotNull(loader.sourceAt("template-b"));
   }
 }

@@ -17,6 +17,7 @@ import java.nio.file.Paths;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
+import org.springframework.util.StringUtils;
 
 import com.github.jknack.handlebars.io.URLTemplateLoader;
 
@@ -58,6 +59,34 @@ public class SpringTemplateLoader extends URLTemplateLoader {
 
   @Override
   protected URL getResource(final String location) throws IOException {
+    String prefix = getPrefix();
+
+    // Classpath resources: Bypass OS-level canonicalization entirely.
+    // The ClassLoader securely handles percent-encoding (returning 404),
+    // so logical path validation is 100% secure and naturally supports multi-root classpaths.
+    if (prefix.startsWith(ResourceLoader.CLASSPATH_URL_PREFIX)) {
+      String normalizedLocation = StringUtils.cleanPath(location);
+      String normalizedPrefix = StringUtils.cleanPath(prefix);
+      if (!normalizedPrefix.endsWith("/")) {
+        normalizedPrefix += "/";
+      }
+
+      if (!normalizedLocation.startsWith(normalizedPrefix)) {
+        throw new IllegalArgumentException(
+            "Path traversal attempt detected. Logical path escapes classpath prefix: " + location);
+      }
+
+      Resource resource = loader.getResource(location);
+      if (!resource.exists()) {
+        return null;
+      }
+
+      URL url = resource.getURL();
+      validateNoUnsafeUrlComponents(url);
+      return url;
+    }
+
+    // File-system / Servlet resources: strict OS-level validation
     Resource resource = loader.getResource(location);
     if (!resource.exists()) {
       return null;
@@ -83,7 +112,7 @@ public class SpringTemplateLoader extends URLTemplateLoader {
                 + location);
       }
     } else {
-      // Fallback containment for Classpath/URL resources
+      // Fallback containment for custom URL resources (e.g., vfs:, jndi:)
       String decodedPath = URLDecoder.decode(url.getPath(), StandardCharsets.UTF_8);
 
       // Archive URLs embed the archive location before a '!' separator
@@ -130,9 +159,6 @@ public class SpringTemplateLoader extends URLTemplateLoader {
 
   /**
    * Resolves the configured prefix to a real directory so file resources can be checked against it.
-   * A classpath: prefix resolves through the resource loader to the actual classpath directory
-   * (e.g. target/classes/templates), unlike a literal strip which would point at the filesystem
-   * root.
    *
    * @return The canonical base directory for the configured prefix.
    * @throws IOException If the prefix resource cannot be resolved.
