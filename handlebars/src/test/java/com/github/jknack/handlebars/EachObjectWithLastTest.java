@@ -9,7 +9,7 @@ import java.io.IOException;
 
 import org.junit.jupiter.api.Test;
 
-public class EachObjectWithLast extends AbstractTest {
+public class EachObjectWithLastTest extends AbstractTest {
 
   @Test
   public void eachObjectWithLast() throws IOException {
