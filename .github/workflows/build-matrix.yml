@@ -16,24 +16,39 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        jre: [17]
-        os: [ ubuntu-latest, windows-latest, macOS-latest ]
-        include:
-          - jre: 21
-            os: ubuntu-latest
+        # 1. If PR -> [ubuntu, windows]
+        # 2. Else If Tag -> [ubuntu]
+        # 3. Else (Master Push) -> [ubuntu, windows, macos]
+        os: ${{ github.event_name == 'pull_request' && fromJSON('["ubuntu-latest", "windows-latest"]') || (startsWith(github.ref, 'refs/tags/') && fromJSON('["ubuntu-latest"]') || fromJSON('["ubuntu-latest", "windows-latest", "macos-latest"]')) }}
+
+        # 1. If Master Push -> [17, 21]
+        # 2. Else (PR or Tag) -> [17]
+        jre: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' && fromJSON('[17, 21]') || fromJSON('[17]') }}
+
+        # Exclude Java 21 from running on Windows and macOS.
+        # (This leaves Java 21 running exclusively on Ubuntu for master pushes).
+        exclude:
+          - os: windows-latest
+            jre: 21
+          - os: macos-latest
+            jre: 21
 
     steps:
       - name: Checkout
         uses: actions/checkout@v6
+
       - name: Mustache Specs
         run: |
           git submodule update --init --recursive
-      - name: Set up JDK ${{ matrix.java_version }}
+
+      - name: Set up JDK ${{ matrix.jre }}
         uses: actions/setup-java@v5
         with:
           java-version: ${{ matrix.jre }}
           distribution: 'temurin'
+
       - name: Install
         run: mvn clean install -DskipTests --batch-mode --no-transfer-progress
+
       - name: Build
         run: mvn clean package --batch-mode --no-transfer-progress
