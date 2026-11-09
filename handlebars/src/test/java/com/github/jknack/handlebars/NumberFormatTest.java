@@ -62,6 +62,30 @@ public class NumberFormatTest extends AbstractTest {
   }
 
   @Test
+  public void patternWithLiteralText() throws IOException {
+    Number number = Math.PI;
+    String pattern = "#,##0.00 'items'";
+    String expected =
+        new DecimalFormat(pattern, new DecimalFormatSymbols(Locale.getDefault())).format(number);
+    shouldCompileTo("{{numberFormat this \"" + pattern + "\"}}", number, expected);
+  }
+
+  @Test
+  public void namesDoNotDependOnDefaultLocale() throws IOException {
+    Locale defaultLocale = Locale.getDefault();
+    Locale.setDefault(Locale.forLanguageTag("tr-TR"));
+    try {
+      Number number = Math.PI;
+      String expected = NumberFormat.getIntegerInstance(Locale.US).format(number);
+      shouldCompileTo("{{numberFormat this \"integer\" \"en_US\"}}", number, expected);
+      shouldCompileTo(
+          "{{numberFormat this \"0.0\" \"en_US\" roundingMode=\"ceiling\"}}", number, "3.2");
+    } finally {
+      Locale.setDefault(defaultLocale);
+    }
+  }
+
+  @Test
   public void frLocale() throws IOException {
     Number number = Math.PI;
     String pattern = "#,###,##0.000";

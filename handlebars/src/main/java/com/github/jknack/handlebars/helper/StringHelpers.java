@@ -662,7 +662,8 @@ public enum StringHelpers implements Helper<Object> {
 
       String roundingMode = options.hash("roundingMode");
       if (roundingMode != null) {
-        numberFormat.setRoundingMode(RoundingMode.valueOf(roundingMode.toUpperCase().trim()));
+        numberFormat.setRoundingMode(
+            RoundingMode.valueOf(roundingMode.toUpperCase(Locale.ROOT).trim()));
       }
 
       return numberFormat.format(number);
@@ -678,7 +679,7 @@ public enum StringHelpers implements Helper<Object> {
       final String format = getFormatArgument(options);
       final Locale locale = getLocaleArgument(options);
       try {
-        NumberStyle style = NumberStyle.valueOf(format);
+        NumberStyle style = NumberStyle.valueOf(format.toUpperCase(Locale.ROOT).trim());
         return style.numberFormat(locale);
       } catch (IllegalArgumentException ex) {
         return new DecimalFormat(format, new DecimalFormatSymbols(locale));
@@ -690,7 +691,7 @@ public enum StringHelpers implements Helper<Object> {
       if (stringifiedFormat == null || stringifiedFormat.isBlank()) {
         return NumberStyle.DEFAULT.name();
       }
-      return stringifiedFormat.toUpperCase().trim();
+      return stringifiedFormat;
     }
 
     private Locale getLocaleArgument(final Options options) {
