@@ -145,7 +145,7 @@ public enum StringHelpers implements Helper<Object> {
   join {
     @Override
     public Object apply(final Object context, final Options options) {
-      if (options.isFalsy(context)) {
+      if (options.isFalsy(context) && !(context instanceof CharSequence)) {
         return "";
       }
       return safeApply(context, options);

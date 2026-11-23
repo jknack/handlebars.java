@@ -181,6 +181,37 @@ public class StringHelpersTest extends AbstractTest {
   }
 
   @Test
+  public void joinEmptyStringValues() throws IOException {
+    shouldCompileTo(
+        "{{{join \"\" \"7\" 8 \"-\" prefix='<' suffix='>'}}}",
+        $,
+        $("join", StringHelpers.join),
+        "<-7-8>");
+  }
+
+  @Test
+  public void joinEmptyStringInSubexpression() throws IOException {
+    shouldCompileTo(
+        "{{#*inline \"anchor\"}}{{anchorId}}{{/inline}}"
+            + "{{> anchor anchorId=(join anchorId jsonPathPiece.snakeCase \"\")}}",
+        $("anchorId", "", "jsonPathPiece", $("snakeCase", "user_name")),
+        $("join", StringHelpers.join),
+        "user_name");
+  }
+
+  @Test
+  public void joinEmptyCharSequence() throws IOException {
+    shouldCompileTo(
+        "{{join this \"tail\" \"\"}}", new StringBuilder(), $("join", StringHelpers.join), "tail");
+  }
+
+  @Test
+  public void joinEmptyStringInBlock() throws IOException {
+    shouldCompileTo(
+        "{{#join \"\" \"tail\" \"\"}}{{/join}}", $, $("join", StringHelpers.join), "tail");
+  }
+
+  @Test
   public void joinWithPrefixAndSuffix() throws IOException {
     shouldCompileTo(
         "{{{join this \", \" prefix='<' suffix='>'}}}",
