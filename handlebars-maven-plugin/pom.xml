@@ -35,13 +35,13 @@
     <dependency>
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-plugin-api</artifactId>
-      <version>3.10.0</version>
+      <version>3.10.2</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-core</artifactId>
-      <version>3.10.0</version>
+      <version>3.10.2</version>
     </dependency>
 
     <dependency>
@@ -54,13 +54,13 @@
     <dependency>
       <groupId>org.codehaus.plexus</groupId>
       <artifactId>plexus-utils</artifactId>
-      <version>4.1.0</version>
+      <version>4.2.0</version>
     </dependency>
 
     <dependency>
       <groupId>org.codehaus.plexus</groupId>
       <artifactId>plexus-xml</artifactId>
-      <version>4.2.0</version>
+      <version>4.2.1</version>
     </dependency>
 
     <dependency>
