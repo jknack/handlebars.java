@@ -302,6 +302,46 @@ public class Handlebars implements HelperRegistry {
   private boolean infiniteLoops;
 
   /**
+   * Maximum depth of nested template/partial invocations while loop detection is enabled. Protects
+   * against recursion that evades name-based detection (like aliased locations). Default is: 256.
+   */
+  private int maxPartialDepth = 256;
+
+  /**
+   * Maximum depth of nested partial invocations. Only enforced when {@link #infiniteLoops()} is
+   * false. Default is: 256.
+   *
+   * @return Maximum partial depth.
+   */
+  public int maxPartialDepth() {
+    return maxPartialDepth;
+  }
+
+  /**
+   * Set the maximum depth of nested partial invocations. Only enforced when {@link
+   * #infiniteLoops()} is false.
+   *
+   * @param maxPartialDepth Maximum partial depth (must be positive).
+   */
+  public void setMaxPartialDepth(final int maxPartialDepth) {
+    if (maxPartialDepth <= 0) {
+      throw new IllegalArgumentException("maxPartialDepth must be positive: " + maxPartialDepth);
+    }
+    this.maxPartialDepth = maxPartialDepth;
+  }
+
+  /**
+   * Set the maximum depth of nested partial invocations.
+   *
+   * @param maxPartialDepth Maximum partial depth (must be positive).
+   * @return The handlebars object.
+   */
+  public Handlebars maxPartialDepth(final int maxPartialDepth) {
+    setMaxPartialDepth(maxPartialDepth);
+    return this;
+  }
+
+  /**
    * If true, templates will be deleted once applied. Useful, in some advanced template inheritance
    * use cases. Default is: false. At any time you can override the default setup with:
    *
@@ -403,15 +443,14 @@ public class Handlebars implements HelperRegistry {
    * @return JavaScript.
    */
   public String precompileInline(final String template) {
-    return Throwing.get(
-        () -> {
-          ScriptEngine engine = engine();
-          Object handlebars = engine.getContext().getAttribute("Handlebars");
-          Bindings bindings = engine.createBindings();
-          bindings.put("Handlebars", handlebars);
-          bindings.put("template", template);
-          return (String) engine.eval("Handlebars.precompile(template);", bindings);
-        });
+    return Throwing.get(() -> {
+      ScriptEngine engine = engine();
+      Object handlebars = engine.getContext().getAttribute("Handlebars");
+      Bindings bindings = engine.createBindings();
+      bindings.put("Handlebars", handlebars);
+      bindings.put("template", template);
+      return (String) engine.eval("Handlebars.precompile(template);", bindings);
+    });
   }
 
   /**
@@ -1450,13 +1489,12 @@ public class Handlebars implements HelperRegistry {
 
         this.engine = new ScriptEngineManager().getEngineByName("nashorn");
 
-        Throwing.run(
-            () -> {
-              // polyfill globalThis as it is used since handlebars 4.7.x and is not supported by
-              // nashorn
-              engine.eval("var globalThis = this;");
-              engine.eval(Files.read(this.handlebarsJsFile, charset));
-            });
+        Throwing.run(() -> {
+          // polyfill globalThis as it is used since handlebars 4.7.x and is not supported by
+          // nashorn
+          engine.eval("var globalThis = this;");
+          engine.eval(Files.read(this.handlebarsJsFile, charset));
+        });
       }
       return this.engine;
     }
