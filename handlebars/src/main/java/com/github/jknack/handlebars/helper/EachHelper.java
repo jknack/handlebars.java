@@ -32,7 +32,13 @@ public class EachHelper implements Helper<Object> {
 
   @SuppressWarnings({"rawtypes", "unchecked"})
   @Override
-  public Object apply(final Object context, final Options options) throws IOException {
+  public Object apply(final Object ctx, final Options options) throws IOException {
+    BuiltinArgs.requireAtMostOne(NAME, options);
+    Object context = ctx;
+    if (context instanceof Iterator) {
+      Iterator<?> iterator = (Iterator<?>) context;
+      context = (Iterable<Object>) () -> (Iterator<Object>) iterator;
+    }
     if (context instanceof Iterable) {
       Options.Buffer buffer = options.buffer();
       Iterator<Object> loop = ((Iterable) context).iterator();

@@ -406,6 +406,18 @@ public class Handlebars implements HelperRegistry {
    */
   private boolean preEvaluatePartialBlocks = true;
 
+  /** True to indent only the first line of a standalone partial. Default is: false. */
+  private boolean preventIndent;
+
+  /** True to fail on missing properties, like handlebars.js strict mode. Default is: false. */
+  private boolean strict;
+
+  /**
+   * True to render a partial without an explicit context with an empty context, instead of
+   * inheriting the current one. Default is: false.
+   */
+  private boolean explicitPartialContext;
+
   /** Standard charset. */
   private Charset charset = StandardCharsets.UTF_8;
 
@@ -1297,6 +1309,68 @@ public class Handlebars implements HelperRegistry {
    */
   public boolean preEvaluatePartialBlocks() {
     return preEvaluatePartialBlocks;
+  }
+
+  /**
+   * True if a lookup of a missing property fails.
+   *
+   * @return True if a lookup of a missing property fails.
+   */
+  public boolean strict() {
+    return strict;
+  }
+
+  /**
+   * Fail with an error when a variable, a block without helper or a path segment can't be resolved.
+   * Arguments of helpers aren't checked. Default is: false.
+   *
+   * @param strict True to enable strict mode.
+   * @return This handlebars.
+   */
+  public Handlebars strict(final boolean strict) {
+    this.strict = strict;
+    return this;
+  }
+
+  /**
+   * True if only the first line of a standalone partial is indented.
+   *
+   * @return True if only the first line of a standalone partial is indented.
+   */
+  public boolean preventIndent() {
+    return preventIndent;
+  }
+
+  /**
+   * Indent only the first line of a standalone partial. Default is: false.
+   *
+   * @param preventIndent True to prevent nested indentation.
+   * @return This handlebars.
+   */
+  public Handlebars preventIndent(final boolean preventIndent) {
+    this.preventIndent = preventIndent;
+    return this;
+  }
+
+  /**
+   * True if a partial without context gets an empty context.
+   *
+   * @return True if a partial without context gets an empty context.
+   */
+  public boolean explicitPartialContext() {
+    return explicitPartialContext;
+  }
+
+  /**
+   * A partial without an explicit context gets an empty context (hash arguments are still
+   * available). Default is: false.
+   *
+   * @param explicitPartialContext True for an empty context.
+   * @return This handlebars.
+   */
+  public Handlebars explicitPartialContext(final boolean explicitPartialContext) {
+    this.explicitPartialContext = explicitPartialContext;
+    return this;
   }
 
   /**

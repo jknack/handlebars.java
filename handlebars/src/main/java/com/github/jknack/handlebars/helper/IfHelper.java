@@ -28,6 +28,7 @@ public class IfHelper implements Helper<Object> {
 
   @Override
   public Object apply(final Object context, final Options options) throws IOException {
+    BuiltinArgs.requireAtMostOne(NAME, options);
     Buffer buffer = options.buffer();
     if (options.isFalsy(context)) {
       buffer.append(options.inverse());

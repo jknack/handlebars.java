@@ -21,6 +21,8 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import com.github.jknack.handlebars.context.MapValueResolver;
+import com.github.jknack.handlebars.internal.path.DataPath;
+import com.github.jknack.handlebars.internal.path.ParentPath;
 import com.github.jknack.handlebars.internal.path.PropertyPath;
 import com.github.jknack.handlebars.internal.path.ThisPath;
 import com.github.jknack.handlebars.io.TemplateSource;
@@ -65,7 +67,8 @@ public class Context {
       this.extendedContext = new Context(new HashMap<String, Object>());
       this.extendedContext.resolver = parent.resolver;
       this.parent = parent;
-      this.data = parent.data;
+      this.data = new HashMap<>();
+      this.dataParent = parent;
       this.resolver = parent.resolver;
     }
 
@@ -155,7 +158,8 @@ public class Context {
       this.extendedContext.resolver = parent.resolver;
       this.extendedContext.extendedContext = new Context(Collections.emptyMap());
       this.parent = parent;
-      this.data = parent.data;
+      this.data = new HashMap<>();
+      this.dataParent = parent;
       this.resolver = parent.resolver;
     }
 
@@ -163,7 +167,7 @@ public class Context {
     public Object get(final List<PathExpression> path) {
       String key = path.get(0).toString();
       // hash first, except for this
-      if (key.equals("this")) {
+      if (path.get(0) instanceof ThisPath && path.size() == 1 || key.equals("this")) {
         return super.get(path);
       }
       Object value = extendedContext.get(path);
@@ -355,7 +359,7 @@ public class Context {
 
     @Override
     public Object next(final ValueResolver resolver, final Context context, final Object data) {
-      if (data != null && i < path.size()) {
+      if (i < path.size() && (data != null || path.get(i) instanceof ParentPath)) {
         PathExpression next = path.get(i++);
         return next.eval(resolver, context, data, this);
       }
@@ -411,6 +415,9 @@ public class Context {
 
   /** A thread safe storage. */
   protected Map<String, Object> data;
+
+  /** Parent of the data frame: lookups walk up this chain, writes only touch {@link #data}. */
+  protected Context dataParent;
 
   /** Additional, data can be stored here. */
   protected Context extendedContext;
@@ -484,7 +491,12 @@ public class Context {
    */
   @SuppressWarnings("unchecked")
   public <T> T data(final String name) {
-    return (T) data.get(name);
+    for (Context frame = this; frame != null; frame = frame.dataParent) {
+      if (frame.data != null && frame.data.containsKey(name)) {
+        return (T) frame.data.get(name);
+      }
+    }
+    return null;
   }
 
   /**
@@ -497,6 +509,24 @@ public class Context {
   public Context data(final String name, final Object value) {
     data.put(name, value);
     return this;
+  }
+
+  /**
+   * Set an engine-internal attribute. Unlike {@link #data(String, Object)}, the value replaces the
+   * one in the frame that already owns the attribute (or the current frame if none does), so
+   * save/restore sequences don't leave stale copies in nested frames.
+   *
+   * @param name The attribute's name. Required.
+   * @param value The attribute's value.
+   */
+  public void setData(final String name, final Object value) {
+    for (Context frame = this; frame != null; frame = frame.dataParent) {
+      if (frame.data != null && frame.data.containsKey(name)) {
+        frame.data.put(name, value);
+        return;
+      }
+    }
+    data.put(name, value);
   }
 
   /**
@@ -579,7 +609,11 @@ public class Context {
    */
   public Object get(final List<PathExpression> path) {
     PathExpression head = path.get(0);
+    if (head instanceof DataPath && "@partial-block".equals(head.toString()) && path.size() == 1) {
+      return partialBlock();
+    }
     boolean local = head.local();
+    boolean dataLookup = head instanceof DataPath;
     Object value = null;
     PathExpressionChain expr = new PathExpressionChain(path);
     Context it = this;
@@ -591,7 +625,7 @@ public class Context {
       }
     } else {
       while (value == null && it != null) {
-        value = expr.eval(resolver, it, it.model);
+        value = dataLookup ? null : expr.eval(resolver, it, it.model);
         if (value == null) {
           // No luck, check the extended context.
           value = expr.eval(resolver, it.extendedContext, it.extendedContext.model);
@@ -601,10 +635,91 @@ public class Context {
             value = expr.eval(resolver, it, it.data);
           }
         }
-        it = it.parent;
+        // a numeric context is a leaf scope, like in handlebars.js: names don't resolve upwards
+        it = it.model instanceof Number ? null : it.parent;
       }
     }
     return value == NULL ? null : value;
+  }
+
+  /**
+   * Find the first segment of the path that can't be resolved. Only plain property and data paths
+   * are checked.
+   *
+   * @param path The object path.
+   * @return The name of the undefined segment or <code>null</code> if the path is defined.
+   */
+  public String undefinedSegment(final List<PathExpression> path) {
+    for (PathExpression expr : path) {
+      if (!(expr instanceof PropertyPath || expr instanceof DataPath)) {
+        return null;
+      }
+    }
+    PathExpression head = path.get(0);
+    Object current = get(path.subList(0, 1));
+    if (current == null && !isDeclared(head.toString())) {
+      return head.toString().replaceFirst("^@", "");
+    }
+    for (int i = 1; i < path.size() && current != null; i++) {
+      String name = path.get(i).toString();
+      Object value = resolver.resolve(current, name);
+      if (value == null && !(current instanceof Map && ((Map<?, ?>) current).containsKey(name))) {
+        return name;
+      }
+      current = value == NULL ? null : value;
+    }
+    return null;
+  }
+
+  private boolean isDeclared(final String name) {
+    String bare = name.replaceFirst("^@", "");
+    for (Context it = this; it != null; it = it.parent) {
+      if (hasKey(it.model, name) || hasKey(it.extendedContext, name) || hasProperty(it, name)) {
+        return true;
+      }
+      for (Context frame = it; frame != null; frame = frame.dataParent) {
+        if (hasKey(frame.data, name) || hasKey(frame.data, bare)) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  private boolean hasProperty(final Context it, final String name) {
+    if (it.model == null || it.model instanceof Map) {
+      return false;
+    }
+    return resolver.propertySet(it.model).stream().anyMatch(e -> e.getKey().equals(name));
+  }
+
+  private static boolean hasKey(final Object source, final String name) {
+    Object map = source instanceof Context ? ((Context) source).model : source;
+    return map instanceof Map && ((Map<?, ?>) map).containsKey(name);
+  }
+
+  /**
+   * The partial block provided to the partial being rendered, if any.
+   *
+   * @return The partial block or null.
+   */
+  private Template partialBlock() {
+    if (data == null) {
+      return null;
+    }
+    LinkedList<Map<String, Template>> partials = data(INLINE_PARTIALS);
+    if (partials == null || partials.isEmpty()) {
+      return null;
+    }
+    Template block = partials.getLast().get("@partial-block");
+    Template callee = data(CALLEE);
+    if (block == null
+        || callee == null
+        || !callee.filename().equalsIgnoreCase(block.filename())
+        || !Arrays.equals(callee.position(), block.position())) {
+      return null;
+    }
+    return block;
   }
 
   /**
@@ -741,8 +856,20 @@ public class Context {
    */
   public static Context newPartialContext(
       final Context ctx, final String scope, final Map<String, Object> hash) {
+    return newPartialContext(ctx, ctx.get(scope), hash);
+  }
+
+  /**
+   * Creates a partial context with an already resolved model.
+   *
+   * @param ctx The parent context.
+   * @param scopedModel The partial model.
+   * @param hash Partial arguments.
+   * @return A new partial context.
+   */
+  public static Context newPartialContext(
+      final Context ctx, final Object scopedModel, final Map<String, Object> hash) {
     var currentModel = ctx.model;
-    var scopedModel = ctx.get(scope);
     // don't introduce a new scope when there is no need
     var parent = ctx.parent != null && currentModel == scopedModel ? ctx.parent : ctx;
     Map<String, Object> finalHash;
@@ -758,6 +885,21 @@ public class Context {
       }
     }
     return new PartialCtx(parent, scopedModel, finalHash);
+  }
+
+  /**
+   * Creates an isolated partial context: it has an empty model and can't see parent contexts, only
+   * hash arguments.
+   *
+   * @param ctx The parent context.
+   * @param hash Partial arguments.
+   * @return A new partial context.
+   */
+  public static Context newIsolatedPartialContext(
+      final Context ctx, final Map<String, Object> hash) {
+    Context partial = newPartialContext(ctx, Collections.emptyMap(), hash);
+    partial.parent = null;
+    return partial;
   }
 
   /**
@@ -781,7 +923,8 @@ public class Context {
     child.extendedContext = new Context(new HashMap<String, Object>());
     child.setResolver(this.resolver);
     child.parent = this;
-    child.data = this.data;
+    child.data = new HashMap<>();
+    child.dataParent = this;
     return child;
   }
 
@@ -805,6 +948,7 @@ public class Context {
   public static Context copy(final Context context, final Object model) {
     Context ctx = Context.newContext(model);
     ctx.data = context.data;
+    ctx.dataParent = context.dataParent;
     ctx.resolver = context.resolver;
     return ctx;
   }

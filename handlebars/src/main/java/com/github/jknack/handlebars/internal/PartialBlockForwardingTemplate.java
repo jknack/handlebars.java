@@ -57,11 +57,11 @@ public class PartialBlockForwardingTemplate extends BaseTemplate {
     Template oldPartialBlock = inlineTemplates.get("@partial-block");
     Template oldCallee = context.data(Context.CALLEE);
 
-    context.data(Context.CALLEE, callee);
+    context.setData(Context.CALLEE, callee);
     inlineTemplates.put("@partial-block", parentPartialBlock);
     block.apply(context, writer);
     inlineTemplates.put("@partial-block", oldPartialBlock);
-    context.data(Context.CALLEE, oldCallee);
+    context.setData(Context.CALLEE, oldCallee);
   }
 
   /** {@inheritDoc} */

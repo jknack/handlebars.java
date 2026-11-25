@@ -126,6 +126,18 @@ public class HbsParserTest {
   }
 
   @Test
+  public void customDelimiters() {
+    parse("<<hello>>", "<<", ">>");
+  }
+
+  @Test
+  public void additionalSyntax() {
+    parse("{{<layout}}{{$title}}Page{{/title}}{{/layout}}");
+    parse("{{!-- block comment --}}");
+    parse("{{a*b}}");
+  }
+
+  @Test
   public void whiteSpaceHandledEqually() {
     String withSpace = "{{helper param1=\"1\" param2=2}}";
     ParseTree tree = parse(withSpace);

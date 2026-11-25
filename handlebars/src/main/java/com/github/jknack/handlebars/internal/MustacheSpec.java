@@ -168,26 +168,28 @@ public class MustacheSpec extends HbsParserBaseListener {
       // Mark the last line for removal
       lastToken.setChannel(REMOVE_LAST_LINE_CHANNEL);
     } else {
-      // Check for non-whitespace
+      // Only the first token can span a previous line, the rest belong to the current line
+      CommonToken first = textTokens.get(0);
+      int firstNewline = StringUtils.lastIndexOfAny(first.getText(), "\r", "\n");
+      int from = 0;
+      if (firstNewline >= 0) {
+        if (!StringUtils.isWhitespace(first.getText().substring(firstNewline + 1))) {
+          return false;
+        }
+        from = 1;
+      }
       int maxIndex = textTokens.size() - 1;
-      for (int i = maxIndex; i >= 0; i--) {
-        CommonToken loopToken = textTokens.get(i);
-        String loopText = loopToken.getText();
-        if (!StringUtils.isWhitespace(loopText)) {
+      for (int i = from; i <= maxIndex; i++) {
+        if (!StringUtils.isWhitespace(textTokens.get(i).getText())) {
           // Cannot remove anything since line contains non-whitespace
           return false;
         }
-        if (i == 0) {
-          // Mark tokens already checked for removal
-          int j = 0;
-          while (j <= maxIndex) {
-            CommonToken whiteSpaceToken = textTokens.get(j);
-            whiteSpaceToken.setChannel(Token.HIDDEN_CHANNEL);
-            j++;
-          }
-
-          break;
-        }
+      }
+      if (firstNewline >= 0) {
+        first.setChannel(REMOVE_LAST_LINE_CHANNEL);
+      }
+      for (int j = from; j <= maxIndex; j++) {
+        textTokens.get(j).setChannel(Token.HIDDEN_CHANNEL);
       }
     }
 

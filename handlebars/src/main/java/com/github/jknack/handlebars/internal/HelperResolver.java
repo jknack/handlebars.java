@@ -69,7 +69,10 @@ abstract class HelperResolver extends BaseTemplate {
     Map<String, Object> result = new LinkedHashMap<>();
     for (Entry<String, Param> entry : hash.entrySet()) {
       Param value = entry.getValue();
-      result.put(entry.getKey(), value.apply(context));
+      Object resolved = value.apply(context);
+      result.put(
+          entry.getKey(),
+          resolved == null && handlebars.stringParams() ? value.toString() : resolved);
     }
     return result;
   }
@@ -123,7 +126,9 @@ abstract class HelperResolver extends BaseTemplate {
     if (paramSize == 0) {
       return context.model();
     }
-    return params.get(0).apply(context);
+    Param first = params.get(0);
+    Object value = first.apply(context);
+    return value == null && handlebars.stringParams() ? first.toString() : value;
   }
 
   /**
@@ -134,7 +139,15 @@ abstract class HelperResolver extends BaseTemplate {
    */
   public static final Object transform(final Object candidate) {
     if (candidate != null && candidate.getClass().isArray()) {
-      return Arrays.asList((Object[]) candidate);
+      if (candidate instanceof Object[]) {
+        return Arrays.asList((Object[]) candidate);
+      }
+      int length = java.lang.reflect.Array.getLength(candidate);
+      List<Object> items = new java.util.ArrayList<>(length);
+      for (int i = 0; i < length; i++) {
+        items.add(java.lang.reflect.Array.get(candidate, i));
+      }
+      return items;
     }
     return candidate;
   }
