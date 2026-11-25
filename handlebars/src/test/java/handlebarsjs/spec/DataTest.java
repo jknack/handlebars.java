@@ -12,7 +12,6 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -139,7 +138,6 @@ public class DataTest extends AbstractTest {
         () -> compile("{{#goodbyes}}{{text}} cruel {{@foo/../name}}! {{/goodbyes}}").apply($()));
   }
 
-  @Disabled("@name falls back to context properties; data has no separate scope")
   @Test
   @DisplayName("data is inherited downstream")
   public void dataisinheriteddownstream() throws IOException {
@@ -313,7 +311,6 @@ public class DataTest extends AbstractTest {
     assertEquals("hello", result);
   }
 
-  @Disabled("data is a single flat map shared by all contexts; no per-frame @../ scoping")
   @Test
   @DisplayName("nesting the root context can be looked up via @root")
   public void nestingtherootcontextcanbelookedupviaroot() throws IOException {

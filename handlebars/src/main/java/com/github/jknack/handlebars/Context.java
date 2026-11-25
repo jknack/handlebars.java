@@ -67,7 +67,8 @@ public class Context {
       this.extendedContext = new Context(new HashMap<String, Object>());
       this.extendedContext.resolver = parent.resolver;
       this.parent = parent;
-      this.data = parent.data;
+      this.data = new HashMap<>();
+      this.dataParent = parent;
       this.resolver = parent.resolver;
     }
 
@@ -157,7 +158,8 @@ public class Context {
       this.extendedContext.resolver = parent.resolver;
       this.extendedContext.extendedContext = new Context(Collections.emptyMap());
       this.parent = parent;
-      this.data = parent.data;
+      this.data = new HashMap<>();
+      this.dataParent = parent;
       this.resolver = parent.resolver;
     }
 
@@ -414,6 +416,9 @@ public class Context {
   /** A thread safe storage. */
   protected Map<String, Object> data;
 
+  /** Parent of the data frame: lookups walk up this chain, writes only touch {@link #data}. */
+  protected Context dataParent;
+
   /** Additional, data can be stored here. */
   protected Context extendedContext;
 
@@ -486,7 +491,12 @@ public class Context {
    */
   @SuppressWarnings("unchecked")
   public <T> T data(final String name) {
-    return (T) data.get(name);
+    for (Context frame = this; frame != null; frame = frame.dataParent) {
+      if (frame.data != null && frame.data.containsKey(name)) {
+        return (T) frame.data.get(name);
+      }
+    }
+    return null;
   }
 
   /**
@@ -499,6 +509,24 @@ public class Context {
   public Context data(final String name, final Object value) {
     data.put(name, value);
     return this;
+  }
+
+  /**
+   * Set an engine-internal attribute. Unlike {@link #data(String, Object)}, the value replaces the
+   * one in the frame that already owns the attribute (or the current frame if none does), so
+   * save/restore sequences don't leave stale copies in nested frames.
+   *
+   * @param name The attribute's name. Required.
+   * @param value The attribute's value.
+   */
+  public void setData(final String name, final Object value) {
+    for (Context frame = this; frame != null; frame = frame.dataParent) {
+      if (frame.data != null && frame.data.containsKey(name)) {
+        frame.data.put(name, value);
+        return;
+      }
+    }
+    data.put(name, value);
   }
 
   /**
@@ -585,6 +613,7 @@ public class Context {
       return partialBlock();
     }
     boolean local = head.local();
+    boolean dataLookup = head instanceof DataPath;
     Object value = null;
     PathExpressionChain expr = new PathExpressionChain(path);
     Context it = this;
@@ -596,7 +625,7 @@ public class Context {
       }
     } else {
       while (value == null && it != null) {
-        value = expr.eval(resolver, it, it.model);
+        value = dataLookup ? null : expr.eval(resolver, it, it.model);
         if (value == null) {
           // No luck, check the extended context.
           value = expr.eval(resolver, it.extendedContext, it.extendedContext.model);
@@ -837,7 +866,8 @@ public class Context {
     child.extendedContext = new Context(new HashMap<String, Object>());
     child.setResolver(this.resolver);
     child.parent = this;
-    child.data = this.data;
+    child.data = new HashMap<>();
+    child.dataParent = this;
     return child;
   }
 
@@ -861,6 +891,7 @@ public class Context {
   public static Context copy(final Context context, final Object model) {
     Context ctx = Context.newContext(model);
     ctx.data = context.data;
+    ctx.dataParent = context.dataParent;
     ctx.resolver = context.resolver;
     return ctx;
   }
