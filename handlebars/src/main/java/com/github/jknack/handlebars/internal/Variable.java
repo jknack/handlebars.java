@@ -104,7 +104,8 @@ class Variable extends HelperResolver {
 
   /** Apply any pending initialization. */
   protected void postInit() {
-    this.helper = helper(name);
+    // pathed variables (./foo, foo/bar) never resolve helpers
+    this.helper = name.startsWith(".") || name.contains("/") ? null : helper(name);
     this.missing = handlebars.helper(HelperRegistry.HELPER_MISSING);
   }
 
@@ -226,7 +227,7 @@ class Variable extends HelperResolver {
    * @return Formatted and escaped value.
    */
   protected CharSequence formatAndEscape(final Object value, final Formatter.Chain formatter) {
-    Object formatted = formatter.format(value);
+    Object formatted = formatter.format(transform(value));
     CharSequence formattedString = formatted.toString();
     if (formatted instanceof Handlebars.SafeString) {
       return formattedString;

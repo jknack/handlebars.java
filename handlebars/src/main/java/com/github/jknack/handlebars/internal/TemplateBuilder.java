@@ -52,6 +52,7 @@ import com.github.jknack.handlebars.internal.HbsParser.ParamContext;
 import com.github.jknack.handlebars.internal.HbsParser.PartialBlockContext;
 import com.github.jknack.handlebars.internal.HbsParser.PartialContext;
 import com.github.jknack.handlebars.internal.HbsParser.PathIdContext;
+import com.github.jknack.handlebars.internal.HbsParser.PctxContext;
 import com.github.jknack.handlebars.internal.HbsParser.RawBlockContext;
 import com.github.jknack.handlebars.internal.HbsParser.RefParamContext;
 import com.github.jknack.handlebars.internal.HbsParser.SexprContext;
@@ -93,6 +94,30 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
 
     /** Template context. */
     private String context;
+
+    /** Literal template context (string or number), when present. */
+    private Object literal;
+
+    /** True when the context is a literal. */
+    private boolean hasLiteral;
+
+    void context(final PctxContext ctx) {
+      if (ctx == null) {
+        return;
+      }
+      if (ctx.QID() != null) {
+        context = ctx.QID().getText();
+        return;
+      }
+      String text = ctx.getText();
+      hasLiteral = true;
+      if (ctx.NUMBER() != null) {
+        double number = Double.parseDouble(text);
+        literal = text.contains(".") ? (Object) number : (Object) (long) number;
+      } else {
+        literal = text.substring(1, text.length() - 1);
+      }
+    }
   }
 
   /** A handlebars object. required. */
@@ -187,6 +212,18 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
     return block;
   }
 
+  /** Quoted strings and numbers are literal property names, like [foo bar]. */
+  private static String literalName(final PathIdContext pathId, final String name) {
+    if (pathId.DOUBLE_STRING() != null || pathId.SINGLE_STRING() != null) {
+      char quote = name.charAt(0);
+      return "[" + name.substring(1, name.length() - 1).replace("\\" + quote, "" + quote) + "]";
+    }
+    if (pathId.NUMBER() != null) {
+      return "[" + name + "]";
+    }
+    return name;
+  }
+
   private String source(ParserRuleContext ctx) {
     var start = ctx.getStart();
     var stop = ctx.getStop();
@@ -228,7 +265,7 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
       block =
           new Block(
               handlebars,
-              name,
+              literalName(sexpr.pathId(), name),
               false,
               "#",
               params(sexpr.param()),
@@ -429,8 +466,17 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
       final boolean decorator) {
     Token name = pathId.getStart();
     String varName = pathId.getText();
+    // quoted strings and numbers are literal property names, like [foo bar]
+    boolean literal = pathId.DOUBLE_STRING() != null || pathId.SINGLE_STRING() != null;
+    boolean number = pathId.NUMBER() != null;
+    boolean booleanLiteral = pathId.BOOLEAN() != null;
+    if (literal) {
+      char quote = varName.charAt(0);
+      varName = varName.substring(1, varName.length() - 1).replace("\\" + quote, "" + quote);
+    }
     boolean isHelper =
-        ((params.size() > 0 || hash.size() > 0) || varType == TagType.SUB_EXPRESSION);
+        ((params.size() > 0 || hash.size() > 0)
+            || (varType == TagType.SUB_EXPRESSION && !literal && !number && !booleanLiteral));
     if (!isHelper
         && qualifier.size() > 0
         && "with".equals(qualifier.getLast())
@@ -443,10 +489,33 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
         }
       }
     }
+    if (pathId.QID().size() > 0) {
+      String[] segments = varName.split("/");
+      for (int i = 1; i < segments.length; i++) {
+        if ("..".equals(segments[i]) && segments[i - 1].matches("@?[A-Za-z_$][\\w$]*")) {
+          reportError(
+              null,
+              name.getLine(),
+              name.getCharPositionInLine(),
+              "Invalid path: " + varName + ", '..' can only follow '..' or the start of a path");
+        }
+        if ((segments[i].equals("this") || segments[i].startsWith("this."))
+            && segments[i - 1].matches("[A-Za-z_$][\\w$]*")
+            && !"this".equals(segments[i - 1])) {
+          reportError(
+              null,
+              name.getLine(),
+              name.getCharPositionInLine(),
+              "Invalid path: " + varName + ", 'this' must be at the beginning of a path");
+        }
+      }
+    }
     String[] parts = StringUtils.splitByWholeSeparator(varName, "./");
     // TODO: try to catch this with ANTLR...
     // foo.0 isn't allowed, it must be foo.0.
-    if (parts.length > 0
+    if (!number
+        && !literal
+        && parts.length > 0
         && NumberUtils.isCreatable(parts[parts.length - 1])
         && !varName.endsWith(".")) {
       String evidence = varName;
@@ -472,8 +541,9 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
             "could not find decorator: '" + varName + "'");
       }
     } else {
-      Helper<Object> helper = handlebars.helper(varName);
-      if (helper == null && isHelper) {
+      boolean pathed = varName.startsWith(".") || varName.contains("/");
+      Helper<Object> helper = pathed ? null : handlebars.helper(varName);
+      if (helper == null && isHelper && !pathed) {
         Helper<Object> helperMissing = handlebars.helper(HelperRegistry.HELPER_MISSING);
         if (helperMissing == null) {
           reportError(
@@ -484,11 +554,12 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
         }
       }
     }
+    String path = literal || number ? "[" + varName + "]" : varName;
     Variable var =
         decorator
             ? new VarDecorator(
                 handlebars, varName, TagType.STAR_VAR, params, hash, level == 0, source(ctx))
-            : new Variable(handlebars, varName, varType, params, hash, source(ctx));
+            : new Variable(handlebars, path, varType, params, hash, source(ctx));
     var.startDelimiter(startDelimiter)
         .endDelimiter(endDelimiter)
         .filename(source.filename())
@@ -663,6 +734,7 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
     String startDelim = ctx.start.getText();
     Template partial =
         new Partial(handlebars, info.path, info.context, info.hash, source(ctx))
+            .setLiteralContext(info.hasLiteral, info.literal)
             .startDelimiter(startDelim)
             .endDelimiter(ctx.stop.getText())
             .indent(indent)
@@ -691,6 +763,7 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
     String startDelim = ctx.start.getText();
     Template partial =
         new Partial(handlebars, info.path, info.context, info.hash, source(ctx))
+            .setLiteralContext(info.hasLiteral, info.literal)
             .setDecorate(true)
             .setPartial(fn)
             .startDelimiter(startDelim)
@@ -704,7 +777,7 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
 
   @Override
   public PartialInfo visitStaticPath(final StaticPathContext ctx) {
-    return staticPath(ctx.path, ctx.QID(1), ctx.hash());
+    return staticPath(ctx.path, ctx.pctx(), ctx.hash());
   }
 
   /**
@@ -716,7 +789,7 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
    * @return Partial info.
    */
   private PartialInfo staticPath(
-      final Token pathToken, final TerminalNode partialContext, final List<HashContext> hash) {
+      final Token pathToken, final PctxContext partialContext, final List<HashContext> hash) {
     String uri = pathToken.getText();
     if (uri.charAt(0) == '[' || uri.charAt(0) == '"' || uri.charAt(0) == '\'') {
       uri = uri.substring(1, uri.length() - 1);
@@ -731,13 +804,13 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
     partial.token = pathToken;
     partial.path = new Text(handlebars, uri);
     partial.hash = hash(hash);
-    partial.context = partialContext != null ? partialContext.getText() : null;
+    partial.context(partialContext);
     return partial;
   }
 
   @Override
   public PartialInfo visitLiteralPath(final LiteralPathContext ctx) {
-    return staticPath(ctx.path, ctx.QID(), ctx.hash());
+    return staticPath(ctx.path, ctx.pctx(), ctx.hash());
   }
 
   @Override
@@ -759,8 +832,7 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
     PartialInfo partial = new PartialInfo();
     partial.path = expression;
     partial.hash = hash(ctx.hash());
-    TerminalNode scope = ctx.QID();
-    partial.context = scope != null ? scope.getText() : null;
+    partial.context(ctx.pctx());
     partial.token = qid;
     return partial;
   }

@@ -21,6 +21,8 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import com.github.jknack.handlebars.context.MapValueResolver;
+import com.github.jknack.handlebars.internal.path.DataPath;
+import com.github.jknack.handlebars.internal.path.ParentPath;
 import com.github.jknack.handlebars.internal.path.PropertyPath;
 import com.github.jknack.handlebars.internal.path.ThisPath;
 import com.github.jknack.handlebars.io.TemplateSource;
@@ -163,7 +165,7 @@ public class Context {
     public Object get(final List<PathExpression> path) {
       String key = path.get(0).toString();
       // hash first, except for this
-      if (key.equals("this")) {
+      if (path.get(0) instanceof ThisPath && path.size() == 1 || key.equals("this")) {
         return super.get(path);
       }
       Object value = extendedContext.get(path);
@@ -355,7 +357,7 @@ public class Context {
 
     @Override
     public Object next(final ValueResolver resolver, final Context context, final Object data) {
-      if (data != null && i < path.size()) {
+      if (i < path.size() && (data != null || path.get(i) instanceof ParentPath)) {
         PathExpression next = path.get(i++);
         return next.eval(resolver, context, data, this);
       }
@@ -579,6 +581,9 @@ public class Context {
    */
   public Object get(final List<PathExpression> path) {
     PathExpression head = path.get(0);
+    if (head instanceof DataPath && "@partial-block".equals(head.toString()) && path.size() == 1) {
+      return partialBlock();
+    }
     boolean local = head.local();
     Object value = null;
     PathExpressionChain expr = new PathExpressionChain(path);
@@ -605,6 +610,30 @@ public class Context {
       }
     }
     return value == NULL ? null : value;
+  }
+
+  /**
+   * The partial block provided to the partial being rendered, if any.
+   *
+   * @return The partial block or null.
+   */
+  private Template partialBlock() {
+    if (data == null) {
+      return null;
+    }
+    LinkedList<Map<String, Template>> partials = data(INLINE_PARTIALS);
+    if (partials == null || partials.isEmpty()) {
+      return null;
+    }
+    Template block = partials.getLast().get("@partial-block");
+    Template callee = data(CALLEE);
+    if (block == null
+        || callee == null
+        || !callee.filename().equalsIgnoreCase(block.filename())
+        || !Arrays.equals(callee.position(), block.position())) {
+      return null;
+    }
+    return block;
   }
 
   /**
@@ -741,8 +770,20 @@ public class Context {
    */
   public static Context newPartialContext(
       final Context ctx, final String scope, final Map<String, Object> hash) {
+    return newPartialContext(ctx, ctx.get(scope), hash);
+  }
+
+  /**
+   * Creates a partial context with an already resolved model.
+   *
+   * @param ctx The parent context.
+   * @param scopedModel The partial model.
+   * @param hash Partial arguments.
+   * @return A new partial context.
+   */
+  public static Context newPartialContext(
+      final Context ctx, final Object scopedModel, final Map<String, Object> hash) {
     var currentModel = ctx.model;
-    var scopedModel = ctx.get(scope);
     // don't introduce a new scope when there is no need
     var parent = ctx.parent != null && currentModel == scopedModel ? ctx.parent : ctx;
     Map<String, Object> finalHash;
@@ -758,6 +799,21 @@ public class Context {
       }
     }
     return new PartialCtx(parent, scopedModel, finalHash);
+  }
+
+  /**
+   * Creates an isolated partial context: it has an empty model and can't see parent contexts, only
+   * hash arguments.
+   *
+   * @param ctx The parent context.
+   * @param hash Partial arguments.
+   * @return A new partial context.
+   */
+  public static Context newIsolatedPartialContext(
+      final Context ctx, final Map<String, Object> hash) {
+    Context partial = newPartialContext(ctx, Collections.emptyMap(), hash);
+    partial.parent = null;
+    return partial;
   }
 
   /**

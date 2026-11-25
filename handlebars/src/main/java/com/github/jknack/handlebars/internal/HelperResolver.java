@@ -134,7 +134,15 @@ abstract class HelperResolver extends BaseTemplate {
    */
   public static final Object transform(final Object candidate) {
     if (candidate != null && candidate.getClass().isArray()) {
-      return Arrays.asList((Object[]) candidate);
+      if (candidate instanceof Object[]) {
+        return Arrays.asList((Object[]) candidate);
+      }
+      int length = java.lang.reflect.Array.getLength(candidate);
+      List<Object> items = new java.util.ArrayList<>(length);
+      for (int i = 0; i < length; i++) {
+        items.add(java.lang.reflect.Array.get(candidate, i));
+      }
+      return items;
     }
     return candidate;
   }

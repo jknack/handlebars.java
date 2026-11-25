@@ -31,7 +31,15 @@ public class InlineDecorator implements Decorator {
 
   @Override
   public void apply(final Template fn, final Options options) throws IOException {
+    Integer size = options.data(Context.PARAM_SIZE);
+    if (size == null || size != 1) {
+      throw new IllegalArgumentException("#*inline requires exactly one argument");
+    }
+    Object name = options.param(0);
+    if (!(name instanceof String)) {
+      throw new IllegalArgumentException("#*inline's argument must be a string literal");
+    }
     Deque<Map<String, Template>> partials = options.data(Context.INLINE_PARTIALS);
-    partials.getLast().put((String) options.param(0), options.fn);
+    partials.getLast().put((String) name, options.fn);
   }
 }

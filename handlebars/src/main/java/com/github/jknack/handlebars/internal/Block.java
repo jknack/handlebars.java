@@ -148,6 +148,7 @@ class Block extends HelperResolver {
     Template template = body;
     final Object it;
     Context itCtx = context;
+    Template inverseTemplate = inverse;
     Helper<Object> helper = this.helper;
     if (helper == null) {
       it = transform(itCtx.get(this.path));
@@ -184,6 +185,11 @@ class Block extends HelperResolver {
     } else {
       helperName = name;
       it = transform(determineContext(context));
+      if (inverted) {
+        // {{^helper}} swaps the block and its inverse
+        template = inverse;
+        inverseTemplate = body;
+      }
     }
 
     Options options =
@@ -193,7 +199,7 @@ class Block extends HelperResolver {
             tagType,
             itCtx,
             template,
-            inverse,
+            inverseTemplate,
             params(itCtx),
             hash(itCtx),
             blockParams,

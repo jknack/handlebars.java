@@ -89,7 +89,7 @@ block
   : START WS_CONTROL? HASH DECORATOR? sexpr blockParams? WS_CONTROL? END
     thenBody=body
     elseBlock
-    START WS_CONTROL? SLASH nameEnd=QID WS_CONTROL? END
+    START WS_CONTROL? SLASH nameEnd=(QID | DOUBLE_STRING | SINGLE_STRING | NUMBER) WS_CONTROL? END
   ;
 
 rawBlock
@@ -163,10 +163,17 @@ partialBlock
   ;
 
 pexpr
-  : LP sexpr RP QID? hash*                                      #dynamicPath
-  | DECORATOR+ sexpr QID? hash*                                 #dynamicPath
-  | path=(QID | PATH) QID? hash*                                #staticPath
-  | path=(DOUBLE_STRING | SINGLE_STRING | NUMBER) QID? hash*   #literalPath
+  : LP sexpr RP pctx? hash*                                      #dynamicPath
+  | DECORATOR+ sexpr pctx? hash*                                 #dynamicPath
+  | path=(QID | PATH) pctx? hash*                                #staticPath
+  | path=(DOUBLE_STRING | SINGLE_STRING | NUMBER) pctx? hash*   #literalPath
+  ;
+
+pctx
+  : QID
+  | DOUBLE_STRING
+  | SINGLE_STRING
+  | NUMBER
   ;
 
 param

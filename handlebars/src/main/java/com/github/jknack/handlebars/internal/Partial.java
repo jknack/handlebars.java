@@ -52,6 +52,12 @@ class Partial extends HelperResolver {
   /** Null-Safe version of {@link #context}. */
   private String scontext;
 
+  /** True when the partial context is a literal. */
+  private boolean hasLiteral;
+
+  /** Literal partial context (string or number). */
+  private Object literal;
+
   /** The start delimiter. */
   private String startDelimiter;
 
@@ -112,6 +118,19 @@ class Partial extends HelperResolver {
   @Override
   public boolean decorate() {
     return decorate;
+  }
+
+  /**
+   * Set a literal (string or number) as partial context.
+   *
+   * @param has True if there is a literal.
+   * @param value The literal.
+   * @return This partial.
+   */
+  Partial setLiteralContext(final boolean has, final Object value) {
+    this.hasLiteral = has;
+    this.literal = value;
+    return this;
   }
 
   /**
@@ -205,7 +224,7 @@ class Partial extends HelperResolver {
           }
 
           if (indent != null) {
-            source = partial(source, indent);
+            source = partial(source, indent, handlebars.preventIndent());
           }
 
           template = handlebars.compile(source);
@@ -221,7 +240,12 @@ class Partial extends HelperResolver {
       Map<String, Object> hash = hash(context);
       // HACK: hide/override local attribute with parent version (if any)
       override(context, hash, OVERRIDE_PROPERTIES);
-      Context ctx = Context.newPartialContext(context, this.scontext, hash);
+      Context ctx =
+          hasLiteral
+              ? Context.newPartialContext(context, literal, hash)
+              : handlebars.explicitPartialContext() && this.context == null
+                  ? Context.newIsolatedPartialContext(context, hash)
+                  : Context.newPartialContext(context, this.scontext, hash);
       template.apply(ctx, writer);
       context.data(Context.CALLEE, callee);
     } catch (IOException ex) {
@@ -297,7 +321,8 @@ class Partial extends HelperResolver {
    * @return A template source that insert an indent per each new line found. This is required by
    *     Mustache Spec.
    */
-  private static TemplateSource partial(final TemplateSource source, final String indent) {
+  private static TemplateSource partial(
+      final TemplateSource source, final String indent, final boolean firstLineOnly) {
     return new TemplateSource() {
       @Override
       public long lastModified() {
@@ -311,7 +336,7 @@ class Partial extends HelperResolver {
 
       @Override
       public String content(final Charset charset) throws IOException {
-        return partialInput(source.content(charset), indent);
+        return partialInput(source.content(charset), indent, firstLineOnly);
       }
 
       @Override
@@ -336,14 +361,15 @@ class Partial extends HelperResolver {
        * @param indent The indent to apply.
        * @return A new input.
        */
-      private String partialInput(final String input, final String indent) {
+      private String partialInput(
+          final String input, final String indent, final boolean firstLineOnly) {
         StringBuilder buffer = new StringBuilder(input.length() + indent.length());
         buffer.append(indent);
         int len = input.length();
         for (int idx = 0; idx < len; idx++) {
           char ch = input.charAt(idx);
           buffer.append(ch);
-          if (ch == '\n' && idx < len - 1) {
+          if (!firstLineOnly && ch == '\n' && idx < len - 1) {
             buffer.append(indent);
           }
         }
