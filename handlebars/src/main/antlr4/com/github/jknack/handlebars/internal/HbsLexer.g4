@@ -1,380 +1,165 @@
 lexer grammar HbsLexer;
 
+options {
+  superClass = HbsLexerBase;
+}
+
 @members {
-
-  // Some default values
-  String start = "{{";
-
-  String end = "}}";
-
-  boolean whiteSpaceControl;
-
   public HbsLexer(CharStream input, String start, String end) {
     this(input);
-    this.start = start;
-    this.end = end;
-  }
-
-  private boolean consumeUntil(final String token) {
-    int tokenOffset = 0;
-    int colOffset = 0;
-    int lineOffset = 0;
-    boolean inNewline = false;
-    boolean resetLine = false;
-    boolean hasNewLine = false;
-    while(!isEOF(tokenOffset) && !(ahead("\\" + token, tokenOffset) || ahead(token, tokenOffset))) {
-      if (resetLine) {
-        hasNewLine = true;
-        colOffset = 0;
-        lineOffset+=1;
-        resetLine = false;
-      }
-      tokenOffset+=1;
-      colOffset+=1;
-      int chr = _input.LA(tokenOffset);
-      if (!inNewline && '\n' == chr) {
-        resetLine = true;
-      }
-      inNewline = false;
-      if ('\r' == chr) {
-        inNewline = true;
-        resetLine = true;
-      }
-    }
-    if (tokenOffset == 0) {
-      return false;
-    }
-    // Since we found the text, increase the CharStream's index.
-    _input.seek(_input.index() + tokenOffset - 1);
-    getInterpreter().setCharPositionInLine(hasNewLine ? (colOffset - 1) : (_tokenStartCharPositionInLine + colOffset - 1));
-    getInterpreter().setLine(_tokenStartLine + lineOffset);
-    return true;
-  }
-
-  private boolean comment(final String start, final String end) {
-    String commentClose;
-    if (ahead(start + "!--")) {
-      commentClose = "--" + end;
-    } else if (ahead(start + "!")) {
-      commentClose = end;
-    } else {
-      return false;
-    }
-
-    int offset = 0;
-    while (!isEOF(offset)) {
-      if (ahead(commentClose, offset)) {
-        break;
-      }
-      offset += 1;
-    }
-    offset += commentClose.length();
-    // Since we found the text, increase the CharStream's index.
-    _input.seek(_input.index() + offset - 1);
-    getInterpreter().setCharPositionInLine(_tokenStartCharPositionInLine + offset - 1);
-    return true;
-  }
-
-  private boolean varEscape(final String start, final String end) {
-    if (ahead("\\" + start)) {
-      int offset = start.length();
-      while (!isEOF(offset)) {
-        if (ahead(end, offset)) {
-          break;
-        }
-        if (ahead(start, offset)) {
-          return false;
-        }
-        offset += 1;
-      }
-      offset += end.length();
-      // Since we found the text, increase the CharStream's index.
-      _input.seek(_input.index() + offset - 1);
-      getInterpreter().setCharPositionInLine(_tokenStartCharPositionInLine + offset - 1);
-      return true;
-    }
-    return false;
-  }
-
-  private boolean startToken(final String delim) {
-    boolean matches = tryToken(delim + "~");
-    if (matches) {
-      whiteSpaceControl = true;
-    }
-    return matches || tryToken(delim);
-  }
-
-  private boolean startToken(final String delim, String subtype) {
-    boolean matches = tryToken(delim + subtype);
-    if (!matches) {
-      matches = tryToken(delim + "~" + subtype);
-      if (matches) {
-        whiteSpaceControl = true;
-      }
-    }
-    return matches;
-  }
-
-  private boolean endToken(final String delim) {
-    return endToken(delim, "");
-  }
-
-  private boolean endToken(final String delim, String subtype) {
-    boolean matches = tryToken(subtype + delim);
-    if (!matches) {
-      matches = tryToken(subtype + "~" + delim);
-      if (matches) {
-        whiteSpaceControl = true;
-      }
-    }
-    return matches;
-  }
-
-  private boolean tryToken(final String text) {
-    if (ahead(text)) {
-      // Since we found the text, increase the CharStream's index.
-      _input.seek(_input.index() + text.length() - 1);
-      getInterpreter().setCharPositionInLine(_tokenStartCharPositionInLine + text.length() - 1);
-      return true;
-    }
-    return false;
-  }
-
-  private boolean isEOF(final int offset) {
-    return _input.LA(offset + 1) == EOF;
-  }
-
-  private boolean ahead(final String text) {
-    return ahead(text, 0);
-  }
-
-  private boolean ahead(final String text, int offset) {
-
-    // See if `text` is ahead in the CharStream.
-    for (int i = 0; i < text.length(); i++) {
-      int ch = _input.LA(i + offset + 1);
-      if (ch != text.charAt(i)) {
-        // Nope, we didn't find `text`.
-        return false;
-      }
-    }
-
-    return true;
+    setDelimiters(start, end);
   }
 }
 
-ESC_VAR
-  : {varEscape(start, end)}? .
+ESCAPE_SEQUENCE
+  : '\\'+ {peekStart("")}? {handleEscapeSequence();}
+  ;
+
+NORMAL_SLASHES
+  : '\\'+ -> type(TEXT)
   ;
 
 TEXT
-  : {consumeUntil(start)}? .
+  : ({_input.LA(1) != '\\' && !peekStart("")}? .)+
   ;
 
-COMMENT
-  : {comment(start, end)}? .
+START_RAW_BLOCK
+  : {peekStart("{{")}? . {advanceStart("{{");} -> pushMode(VAR)
   ;
-
-START_AMP
-  :
-    {startToken(start, "&")}? . -> pushMode(VAR)
-  ;
-
-END_RAW_BLOCK
- : {startToken(start, "{{/")}? . -> pushMode(VAR)
- ;
 
 START_RAW
-  :
-    {startToken(start, "{{")}? . -> pushMode(VAR)
+  : {peekStart("{")}? . {advanceStart("{");} -> pushMode(VAR)
   ;
 
-START_T
-  :
-    {startToken(start, "{")}? . -> pushMode(VAR)
+START_BLOCK_COMMENT
+  : {peekStart("!--")}? . {advanceStart("!--");} -> pushMode(BLOCK_COMMENT_MODE)
   ;
 
-UNLESS
- : {startToken(start, "^")}? . -> pushMode(VAR)
- ;
+START_COMMENT
+  : {peekStart("!")}? . {advanceStart("!");} -> pushMode(COMMENT_MODE)
+  ;
 
-START_PARTIAL_BLOCK
- : {startToken(start, "#>")}? . -> pushMode(VAR)
- ;
+START_SET_DELIMITER
+  : {peekStart("=")}? . {advanceStart("=");} -> pushMode(SET_DELIMITER_MODE)
+  ;
 
-START_BLOCK
- : {startToken(start, "#")}? . -> pushMode(VAR)
- ;
+START_LT
+  : {peekStart("<")}? . {advanceStart("<");} -> pushMode(VAR)
+  ;
 
-START_DELIM
- : {startToken(start, "=")}? . -> pushMode(SET_DELIMS)
- ;
-
-START_PARTIAL
- : {startToken(start, ">")}? . -> pushMode(VAR)
- ;
-
-END_BLOCK
- : {startToken(start, "/")}? . -> pushMode(VAR)
- ;
+START_DOLLAR
+  : {peekStart("$")}? . {advanceStart("$");} -> pushMode(VAR)
+  ;
 
 START
- : {startToken(start)}? . -> pushMode(VAR)
- ;
-
-mode SET_DELIMS;
-
-END_DELIM
-  :
-    {endToken("=" + end)}? . -> popMode
+  : {peekStart("")}? . {advanceStart("");} -> pushMode(VAR)
   ;
 
-WS_DELIM
-  :
-    [ \t\r\n]
+mode BLOCK_COMMENT_MODE;
+
+END_BLOCK_COMMENT
+  : {peekEnd("--")}? . {advanceEnd("--");} -> popMode
   ;
 
-DELIM
-  :
-    .
+COMMENT_CONTENT_BLOCK
+  : ({!peekEnd("--")}? .)+
+  ;
+
+mode COMMENT_MODE;
+
+END_COMMENT
+  : {peekEnd("")}? . {advanceEnd("");} -> popMode
+  ;
+
+COMMENT_CONTENT
+  : ({!peekEnd("")}? .)+
+  ;
+
+mode SET_DELIMITER_MODE;
+
+END_SET_DELIMITER
+  : {peekEnd("=")}? . {advanceEnd("="); applyDelimiters();} -> popMode
+  ;
+
+DELIM_VAL
+  : ({!peekEnd("=")}? ~[ \t\r\n=])+ {captureDelimiter(getText());}
+  ;
+
+DELIM_WS
+  : [ \t\r\n]+ -> skip
   ;
 
 mode VAR;
 
-END_RAW
-  :
-    {endToken(end, "}}")}? . -> popMode
+WS_CONTROL
+  : '~' {whiteSpaceControl = true;}
   ;
 
-END_T
-  :
-    {endToken(end, "}")}? . -> popMode
+END_RAW_BLOCK
+  : {currentTagType == 2 && peekEnd("}}")}? . {advanceEnd("}}");} -> popMode
+  ;
+
+END_RAW
+  : {currentTagType == 1 && peekEnd("}")}? . {advanceEnd("}");} -> popMode
   ;
 
 END
-  :
-    {endToken(end)}? . -> mode(DEFAULT_MODE)
+  : {currentTagType == 0 && peekEnd("")}? . {advanceEnd("");} -> popMode
   ;
 
-DECORATOR
-  :
-    '*'
-  ;
+HASH : '#' ;
+SLASH : '/' ;
+CARET : '^' ;
+GT : '>' ;
+AMP : '&' ;
+EQ : '=' ;
 
-AS
-  :
-    'as'
-  ;
+DECORATOR : '*' ;
+AS : 'as' ;
+PIPE : '|' ;
 
-PIPE
-  :
-    '|'
-  ;
+DOUBLE_STRING : '"' ('\\"' | .)*? '"' ;
+SINGLE_STRING : '\'' ('\\\'' | .)*? '\'' ;
 
-DOUBLE_STRING
-  :
-    '"' ( '\\"' | . )*? '"'
-  ;
-
-SINGLE_STRING
-  :
-    '\'' ( '\\\'' | . )*? '\''
-  ;
-
-EQ
-  :
-    '='
-  ;
-
-NUMBER
-  :
-    '-'? [0-9]* '.'? [0-9]+
-  ;
-
-BOOLEAN
-  :
-    'true'
-  | 'false'
-  ;
-
-ELSE
-  :
-   'else'
-  ;
+NUMBER : '-'? [0-9]* '.'? [0-9]+ ;
+BOOLEAN : 'true' | 'false' ;
+ELSE : 'else' ;
+MODEL_KW : '@model' ;
 
 QID
- :
-   '../' QID
- | '..'
- | './' QID
- | '.'
- | '[' ID ']' ID_SEPARATOR QID
- | '[' ID ']'
- | ID ID_SEPARATOR QID
- | ID
- ;
-
-PATH
-  :
-    '[' PATH_SEGMENT ']'
-  | PATH_SEGMENT
+  : '../' QID
+  | '..'
+  | './' QID
+  | '.'
+  | '[' ID ']' ID_SEPARATOR QID
+  | '[' ID ']'
+  | ID ID_SEPARATOR QID
+  | ID
   ;
 
-fragment
-PATH_SEGMENT
-  : [a-zA-Z0-9_$'/.:\-]+
-  ;
-
-fragment
-ID_SEPARATOR
-  : ('.'|'/'|'-');
-
-fragment
-ID
-  :
-  ID_START ID_SUFFIX*
+PATH : '[' PATH_SEGMENT ']' | PATH_SEGMENT ;
+fragment PATH_SEGMENT : [a-zA-Z0-9_$'.:\-] [a-zA-Z0-9_$'/.:\-?]* ;
+fragment ID_SEPARATOR : ('.' | '/' | '-') ;
+fragment ID
+  : ID_START ID_SUFFIX*
   | ID_ESCAPE ID_SUFFIX*
-  // digit-leading identifiers such as 24Hr, which handlebars.js accepts
   | [0-9]+ ID_START ID_SUFFIX*
- ;
-
-fragment
-ID_START
-  :
-   [a-zA-ZА-Яа-я_$@:\u0001-\u0008\u000b\u000c\u000e-\u001E\u00C0-\u00FF]
   ;
-
-fragment
-ID_SUFFIX
-  :
-    '.' ID_ESCAPE
+fragment ID_START
+  : [a-zA-ZА-Яа-я_$@:\u0001-\u0008\u000b\u000c\u000e-\u001E\u00C0-\u00FF]
+  ;
+fragment ID_SUFFIX
+  : '.' ID_ESCAPE
   | ID_START
   | ID_PART
   | '-'
+  | '"'
+  | '<'
+  | {!peekEnd("")}? '>'
   ;
+fragment ID_ESCAPE : '[' ('\\]' | ~[\]])+? ']' ;
+fragment ID_PART : [0-9./] ;
 
-fragment
-ID_ESCAPE
-  :
-    '[' ('\\]' | ~[\]])+? ']'
-  ;
-
-fragment
-ID_PART
-  :
-   [0-9./]
-  ;
-
-LP
-  :
-    '('
-  ;
-
-RP
-  :
-    ')'
-  ;
-
-WS
- : [ \t\r\n] -> skip
- ;
+LP : '(' ;
+RP : ')' ;
+WS : [ \t\r\n]+ -> skip ;

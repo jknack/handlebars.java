@@ -54,6 +54,9 @@
           <libDirectory>src/main/antlr4</libDirectory>
           <outputDirectory>target/antlr4</outputDirectory>
           <visitor>true</visitor>
+          <excludes>
+            <exclude>full/**</exclude>
+          </excludes>
         </configuration>
         <executions>
           <execution>

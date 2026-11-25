@@ -51,6 +51,7 @@ import com.github.jknack.handlebars.internal.HbsParser.LiteralPathContext;
 import com.github.jknack.handlebars.internal.HbsParser.ParamContext;
 import com.github.jknack.handlebars.internal.HbsParser.PartialBlockContext;
 import com.github.jknack.handlebars.internal.HbsParser.PartialContext;
+import com.github.jknack.handlebars.internal.HbsParser.PathIdContext;
 import com.github.jknack.handlebars.internal.HbsParser.RawBlockContext;
 import com.github.jknack.handlebars.internal.HbsParser.RefParamContext;
 import com.github.jknack.handlebars.internal.HbsParser.SexprContext;
@@ -135,8 +136,8 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
   public Template visitRawBlock(final RawBlockContext ctx) {
     level += 1;
     SexprContext sexpr = ctx.sexpr();
-    Token nameStart = sexpr.QID().getSymbol();
-    String name = nameStart.getText();
+    Token nameStart = sexpr.pathId().getStart();
+    String name = sexpr.pathId().getText();
     qualifier.addLast(name);
     String nameEnd = ctx.nameEnd.getText();
     if (!name.equals(nameEnd)) {
@@ -198,8 +199,8 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
     level += 1;
     SexprContext sexpr = ctx.sexpr();
     boolean decorator = ctx.DECORATOR() != null;
-    Token nameStart = sexpr.QID().getSymbol();
-    String name = nameStart.getText();
+    Token nameStart = sexpr.pathId().getStart();
+    String name = sexpr.pathId().getText();
     qualifier.addLast(name);
     String nameEnd = ctx.nameEnd.getText();
     if (!name.equals(nameEnd)) {
@@ -242,7 +243,6 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
     block.position(nameStart.getLine(), nameStart.getCharPositionInLine());
     String startDelim = ctx.start.getText();
     String endDelim = ctx.stop.getText();
-    startDelim = startDelim.substring(0, startDelim.length() - 1);
     block.startDelimiter(startDelim);
     block.endDelimiter(endDelim);
 
@@ -258,8 +258,8 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
     for (ElseStmtChainContext elseStmtChainContext : elseStmtChain) {
       // else if chain
       SexprContext elseexpr = elseStmtChainContext.sexpr();
-      Token elsenameStart = elseexpr.QID().getSymbol();
-      String elsename = elsenameStart.getText();
+      Token elsenameStart = elseexpr.pathId().getStart();
+      String elsename = elseexpr.pathId().getText();
       String type = elseStmtChainContext.inverseToken.getText();
       if (type.equals("else")) {
         type = "else ";
@@ -316,8 +316,8 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
     level += 1;
     hasTag(true);
     SexprContext sexpr = ctx.sexpr();
-    Token nameStart = sexpr.QID().getSymbol();
-    String name = nameStart.getText();
+    Token nameStart = sexpr.pathId().getStart();
+    String name = sexpr.pathId().getText();
     qualifier.addLast(name);
     String nameEnd = ctx.nameEnd.getText();
     if (!name.equals(nameEnd)) {
@@ -340,7 +340,7 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
     block.filename(source.filename());
     block.position(nameStart.getLine(), nameStart.getCharPositionInLine());
     String startDelim = ctx.start.getText();
-    block.startDelimiter(startDelim.substring(0, startDelim.length() - 1));
+    block.startDelimiter(startDelim);
     block.endDelimiter(ctx.stop.getText());
 
     Template body = visitBody(ctx.body());
@@ -358,7 +358,7 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
     SexprContext sexpr = ctx.sexpr();
     return newVar(
         ctx,
-        sexpr.QID().getSymbol(),
+        sexpr.pathId(),
         TagType.VAR,
         params(sexpr.param()),
         hash(sexpr.hash()),
@@ -369,7 +369,7 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
 
   @Override
   public Object visitEscape(final EscapeContext ctx) {
-    Token token = ctx.ESC_VAR().getSymbol();
+    Token token = ctx.ESCAPE_SEQUENCE().getSymbol();
     String text = token.getText().substring(1);
     return new Text(handlebars, text, "\\")
         .filename(source.filename())
@@ -382,7 +382,7 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
     SexprContext sexpr = ctx.sexpr();
     return newVar(
         ctx,
-        sexpr.QID().getSymbol(),
+        sexpr.pathId(),
         TagType.TRIPLE_VAR,
         params(sexpr.param()),
         hash(sexpr.hash()),
@@ -397,7 +397,7 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
     SexprContext sexpr = ctx.sexpr();
     return newVar(
         ctx,
-        sexpr.QID().getSymbol(),
+        sexpr.pathId(),
         TagType.AMP_VAR,
         params(sexpr.param()),
         hash(sexpr.hash()),
@@ -420,14 +420,15 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
    */
   private Variable newVar(
       final ParserRuleContext ctx,
-      final Token name,
+      final PathIdContext pathId,
       final TagType varType,
       final List<Param> params,
       final Map<String, Param> hash,
       final String startDelimiter,
       final String endDelimiter,
       final boolean decorator) {
-    String varName = name.getText();
+    Token name = pathId.getStart();
+    String varName = pathId.getText();
     boolean isHelper =
         ((params.size() > 0 || hash.size() > 0) || varType == TagType.SUB_EXPRESSION);
     if (!isHelper
@@ -561,7 +562,7 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
     return new VarParam(
         newVar(
             ctx,
-            sexpr.QID().getSymbol(),
+            sexpr.pathId(),
             TagType.SUB_EXPRESSION,
             params(sexpr.param()),
             hash(sexpr.hash()),
@@ -662,7 +663,7 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
     String startDelim = ctx.start.getText();
     Template partial =
         new Partial(handlebars, info.path, info.context, info.hash, source(ctx))
-            .startDelimiter(startDelim.substring(0, startDelim.length() - 1))
+            .startDelimiter(startDelim)
             .endDelimiter(ctx.stop.getText())
             .indent(indent)
             .filename(source.filename())
@@ -692,7 +693,7 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
         new Partial(handlebars, info.path, info.context, info.hash, source(ctx))
             .setDecorate(true)
             .setPartial(fn)
-            .startDelimiter(startDelim.substring(0, startDelim.length() - 1))
+            .startDelimiter(startDelim)
             .endDelimiter(ctx.stop.getText())
             .indent(indent)
             .filename(source.filename())
@@ -742,11 +743,12 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
   @Override
   public PartialInfo visitDynamicPath(final DynamicPathContext ctx) {
     SexprContext sexpr = ctx.sexpr();
-    TerminalNode qid = sexpr.QID();
+    PathIdContext pathId = sexpr.pathId();
+    Token qid = pathId.getStart();
     Template expression =
         newVar(
             ctx,
-            qid.getSymbol(),
+            pathId,
             TagType.SUB_EXPRESSION,
             params(sexpr.param()),
             hash(sexpr.hash()),
@@ -759,7 +761,7 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
     partial.hash = hash(ctx.hash());
     TerminalNode scope = ctx.QID();
     partial.context = scope != null ? scope.getText() : null;
-    partial.token = qid.getSymbol();
+    partial.token = qid;
     return partial;
   }
 

@@ -1,11 +1,10 @@
 parser grammar HbsParser;
 
 options {
-  tokenVocab=HbsLexer;
+  tokenVocab = HbsLexer;
 }
 
 @members {
-
   public String[] tokenNames() {
     String[] tokenNames = new String[_SYMBOLIC_NAMES.length];
     for (int i = 0; i < tokenNames.length; i++) {
@@ -13,7 +12,6 @@ options {
       if (tokenNames[i] == null) {
         tokenNames[i] = VOCABULARY.getSymbolicName(i);
       }
-
       if (tokenNames[i] == null) {
         tokenNames[i] = "<INVALID>";
       }
@@ -29,24 +27,41 @@ options {
 
   private String join(List<Token> tokens) {
     StringBuilder text = new StringBuilder();
-    for(Token token: tokens) {
+    for (Token token : tokens) {
       text.append(token.getText());
     }
     return text.toString();
   }
+
+  private boolean isModelDirective() {
+    int lookahead = 1;
+    if (_input.LA(lookahead) == TEXT) {
+      lookahead++;
+    }
+    if (_input.LA(lookahead++) != START) {
+      return false;
+    }
+    if (_input.LA(lookahead) == WS_CONTROL) {
+      lookahead++;
+    }
+    return _input.LA(lookahead) == MODEL_KW;
+  }
 }
 
 template
-  : body EOF
+  : ({isModelDirective()}? modelDirective)? body EOF
   ;
 
 body
   : statement*
   ;
 
+modelDirective
+  : ignored=TEXT? START WS_CONTROL? MODEL_KW type=QID WS_CONTROL? END
+  ;
+
 statement
-  :
-    text
+  : text
   | block
   | var
   | tvar
@@ -58,127 +73,133 @@ statement
   | escape
   | comment
   | delimiters
+  | inheritBlock
+  | blockDef
   ;
 
 escape
-  :
-    ESC_VAR
+  : ESCAPE_SEQUENCE
   ;
 
 text
-  :
-    TEXT
+  : TEXT
   ;
 
 block
-  :
-    startToken = START_BLOCK DECORATOR? sexpr blockParams? END
+  : START WS_CONTROL? HASH DECORATOR? sexpr blockParams? WS_CONTROL? END
     thenBody=body
     elseBlock
-    END_BLOCK nameEnd=QID END
+    START WS_CONTROL? SLASH nameEnd=QID WS_CONTROL? END
   ;
 
 rawBlock
-  :
-    startToken = START_RAW sexpr END_RAW
+  : START_RAW_BLOCK WS_CONTROL? DECORATOR? sexpr WS_CONTROL? END_RAW_BLOCK
     thenBody=body
-    END_RAW_BLOCK nameEnd=QID END_RAW
+    START_RAW_BLOCK WS_CONTROL? SLASH nameEnd=QID WS_CONTROL? END_RAW_BLOCK
   ;
 
 blockParams
-  :
-    AS PIPE QID+ PIPE
+  : AS PIPE QID+ PIPE
   ;
 
 sexpr
-  :
-    QID param* hash*
+  : pathId param* hash*
+  ;
+
+pathId
+  : QID (DECORATOR+ QID)*
+  | DOUBLE_STRING
+  | SINGLE_STRING
+  | NUMBER
+  | BOOLEAN
   ;
 
 elseBlock
-  :
-    elseStmtChain*
-    elseStmt?
+  : elseStmtChain* elseStmt?
   ;
 
 elseStmt
-  :
-    (inverseToken=UNLESS | START inverseToken=ELSE) END unlessBody=body
+  : (START WS_CONTROL? inverseToken=CARET | START WS_CONTROL? inverseToken=ELSE) WS_CONTROL? END unlessBody=body
   ;
 
 elseStmtChain
-  :
-    (inverseToken=UNLESS | START inverseToken=ELSE) sexpr blockParams? END unlessBody=body
+  : (START WS_CONTROL? inverseToken=CARET | START WS_CONTROL? inverseToken=ELSE) WS_CONTROL? sexpr blockParams? WS_CONTROL? END unlessBody=body
   ;
 
 unless
-  :
-    UNLESS sexpr blockParams? END
+  : START WS_CONTROL? CARET sexpr blockParams? WS_CONTROL? END
     body
-    END_BLOCK nameEnd=QID END
+    START WS_CONTROL? SLASH nameEnd=QID WS_CONTROL? END
   ;
 
 tvar
-  :
-   START_T sexpr END_T
+  : START_RAW DECORATOR? sexpr WS_CONTROL? END_RAW
   ;
 
 ampvar
-  :
-   START_AMP sexpr END
+  : START WS_CONTROL? AMP sexpr WS_CONTROL? END
   ;
 
 var
-  :
-   START DECORATOR? sexpr END
+  : START WS_CONTROL? DECORATOR? sexpr WS_CONTROL? END
   ;
 
 delimiters
-  :
-    START_DELIM
-    WS_DELIM*
-    startDelim+=DELIM+
-      {setStart(join($startDelim));}
-    WS_DELIM+
-    endDelim+=DELIM+
-    WS_DELIM*
-    END_DELIM
-    {setEnd(join($endDelim));}
+  : START_SET_DELIMITER
+    startDelim+=DELIM_VAL
+    endDelim+=DELIM_VAL
+    END_SET_DELIMITER
+    {setStart(join($startDelim)); setEnd(join($endDelim));}
   ;
 
 partial
-  :
-    START_PARTIAL pexpr END
+  : START WS_CONTROL? GT pexpr WS_CONTROL? END
   ;
 
 partialBlock
-  :
-    START_PARTIAL_BLOCK pexpr END
+  : START WS_CONTROL? HASH GT pexpr WS_CONTROL? END
     thenBody=body
-    END_BLOCK nameEnd=QID END
+    START WS_CONTROL? SLASH nameEnd=QID WS_CONTROL? END
   ;
 
 pexpr
-  :
-    LP sexpr RP QID? hash*                            #dynamicPath
-  | path = (QID|PATH) QID? hash*                      #staticPath
-  | path = (DOUBLE_STRING | SINGLE_STRING) QID? hash* #literalPath
+  : LP sexpr RP QID? hash*                                      #dynamicPath
+  | DECORATOR+ sexpr QID? hash*                                 #dynamicPath
+  | path=(QID | PATH) QID? hash*                                #staticPath
+  | path=(DOUBLE_STRING | SINGLE_STRING | NUMBER) QID? hash*   #literalPath
   ;
 
 param
-  :
-    DOUBLE_STRING #stringParam
+  : DOUBLE_STRING #stringParam
   | SINGLE_STRING #charParam
-  | NUMBER           #numberParam
-  | BOOLEAN       #boolParam
-  | QID           #refParam
-  | LP sexpr RP   #subParamExpr
+  | NUMBER #numberParam
+  | BOOLEAN #boolParam
+  | QID #refParam
+  | LP sexpr RP #subParamExpr
   ;
 
 hash
-  :
-    QID EQ param
+  : QID EQ param
   ;
 
 comment
-  : COMMENT;
+  : START_BLOCK_COMMENT COMMENT_CONTENT_BLOCK? END_BLOCK_COMMENT
+  | START_COMMENT COMMENT_CONTENT? END_COMMENT
+  ;
+
+inheritBlock
+  : START_LT WS_CONTROL? pexpr WS_CONTROL? END
+    inheritBody*
+    START WS_CONTROL? SLASH QID WS_CONTROL? END
+  ;
+
+inheritBody
+  : blockDef
+  | TEXT
+  ;
+
+blockDef
+  : START_DOLLAR WS_CONTROL? name=QID WS_CONTROL? END
+    body
+    START WS_CONTROL? SLASH nameEnd=QID WS_CONTROL? END
+  ;
