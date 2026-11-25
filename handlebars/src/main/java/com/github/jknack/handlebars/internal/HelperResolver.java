@@ -69,7 +69,10 @@ abstract class HelperResolver extends BaseTemplate {
     Map<String, Object> result = new LinkedHashMap<>();
     for (Entry<String, Param> entry : hash.entrySet()) {
       Param value = entry.getValue();
-      result.put(entry.getKey(), value.apply(context));
+      Object resolved = value.apply(context);
+      result.put(
+          entry.getKey(),
+          resolved == null && handlebars.stringParams() ? value.toString() : resolved);
     }
     return result;
   }
@@ -123,7 +126,9 @@ abstract class HelperResolver extends BaseTemplate {
     if (paramSize == 0) {
       return context.model();
     }
-    return params.get(0).apply(context);
+    Param first = params.get(0);
+    Object value = first.apply(context);
+    return value == null && handlebars.stringParams() ? first.toString() : value;
   }
 
   /**

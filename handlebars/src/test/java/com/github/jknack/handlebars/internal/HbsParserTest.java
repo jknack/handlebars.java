@@ -132,7 +132,6 @@ public class HbsParserTest {
 
   @Test
   public void additionalSyntax() {
-    parse("{{@model type}}Hello");
     parse("{{<layout}}{{$title}}Page{{/title}}{{/layout}}");
     parse("{{!-- block comment --}}");
     parse("{{a*b}}");

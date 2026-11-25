@@ -32,32 +32,14 @@ options {
     }
     return text.toString();
   }
-
-  private boolean isModelDirective() {
-    int lookahead = 1;
-    if (_input.LA(lookahead) == TEXT) {
-      lookahead++;
-    }
-    if (_input.LA(lookahead++) != START) {
-      return false;
-    }
-    if (_input.LA(lookahead) == WS_CONTROL) {
-      lookahead++;
-    }
-    return _input.LA(lookahead) == MODEL_KW;
-  }
 }
 
 template
-  : ({isModelDirective()}? modelDirective)? body EOF
+  : body EOF
   ;
 
 body
   : statement*
-  ;
-
-modelDirective
-  : ignored=TEXT? START WS_CONTROL? MODEL_KW type=QID WS_CONTROL? END
   ;
 
 statement

@@ -124,7 +124,6 @@ SINGLE_STRING : '\'' ('\\\'' | .)*? '\'' ;
 NUMBER : '-'? [0-9]* '.'? [0-9]+ ;
 BOOLEAN : 'true' | 'false' ;
 ELSE : 'else' ;
-MODEL_KW : '@model' ;
 
 QID
   : '../' QID
