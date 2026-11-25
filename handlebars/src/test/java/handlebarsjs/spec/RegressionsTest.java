@@ -9,7 +9,6 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -274,9 +273,6 @@ public class RegressionsTest extends AbstractTest {
         "Hello Chris. You have just won $10000! Well, $6000.0, after taxes.");
   }
 
-  @Disabled(
-      "Handlebars.js does not resolve names from the parent scope for primitive contexts; this"
-          + " engine does (Mustache spec)")
   @Test
   @DisplayName("zero context rendering")
   public void zerocontextrendering() throws IOException {

@@ -635,10 +635,67 @@ public class Context {
             value = expr.eval(resolver, it, it.data);
           }
         }
-        it = it.parent;
+        // a numeric context is a leaf scope, like in handlebars.js: names don't resolve upwards
+        it = it.model instanceof Number ? null : it.parent;
       }
     }
     return value == NULL ? null : value;
+  }
+
+  /**
+   * Find the first segment of the path that can't be resolved. Only plain property and data paths
+   * are checked.
+   *
+   * @param path The object path.
+   * @return The name of the undefined segment or <code>null</code> if the path is defined.
+   */
+  public String undefinedSegment(final List<PathExpression> path) {
+    for (PathExpression expr : path) {
+      if (!(expr instanceof PropertyPath || expr instanceof DataPath)) {
+        return null;
+      }
+    }
+    PathExpression head = path.get(0);
+    Object current = get(path.subList(0, 1));
+    if (current == null && !isDeclared(head.toString())) {
+      return head.toString().replaceFirst("^@", "");
+    }
+    for (int i = 1; i < path.size() && current != null; i++) {
+      String name = path.get(i).toString();
+      Object value = resolver.resolve(current, name);
+      if (value == null && !(current instanceof Map && ((Map<?, ?>) current).containsKey(name))) {
+        return name;
+      }
+      current = value == NULL ? null : value;
+    }
+    return null;
+  }
+
+  private boolean isDeclared(final String name) {
+    String bare = name.replaceFirst("^@", "");
+    for (Context it = this; it != null; it = it.parent) {
+      if (hasKey(it.model, name) || hasKey(it.extendedContext, name) || hasProperty(it, name)) {
+        return true;
+      }
+      for (Context frame = it; frame != null; frame = frame.dataParent) {
+        if (hasKey(frame.data, name) || hasKey(frame.data, bare)) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  private boolean hasProperty(final Context it, final String name) {
+    if (it.model == null || it.model instanceof Map) {
+      return false;
+    }
+    return resolver.propertySet(it.model).stream().anyMatch(e -> e.getKey().equals(name));
+  }
+
+  private static boolean hasKey(final Object source, final String name) {
+    Object map = source instanceof Context ? ((Context) source).model : source;
+    return map instanceof Map && ((Map<?, ?>) map).containsKey(name);
   }
 
   /**

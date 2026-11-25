@@ -31,7 +31,8 @@ public class WithHelper implements Helper<Object> {
   public Object apply(final Object context, final Options options) throws IOException {
     BuiltinArgs.requireAtMostOne(NAME, options);
     Buffer buffer = options.buffer();
-    if (options.isFalsy(context)) {
+    // like handlebars.js, zero is a valid context for with
+    if (options.isFalsy(context) && !(context instanceof Number)) {
       buffer.append(options.inverse(context));
     } else {
       buffer.append(options.fn(context));

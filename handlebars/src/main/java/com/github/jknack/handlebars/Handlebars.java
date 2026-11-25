@@ -409,6 +409,9 @@ public class Handlebars implements HelperRegistry {
   /** True to indent only the first line of a standalone partial. Default is: false. */
   private boolean preventIndent;
 
+  /** True to fail on missing properties, like handlebars.js strict mode. Default is: false. */
+  private boolean strict;
+
   /**
    * True to render a partial without an explicit context with an empty context, instead of
    * inheriting the current one. Default is: false.
@@ -1306,6 +1309,27 @@ public class Handlebars implements HelperRegistry {
    */
   public boolean preEvaluatePartialBlocks() {
     return preEvaluatePartialBlocks;
+  }
+
+  /**
+   * True if a lookup of a missing property fails.
+   *
+   * @return True if a lookup of a missing property fails.
+   */
+  public boolean strict() {
+    return strict;
+  }
+
+  /**
+   * Fail with an error when a variable, a block without helper or a path segment can't be resolved.
+   * Arguments of helpers aren't checked. Default is: false.
+   *
+   * @param strict True to enable strict mode.
+   * @return This handlebars.
+   */
+  public Handlebars strict(final boolean strict) {
+    this.strict = strict;
+    return this;
   }
 
   /**

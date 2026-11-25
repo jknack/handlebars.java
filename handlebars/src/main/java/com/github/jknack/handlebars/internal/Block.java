@@ -152,6 +152,12 @@ class Block extends HelperResolver {
     Helper<Object> helper = this.helper;
     if (helper == null) {
       it = transform(itCtx.get(this.path));
+      if (it == null && handlebars.strict()) {
+        String undefined = context.undefinedSegment(this.path);
+        if (undefined != null) {
+          throw new IllegalArgumentException("'" + undefined + "' not defined");
+        }
+      }
       if (inverted) {
         helperName = UnlessHelper.NAME;
       } else if (it instanceof Iterable) {

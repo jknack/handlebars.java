@@ -162,6 +162,12 @@ class Variable extends HelperResolver {
       return helper.apply(determineContext(scope), options);
     } else {
       Object value = scope.get(path);
+      if (value == null && handlebars.strict()) {
+        String undefined = params.isEmpty() ? scope.undefinedSegment(path) : name;
+        if (undefined != null) {
+          throw new IllegalArgumentException("'" + undefined + "' not defined");
+        }
+      }
       if (value == null) {
         if (missing != null) {
           Options options =
