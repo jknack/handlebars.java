@@ -21,6 +21,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import com.github.jknack.handlebars.context.MapValueResolver;
+import com.github.jknack.handlebars.internal.path.PropertyPath;
 import com.github.jknack.handlebars.internal.path.ThisPath;
 import com.github.jknack.handlebars.io.TemplateSource;
 
@@ -107,11 +108,21 @@ public class Context {
 
     @Override
     public Object get(final List<PathExpression> path) {
-      Object value = parent.get(path);
-      if (value == null) {
-        return super.get(path);
+      // Only block params (lexically scoped) take precedence over the current model. Everything
+      // else resolves child first, like any other context.
+      PathExpression head = path.get(0);
+      if (head instanceof PropertyPath || (head instanceof ThisPath && path.size() > 1)) {
+        PathExpressionChain expr = new PathExpressionChain(path);
+        for (Context it = parent; it != null; it = it.parent) {
+          if (it instanceof BlockParam) {
+            Object value = expr.eval(resolver, it, it.model);
+            if (value != null && value != NULL) {
+              return value;
+            }
+          }
+        }
       }
-      return value;
+      return super.get(path);
     }
 
     @Override

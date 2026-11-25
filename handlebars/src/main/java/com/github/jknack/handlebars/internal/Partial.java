@@ -160,6 +160,16 @@ class Partial extends HelperResolver {
         LinkedList<TemplateSource> invocationStack = context.data(Context.INVOCATION_STACK);
 
         try {
+          if (invocationStack.size() >= handlebars.maxPartialDepth()) {
+            String reason =
+                String.format(
+                    "maximum partial depth exceeded (%s), partial '%s'",
+                    handlebars.maxPartialDepth(), path);
+            String message = String.format("%s:%s:%s: %s", filename, line, column, reason);
+            throw new HandlebarsException(
+                new HandlebarsError(filename, line, column, reason, text(), message));
+          }
+
           TemplateSource source = loader.sourceAt(path);
 
           if (exists(invocationStack, source.filename())) {
