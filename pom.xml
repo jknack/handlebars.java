@@ -516,7 +516,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <jackson2-version>2.23.0</jackson2-version>
     <jackson3-version>3.3.0</jackson3-version>
-    <spring.version>7.1.0</spring.version>
+    <spring.version>6.2.19</spring.version>
     <jacoco.version>0.8.16</jacoco.version>
     <antlr-version>4.13.2</antlr-version>
     <asm.version>9.11.1</asm.version>
