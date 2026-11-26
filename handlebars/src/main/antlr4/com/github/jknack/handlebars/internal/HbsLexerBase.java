@@ -70,6 +70,9 @@ public abstract class HbsLexerBase extends Lexer {
         advanceStart("<");
       } else if (peekStart("$")) {
         advanceStart("$");
+      } else if (start.length() == 1) {
+        // a single char delimiter is fully consumed by the escape
+        advance(1);
       } else {
         advanceStart("");
       }
