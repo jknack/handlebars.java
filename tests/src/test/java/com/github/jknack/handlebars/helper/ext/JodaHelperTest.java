@@ -58,6 +58,7 @@ public class JodaHelperTest extends AbstractTest {
     DateTime dateTime = new DateTime().withDate(1995, 7, 4).withTime(14, 32, 12, 0);
     try {
       shouldCompileTo("{{jodaStyleHelper this \"QS\"}}", dateTime, "");
+      fail("Exception should have thrown!");
     } catch (HandlebarsException e) {
       Throwable t = e.getCause();
       assertEquals("Invalid style character: Q", t.getMessage());
