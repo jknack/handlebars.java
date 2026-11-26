@@ -400,4 +400,3 @@ class DefI18nSource implements I18nSource {
     return format.format(args);
   }
 }
-;

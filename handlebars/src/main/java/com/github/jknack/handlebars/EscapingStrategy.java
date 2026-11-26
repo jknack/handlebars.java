@@ -127,8 +127,8 @@ public interface EscapingStrategy {
       value -> value == null ? null : StringEscapeUtils.escapeEcmaScript(value.toString());
 
   /** Escape variable for JSON. */
-  EscapingStrategy JSON = value ->
-    value == null ? null : StringEscapeUtils.escapeJson(value.toString());
+  EscapingStrategy JSON =
+      value -> value == null ? null : StringEscapeUtils.escapeJson(value.toString());
 
   /** NOOP escaping. */
   EscapingStrategy NOOP = value -> value;

@@ -60,6 +60,9 @@ abstract class BaseTemplate implements Template {
   /** A pre-compiled JavaScript function. */
   private String javaScript;
 
+  /** Output size of the last rendering, used to size the next buffer. Races are benign. */
+  private volatile int bufferSize;
+
   /**
    * Creates a new {@link BaseTemplate}.
    *
@@ -83,9 +86,14 @@ abstract class BaseTemplate implements Template {
 
   @Override
   public String apply(final Context context) throws IOException {
-    Writer writer = new FastStringWriter(handlebars.bufferSize());
+    int capacity = bufferSize;
+    Writer writer = new FastStringWriter(capacity > 0 ? capacity : handlebars.bufferSize());
     apply(context, writer);
-    return writer.toString();
+    String result = writer.toString();
+    if (!result.isEmpty()) {
+      bufferSize = result.length();
+    }
+    return result;
   }
 
   @Override

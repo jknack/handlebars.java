@@ -14,10 +14,9 @@ import org.junit.jupiter.api.Test;
 public class Issue682 extends AbstractTest {
   @Override
   protected void configure(final Handlebars handlebars) {
-    handlebars.with(
-        (value, chain) -> {
-          return new Handlebars.SafeString(value.toString());
-        });
+    handlebars.with((value, chain) -> {
+      return new Handlebars.SafeString(value.toString());
+    });
   }
 
   @Test

@@ -101,10 +101,9 @@ public class ServletContextTemplateLoaderTest {
   private void expectGetResource(final ServletContext servletContext, final String prefix)
       throws IOException {
     when(servletContext.getResource(anyString()))
-        .thenAnswer(
-            invocation -> {
-              File file = new File(prefix, invocation.getArgument(0));
-              return file.exists() ? file.toURI().toURL() : null;
-            });
+        .thenAnswer(invocation -> {
+          File file = new File(prefix, invocation.getArgument(0));
+          return file.exists() ? file.toURI().toURL() : null;
+        });
   }
 }

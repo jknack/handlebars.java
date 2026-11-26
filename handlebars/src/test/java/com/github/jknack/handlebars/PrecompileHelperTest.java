@@ -31,19 +31,18 @@ public class PrecompileHelperTest {
 
   @Test
   public void precompile() throws IOException {
-    withTemplates(
-        wrapper -> {
-          String js =
-              handlebars
-                  .compileInline("{{precompile \"input\" wrapper=\"" + wrapper + "\"}}")
-                  .apply("Handlebar.js");
+    withTemplates(wrapper -> {
+      String js =
+          handlebars
+              .compileInline("{{precompile \"input\" wrapper=\"" + wrapper + "\"}}")
+              .apply("Handlebar.js");
 
-          InputStream in = getClass().getResourceAsStream("/" + wrapper + ".precompiled.js");
+      InputStream in = getClass().getResourceAsStream("/" + wrapper + ".precompiled.js");
 
-          assertEquals(spaceSafe(IOUtils.toString(in)), spaceSafe(js), wrapper);
+      assertEquals(spaceSafe(IOUtils.toString(in)), spaceSafe(js), wrapper);
 
-          in.close();
-        });
+      in.close();
+    });
   }
 
   private String spaceSafe(String value) {
@@ -52,16 +51,15 @@ public class PrecompileHelperTest {
 
   @Test
   public void precompileWithPartial() throws IOException {
-    withTemplates(
-        wrapper -> {
-          String js = handlebars.compileInline("{{precompile \"root\"}}").apply("Handlebar.js");
+    withTemplates(wrapper -> {
+      String js = handlebars.compileInline("{{precompile \"root\"}}").apply("Handlebar.js");
 
-          InputStream in = getClass().getResourceAsStream("/partial.precompiled.js");
+      InputStream in = getClass().getResourceAsStream("/partial.precompiled.js");
 
-          assertEquals(spaceSafe(IOUtils.toString(in)), spaceSafe(js));
+      assertEquals(spaceSafe(IOUtils.toString(in)), spaceSafe(js));
 
-          in.close();
-        });
+      in.close();
+    });
   }
 
   private static void withTemplates(Wrapper consumer) throws IOException {
