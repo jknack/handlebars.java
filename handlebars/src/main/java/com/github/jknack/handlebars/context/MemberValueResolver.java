@@ -65,7 +65,12 @@ public abstract class MemberValueResolver<M extends Member> implements ValueReso
       for (M m : members) {
         // Mark as accessible.
         if (isUseSetAccessible(m) && m instanceof AccessibleObject) {
-          ((AccessibleObject) m).setAccessible(true);
+          try {
+            ((AccessibleObject) m).setAccessible(true);
+          } catch (RuntimeException ex) {
+            // Not accessible (i.e. module encapsulation), ignore it.
+            continue;
+          }
         }
         mcache.put(memberName(m), m);
       }

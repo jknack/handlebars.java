@@ -18,7 +18,8 @@ import com.github.jknack.handlebars.context.FieldValueResolver.FieldWrapper;
 
 /**
  * A specialization of {@link MemberValueResolver} with lookup and invocation support for {@link
- * Field}. It matches private, protected, package, public and no-static field.
+ * Field}. It matches private, protected, package, public and no-static field. Fields that can't be
+ * read, like non-public fields of JDK classes, are ignored.
  *
  * @author edgar.espina
  * @since 0.1.1
@@ -178,6 +179,8 @@ public class FieldValueResolver extends MemberValueResolver<FieldWrapper> {
   protected Object invokeMember(final FieldWrapper field, final Object context) {
     try {
       return field.get(context);
+    } catch (IllegalAccessException ex) {
+      return UNRESOLVED;
     } catch (Exception ex) {
       throw new IllegalStateException(
           "Shouldn't be illegal to access field '" + field.getName() + "'", ex);
@@ -195,7 +198,7 @@ public class FieldValueResolver extends MemberValueResolver<FieldWrapper> {
         Field[] fields = targetClass.getDeclaredFields();
         for (Field field : fields) {
           FieldWrapper wrapper = new FieldMember(field);
-          if (matches(wrapper, memberName(wrapper))) {
+          if (matches(wrapper, memberName(wrapper)) && isReadable(wrapper)) {
             members.add(wrapper);
           }
         }
@@ -203,6 +206,20 @@ public class FieldValueResolver extends MemberValueResolver<FieldWrapper> {
       } while (targetClass != null && targetClass != Object.class);
     }
     return members;
+  }
+
+  /**
+   * Fields that can't be made accessible (see {@link #isUseSetAccessible(Member)}) must be public
+   * and declared by a public class, otherwise they can't be read.
+   *
+   * @param field The field.
+   * @return True if the field can be read.
+   */
+  private boolean isReadable(final FieldWrapper field) {
+    if (isUseSetAccessible(field)) {
+      return true;
+    }
+    return isPublic(field) && Modifier.isPublic(field.getDeclaringClass().getModifiers());
   }
 
   @Override
