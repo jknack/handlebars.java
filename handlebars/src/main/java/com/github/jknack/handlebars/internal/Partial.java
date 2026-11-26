@@ -174,6 +174,19 @@ class Partial extends HelperResolver {
       }
 
       Template template = inlineTemplates.get(path);
+      LinkedList<Template> inlineStack = null;
+
+      if (template != null && !pathIsPartialBlock && !handlebars.infiniteLoops()) {
+        inlineStack = context.data(Context.INLINE_INVOCATIONS);
+        if (inlineStack.contains(template)) {
+          String reason =
+              String.format("infinite loop detected, inline partial '%s' is calling itself", path);
+          String message = String.format("%s:%s:%s: %s", filename, line, column, reason);
+          throw new HandlebarsException(
+              new HandlebarsError(filename, line, column, reason, text(), message));
+        }
+        inlineStack.addLast(template);
+      }
 
       if (template == null) {
         LinkedList<TemplateSource> invocationStack = context.data(Context.INVOCATION_STACK);
@@ -246,7 +259,13 @@ class Partial extends HelperResolver {
               : handlebars.explicitPartialContext() && this.context == null
                   ? Context.newIsolatedPartialContext(context, hash)
                   : Context.newPartialContext(context, this.scontext, hash);
-      template.apply(ctx, writer);
+      try {
+        template.apply(ctx, writer);
+      } finally {
+        if (inlineStack != null) {
+          inlineStack.removeLast();
+        }
+      }
       context.setData(Context.CALLEE, callee);
     } catch (IOException ex) {
       String reason =

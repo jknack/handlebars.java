@@ -395,6 +395,9 @@ public class Context {
   /** The qualified name for partials. Internal use. */
   public static final String PARTIALS = Context.class.getName() + "#partials";
 
+  /** Inline partials being rendered, used to detect recursion. */
+  public static final String INLINE_INVOCATIONS = "__inline_invocations_";
+
   /** Inline partials. */
   public static final String INLINE_PARTIALS = "__inline_partials_";
 
@@ -451,6 +454,7 @@ public class Context {
     partials.push(new HashMap<String, Template>());
     root.data.put(INLINE_PARTIALS, partials);
     root.data.put(INVOCATION_STACK, new LinkedList<TemplateSource>());
+    root.data.put(INLINE_INVOCATIONS, new LinkedList<Template>());
     root.data.put("root", model);
     return root;
   }
