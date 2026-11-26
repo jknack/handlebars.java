@@ -8,6 +8,7 @@ package com.github.jknack.handlebars.io;
 import static org.apache.commons.lang3.Validate.notNull;
 
 import java.nio.charset.Charset;
+import java.util.Objects;
 
 /**
  * String implementation of {@link TemplateSource}.
@@ -15,7 +16,7 @@ import java.nio.charset.Charset;
  * @author edgar.espina
  * @since 0.11.0
  */
-public class StringTemplateSource extends AbstractTemplateSource {
+public class StringTemplateSource implements TemplateSource {
 
   /** The template's content. Required. */
   private final String content;
@@ -51,5 +52,21 @@ public class StringTemplateSource extends AbstractTemplateSource {
   @Override
   public long lastModified() {
     return lastModified;
+  }
+
+  @Override
+  public boolean equals(final Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o instanceof StringTemplateSource that) {
+      return filename.equals(that.filename) && content.equals(that.content);
+    }
+    return false;
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(filename, content);
   }
 }

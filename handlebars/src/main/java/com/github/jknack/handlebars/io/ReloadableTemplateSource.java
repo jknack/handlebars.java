@@ -39,9 +39,8 @@ public class ReloadableTemplateSource extends ForwardingTemplateSource {
     if (this == obj) {
       return true;
     }
-    if (obj instanceof TemplateSource) {
-      TemplateSource that = (TemplateSource) obj;
-      return filename().equals(that.filename()) && lastModified() == that.lastModified();
+    if (obj instanceof ReloadableTemplateSource that) {
+      return super.equals(that) && lastModified() == that.lastModified();
     }
     return false;
   }

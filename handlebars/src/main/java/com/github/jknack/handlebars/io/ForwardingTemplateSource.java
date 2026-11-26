@@ -16,7 +16,7 @@ import java.nio.charset.Charset;
  * @author edgar.espina
  * @since 0.11.0
  */
-public class ForwardingTemplateSource extends AbstractTemplateSource {
+public class ForwardingTemplateSource implements TemplateSource {
 
   /** The template source. */
   private final TemplateSource source;
@@ -43,5 +43,21 @@ public class ForwardingTemplateSource extends AbstractTemplateSource {
   @Override
   public long lastModified() {
     return source.lastModified();
+  }
+
+  @Override
+  public boolean equals(final Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o instanceof ForwardingTemplateSource that) {
+      return source.equals(that.source);
+    }
+    return false;
+  }
+
+  @Override
+  public int hashCode() {
+    return source.hashCode();
   }
 }

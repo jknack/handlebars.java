@@ -17,6 +17,7 @@ import java.net.JarURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.Charset;
+import java.util.Objects;
 
 import com.github.jknack.handlebars.Handlebars;
 
@@ -26,7 +27,7 @@ import com.github.jknack.handlebars.Handlebars;
  * @author edgar.espina
  * @since 0.11.0
  */
-public class URLTemplateSource extends AbstractTemplateSource {
+public class URLTemplateSource implements TemplateSource {
 
   /** The resource. Required. */
   private URL resource;
@@ -81,6 +82,22 @@ public class URLTemplateSource extends AbstractTemplateSource {
       }
       return lastModified;
     }
+  }
+
+  @Override
+  public boolean equals(final Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o instanceof URLTemplateSource that) {
+      return filename.equals(that.filename) && resource.equals(that.resource);
+    }
+    return false;
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(filename, resource);
   }
 
   /**
