@@ -29,6 +29,7 @@ import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
 
 import com.github.jknack.handlebars.Context;
+import com.github.jknack.handlebars.FastStringWriter;
 import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.HandlebarsError;
 import com.github.jknack.handlebars.HandlebarsException;
@@ -82,7 +83,7 @@ abstract class BaseTemplate implements Template {
 
   @Override
   public String apply(final Context context) throws IOException {
-    FastStringWriter writer = new FastStringWriter();
+    Writer writer = new FastStringWriter(handlebars.bufferSize());
     apply(context, writer);
     return writer.toString();
   }

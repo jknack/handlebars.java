@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.github.jknack.handlebars.Context;
+import com.github.jknack.handlebars.FastStringWriter;
 import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.HandlebarsError;
 import com.github.jknack.handlebars.HandlebarsException;
@@ -164,7 +165,7 @@ class Partial extends HelperResolver {
 
       if (this.partial != null) {
         if (handlebars.preEvaluatePartialBlocks()) {
-          this.partial.apply(context);
+          this.partial.apply(context, new FastStringWriter(handlebars.blockBufferSize()));
         }
 
         inlineTemplates.put(

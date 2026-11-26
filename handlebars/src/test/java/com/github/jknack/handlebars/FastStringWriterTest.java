@@ -3,7 +3,7 @@
  * Apache License Version 2.0 http://www.apache.org/licenses/LICENSE-2.0
  * Copyright (c) 2012 Edgar Espina
  */
-package com.github.jknack.handlebars.internal;
+package com.github.jknack.handlebars;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;

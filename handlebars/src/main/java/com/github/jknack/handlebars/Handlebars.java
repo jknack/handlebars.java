@@ -307,6 +307,15 @@ public class Handlebars implements HelperRegistry {
    */
   private int maxPartialDepth = 256;
 
+  /** Initial buffer size for top-level templates. */
+  private int bufferSize = FastStringWriter.BUFFER_SIZE;
+
+  /** Initial buffer size for block bodies. */
+  private int blockBufferSize = FastStringWriter.BLOCK_BUFFER_SIZE;
+
+  /** Initial buffer size for sub-expressions. */
+  private int subExpressionBufferSize = FastStringWriter.SUBEXPRESSION_BUFFER_SIZE;
+
   /**
    * Maximum depth of nested partial invocations. Only enforced when {@link #infiniteLoops()} is
    * false. Default is: 256.
@@ -960,6 +969,112 @@ public class Handlebars implements HelperRegistry {
   public Handlebars infiniteLoops(final boolean infiniteLoops) {
     setInfiniteLoops(infiniteLoops);
     return this;
+  }
+
+  /**
+   * Initial buffer size (in chars) used when a top-level template is rendered to a string. Default
+   * is the <code>hbs.buffer</code> system property or 1600.
+   *
+   * @return Initial buffer size for top-level templates.
+   */
+  public int bufferSize() {
+    return bufferSize;
+  }
+
+  /**
+   * Set the initial buffer size (in chars) used when a top-level template is rendered to a string.
+   *
+   * @param bufferSize Buffer size (must be positive).
+   */
+  public void setBufferSize(final int bufferSize) {
+    this.bufferSize = positive("bufferSize", bufferSize);
+  }
+
+  /**
+   * Set the initial buffer size (in chars) used when a top-level template is rendered to a string.
+   *
+   * @param bufferSize Buffer size (must be positive).
+   * @return This handlebars object.
+   */
+  public Handlebars bufferSize(final int bufferSize) {
+    setBufferSize(bufferSize);
+    return this;
+  }
+
+  /**
+   * Initial buffer size (in chars) used when a block body is rendered, like <code>options.fn()
+   * </code> or <code>options.inverse()</code> in <code>each</code>, <code>with</code>, <code>if
+   * </code>, etc. Default is the <code>hbs.buffer.block</code> system property or 128.
+   *
+   * @return Initial buffer size for block bodies.
+   */
+  public int blockBufferSize() {
+    return blockBufferSize;
+  }
+
+  /**
+   * Set the initial buffer size (in chars) used when a block body is rendered.
+   *
+   * @param blockBufferSize Buffer size (must be positive).
+   */
+  public void setBlockBufferSize(final int blockBufferSize) {
+    this.blockBufferSize = positive("blockBufferSize", blockBufferSize);
+  }
+
+  /**
+   * Set the initial buffer size (in chars) used when a block body is rendered.
+   *
+   * @param blockBufferSize Buffer size (must be positive).
+   * @return This handlebars object.
+   */
+  public Handlebars blockBufferSize(final int blockBufferSize) {
+    setBlockBufferSize(blockBufferSize);
+    return this;
+  }
+
+  /**
+   * Initial buffer size (in chars) used when a sub-expression is evaluated, like <code>
+   * (helper arg)</code>. Default is the <code>hbs.buffer.subexpression</code> system property or
+   * 32.
+   *
+   * @return Initial buffer size for sub-expressions.
+   */
+  public int subExpressionBufferSize() {
+    return subExpressionBufferSize;
+  }
+
+  /**
+   * Set the initial buffer size (in chars) used when a sub-expression is evaluated.
+   *
+   * @param subExpressionBufferSize Buffer size (must be positive).
+   */
+  public void setSubExpressionBufferSize(final int subExpressionBufferSize) {
+    this.subExpressionBufferSize = positive("subExpressionBufferSize", subExpressionBufferSize);
+  }
+
+  /**
+   * Set the initial buffer size (in chars) used when a sub-expression is evaluated.
+   *
+   * @param subExpressionBufferSize Buffer size (must be positive).
+   * @return This handlebars object.
+   */
+  public Handlebars subExpressionBufferSize(final int subExpressionBufferSize) {
+    setSubExpressionBufferSize(subExpressionBufferSize);
+    return this;
+  }
+
+  /**
+   * Validate a buffer size.
+   *
+   * @param name Setting name.
+   * @param size Buffer size.
+   * @return The buffer size.
+   */
+  private static int positive(final String name, final int size) {
+    if (size <= 0) {
+      throw new IllegalArgumentException(name + " must be positive: " + size);
+    }
+    return size;
   }
 
   /**

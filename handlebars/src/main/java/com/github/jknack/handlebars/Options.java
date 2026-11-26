@@ -508,7 +508,11 @@ public class Options {
     if (hasBlockParams) {
       ctx = Context.newBlockParamContext(context, this.blockParams, blockParams);
     }
-    return template.apply(ctx);
+    int capacity =
+        handlebars == null ? FastStringWriter.BLOCK_BUFFER_SIZE : handlebars.blockBufferSize();
+    Writer writer = new FastStringWriter(capacity);
+    template.apply(ctx, writer);
+    return writer.toString();
   }
 
   /**
