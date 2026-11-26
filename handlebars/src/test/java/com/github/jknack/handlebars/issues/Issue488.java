@@ -3,7 +3,7 @@
  * Apache License Version 2.0 http://www.apache.org/licenses/LICENSE-2.0
  * Copyright (c) 2012 Edgar Espina
  */
-package com.github.jknack.handlebars;
+package com.github.jknack.handlebars.issues;
 
 import java.io.IOException;
 import java.util.Locale;
@@ -12,6 +12,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import com.github.jknack.handlebars.AbstractTest;
 import com.github.jknack.handlebars.helper.I18nHelper;
 
 public class Issue488 extends AbstractTest {

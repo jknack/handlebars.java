@@ -3,7 +3,7 @@
  * Apache License Version 2.0 http://www.apache.org/licenses/LICENSE-2.0
  * Copyright (c) 2012 Edgar Espina
  */
-package com.github.jknack.handlebars;
+package com.github.jknack.handlebars.issues;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -11,6 +11,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.io.IOException;
 
 import org.junit.jupiter.api.Test;
+
+import com.github.jknack.handlebars.AbstractTest;
+import com.github.jknack.handlebars.Handlebars;
+import com.github.jknack.handlebars.HandlebarsException;
 
 public class Issue1069 extends AbstractTest {
 
