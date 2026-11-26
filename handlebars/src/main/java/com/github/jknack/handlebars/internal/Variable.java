@@ -234,12 +234,16 @@ class Variable extends HelperResolver {
    */
   protected CharSequence formatAndEscape(final Object value, final Formatter.Chain formatter) {
     Object formatted = formatter.format(transform(value));
-    CharSequence formattedString = formatted.toString();
-    if (formatted instanceof Handlebars.SafeString) {
-      return formattedString;
+    CharSequence formattedCharSequence;
+    if (formatted instanceof Handlebars.SafeString safeString) {
+      return safeString;
     }
-    CharSequence escapedString = escapingStrategy.escape(formattedString);
-    return escapedString;
+    if (value instanceof CharSequence) {
+      formattedCharSequence = (CharSequence) value;
+    } else {
+      formattedCharSequence = formatted.toString();
+    }
+    return escapingStrategy.escape(formattedCharSequence);
   }
 
   @Override
