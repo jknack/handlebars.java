@@ -80,6 +80,9 @@ public class Context {
       if (path.size() == 1 && key.equals("this")) {
         return parent.model;
       }
+      if (path.size() > 1 && path.get(0) instanceof ThisPath) {
+        return parent.get(path.subList(1, path.size()));
+      }
       // path variable should resolve from parent :S
       if (key.startsWith(".") && path.size() > 1) {
         return parent.get(path.subList(1, path.size()));
@@ -115,7 +118,7 @@ public class Context {
       // Only block params (lexically scoped) take precedence over the current model. Everything
       // else resolves child first, like any other context.
       PathExpression head = path.get(0);
-      if (head instanceof PropertyPath || (head instanceof ThisPath && path.size() > 1)) {
+      if (head instanceof PropertyPath) {
         PathExpressionChain expr = new PathExpressionChain(path);
         for (Context it = parent; it != null; it = it.parent) {
           if (it instanceof BlockParam) {

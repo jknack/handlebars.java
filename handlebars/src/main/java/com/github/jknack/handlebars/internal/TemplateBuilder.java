@@ -143,6 +143,9 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
   /** Keep track of block helpers params. */
   private LinkedList<String> paramStack = new LinkedList<>();
 
+  /** Keep track of named block parameter scopes. */
+  private int blockParamDepth;
+
   /** Keep track of block level, required for top level decorators. */
   private int level;
 
@@ -255,6 +258,7 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
 
     hasTag(true);
     Block block;
+    List<String> blockParamNames = blockParams(ctx.blockParams());
     if (decorator) {
       block =
           new BlockDecorator(
@@ -263,7 +267,7 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
               false,
               params(sexpr.param()),
               hash(sexpr.hash()),
-              blockParams(ctx.blockParams()),
+              blockParamNames,
               level == 1,
               source(ctx));
     } else {
@@ -275,7 +279,7 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
               "#",
               params(sexpr.param()),
               hash(sexpr.hash()),
-              blockParams(ctx.blockParams()),
+              blockParamNames,
               source(ctx));
     }
     if (block.paramSize > 0) {
@@ -288,7 +292,13 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
     block.startDelimiter(startDelim);
     block.endDelimiter(endDelim);
 
+    if (!blockParamNames.isEmpty()) {
+      blockParamDepth++;
+    }
     Template body = visitBody(ctx.thenBody);
+    if (!blockParamNames.isEmpty()) {
+      blockParamDepth--;
+    }
     if (body != null) {
       block.body(body);
     }
@@ -483,15 +493,15 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
         ((params.size() > 0 || hash.size() > 0)
             || (varType == TagType.SUB_EXPRESSION && !literal && !number && !booleanLiteral));
     if (!isHelper
+        && blockParamDepth == 0
         && qualifier.size() > 0
         && "with".equals(qualifier.getLast())
-        && !varName.startsWith(".")) {
-      // HACK to qualified 'with' in order to improve handlebars.js compatibility
-      if (paramStack.size() > 0) {
-        String scope = paramStack.getLast();
-        if (varName.equals(scope) || varName.startsWith(scope + ".")) {
-          varName = "this." + varName;
-        }
+        && !varName.startsWith(".")
+        && paramStack.size() > 0) {
+      // HACK to qualified 'with' to improve handlebars.js compatibility.
+      String scope = paramStack.getLast();
+      if (varName.equals(scope) || varName.startsWith(scope + ".")) {
+        varName = "this." + varName;
       }
     }
     if (pathId.QID().size() > 0) {
