@@ -155,7 +155,7 @@ class Partial extends HelperResolver {
       Template callee = context.data(Context.CALLEE);
 
       final boolean pathIsPartialBlock = "@partial-block".equals(path);
-      final Template lastPartialBlock = inlineTemplates.get("@partial-block");
+      final Template lastPartialBlock = InlinePartialUtils.partialBlock(partials);
       final boolean parentIsNotLastPartialBlock = !isCalleeOf(callee, lastPartialBlock);
 
       if (pathIsPartialBlock && parentIsNotLastPartialBlock) {
@@ -171,10 +171,10 @@ class Partial extends HelperResolver {
         inlineTemplates.put(
             "@partial-block",
             new PartialBlockForwardingTemplate(
-                this, this.partial, inlineTemplates.get("@partial-block"), callee, handlebars));
+                this, this.partial, InlinePartialUtils.partialBlock(partials), callee, handlebars));
       }
 
-      Template template = inlineTemplates.get(path);
+      Template template = InlinePartialUtils.find(partials, path);
       LinkedList<Template> inlineStack = null;
 
       if (template != null && !pathIsPartialBlock && !handlebars.infiniteLoops()) {

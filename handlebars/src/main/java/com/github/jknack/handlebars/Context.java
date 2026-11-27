@@ -21,6 +21,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import com.github.jknack.handlebars.context.MapValueResolver;
+import com.github.jknack.handlebars.internal.InlinePartialUtils;
 import com.github.jknack.handlebars.internal.path.DataPath;
 import com.github.jknack.handlebars.internal.path.ParentPath;
 import com.github.jknack.handlebars.internal.path.PropertyPath;
@@ -715,7 +716,7 @@ public class Context {
     if (partials == null || partials.isEmpty()) {
       return null;
     }
-    Template block = partials.getLast().get("@partial-block");
+    Template block = InlinePartialUtils.partialBlock(partials);
     Template callee = data(CALLEE);
     if (block == null
         || callee == null

@@ -54,7 +54,7 @@ public class PartialBlockForwardingTemplate extends BaseTemplate {
   protected void merge(final Context context, final Writer writer) throws IOException {
     LinkedList<Map<String, Template>> partials = context.data(Context.INLINE_PARTIALS);
     Map<String, Template> inlineTemplates = partials.getLast();
-    Template oldPartialBlock = inlineTemplates.get("@partial-block");
+    Template oldPartialBlock = InlinePartialUtils.partialBlock(partials);
     Template oldCallee = context.data(Context.CALLEE);
 
     context.setData(Context.CALLEE, callee);
