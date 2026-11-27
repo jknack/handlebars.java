@@ -642,6 +642,10 @@ public class Context {
             // data context
             value = expr.eval(resolver, it, it.data);
           }
+          // block params are also reachable as @name
+          if (value == null && dataLookup && it instanceof BlockParam) {
+            value = expr.eval(resolver, it, it.model);
+          }
         }
         // a numeric context is a leaf scope, like in handlebars.js: names don't resolve upwards
         it = it.model instanceof Number ? null : it.parent;
