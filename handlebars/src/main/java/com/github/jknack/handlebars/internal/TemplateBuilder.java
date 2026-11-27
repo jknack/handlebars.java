@@ -106,7 +106,12 @@ abstract class TemplateBuilder extends HbsParserBaseVisitor<Object> {
         return;
       }
       if (ctx.QID() != null) {
-        context = ctx.QID().getText();
+        String text = ctx.QID().getText();
+        if (text.equals("null")) {
+          hasLiteral = true;
+        } else {
+          context = text;
+        }
         return;
       }
       String text = ctx.getText();

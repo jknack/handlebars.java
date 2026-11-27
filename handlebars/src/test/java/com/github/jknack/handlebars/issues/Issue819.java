@@ -14,7 +14,7 @@ import com.github.jknack.handlebars.AbstractTest;
 public class Issue819 extends AbstractTest {
 
   @Test
-  public void shouldThrowError() throws IOException {
+  public void shouldNotThrowError() throws IOException {
     shouldCompileTo("{{property~}}", $, "");
     shouldCompileTo("{{{property~}}}", $, "");
   }

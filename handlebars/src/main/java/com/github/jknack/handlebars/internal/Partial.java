@@ -254,12 +254,16 @@ class Partial extends HelperResolver {
       Map<String, Object> hash = hash(context);
       // HACK: hide/override local attribute with parent version (if any)
       override(context, hash, OVERRIDE_PROPERTIES);
-      Context ctx =
-          hasLiteral
-              ? Context.newPartialContext(context, literal, hash)
-              : handlebars.explicitPartialContext() && this.context == null
-                  ? Context.newIsolatedPartialContext(context, hash)
-                  : Context.newPartialContext(context, this.scontext, hash);
+      Context ctx;
+      if (hasLiteral && literal == null) {
+        ctx = Context.newIsolatedPartialContext(context, hash);
+      } else if (hasLiteral) {
+        ctx = Context.newPartialContext(context, literal, hash);
+      } else if (handlebars.explicitPartialContext() && this.context == null) {
+        ctx = Context.newIsolatedPartialContext(context, hash);
+      } else {
+        ctx = Context.newPartialContext(context, this.scontext, hash);
+      }
       try {
         template.apply(ctx, writer);
       } finally {
