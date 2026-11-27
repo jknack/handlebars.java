@@ -385,6 +385,14 @@ public enum StringHelpers implements Helper<Object> {
    */
   abbreviate {
     @Override
+    public Object apply(Object context, Options options) throws IOException {
+      if (options.isFalsy(context)) {
+        return null;
+      }
+      return safeApply(context, options);
+    }
+
+    @Override
     protected CharSequence safeApply(final Object value, final Options options) {
       Integer width = options.param(0, null);
       notNull(width, "found 'null', expected 'width'");
