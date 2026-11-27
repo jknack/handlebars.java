@@ -5,10 +5,12 @@
  */
 package com.github.jknack.handlebars.jackson;
 
+import java.util.AbstractList;
 import java.util.AbstractMap;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -113,7 +115,11 @@ public enum JsonNodeValueResolver implements ValueResolver {
     if (node instanceof ObjectNode objectNode) {
       return toMap(objectNode);
     }
-    // container, array or null
+    // array node to list
+    if (node instanceof ArrayNode arrayNode) {
+      return toList(arrayNode);
+    }
+    // container or literal null
     return node;
   }
 
@@ -137,8 +143,26 @@ public enum JsonNodeValueResolver implements ValueResolver {
       @Override
       public Set<Entry<String, Object>> entrySet() {
         Set set = new LinkedHashSet<Map.Entry<String, Object>>();
-        node.propertyStream().forEach(set::add);
+        node.propertyStream()
+            .forEach(e ->
+                set.add(
+                    new AbstractMap.SimpleImmutableEntry<String, Object>(
+                        e.getKey(), resolve(e.getValue()))));
         return set;
+      }
+    };
+  }
+
+  private static List<Object> toList(final ArrayNode node) {
+    return new AbstractList<Object>() {
+      @Override
+      public Object get(final int index) {
+        return resolve(node.get(index));
+      }
+
+      @Override
+      public int size() {
+        return node.size();
       }
     };
   }
