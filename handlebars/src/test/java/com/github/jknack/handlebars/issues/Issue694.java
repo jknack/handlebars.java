@@ -15,7 +15,7 @@ public class Issue694 extends AbstractTest {
 
   @Test
   public void shouldRenderPartialBlockInsideInlinePartial() throws IOException {
-    shouldCompileToWithPartials(
+    shouldCompileTo(
         "{{#*inline \"hello\"}}Hello{{/inline}}"
             + "{{#*inline \"render\"}}{{> @partial-block}}{{/inline}}"
             + "{{#> render}}"
