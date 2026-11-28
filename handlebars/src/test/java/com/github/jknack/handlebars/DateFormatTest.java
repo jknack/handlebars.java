@@ -19,6 +19,7 @@ import java.time.temporal.TemporalAccessor;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import java.util.TimeZone;
 
 import org.junit.jupiter.api.Test;
 
@@ -162,5 +163,14 @@ public class DateFormatTest extends AbstractTest {
   public void formatLocalDateTime() throws IOException {
     verifyDateTimeFormats(
         LocalDateTime.ofInstant(Instant.ofEpochSecond(1628779135), ZoneOffset.UTC));
+  }
+
+  @Test
+  public void formatCalendar() throws IOException {
+    Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+    calendar.clear();
+    calendar.set(2024, Calendar.JANUARY, 15, 10, 30, 0);
+
+    shouldCompileTo("{{dateFormat this \"yyyy-MM-dd\"}}", calendar, "2024-01-15");
   }
 }
