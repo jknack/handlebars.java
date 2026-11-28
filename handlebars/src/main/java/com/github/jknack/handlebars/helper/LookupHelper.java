@@ -40,7 +40,7 @@ public class LookupHelper implements Helper<Object> {
       return context;
     }
     Context ctx = Context.newBuilder(options.context, context).build();
-    Object lookup = ctx.get(options.param(0).toString());
+    Object lookup = ctx.get("[" + options.param(0).toString() + "]");
     if (lookup == null) {
       return context;
     }
