@@ -111,9 +111,16 @@ class LookupHelperTest extends AbstractTest {
   }
 
   @Test
-  void nestedPropertyIsReturned() throws IOException {
+  void dottedPropertyIsReturnedAsLiteralKey() throws IOException {
     assertEquals(
-        "found", lookup(new Hash().$("person", new Hash().$("name", "found")), "person.name"));
+            "found", lookup(new Hash().$("person.name", "found"), "person.name"));
+  }
+
+  @Test
+  void dottedKeyDoesNotResolveNestedProperty() throws IOException {
+    Hash context = new Hash().$("person", new Hash().$("name", "found"));
+
+    assertSame(context, lookup(context, "person.name"));
   }
 
   private Object lookup(final Object context, final Object... params) throws IOException {
