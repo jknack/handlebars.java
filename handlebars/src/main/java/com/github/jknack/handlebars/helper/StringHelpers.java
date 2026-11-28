@@ -19,6 +19,7 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.time.temporal.TemporalAccessor;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -519,15 +520,17 @@ public enum StringHelpers implements Helper<Object> {
         return (TemporalAccessor) value;
       } else if (value instanceof Date) {
         return ((Date) value).toInstant();
+      } else if (value instanceof Calendar) {
+        return ((Calendar) value).toInstant();
       } else {
         String className = null;
         if (value != null) {
           className = value.getClass().getSimpleName();
         }
         throw new IllegalArgumentException(
-            String.format(
-                "found instance of %s with value '%s', but expected instance of TemporalAccessor",
-                className, value));
+                String.format(
+                        "found instance of %s with value '%s', but expected instance of TemporalAccessor",
+                        className, value));
       }
     }
 
